@@ -1,0 +1,9 @@
+make.file(inputdir=data/raw, type=gz, prefix=clinical)
+
+#Remove dashes from ids listed in group column before moving forward with analysis. Correct typos & merge duplicates at the same time.
+#Use the fix_ids.R script to accomplish removing the dashes from the file names, correct typos, and merge duplicates into one ID.
+#Once R script has been run. Open up data/raw/clinical.files.fixed.csv and vendors.files
+#Paste fix_id column from data/raw/clinical.files.fixed.csv over the 1st column with dashes in the group name in data/raw/clinical.files
+#Save clinical.files now that the sample ids have been corrected by removing the dashes
+
+#Continue running the data through mothur by moving on to code/get_good_seq.batch
