@@ -7,13 +7,13 @@
 ###############################
 
 # Name
-#SBATCH --job-name=mothur_make_file
+#SBATCH --job-name=mothur_p5-8
 
 # Resources
 # For MPI, increase ntasks-per-node
 # For multithreading, increase cpus-per-task
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=1
+#SBATCH --ntasks-per-node=8
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=4GB
 #SBATCH --time=5:00:00
@@ -30,6 +30,7 @@
 # Environment
 #SBATCH --export=ALL
 
+# module load mothur
 
 #####################
 #                   #
@@ -38,4 +39,5 @@
 #####################
 
 
-mothur make_file_fix_ids.batch
+mothur code/get_good_seqs.batch
+mothur code/get_shared_otus.batch

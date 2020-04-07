@@ -1,0 +1,46 @@
+#Copies clinical CDI sample sequence data files from miseq_runs folder in schloss-lab turbo storage to my CDI_clinical_samples project directory. To run this script, submit the job from the schloss-lab directory. Also need to rename water & mock fastqs. Ideally take out underscores and _PBS from samples as well.
+
+# Initial testing to get estimates using plates 5-8
+# Copy files from library of plates 5-8 into project raw data directory
+#After logging onto Great lakes go to labs turbo storage:
+cd /nfs/turbo/schloss-lab
+
+#Copy raw data files into CDI_clinical_samples directory for data analysis
+cp miseq_runs/2019_runs/SarahCDIp5-p8_Aug2019/Data/Intensities/BaseCalls/*.fastq.gz tomkoset/CDI_clinical_samples/data/raw/
+
+#Change into raw data directory
+cd tomkoset/CDI_clinical_samples/data/raw/
+# Rename #Mock & water controls to match the plate number they were in
+rename 'mock1' mock5 *.gz
+rename 'Mock2' mock6 *.gz
+rename 'mock3' mock7 *.gz
+rename 'Mock-w-KR00350-M2-contamination' mock8contamKR00350 *.gz
+rename 'water1' water5 *.gz
+rename 'water2' water6 *.gz
+rename 'water3' water7 *.gz
+rename 'water4' water8 *.gz
+
+#Remove Undetermined fastq.gz filenames
+rm Undetermined*.fastq.gz
+
+#Remove -PBS and -M# from .gz filenames. First remove dashes before removing each remaining combination.
+for file in *.gz; do mv "$file" "$(echo "$file" | sed 's/-/'""'/g')"; done
+
+
+#Figure out how to remove M and PBS later
+
+#Remove M1, M2, M3 and PBS (Not working)
+for file in *.gz; do mv "$file" "$(echo "$file" | sed '[_-]M\d/g')"; done
+[_-]M\d
+for file in *.gz; do mv "$file" "$(echo "$file" | sed 's/M\d/'""'/g')"; done
+for file in *.gz; do mv "$file" `echo $file | tr -d 'M1'`; done
+for file in *.gz; do mv "$file" `echo $file | tr -d 'M2'`; done
+for file in *.gz; do mv "$file" `echo $file | tr -d 'M3'`; done
+for file in *.gz; do mv "$file" `echo $file | tr -d 'PBS'`; done
+#Dosen't work
+for file in *.gz; do mv "$file" `echo $file | tr -d 'M1'`; done
+for file in *.gz; do mv "$file" `echo $file | tr -d 'M2'`; done
+for file in *.gz; do mv "$file" `echo $file | tr -d '-PBS'`; done
+
+#Replaces all hyphens instead of just -M and -PBS hyphens
+for file in *.gz; do mv "$file" "$(echo "$file" | sed 's/[ _-]//g')"; done
