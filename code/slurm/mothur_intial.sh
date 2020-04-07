@@ -30,7 +30,7 @@
 # Environment
 #SBATCH --export=ALL
 
-# module load mothur
+# To run mothur. bin/mothur from  /nfs/turbo/schloss-lab which is built with Boost, needed for .gz files
 
 #####################
 #                   #
@@ -39,5 +39,5 @@
 #####################
 
 
-mothur code/get_good_seqs.batch
-mothur code/get_shared_otus.batch
+/nfs/turbo/schloss-lab/bin/mothur code/get_good_seqs.batch
+/nfs/turbo/schloss-lab/bin/mothur code/get_shared_otus.batch

@@ -27,7 +27,7 @@ rm Undetermined*.fastq.gz
 for file in *.gz; do mv "$file" "$(echo "$file" | sed 's/-/'""'/g')"; done
 
 
-#Figure out how to remove M and PBS later
+#Figure out how to remove M and PBS later (ideas that didn't work below)
 
 #Remove M1, M2, M3 and PBS (Not working)
 for file in *.gz; do mv "$file" "$(echo "$file" | sed '[_-]M\d/g')"; done
