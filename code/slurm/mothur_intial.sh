@@ -13,7 +13,7 @@
 # For MPI, increase ntasks-per-node
 # For multithreading, increase cpus-per-task
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=8
+#SBATCH --ntasks-per-node=12
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=4GB
 #SBATCH --time=5:00:00
@@ -40,4 +40,4 @@
 
 
 /nfs/turbo/schloss-lab/bin/mothur code/get_good_seqs.batch
-/nfs/turbo/schloss-lab/bin/mothur code/get_shared_otus.batch
+#/nfs/turbo/schloss-lab/bin/mothur code/get_shared_otus.batch
