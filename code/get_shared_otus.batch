@@ -1,5 +1,5 @@
 set.dir(input=data/mothur, output=data/mothur, seed=19760620)
-set.current(processors=8)
+set.current(processors=12)
 remove.groups(count=vendors.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table, fasta=vendors.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.fasta, taxonomy=vendors.trim.contigs.good.unique.good.filter.unique.precluster.pick.pds.wang.pick.taxonomy, groups=mock5-mock6-mock7-mock8contamKR00350)
 cluster.split(fasta=current, count=current, taxonomy=current, cutoff=0.03, taxlevel=4)
 make.shared(list=current, count=current, label=0.03)
