@@ -1,13 +1,12 @@
-#Copies clinical CDI sample sequence data files from miseq_runs folder in schloss-lab turbo storage to my CDI_clinical_samples project directory. To run this script, submit the job from the schloss-lab directory. Also need to rename water & mock fastqs. Ideally take out underscores and _PBS from samples as well.
+#Copies clinical CDI sample sequence data files from miseq_runs folder in schloss-lab turbo storage to my CDI_clinical_samples project directory. This script is a record of bash commands used, since it is just moving/renaming files there is no need to submit as a job. For each library, the water & mock fastqs will be renamed to match the CDI plate number they were in. After sequences from all libraries have been transferred to the project's raw data directory, we will remove the dashes, M#, and PBS parts of the sample names so that just the KR##### is left to make downstream analysis easier. All of the information about aliquots used and whether PBS was added to the samples is kept track in the metadata.
+#Note: We start off at plate 5, because 376 samples had already been sequenced by Micah and the microbiome core. Separate aliquots of each of those 376 samples were sequenced by the Schloss lab so that all 3943 samples are represented below.)
 
-# Initial testing to get estimates using plates 5-8
-# Copy files from library of plates 5-8 into project raw data directory
 #After logging onto Great lakes go to labs turbo storage:
 cd /nfs/turbo/schloss-lab
 
+#Library for plates 5-8
 #Copy raw data files into CDI_clinical_samples directory for data analysis
 cp miseq_runs/2019_runs/SarahCDIp5-p8_Aug2019/Data/Intensities/BaseCalls/*.fastq.gz tomkoset/CDI_clinical_samples/data/raw/
-
 #Change into raw data directory
 cd tomkoset/CDI_clinical_samples/data/raw/
 # Rename #Mock & water controls to match the plate number they were in
@@ -19,28 +18,33 @@ rename 'water1' water5 *.gz
 rename 'water2' water6 *.gz
 rename 'water3' water7 *.gz
 rename 'water4' water8 *.gz
-
 #Remove Undetermined fastq.gz filenames
 rm Undetermined*.fastq.gz
+go to labs turbo storage:
+cd /nfs/turbo/schloss-lab
 
-#Remove -PBS and -M# from .gz filenames. First remove dashes before removing each remaining combination.
+#Library for plates 9-12 (see plates 5-8 above for commented explaination of each step)
+cp miseq_runs/2019_runs/SarahCDI_p9-p12_Aug2019/Data/Intensities/BaseCalls/*.fastq.gz tomkoset/CDI_clinical_samples/data/raw/
+cd tomkoset/CDI_clinical_samples/data/raw/
+rename 'mock1' mock9 *.gz
+rename 'mock2' mock10 *.gz
+rename 'mock3' mock11 *.gz
+rename 'mock4' mock12 *.gz
+rename 'water1' water9 *.gz
+rename 'water2' water10 *.gz
+rename 'water3' water11 *.gz
+rename 'water4' water12 *.gz
+rm Undetermined*.fastq.gz
+cd /nfs/turbo/schloss-lab
+
+#Remove -PBS and -M# from .gz filenames for all samples (do these steps once sequences from all libraries have been transferred to raw data folder). This information is already recorded in the corresponding metadata file.
+#First remove dashes before removing each remaining combination. Removes the dashes before M# and PBS.
+#Change into raw data directory
+cd tomkoset/CDI_clinical_samples/data/raw/
 for file in *.gz; do mv "$file" "$(echo "$file" | sed 's/-/'""'/g')"; done
-
-
-#Figure out how to remove M and PBS later (ideas that didn't work below)
-
-#Remove M1, M2, M3 and PBS (Not working)
-for file in *.gz; do mv "$file" "$(echo "$file" | sed '[_-]M\d/g')"; done
-[_-]M\d
-for file in *.gz; do mv "$file" "$(echo "$file" | sed 's/M\d/'""'/g')"; done
-for file in *.gz; do mv "$file" `echo $file | tr -d 'M1'`; done
-for file in *.gz; do mv "$file" `echo $file | tr -d 'M2'`; done
-for file in *.gz; do mv "$file" `echo $file | tr -d 'M3'`; done
-for file in *.gz; do mv "$file" `echo $file | tr -d 'PBS'`; done
-#Dosen't work
-for file in *.gz; do mv "$file" `echo $file | tr -d 'M1'`; done
-for file in *.gz; do mv "$file" `echo $file | tr -d 'M2'`; done
-for file in *.gz; do mv "$file" `echo $file | tr -d '-PBS'`; done
-
-#Replaces all hyphens instead of just -M and -PBS hyphens
-for file in *.gz; do mv "$file" "$(echo "$file" | sed 's/[ _-]//g')"; done
+# Remove PBS from sample id
+rename 'PBS_' _ *.gz
+# Now remove M1, M2, and M3 (denotes the 3 different microbiome aliquots that were stored per sample) from sample id
+rename 'M1_' _ *.gz
+rename 'M2_' _ *.gz
+rename 'M3_' _ *.gz
