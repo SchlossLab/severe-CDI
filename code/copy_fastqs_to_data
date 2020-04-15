@@ -37,6 +37,74 @@ rename 'water4' water12 *.gz
 rm Undetermined*.fastq.gz
 cd /nfs/turbo/schloss-lab
 
+#Library for plates 13-16 (see plates 5-8 above for commented explaination of each step)
+cp miseq_runs/2019_runs/Sarah_CDIp13-16_Sep2019/Data/Intensities/BaseCalls/*.fastq.gz tomkoset/CDI_clinical_samples/data/raw/
+cd tomkoset/CDI_clinical_samples/data/raw/
+rename 'mock1' mock13 *.gz
+rename 'mock2' mock14 *.gz
+rename 'mock3' mock15 *.gz
+rename 'mock4' mock16 *.gz
+rename 'water1' water13 *.gz
+rename 'water2' water14 *.gz
+rename 'water3' water15 *.gz
+rename 'water4' water16 *.gz
+rm Undetermined*.fastq.gz
+cd /nfs/turbo/schloss-lab
+
+#Library for plates 17-20 (see plates 5-8 above for commented explaination of each step)
+cp miseq_runs/2019_runs/SarahCDI_p17-p20/Data/Intensities/BaseCalls/*.fastq.gz tomkoset/CDI_clinical_samples/data/raw/
+cd tomkoset/CDI_clinical_samples/data/raw/
+rename 'mock1' mock17 *.gz
+rename 'mock2' mock18 *.gz
+rename 'mock3' mock19 *.gz
+rename 'mock4' mock20 *.gz
+rename 'water1' water17 *.gz
+rename 'water2' water18 *.gz
+rename 'water3' water19 *.gz
+#No water4 sequences in this library for some reason
+rm Undetermined*.fastq.gz
+cd /nfs/turbo/schloss-lab
+
+#Library for plates 21-24 (see plates 5-8 above for commented explaination of each step)
+cp miseq_runs/2019_runs/SarahCDI_p21-p24/Data/Intensities/BaseCalls/*.fastq.gz tomkoset/CDI_clinical_samples/data/raw/
+cd tomkoset/CDI_clinical_samples/data/raw/
+rename 'mock1' mock21 *.gz
+rename 'mock2' mock22 *.gz
+rename 'mock3' mock23 *.gz
+rename 'mock4' mock24 *.gz
+rename 'pcr-water1' water21 *.gz
+rename 'pcr-water2' water22 *.gz
+rename 'pcr-water3' water23 *.gz
+rename 'pcr-water4' water24 *.gz
+rm Undetermined*.fastq.gz
+cd /nfs/turbo/schloss-lab
+
+#Library for plates 25-28 (see plates 5-8 above for commented explaination of each step)
+cp miseq_runs/2019_runs/SarahCDI_p25-28/Data/Intensities/BaseCalls/*.fastq.gz tomkoset/CDI_clinical_samples/data/raw/
+cd tomkoset/CDI_clinical_samples/data/raw/
+rename 'mock' mock25 *.gz
+rename 'mock2' mock26 *.gz
+rename 'mock3' mock28 *.gz
+#No mock4, mock not included on p27 according to the plate layout
+rename 'water' water25 *.gz
+rename 'water2' water26 *.gz
+rename 'water3' water27 *.gz
+rename 'water4' water28 *.gz
+rm Undetermined*.fastq.gz
+cd /nfs/turbo/schloss-lab
+
+#Library for plates 29-32 (see plates 5-8 above for commented explaination of each step)
+cp miseq_runs/2019_runs/SarahCDI_p29-32/Data/Intensities/BaseCalls/*.fastq.gz tomkoset/CDI_clinical_samples/data/raw/
+cd tomkoset/CDI_clinical_samples/data/raw/
+rename 'mock1' mock30 *.gz
+rename 'mock2' mock32 *.gz
+# Mock not included on p29 and p31 according to the plate layout
+rename 'water1' water30 *.gz
+rename 'water2' water32 *.gz
+# Water not included on p29 and p31 according to the plate layout
+rm Undetermined*.fastq.gz
+cd /nfs/turbo/schloss-lab
+
 #Remove -PBS and -M# from .gz filenames for all samples (do these steps once sequences from all libraries have been transferred to raw data folder). This information is already recorded in the corresponding metadata file.
 #First remove dashes before removing each remaining combination. Removes the dashes before M# and PBS.
 #Change into raw data directory
