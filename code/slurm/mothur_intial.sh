@@ -39,4 +39,4 @@
 #####################
 
 
-/nfs/turbo/schloss-lab/bin/mothur code/get_good_seqs_shared_otus.batch
+mothur code/get_good_seqs_shared_otus.batch
