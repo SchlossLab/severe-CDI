@@ -10,14 +10,14 @@ cp miseq_runs/2019_runs/SarahCDIp5-p8_Aug2019/Data/Intensities/BaseCalls/*.fastq
 #Change into raw data directory
 cd tomkoset/CDI_clinical_samples/data/raw/
 # Rename #Mock & water controls to match the plate number they were in
-rename 'mock1' mock5 *.gz
-rename 'Mock2' mock6 *.gz
-rename 'mock3' mock7 *.gz
+rename 'mock1_' mock5_ *.gz
+rename 'Mock2_' mock6_ *.gz
+rename 'mock3_' mock7_ *.gz
 rename 'Mock-w-KR00350-M2-contamination' mock8contamKR00350 *.gz
-rename 'water1' water5 *.gz
-rename 'water2' water6 *.gz
-rename 'water3' water7 *.gz
-rename 'water4' water8 *.gz
+rename 'water1_' water5_ *.gz
+rename 'water2_' water6_ *.gz
+rename 'water3_' water7_ *.gz
+rename 'water4_' water8_ *.gz
 #Remove Undetermined fastq.gz filenames
 rm Undetermined*.fastq.gz
 #Remove contaminated mock sample since we can't use it since its a mix of mock and another sample
@@ -25,146 +25,147 @@ rm mock8contamKR00350*.fastq.gz
 go to labs turbo storage:
 cd /nfs/turbo/schloss-lab
 
-#Library for plates 9-12 (see plates 5-8 above for commented explaination of each step)
+#Library for plates 9-12 (see plates 5-8 above for commented explanation of each step)
 cp miseq_runs/2019_runs/SarahCDI_p9-p12_Aug2019/Data/Intensities/BaseCalls/*.fastq.gz tomkoset/CDI_clinical_samples/data/raw/
 cd tomkoset/CDI_clinical_samples/data/raw/
-rename 'mock1' mock9 *.gz
-rename 'mock2' mock10 *.gz
-rename 'mock3' mock11 *.gz
-rename 'mock4' mock12 *.gz
-rename 'water1' water9 *.gz
-rename 'water2' water10 *.gz
-rename 'water3' water11 *.gz
-rename 'water4' water12 *.gz
+rename 'mock1_' mock9_ *.gz
+rename 'mock2_' mock10_ *.gz
+rename 'mock3_' mock11_ *.gz
+rename 'mock4_' mock12_ *.gz
+rename 'water1_' water9_ *.gz
+rename 'water2_' water10_ *.gz
+rename 'water3_' water11_ *.gz
+rename 'water4_' water12_ *.gz
 rm Undetermined*.fastq.gz
 cd /nfs/turbo/schloss-lab
 
-#Library for plates 13-16 (see plates 5-8 above for commented explaination of each step)
+#Library for plates 13-16 (see plates 5-8 above for commented explanation of each step)
 cp miseq_runs/2019_runs/Sarah_CDIp13-16_Sep2019/Data/Intensities/BaseCalls/*.fastq.gz tomkoset/CDI_clinical_samples/data/raw/
 cd tomkoset/CDI_clinical_samples/data/raw/
-rename 'mock1' mock13 *.gz
-rename 'mock2' mock14 *.gz
-rename 'mock3' mock15 *.gz
-rename 'mock4' mock16 *.gz
-rename 'water1' water13 *.gz
-rename 'water2' water14 *.gz
-rename 'water3' water15 *.gz
-rename 'water4' water16 *.gz
+rename 'mock1_' mock13_ *.gz
+rename 'mock2_' mock14_ *.gz
+rename 'mock3_' mock15_ *.gz
+rename 'mock4_' mock16_ *.gz
+rename 'water1_' water13_ *.gz
+rename 'water2_' water14_ *.gz
+rename 'water3_' water15_ *.gz
+rename 'water4_' water16_ *.gz
 rm Undetermined*.fastq.gz
 cd /nfs/turbo/schloss-lab
 
-#Library for plates 17-20 (see plates 5-8 above for commented explaination of each step)
+#Library for plates 17-20 (see plates 5-8 above for commented explanation of each step)
 cp miseq_runs/2019_runs/SarahCDI_p17-p20/Data/Intensities/BaseCalls/*.fastq.gz tomkoset/CDI_clinical_samples/data/raw/
 cd tomkoset/CDI_clinical_samples/data/raw/
-rename 'mock1' mock17 *.gz
-rename 'mock2' mock18 *.gz
-rename 'mock3' mock19 *.gz
-rename 'mock4' mock20 *.gz
-rename 'water1' water17 *.gz
-rename 'water2' water18 *.gz
-rename 'water3' water19 *.gz
+rename 'mock1_' mock17_ *.gz
+rename 'mock2_' mock18_ *.gz
+rename 'mock3_' mock19_ *.gz
+rename 'mock4_' mock20_ *.gz
+rename 'water1_' water17_ *.gz
+rename 'water2_' water18_ *.gz
+rename 'water3_' water19_ *.gz
 #No water4 sequences in this library for some reason
 rm Undetermined*.fastq.gz
 cd /nfs/turbo/schloss-lab
 
-#Library for plates 21-24 (see plates 5-8 above for commented explaination of each step)
+#Library for plates 21-24 (see plates 5-8 above for commented explanation of each step)
 cp miseq_runs/2019_runs/SarahCDI_p21-p24/Data/Intensities/BaseCalls/*.fastq.gz tomkoset/CDI_clinical_samples/data/raw/
 cd tomkoset/CDI_clinical_samples/data/raw/
-rename 'mock1' mock21 *.gz
-rename 'mock2' mock22 *.gz
-rename 'mock3' mock23 *.gz
-rename 'mock4' mock24 *.gz
-rename 'pcr-water1' water21 *.gz
-rename 'pcr-water2' water22 *.gz
-rename 'pcr-water3' water23 *.gz
-rename 'pcr-water4' water24 *.gz
+rename 'mock1_' mock21_ *.gz
+rename 'mock2_' mock22_ *.gz
+rename 'mock3_' mock23_ *.gz
+rename 'mock4_' mock24_ *.gz
+rename 'pcr-water1_' water21_ *.gz
+rename 'pcr-water2_' water22_ *.gz
+rename 'pcr-water3_' water23_ *.gz
+rename 'pcr-water4_' water24_ *.gz
 rm Undetermined*.fastq.gz
 cd /nfs/turbo/schloss-lab
 
-#Library for plates 25-28 (see plates 5-8 above for commented explaination of each step)
+#Library for plates 25-28 (see plates 5-8 above for commented explanation of each step)
 cp miseq_runs/2019_runs/SarahCDI_p25-28/Data/Intensities/BaseCalls/*.fastq.gz tomkoset/CDI_clinical_samples/data/raw/
 cd tomkoset/CDI_clinical_samples/data/raw/
-rename 'mock' mock25 *.gz
-rename 'mock2' mock26 *.gz
-rename 'mock3' mock28 *.gz
+rename 'mock_' mock25_ *.gz
+rename 'mock2_' mock26_ *.gz
+rename 'mock3_' mock28_ *.gz
 #No mock4, mock not included on p27 according to the plate layout
-rename 'water' water25 *.gz
-rename 'water2' water26 *.gz
-rename 'water3' water27 *.gz
-rename 'water4' water28 *.gz
+rename 'water_' water25_ *.gz
+rename 'water2_' water26_ *.gz
+rename 'water3_' water27_ *.gz
+rename 'water4_' water28_ *.gz
 rm Undetermined*.fastq.gz
 cd /nfs/turbo/schloss-lab
 
-#Library for plates 29-32 (see plates 5-8 above for commented explaination of each step)
+#Library for plates 29-32 (see plates 5-8 above for commented explanation of each step)
 cp miseq_runs/2019_runs/SarahCDI_p29-32/Data/Intensities/BaseCalls/*.fastq.gz tomkoset/CDI_clinical_samples/data/raw/
 cd tomkoset/CDI_clinical_samples/data/raw/
-rename 'mock1' mock30 *.gz
-rename 'mock2' mock32 *.gz
+rename 'mock1_' mock30_ *.gz
+rename 'mock2_' mock32_ *.gz
 # Mock not included on p29 and p31 according to the plate layout
-rename 'water1' water30 *.gz
-rename 'water2' water32 *.gz
+rename 'water1_' water30_ *.gz
+rename 'water2_' water32_ *.gz
 # Water not included on p29 and p31 according to the plate layout
 rm Undetermined*.fastq.gz
 cd /nfs/turbo/schloss-lab
 
-#Library for plates 33-36 (see plates 5-8 above for commented explaination of each step)
-cp miseq_runs/2020_runs/SarahCDI_p33-p36_jan2020/Intensities/BaseCalls/*.fastq.gz tomkoset/CDI_clinical_samples/data/raw/
+#Library for plates 33-36 (see plates 5-8 above for commented explanation of each step)
+cp miseq_runs/2020_runs/SarahCDI_p33-p36_jan2020/Data/Intensities/BaseCalls/*.fastq.gz tomkoset/CDI_clinical_samples/data/raw/
 cd tomkoset/CDI_clinical_samples/data/raw/
-rename 'mock' mock33 *.gz
-rename 'mock2' mock34 *.gz
-rename 'mock3' mock35 *.gz
-rename 'mock4' mock36 *.gz
-rename 'water' water33 *.gz
-rename 'water2' water34 *.gz
-rename 'water3' water35 *.gz
-rename 'water4' water36 *.gz
+rename 'mock_' mock33_ *.gz
+rename 'mock2_' mock34_ *.gz
+rename 'mock3_' mock35_ *.gz
+rename 'mock4_' mock36_ *.gz
+rename 'water_' water33_ *.gz
+rename 'water2_' water34_ *.gz
+rename 'water3_' water35_ *.gz
+rename 'water4_' water36_ *.gz
 rm Undetermined*.fastq.gz
 cd /nfs/turbo/schloss-lab
 
-#Library for plates 37-40 (see plates 5-8 above for commented explaination of each step)
-cp miseq_runs/2020_runs/SarahCDI_p37-p40/Intensities/BaseCalls/*.fastq.gz tomkoset/CDI_clinical_samples/data/raw/
+#Library for plates 37-40 (see plates 5-8 above for commented explanation of each step)
+cp miseq_runs/2020_runs/SarahCDI_p37-p40/Data/Intensities/BaseCalls/*.fastq.gz tomkoset/CDI_clinical_samples/data/raw/
 cd tomkoset/CDI_clinical_samples/data/raw/
-rename 'mock1' mock37 *.gz
-rename 'mock2' mock38 *.gz
-rename 'mock3' mock39 *.gz
-rename 'mock4' mock40 *.gz
-rename 'water1' water37 *.gz
-rename 'water2' water38 *.gz
-rename 'water3' water39 *.gz
-rename 'water4' water40 *.gz
+rename 'mock1_' mock37_ *.gz
+rename 'mock2_' mock38_ *.gz
+rename 'mock3_' mock39_ *.gz
+rename 'mock4_' mock40_ *.gz
+rename 'water1_' water37_ *.gz
+rename 'water2_' water38_ *.gz
+rename 'water3_' water39_ *.gz
+rename 'water4_' water40_ *.gz
 rm Undetermined*.fastq.gz
 #Plate_37, first 7 rows of samples failed due to epMotion error during DNA extractions and are highlighted in orange on sample sheet. These samples are not in the BaseCalls/ folder so need to worry about removing the corresponding fastq.gz files. The replacement sequences for these first 7 rows are included on Plate_47
 cd /nfs/turbo/schloss-lab
 
-#Library for plates 41-44 (see plates 5-8 above for commented explaination of each step)
-cp miseq_runs/2020_runs/SarahCDI_p41-p44_Jan2020/Intensities/BaseCalls/*.fastq.gz tomkoset/CDI_clinical_samples/data/raw/
+#Library for plates 41-44 (see plates 5-8 above for commented explanation of each step)
+cp miseq_runs/2020_runs/SarahCDI_p41-p44_Jan2020/Data/Intensities/BaseCalls/*.fastq.gz tomkoset/CDI_clinical_samples/data/raw/
 cd tomkoset/CDI_clinical_samples/data/raw/
-rename 'mock1' mock41 *.gz
-rename 'mock2' mock42 *.gz
-rename 'mock3' mock43 *.gz
-rename 'mock4' mock44 *.gz
-rename 'water1' water41 *.gz
-rename 'water2' water42 *.gz
-rename 'water3' water43 *.gz
-rename 'water4' water44 *.gz
+rename 'mock1_' mock41_ *.gz
+rename 'mock2_' mock42_ *.gz
+rename 'mock3_' mock43_ *.gz
+rename 'mock4_' mock44_ *.gz
+rename 'water1_' water41_ *.gz
+rename 'water2_' water42_ *.gz
+rename 'water3_' water43_ *.gz
+rename 'water4_' water44_ *.gz
 rm Undetermined*.fastq.gz
 cd /nfs/turbo/schloss-lab
 
-#Library for plates 45-47 (see plates 5-8 above for commented explaination of each step). This time need to be more specific about the files we copy over (Only want samples that start with KR*, mock* or water*) since this library also included samples for a separate project (the motility project). This library also includes 3 different PBS aliquots which were added to some of the samples as noted in the corresponding metadata file
-cp miseq_runs/2020_runs/SarahCDI_p45p46_motility/Intensities/BaseCalls/KR*.fastq.gz tomkoset/CDI_clinical_samples/data/raw/
-cp miseq_runs/2020_runs/SarahCDI_p45p46_motility/Intensities/BaseCalls/mock*.fastq.gz tomkoset/CDI_clinical_samples/data/raw/
-cp miseq_runs/2020_runs/SarahCDI_p45p46_motility/Intensities/BaseCalls/water*.fastq.gz tomkoset/CDI_clinical_samples/data/raw/
-cp miseq_runs/2020_runs/SarahCDI_p45p46_motility/Intensities/BaseCalls/PBS*.fastq.gz tomkoset/CDI_clinical_samples/data/raw/
+#Library for plates 45-47 (see plates 5-8 above for commented explanation of each step). This time need to be more specific about the files we copy over (Only want samples that start with KR*, mock* or water*) since this library also included samples for a separate project (the motility project). This library also includes 3 different PBS aliquots which were added to some of the samples as noted in the corresponding metadata file
+cp miseq_runs/2020_runs/SarahCDI_p45p46_motility/Data/Intensities/BaseCalls/KR*.fastq.gz tomkoset/CDI_clinical_samples/data/raw/
+cp miseq_runs/2020_runs/SarahCDI_p45p46_motility/Data/Intensities/BaseCalls/mock*.fastq.gz tomkoset/CDI_clinical_samples/data/raw/
+cp miseq_runs/2020_runs/SarahCDI_p45p46_motility/Data/Intensities/BaseCalls/water*.fastq.gz tomkoset/CDI_clinical_samples/data/raw/
+cp miseq_runs/2020_runs/SarahCDI_p45p46_motility/Data/Intensities/BaseCalls/PBS*.fastq.gz tomkoset/CDI_clinical_samples/data/raw/
 cd tomkoset/CDI_clinical_samples/data/raw/
-rename 'mock1' mock45 *.gz
-rename 'mock2' mock46 *.gz
-rename 'mock3' mock47 *.gz
-rm mock4*.gz
-rename 'water1' water45 *.gz
-rename 'water2' water46 *.gz
-rename 'water3' water47 *.gz
-rm water4*.gz
-#Remove the mock and waters for the last plate of this library, as all of those sequences were part of a different project.
+rename 'mock1_' mock45_ *.gz
+rename 'mock2_' mock46_ *.gz
+rename 'mock3_' mock47_ *.gz
+rm mock4_*.gz
+rename 'water1_' water45_ *.gz
+rename 'water2_' water46_ *.gz
+rename 'water3_' water47_ *.gz
+rm water4_*.gz
+#Remove the mock and waters for the last plate of this library, as all of those samples were part of a different project.
+#Rename the 3 PBS aliquots (PBS that was added to some samples as specified in metadata)
 rename 'PBS-aliquot-1' PBS1 *.gz
 rename 'PBS-aliquot-2' PBS2 *.gz
 rename 'PBS-aliquot-3' PBS3 *.gz
