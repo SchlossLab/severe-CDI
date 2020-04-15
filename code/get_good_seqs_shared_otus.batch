@@ -25,4 +25,3 @@ cluster.split(fasta=current, count=current, taxonomy=current, cutoff=0.03, taxle
 count.groups(count=current)
 make.shared(list=current, count=current, label=0.03)
 classify.otu(list=current, count=current, taxonomy=current, label=0.03)
-count.groups(shared=cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.shared)
