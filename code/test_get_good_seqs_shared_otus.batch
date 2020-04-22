@@ -1,5 +1,5 @@
 make.file(inputdir=data/test_raw, type=gz, prefix=cdi)
-make.contigs(file=cdi.files, inputdir=data/test_raw/, outputdir=data/test_mothur/, processors=1)
+make.contigs(file=cdi.paired.files, inputdir=data/test_raw/, outputdir=data/test_mothur/, processors=1)
 summary.seqs(fasta=cdi.trim.contigs.fasta, processors=10)
 screen.seqs(fasta=current, group=current, maxambig=0, maxlength=275, maxhomop=8, processors=10)
 unique.seqs(fasta=current)
