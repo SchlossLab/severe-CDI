@@ -24,9 +24,9 @@ data <- read_tsv("data/process/cdi.trim.contigs.good.unique.good.filter.unique.p
 missing_data_samples <- anti_join(planned_samples, data) #KR00245P, KR00442, KR01434, KR01457, KR01469, KR01481, KR01493, KR01505, KR01445
 missing_planned_samples <- anti_join(data, planned_samples) #KR00245, KR00442M1, KR01437M12 (duplicate)
 #9 observations, 2 of which are just label mismatches (for whatever reason my pattern matching to rename those 2 files didn't work)
-# 7 missing files: KR01434, KR01457, KR01469, KR01481, KR01493, KR01505, KR01445.
-#All 7 missing files are from plate_20, column 12.
-#No note about anything happening to these missing files in the plate_layout file from Lucas
+# 7 missing samples: KR01434, KR01457, KR01469, KR01481, KR01493, KR01505, KR01445.
+#All 7 missing samples are from plate_20, column 12.
+#No note about anything happening to these missing samples in the plate_layout file from Lucas
 #Made a note when I was transferring files that water4 control (for plate_20) was also missing.
 #Rechecked raw data folder in miseq_runs and all 7 sets of fastq.gz files are also missing.
 #Also the samples are not listed on the SampleSheet.csv in the raw data folder of fastq.gz files
