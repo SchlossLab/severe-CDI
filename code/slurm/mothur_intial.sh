@@ -30,7 +30,7 @@
 # Environment
 #SBATCH --export=ALL
 
-# To run mothur. bin/mothur from  /nfs/turbo/schloss-lab which is built with Boost, needed for .gz files
+# To run mothur: conda activate mothur_v1.43 before submitting job.
 
 #####################
 #                   #

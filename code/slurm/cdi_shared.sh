@@ -30,7 +30,7 @@
 # Environment
 #SBATCH --export=ALL
 
-# To run mothur. conda activate mothur_v1.43 before submitting job.
+# To run mothur: conda activate mothur_v1.43 before submitting job.
 
 #####################
 #                   #
