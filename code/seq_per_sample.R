@@ -5,7 +5,9 @@ library(readxl)
 
 planned_samples <- read_excel(path = "data/raw/cdi_sample_list_for_16S_plates.xlsx") %>%
   mutate(sample = `CDIS_Sample ID`) %>%
-  select(sample, `CDIS_Aliquot ID`)
+  select(sample, `CDIS_Aliquot ID`) %>% 
+#Correct label typo
+  mutate(sample = replace(sample, sample == "KR00245P", "KR00245"))  
 
 raw_data <- read_tsv("data/raw/cdi.files", col_names=c("sample", "read_1", "read_2"))
 #4019 samples
@@ -18,12 +20,16 @@ raw_data <- read_tsv("data/raw/cdi.files", col_names=c("sample", "read_1", "read
 data <- read_tsv("data/process/cdi.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.pick.count.summary", col_names=c("sample", "nseqs")) %>% #3980 samples
   filter(!str_detect(sample, "water")) %>% #Removes 40 water control samples
   filter(!str_detect(sample, "mock")) %>% #Makes sure mock samples were removed
-  filter(!str_detect(sample, "PBS")) #Removes 3 PBS aliquot samples
+  filter(!str_detect(sample, "PBS")) %>%#Removes 3 PBS aliquot samples 
+  #Correct label error, not sure why my pattern matching missed this sample
+  mutate(sample = replace(sample, sample == "KR00442M1", "KR00442")) %>% 
+  #Remove duplicate of KR01437, this well should have been left empty
+  filter(!sample == "KR01437M12")
 
 #Samples
-missing_data_samples <- anti_join(planned_samples, data) #KR00245P, KR00442, KR01434, KR01457, KR01469, KR01481, KR01493, KR01505, KR01445
-missing_planned_samples <- anti_join(data, planned_samples) #KR00245, KR00442M1, KR01437M12 (duplicate)
-#9 observations, 2 of which are just label mismatches (for whatever reason my pattern matching to rename those 2 files didn't work)
+missing_data_samples <- anti_join(planned_samples, data) %>% select(sample) #KR01434, KR01457, KR01469, KR01481, KR01493, KR01505, KR01445
+missing_planned_samples <- anti_join(data, planned_samples) #None
+#9 observations, 
 # 7 missing samples: KR01434, KR01457, KR01469, KR01481, KR01493, KR01505, KR01445.
 #All 7 missing samples are from plate_20, column 12.
 #No note about anything happening to these missing samples in the plate_layout file from Lucas
@@ -77,3 +83,15 @@ data_lost_plot <- data_lost %>%
      y= "Number of Samples to Resequence")+
   theme_classic()+
   ggsave("exploratory/notebook/resequencing_cutoff.pdf")
+
+#After discussing Pat, we've decided it'd be worthwhile to resequence 1 library of samples (382, plus ideally at least 1 mock and 1 water control).
+# So we will aim for 5000 sequences per sample and resequence anything that falls below that cutoff
+resequence_samples <- data %>% filter(nseqs < 5000)
+
+#Export list of samples to resequence and there corresponding number of sequences
+resequence_samples %>% 
+  write_tsv("data/process/resequence_samples_CDI_16S")
+
+#List of samples from plate_20 with missing data, likely still on the MiSeq
+missing_data_samples %>% 
+  write_tsv("data/process/plate20_missing_samples")
