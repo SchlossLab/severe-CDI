@@ -7,6 +7,11 @@ library(readxl)
 reseq <- read_tsv("data/process/resequence_samples_CDI_16S")
 #378 samples
 
+#Plate numbers and locations of samples to resequence:
+planned_samples <- read_excel(path = "data/raw/reseq_Sysdiff_plate48_51.xlsx") %>% 
+  select(sample, reseq_plate, reseq_plate_location, dna_conc, new_DNA_extracted)
+
+#7/2/20 MiSeq Run of resequenced sample library: Sequences per sample data
 data <- read_tsv("data/test_mothur2/cdi.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count.summary", col_names=c("sample", "nseqs")) %>% 
   filter(!str_detect(sample, "water")) %>% #Removes water control samples
   filter(!str_detect(sample, "mock")) #Makes sure mock samples were removed
@@ -49,3 +54,21 @@ n_4000 <- data %>% filter(nseqs < 4000) %>% select(sample) %>% nrow()+3 #Account
 #If I rarefy to 5000:
 n_5000 <- data %>% filter(nseqs < 5000) %>% select(sample) %>% nrow()+3 #Account for 3 samples that were dropped from table (<20 sequences)
 #I'll lose 275 samples.
+
+#See if there are any patterns to the samples that had a low number of sequences:
+reseq_data <- full_join(data, planned_samples, by = "sample")
+
+less_1000_locations <- reseq_data %>% filter(nseqs < 1000) %>%
+  count(reseq_plate)
+
+less_5000_locations <- reseq_data %>% filter(nseqs < 5000) %>%
+  count(reseq_plate)
+
+less_5000_plate_locations <- reseq_data %>% filter(nseqs < 5000) %>%
+  count(reseq_plate_location)
+
+less_5000_new_DNA <- reseq_data %>% filter(nseqs < 5000) %>%
+  count(new_DNA_extracted)
+
+new_DNA <- reseq_data %>%
+  count(new_DNA_extracted)
