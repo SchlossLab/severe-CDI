@@ -45,7 +45,7 @@ total <- data %>% count(sample)
 
 data %>% ggplot(aes(x=nseqs)) + geom_histogram()
 
-data %>% ggplot(aes(x=nseqs)) + geom_histogram() + scale_x_log10() +
+data %>% ggplot(aes(x=nseqs)) + geom_histogram() + scale_x_log10(limits = c(-1, 100050)) +
   ggsave("exploratory/notebook/seq_per_sample_distribution.pdf")
 
 data %>% select(sample, nseqs) %>% filter(nseqs < 1000) %>% count(sample)
