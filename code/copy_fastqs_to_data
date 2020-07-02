@@ -181,3 +181,14 @@ rename 'PBS_' _ *.gz
 rename 'M1_' _ *.gz
 rename 'M2_' _ *.gz
 rename 'M3_' _ *.gz
+
+
+#Copy resequencing library plate 48-51 fastq files to test_raw to run through mothur on own to see how resequencing turned out before running all samples through mothur again.
+#Includes mock48, mock51, and mock51b. As well as water49, water50, and water51. Don't need to rename any of these filenames.
+cp miseq_runs/2020_runs/SarahCDI_p48-p51_reseq/*.fastq.gz tomkoset/CDI_clinical_samples/data/test_raw/
+cd tomkoset/CDI_clinical_samples/data/test_raw/
+rm Undetermined*.fastq.gz
+
+#None of the files have PBS or aliquot numbers in filename that need to be changed
+
+cd tomkoset/CDI_clinical_samples
