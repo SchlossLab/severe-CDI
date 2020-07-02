@@ -39,5 +39,5 @@
 #####################
 
 
-# mothur code/reseq_get_good_seqs_shared_otus.batch #Ran previously, but failed at following script.
+mothur code/reseq_get_good_seqs_shared_otus.batch
 mothur code/get_error.batch
