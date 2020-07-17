@@ -189,6 +189,16 @@ cp miseq_runs/2020_runs/SarahCDI_p48-p51_reseq/*.fastq.gz tomkoset/CDI_clinical_
 cd tomkoset/CDI_clinical_samples/data/test_raw/
 rm Undetermined*.fastq.gz
 
+cd tomkoset/CDI_clinical_samples
+
+#Lucas mentioned there was an error during the MiSeq run for the resequencing library plate 48-51 that led to bad clustering. Illumina sent out a tech that fixed the issue and also sent a replacement kit to redo the run.
+
+#Copy the 2nd run of the resequencing library fastq files to test_raw and run through mothur on own to see how resequencing turned out with the redone run.
+Includes mock48, mock51, and mock51b. As well as water49, water50, and water51. Don't need to rename any of these filenames.
+cp miseq_runs/2020_runs/SarahCDI_p48-p51_reseq_repeat/*.fastq.gz tomkoset/CDI_clinical_samples/data/reseq_repeat_raw/
+cd tomkoset/CDI_clinical_samples/data/reseq_repeat_raw/
+rm Undetermined*.fastq.gz
+
 #None of the files have PBS or aliquot numbers in filename that need to be changed
 
 cd tomkoset/CDI_clinical_samples
