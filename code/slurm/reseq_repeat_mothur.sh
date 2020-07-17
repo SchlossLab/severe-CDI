@@ -7,7 +7,7 @@
 ###############################
 
 # Name
-#SBATCH --job-name=mothur_reseq
+#SBATCH --job-name=mothur_reseq_repeat
 
 # Resources
 # For MPI, increase ntasks-per-node
@@ -15,7 +15,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=10
-#SBATCH --mem=8GB
+#SBATCH --mem=2.5GB
 #SBATCH --time=10:00:00
 
 # Account
@@ -39,5 +39,5 @@
 #####################
 
 
-mothur code/reseq_get_good_seqs_shared_otus.batch
+mothur code/reseq_repeat_get_good_seqs_shared_otus.batch
 mothur code/get_error.batch
