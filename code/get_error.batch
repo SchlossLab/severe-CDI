@@ -1,4 +1,4 @@
 #Need to update to capture all the mocks for CDI samples (2-4 per library, named according to plate number). Currently set up to check error in resequencing library
-set.current(inputdir=data/test_mothur, outputdir=data/test_mothur, processors=8)
-get.groups(count=cdi.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table, fasta=cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.fasta, taxonomy=cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pds.wang.pick.taxonomy, groups=mock48-mock51b-mock51)
+set.current(inputdir=data/plate52_mothur, outputdir=data/plate52_mothur, processors=8)
+get.groups(count=cdi.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table, fasta=cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.fasta, taxonomy=cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pds.wang.pick.taxonomy, groups=mock52)
 seq.error(fasta=current, count=current, reference=data/references/zymo_mock.align, aligned=F)
