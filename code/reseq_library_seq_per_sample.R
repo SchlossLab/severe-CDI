@@ -1,5 +1,6 @@
 library(tidyverse)
 library(readxl)
+library(writexl)
 # mothur "#count.groups with data/test_mothur2/cdi.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.pick.count_table as input
 # plot number of samples that have less than 1000, 1500, 5000, 10000 samples to determine the number of samples we want to resequence
 
@@ -188,3 +189,72 @@ extract_new_DNA <- plate_52_unsorted %>%
 #Plate_52 final arrangement to export----
 plate_52 <- rbind(extract_new_DNA, reuse_prev_DNA) %>% 
   write_tsv("data/process/resequence_plate52_CDI_16S")
+
+#Sequences per sample for plate_52 sequencing data (completed 8/13/20)----
+plate52_data <- read_tsv("data/plate52_mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count.summary", col_names=c("sample", "nseqs")) %>% 
+  filter(!str_detect(sample, "water")) %>% #Removes water control samples
+  filter(!str_detect(sample, "mock")) #Makes sure mock samples were removed
+#378 samples
+
+plate52_data %>% ggplot(aes(x=nseqs)) + geom_histogram()
+
+plate52_data %>% ggplot(aes(x=nseqs)) + geom_histogram() + scale_x_log10(limits = c(-1, 100000)) +
+  ggsave("exploratory/notebook/plate52_seq_per_sample_distribution.pdf")
+
+plate52_data %>% select(sample, nseqs) %>% filter(nseqs < 1000) %>% count(sample)
+#17 samples with < 1000 sequences
+
+#If I rarefy to 1000:
+n_1000 <- plate52_data %>% filter(nseqs < 1000) %>% select(sample) %>% nrow()
+#I'll lose 17 samples.
+
+#If I rarefy to 1500:
+n_1500 <- plate52_data %>% filter(nseqs < 1500) %>% select(sample) %>% nrow()
+#I'll lose 25 samples.
+
+#If I rarefy to 4000:
+n_4000 <- plate52_data %>% filter(nseqs < 4000) %>% select(sample) %>% nrow()
+#I'll lose 41 samples.
+
+#If I rarefy to 5000:
+n_5000 <- plate52_data %>% filter(nseqs < 5000) %>% select(sample) %>% nrow()
+#I'll lose 46 samples.
+
+#Join the planned_samples, reseq_data, repeat_run_reseq_data, and plate52_data together by sample
+#Sum up how many total sequences we have per sample if we combine the data from the initial Miseq runs and the 3 runs of resequenced sample libraries:
+plate52_data <- plate52_data %>% 
+  rename(plate52_nseqs = nseqs) %>% #rename nseqs column to correspond to sequencing run
+  select(sample, plate52_nseqs) 
+
+#Combine plate52_data with sequencing data per sample from initial runs and the other 2 resequencing runs
+combined_reseq_runs <- full_join(combined_miseq_runs, plate52_data, by = "sample") %>% 
+  select(-total_nseqs) %>% #remove previous total_nseqs column and replace with new column that incorporates plate52
+  mutate(plate52_nseqs = replace_na(plate52_nseqs, 0)) %>%  #Replace nas with 0s so columns can be added together
+  #Make a new column that totals number of sequences from initial MiSeq run, 1st run of resequencing library, and 2nd run of resequencing library
+  mutate(total_nseqs = initial_nseqs + repeat_reseq_nseqs + plate52_nseqs)
+
+#If we rarefy to 5000:
+n_5000 <- combined_reseq_runs %>% filter(total_nseqs < 5000) %>% select(sample) %>% nrow()
+#I'll lose 23 samples.
+
+#Including the resequencing data from the MiSeq run that had a clustering error:
+combined_reseq_runs_all <- combined_reseq_runs %>% 
+  mutate(total_all_nseqs = initial_nseqs + reseq_nseqs + repeat_reseq_nseqs + plate52_nseqs)
+
+#If we rarefy to 5000:
+n_5000 <- combined_reseq_runs_all %>% filter(total_all_nseqs < 5000) %>% select(sample) %>% nrow()
+#I'll lose 21 samples.
+
+#Plate_52 samples with < 5000 sequences----
+plate_52_below_5000 <- plate52_data %>% filter(plate52_nseqs < 5000) 
+
+#Plate number and locations of plate_52 samples to (re)sequence:
+planned_plate52_samples <- read_excel(path = "data/raw/CDI_plate_52_Motility_plates_11-13.xlsx") %>% 
+  select(`CDIS_Sample ID`, reseq_plate, reseq_plate_location) %>% 
+  rename(sample = `CDIS_Sample ID`) %>% #rename this column to reflect how sample id is labeled in plate_52_below_5000
+  left_join((combined_reseq_runs %>% select(sample, total_nseqs)), by = "sample") #Join to combined_reseq_runs_all just to get tontal_nseqs column
+
+#Join plate number and location info to plate_52_below_5000
+plate_52_below_5000 <- plate_52_below_5000 %>% 
+  left_join(planned_plate52_samples, by = "sample") %>% 
+  write_xlsx(path = "data/process/plate52_CDI_below_5000.xlsx")
