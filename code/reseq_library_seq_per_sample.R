@@ -233,6 +233,10 @@ combined_reseq_runs <- full_join(combined_miseq_runs, plate52_data, by = "sample
   #Make a new column that totals number of sequences from initial MiSeq run, 1st run of resequencing library, and 2nd run of resequencing library
   mutate(total_nseqs = initial_nseqs + repeat_reseq_nseqs + plate52_nseqs)
 
+#Write list of resequenced samples with number of sequences from initial runs, repeat resequencing run (since the 1st run had an error), and run of plate 52
+combined_reseq_runs %>% select(sample, initial_nseqs, repeat_reseq_nseqs, plate52_nseqs, total_nseqs) %>% 
+  write_xlsx(path = "data/process/reseq_samples_seqs_by_run.xlsx")
+
 #If we rarefy to 5000:
 n_5000 <- combined_reseq_runs %>% filter(total_nseqs < 5000) %>% select(sample) %>% nrow()
 #I'll lose 23 samples.
