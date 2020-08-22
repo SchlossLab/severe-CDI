@@ -26,7 +26,7 @@ count.groups(count=current)
 make.shared(list=current, count=current, label=0.03)
 classify.otu(list=current, count=current, taxonomy=current, label=0.03)
 
-rename.file(taxonomy=peg3350.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.0.03.cons.taxonomy, shared=cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.shared)
+rename.file(taxonomy=cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.0.03.cons.taxonomy, shared=cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.shared)
 summary.single(shared=cdi.opti_mcc.shared, calc=nseqs-coverage-invsimpson-shannon-sobs)
 dist.shared(shared=cdi.opti_mcc.shared, calc=thetayc-jclass-braycurtis)
 pcoa(phylip=cdi.opti_mcc.braycurtis.0.03.lt.ave.dist)
