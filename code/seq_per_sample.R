@@ -46,6 +46,9 @@ total <- data %>% count(sample)
 data %>% ggplot(aes(x=nseqs)) + geom_histogram()
 
 data %>% ggplot(aes(x=nseqs)) + geom_histogram() + scale_x_log10(limits = c(-1, 100050)) +
+  geom_vline(xintercept = 5000, linetype = 2, color = "grey40")+ #Add line to note 5000 sequences per sample threshold 
+  theme_classic()+
+  theme(text = element_text(size = 16))+  # Change font size for entire plot
   ggsave("exploratory/notebook/seq_per_sample_distribution.pdf")
 
 data %>% select(sample, nseqs) %>% filter(nseqs < 1000) %>% count(sample)

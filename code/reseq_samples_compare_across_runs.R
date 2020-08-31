@@ -41,14 +41,6 @@ unique(pcoa_data$miseq_run)
 
 plot_pcoa <- ggplot(pcoa_data, aes(x=axis1, y=axis2, color = sample, shape = miseq_run)) +
     geom_point(size=2) +
-#    scale_colour_manual(name=NULL,
-#                        values=color_scheme,
-#                        breaks=color_vendors,
-#                        labels=color_vendors)+
-#    scale_shape_manual(name="Experiment",
-#                       values=shape_scheme,
-#                       breaks=shape_experiment,
-#                       labels=shape_experiment) +
 #    coord_fixed() + 
     labs(x="PCoA 1",
          y="PCoA 2",
@@ -73,6 +65,13 @@ read_dist_df <- function(dist_file_name){
     mutate(distances = as.numeric(distance_strings))
 }
 
+#26 unique samples. Make a vector numbered 1:26 to use as a shorter way of identifying samples
+short_sample_id = 1:26
+#Df of sample and short_sample_id
+short_sample_ids <- samples_to_check %>% 
+  select(sample) %>% 
+  cbind(short_sample_id)
+
 all_dist <- read_dist_df("data/combine_test_mothur/cdi.opti_mcc.thetayc.0.03.lt.dist") %>% 
   separate(rows, into = c("row_miseq_run", "row_sample"), remove = TRUE, sep = -7) %>% #Separate # at the beginning of sample run to differentiate miseq runs and move to own column
   separate(columns, into = c("col_miseq_run", "col_sample"), remove = TRUE, sep = -7) %>% #Separate # at the beginning of sample run to differentiate miseq runs and move to own column
@@ -80,8 +79,18 @@ all_dist <- read_dist_df("data/combine_test_mothur/cdi.opti_mcc.thetayc.0.03.lt.
   mutate(row_miseq_run = replace_na(row_miseq_run, "1")) %>% #Transform NAs to 1 to indicate these samples were from initial MiSeq runs
   mutate(col_miseq_run = replace_na(col_miseq_run, "1")) %>% #Transform NAs to 1 to indicate these samples were from initial MiSeq runs
   filter(row_sample == col_sample) %>% #Just plot distances that compare a sample across runs
-  unite(miseq_run_comp, c("row_miseq_run", "col_miseq_run"), remove = FALSE, sep = "vs")
-
+  unite(miseq_run_comp, c("row_miseq_run", "col_miseq_run"), remove = FALSE, sep = "vs") %>% 
+  left_join(samples_to_check, by = c("row_sample" = "sample")) %>% 
+  #rename nseqs per miseq run columns to match above number notations for each run (1 for intial, 2 for repeat_reseq, 3 for plate52)
+  rename(nseqs_1 = initial_nseqs, 
+        nseqs_2 =  repeat_reseq_nseqs,
+        nseqs_3 = plate52_nseqs) %>% 
+  select(-total_nseqs) %>% #Don't need the total number of sequences across all runs
+  arrange(row_sample) %>% #Arrange row
+  group_by(row_sample) %>% 
+  left_join(short_sample_ids, by = c("row_sample" = "sample")) %>% #Add a new column with a shorter sample id to plot
+  ungroup()
+  
 #Plot of theta yc distances
 
 #Initial (col) vs reseq (row) run
@@ -160,4 +169,58 @@ plot_over_.25 <- all_dist %>%
 
 plot_grid(plot_under_.25, plot_over_.25, labels = NULL, nrow = 1)+
   ggsave("exploratory/notebook/thetayc_btwn_runs.pdf")
+
+#Per Pat's suggestions: plot the distance by the number of sequences in the smallest library
+#Make a data frame with new columns of the number of sequences in the MiSeq run that had the smallest number of sequences for each comparison
+distance_vs_nseqs <- all_dist %>% 
+  mutate(min_nseqs_2vs1 = pmin(nseqs_1, nseqs_2),
+         min_nseqs_3vs1 = pmin(nseqs_1, nseqs_3),
+         min_nseqs_2vs3 = pmin(nseqs_3, nseqs_2)) #Make new columns of the number of sequences in the MiSeq run that had the smallest number of sequences for each comparison
   
+#Match up miseq_run_comp comparisons with min_nseqs
+subset_2vs3 <- distance_vs_nseqs %>% 
+  filter(miseq_run_comp == "2vs3") %>% 
+  select(-min_nseqs_2vs1, -min_nseqs_3vs1) %>% #Get rid of min_nseqs columns that do not correspond to 2vs3
+  rename(min_nseqs = min_nseqs_2vs3) %>% #rename comparison specific to min_nseqs so we can rejoin the 3 comparison subsets later
+  select(-nseqs_1, -nseqs_2, -nseqs_3) #Get rid of extra columns that are no longer needed
+
+subset_2vs1 <- distance_vs_nseqs %>% 
+  filter(miseq_run_comp == "2vs1") %>% 
+  select(-min_nseqs_3vs1, -min_nseqs_2vs3) %>% #Get rid of min_nseqs columns that do not correspond to 2vs3
+  rename(min_nseqs = min_nseqs_2vs1) %>% #rename comparison specific to min_nseqs so we can rejoin the 3 comparison subsets later
+  select(-nseqs_1, -nseqs_2, -nseqs_3) #Get rid of extra columns that are no longer needed
+
+subset_3vs1 <- distance_vs_nseqs %>% 
+  filter(miseq_run_comp == "3vs1") %>% 
+  select(-min_nseqs_2vs1, -min_nseqs_2vs3) %>% #Get rid of min_nseqs columns that do not correspond to 2vs3
+  rename(min_nseqs = min_nseqs_3vs1) %>% #rename comparison specific to min_nseqs so we can rejoin the 3 comparison subsets later
+  select(-nseqs_1, -nseqs_2, -nseqs_3) #Get rid of extra columns that are no longer needed
+
+plot_dist_vs_nseqs <- rbind(subset_2vs1, subset_3vs1, subset_2vs3) %>%
+  ggplot(aes(x = min_nseqs, y = distances, color = row_sample, shape = miseq_run_comp, label = short_sample_id)) +
+  geom_text(aes(label = short_sample_id))+
+  labs(title = NULL, x = "Minimum Number of Sequences", y = "Theta YC Distance between MiSeq runs", shape = "MiSeq Runs")+
+  theme_classic()+
+  guides(color = "none")+ #get rid of color legend
+  ylim(0, 1)+
+  theme(plot.title = element_text(hjust = 0.5), #Center plot title
+        text = element_text(size = 16), #Change font size of entire plot
+        legend.position = "bottom")+
+  ggsave("exploratory/notebook/thetayc_btwn_runs_vs_nseqs.pdf")
+
+#Same plot with symbols instead of number labels  
+plot_dist_vs_nseqs <- rbind(subset_2vs1, subset_3vs1, subset_2vs3) %>%
+  ggplot(aes(x = min_nseqs, y = distances, color = row_sample, shape = miseq_run_comp, label = short_sample_id)) +
+  geom_jitter(size=2,aes(shape = miseq_run_comp)) +
+  labs(title = NULL, x = "Minimum Number of Sequences", y = "Theta YC Distance between MiSeq runs", shape = "MiSeq Runs")+
+  theme_classic()+
+  guides(color = "none")+ #get rid of color legend
+  ylim(0, 1)+
+  theme(plot.title = element_text(hjust = 0.5), #Center plot title
+        text = element_text(size = 16), #Change font size of entire plot
+        legend.position = "bottom")+
+  ggsave("exploratory/notebook/thetayc_btwn_runs_vs_nseqs_symbol.pdf")
+
+dist_vs_nseqs <- rbind(subset_2vs1, subset_3vs1, subset_2vs3)
+cor.test(dist_vs_nseqs$min_nseqs, y =  dist_vs_nseqs$distances, method = "spearman")
+#R of =0.255, p = 0.033
