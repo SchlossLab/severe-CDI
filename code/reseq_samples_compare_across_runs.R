@@ -15,6 +15,23 @@ samples_low_seq <- reseq_samples %>%
   filter(plate52_nseqs < 5000) 
 #49 samples that we would lose if we decide not to combine sequencing runs
 
+#Examine whether it's worth changing threshold:
+samples_low_seq_max <- samples_low_seq %>% 
+  mutate(max_seqs_1_run = pmax(initial_nseqs, repeat_reseq_nseqs, plate52_nseqs)) #Make a new column that will take the max number of seq. from either the initial, repeat_reseq, or plate_52 miseq run and puts that max number os sequences into a new column
+
+t_5000 <- samples_low_seq_max %>% filter(max_seqs_1_run < 5000) %>% count()
+#49 samples below cutoff of 5000 sequences per sample
+t_4000 <- samples_low_seq_max %>% filter(max_seqs_1_run < 4000) %>% count()
+#34 samples below cutoff of 4000 sequences per sample
+t_3000 <- samples_low_seq_max %>% filter(max_seqs_1_run < 3000) %>% count()
+#26 samples below cutoff of 3000 sequences per sample
+t_2000 <- samples_low_seq_max %>% filter(max_seqs_1_run < 2000) %>% count()
+#13 samples below cutoff of 2000 sequences per sample
+t_1000 <- samples_low_seq_max %>% filter(max_seqs_1_run < 1000) %>% count()
+#5 samples below cutoff of 1000 sequences per sample
+
+
+count(samples_low_seq %>% filter)
 #Number of samples we'd lose if we combine sequencing runs
 samples_low_seq_after_combining <- reseq_samples %>% 
   filter(total_nseqs < 5000) 
@@ -224,3 +241,6 @@ plot_dist_vs_nseqs <- rbind(subset_2vs1, subset_3vs1, subset_2vs3) %>%
 dist_vs_nseqs <- rbind(subset_2vs1, subset_3vs1, subset_2vs3)
 cor.test(dist_vs_nseqs$min_nseqs, y =  dist_vs_nseqs$distances, method = "spearman")
 #R of =0.255, p = 0.033
+
+#After discussing with Pat and the lab, decided not to combine sequences across runs because this would only be for 26 samples and
+# the theta yc for 5 of the samples are quite large between runs

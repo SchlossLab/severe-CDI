@@ -262,3 +262,51 @@ planned_plate52_samples <- read_excel(path = "data/raw/CDI_plate_52_Motility_pla
 plate_52_below_5000 <- plate_52_below_5000 %>% 
   left_join(planned_plate52_samples, by = "sample") %>% 
   write_xlsx(path = "data/process/plate52_CDI_below_5000.xlsx")
+
+#Last attempt to sequence samples that had less than 5000 sequences on both reseq_repeat and plate_52----
+# MiSeq runs
+samples_low_seq <- reseq_samples %>% 
+  filter(repeat_reseq_nseqs < 5000) %>% 
+  filter(plate52_nseqs < 5000) %>% 
+  #Remove total_nseqs column since we will not combine sequences across runs
+  #See reseq_samples_compare_across_runs.R for explanation of why we decided not to combine sequences from different runs
+  select(-total_nseqs) %>% 
+  #Transform data frame into a longer format
+  pivot_longer(cols = c("initial_nseqs", "repeat_reseq_nseqs", "plate52_nseqs"), 
+               names_to = "best_miseq_run", values_to = "nseqs") %>% 
+  #Figure out which run yielded the largest number of sequences for each sample:
+  group_by(sample) %>% 
+  filter(nseqs == max(nseqs)) %>% 
+  arrange(sample)
+  
+#Split the samples into different subsets based on the sequencing run that yielded the largest number of sequences:
+
+#Best miseq run was the initial miseq run
+initial <- samples_low_seq %>% filter(best_miseq_run == "initial_nseqs") #23 samples
+
+#Best miseq run was the repeat_reseq run
+repeat_reseq <- samples_low_seq %>% filter(best_miseq_run == "repeat_reseq_nseqs") %>% #7 samples
+  left_join(planned_samples, by = "sample") %>% 
+  select(sample, best_miseq_run, nseqs, new_DNA_extracted)
+
+#split the repeat_reseq samples based on whether new DNA was extracted. 
+repeat_reseq_new_DNA <- repeat_reseq %>% filter(new_DNA_extracted == "yes") %>% 
+  select(-new_DNA_extracted) %>% 
+  mutate(dna_ext = "re_ext_plate1") #Add column to denote what DNA extraction to use
+#The DNA that is used for these samples should come from re_ext_plate1 (1 plate of reextracted samples for CDI plates 48-51)
+
+repeat_reseq_inital_DNA <- repeat_reseq %>% filter(new_DNA_extracted == "no") %>% 
+  select(-new_DNA_extracted) 
+#These samples can be grouped with initial miseq run samples since new DNA was not extracted for the repeat_reseq miseq run
+initial <- repeat_reseq_inital_DNA %>% 
+  rbind(initial) %>% 
+  arrange(sample) %>% 
+  mutate(dna_ext = "initial")#Add column to denote what DNA extraction to use
+
+#Best miseq run was the plate52 miseq run
+plate_52 <- samples_low_seq %>% filter(best_miseq_run == "plate52_nseqs") %>% #19 samples
+  mutate(dna_ext = "plate_52") #Add column to denote what DNA extraction to use
+
+#Export list of samples to resequence one last time
+low_seq_samples_final_attempt <- rbind(initial, repeat_reseq_new_DNA, plate_52) %>% 
+  write_xlsx(path = "data/process/samples_below_5000_final_attempt.xlsx")
