@@ -265,6 +265,15 @@ plate_52_below_5000 <- plate_52_below_5000 %>%
 
 #Last attempt to sequence samples that had less than 5000 sequences on both reseq_repeat and plate_52----
 # MiSeq runs
+reseq_samples <- read_excel(path = "data/process/reseq_samples_seqs_by_run.xlsx") 
+
+#List of sequences across MiSeq runs for samples with below 5000 sequences:
+seqs_across_runs <- reseq_samples %>%   
+  filter(repeat_reseq_nseqs < 5000) %>% 
+  filter(plate52_nseqs < 5000) %>% 
+  select(-total_nseqs) %>% 
+  write_xlsx(path = "data/process/plate53_seqs_across_MiSeq_runs.xlsx")
+
 samples_low_seq <- reseq_samples %>% 
   filter(repeat_reseq_nseqs < 5000) %>% 
   filter(plate52_nseqs < 5000) %>% 
