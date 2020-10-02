@@ -223,5 +223,9 @@ cp /nfs/locker/microbio-schloss-data/miseq_runs/2020_runs/Nick16S_p13-p15_CDIp53
 cp /nfs/locker/microbio-schloss-data/miseq_runs/2020_runs/Nick16S_p13-p15_CDIp53/Data/Intensities/BaseCalls/water53*.fastq.gz /nfs/turbo/schloss-lab/tomkoset/CDI_clinical_samples/data/plate53_raw/
 
 cd /nfs/turbo/schloss-lab/tomkoset/CDI_clinical_samples/data/plate53_raw/
+#Rename samples that have a -2 in the name (causes issues in mothur)
+rename 'KR03652-2' KR03652v2 *.gz
+rename 'KR01326-2' KR01326v2 *.gz
+rename 'KR00655-2' KR00655v2 *.gz
 
 cd /nfs/turbo/schloss-lab/tomkoset/CDI_clinical_samples
