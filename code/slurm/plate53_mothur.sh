@@ -39,5 +39,5 @@
 #####################
 
 
-mothur code/plate53_get_good_seqs_shared_otus.batch
+#mothur code/plate53_get_good_seqs_shared_otus.batch
 mothur code/get_error.batch
