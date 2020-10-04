@@ -157,7 +157,6 @@ below_5000 <- combined_miseq_runs %>% filter(total_nseqs < 5000) %>%
 #Make another column that combines sequences from just the initial run and the repeat run of the resequencing library
 combined_miseq_runs_2runs <- combined_miseq_runs %>% 
   mutate(initial_and_repeat_nseqs = initial_nseqs + repeat_reseq_nseqs) %>% 
-  filter(initial_and_repeat_nseqs < 5000)
 #70 samples, 2 had M2 aliquot extracted.
 
 below_5000_combined_miseq_runs_2runs <- combined_miseq_runs %>% 
@@ -319,3 +318,43 @@ plate_52 <- samples_low_seq %>% filter(best_miseq_run == "plate52_nseqs") %>% #1
 #Export list of samples to resequence one last time
 low_seq_samples_final_attempt <- rbind(initial, repeat_reseq_new_DNA, plate_52) %>% 
   write_xlsx(path = "data/process/samples_below_5000_final_attempt.xlsx")
+
+#Sequences per sample for plate_53 sequencing data (completed 10/2/20)----
+plate53_data <- read_tsv("data/plate53_mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count.summary", col_names=c("sample", "nseqs")) %>% 
+  filter(!str_detect(sample, "water")) %>% #Removes water control samples
+  filter(!str_detect(sample, "mock")) #Makes sure mock samples were removed
+#94 samples
+
+plate53_data %>% ggplot(aes(x=nseqs)) + geom_histogram()
+
+plate53_data %>% ggplot(aes(x=nseqs)) + geom_histogram() + scale_x_log10(limits = c(-1, 100000)) +
+  ggsave("exploratory/notebook/plate53_seq_per_sample_distribution.pdf")
+
+plate53_data %>% select(sample, nseqs) %>% filter(nseqs < 1000) %>% count(sample)
+#10 samples with < 1000 sequences
+
+#If I rarefy to 1000:
+n_1000 <- plate53_data %>% filter(nseqs < 1000) %>% select(sample) %>% nrow()
+#I'll lose 10 samples.
+
+#If I rarefy to 1500:
+n_1500 <- plate53_data %>% filter(nseqs < 1500) %>% select(sample) %>% nrow()
+#I'll lose 10 samples.
+
+#If I rarefy to 4000:
+n_4000 <- plate53_data %>% filter(nseqs < 4000) %>% select(sample) %>% nrow()
+#I'll lose 20 samples.
+
+#If I rarefy to 5000:
+n_5000 <- plate53_data %>% filter(nseqs < 5000) %>% select(sample) %>% nrow()
+#I'll lose 21 samples.
+
+#Check plate_53 sequences against previous number of samples for the samples that were resequenced:
+reseq_p53_results <- plate53_data %>% 
+  rename(plate53_nseqs = nseqs) %>% 
+  right_join(samples_low_seq) %>% #There were extra samples included with plate_53. Only 49 were our targets for the resequencing
+  rename(best_miseq_run_nseqs = nseqs) #clarify that nseqs is from best_miseq_run (prior to plate_53)
+
+#Check how many samples are still below 5000 sequences after plate_53 results:
+n_5000 <- reseq_p53_results %>% filter(plate53_nseqs < 5000) %>% select(sample) %>% nrow()
+#11 samples still below 5000 sequences. Best results yet!
