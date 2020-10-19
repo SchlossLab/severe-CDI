@@ -193,7 +193,6 @@ plate_52 <- rbind(extract_new_DNA, reuse_prev_DNA) %>%
 plate52_data <- read_tsv("data/plate52_mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count.summary", col_names=c("sample", "nseqs")) %>% 
   filter(!str_detect(sample, "water")) %>% #Removes water control samples
   filter(!str_detect(sample, "mock")) #Makes sure mock samples were removed
-#378 samples
 
 plate52_data %>% ggplot(aes(x=nseqs)) + geom_histogram()
 
