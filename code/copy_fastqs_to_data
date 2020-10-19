@@ -133,7 +133,7 @@ rename 'water2_' water38_ *.gz
 rename 'water3_' water39_ *.gz
 rename 'water4_' water40_ *.gz
 rm Undetermined*.fastq.gz
-#Plate_37, first 7 rows of samples failed due to epMotion error during DNA extractions and are highlighted in orange on sample sheet. These samples are not in the BaseCalls/ folder so need to worry about removing the corresponding fastq.gz files. The replacement sequences for these first 7 rows are included on Plate_47
+#Plate_37, first 7 columns of samples failed due to epMotion error during DNA extractions and are highlighted in orange on sample sheet. These samples are not in the BaseCalls/ folder so need to worry about removing the corresponding fastq.gz files. The replacement sequences for these first 7 columns are included on Plate_47
 cd
 
 #Library for plates 41-44 (see plates 5-8 above for commented explanation of each step)
@@ -229,3 +229,85 @@ rename 'KR01326-2' KR01326v2 *.gz
 rename 'KR00655-2' KR00655v2 *.gz
 
 cd /nfs/turbo/schloss-lab/tomkoset/CDI_clinical_samples
+
+#Organize the sequences from initial and resequencing MiSeq runs so that each sample has 1 pair of sequence files (the pair that contains the most sequences).
+#Once sequences are organized check that .files output matches what was expected.
+#Once representation of all 3943 samples and corresponding controls are confirmed, analyze with mothur.
+#See R script: code/select_analysis_seqs.R for record of how files were chosen for each sample.
+
+cd /nfs/turbo/schloss-lab/tomkoset/CDI_clinical_samples/data/raw
+#Rename sample that still has M1 in sample name:
+rename 'KR00442M1' KR00442 *.gz
+#Remove duplicate of KR01437, this well should have been left empty
+rm KR01437M12*.fastq.gz
+
+#Remove samples that had < 5000 sequences and were subsequently resequenced.
+#Count the number of files:
+ls -l | wc -l
+#8053
+#Note: if unsure about pattern matching, use -i which will ask for confirmation before removing files
+# xargs -d"\n" rm # command executes rm line once for every line that is piped to it.
+
+for filepattern in '^KR00037_.*' '^KR00040_.*' '^KR00041_.*' '^KR00049_.*' '^KR00050_.*' '^KR00061_.*' '^KR00073_.*' '^KR00074_.*' '^KR00090_.*' '^KR00126_.*' '^KR00180_.*' '^KR00183_.*' '^KR00218_.*' '^KR00222_.*' '^KR00249_.*' '^KR00256_.*' '^KR00277_.*' '^KR00280_.*' '^KR00297_.*' '^KR00314_.*' '^KR00333_.*' '^KR00357_.*' '^KR00379_.*' '^KR00380_.*' '^KR00468_.*' '^KR00496_.*' '^KR00498_.*' '^KR00521_.*' '^KR00541_.*' '^KR00577_.*' '^KR00589_.*' '^KR00590_.*' '^KR00591_.*' '^KR00592_.*' '^KR00601_.*' '^KR00607_.*' '^KR00613_.*' '^KR00625_.*' '^KR00628_.*' '^KR00637_.*' '^KR00649_.*' '^KR00655_.*' '^KR00661_.*' '^KR00673_.*' '^KR00687_.*' '^KR00693_.*' '^KR00694_.*' '^KR00696_.*' '^KR00710_.*' '^KR00718_.*' '^KR00720_.*' '^KR00726_.*' '^KR00730_.*' '^KR00734_.*' '^KR00736_.*' '^KR00740_.*' '^KR00753_.*' '^KR00754_.*' '^KR00759_.*' '^KR00769_.*' '^KR00775_.*' '^KR00792_.*' '^KR00803_.*' '^KR00812_.*' '^KR00817_.*' '^KR00842_.*' '^KR00894_.*' '^KR00922_.*' '^KR00926_.*' '^KR00937_.*' '^KR00948_.*' '^KR00953_.*' '^KR00958_.*' '^KR00993_.*' '^KR00995_.*' '^KR01019_.*' '^KR01024_.*' '^KR01063_.*' '^KR01076_.*' '^KR01077_.*' '^KR01099_.*' '^KR01101_.*' '^KR01103_.*' '^KR01107_.*' '^KR01111_.*' '^KR01115_.*' '^KR01121_.*' '^KR01158_.*' '^KR01159_.*' '^KR01163_.*' '^KR01190_.*' '^KR01205_.*' '^KR01239_.*' '^KR01248_.*' '^KR01250_.*' '^KR01253_.*' '^KR01254_.*' '^KR01274_.*' '^KR01278_.*' '^KR01286_.*' '^KR01288_.*' '^KR01289_.*' '^KR01292_.*' '^KR01293_.*' '^KR01294_.*' '^KR01306_.*' '^KR01310_.*' '^KR01324_.*' '^KR01326_.*' '^KR01333_.*' '^KR01334_.*' '^KR01336_.*' '^KR01337_.*' '^KR01341_.*' '^KR01351_.*' '^KR01380_.*' '^KR01381_.*' '^KR01384_.*' '^KR01386_.*' '^KR01403_.*' '^KR01405_.*' '^KR01410_.*' '^KR01433_.*' '^KR01440_.*' '^KR01528_.*' '^KR01530_.*' '^KR01541_.*' '^KR01576_.*' '^KR01635_.*' '^KR01756_.*' '^KR01758_.*' '^KR01779_.*' '^KR01783_.*' '^KR01791_.*' '^KR01852_.*' '^KR01932_.*' '^KR01974_.*' '^KR01986_.*' '^KR01987_.*' '^KR01988_.*' '^KR01992_.*' '^KR01998_.*' '^KR01999_.*' '^KR02019_.*' '^KR02020_.*' '^KR02027_.*' '^KR02089_.*' '^KR02097_.*' '^KR02100_.*' '^KR02107_.*' '^KR02108_.*' '^KR02117_.*' '^KR02128_.*' '^KR02130_.*' '^KR02134_.*' '^KR02143_.*' '^KR02146_.*' '^KR02148_.*' '^KR02149_.*' '^KR02150_.*' '^KR02156_.*' '^KR02157_.*' '^KR02162_.*' '^KR02164_.*' '^KR02165_.*' '^KR02210_.*' '^KR02214_.*' '^KR02218_.*' '^KR02222_.*' '^KR02223_.*' '^KR02240_.*' '^KR02250_.*' '^KR02259_.*' '^KR02261_.*' '^KR02262_.*' '^KR02293_.*' '^KR02296_.*' '^KR02305_.*' '^KR02311_.*' '^KR02329_.*' '^KR02333_.*' '^KR02387_.*' '^KR02406_.*' '^KR02458_.*' '^KR02477_.*' '^KR02483_.*' '^KR02505_.*' '^KR02582_.*' '^KR02629_.*' '^KR02640_.*' '^KR02646_.*' '^KR02647_.*' '^KR02654_.*' '^KR02656_.*' '^KR02660_.*' '^KR02661_.*' '^KR02664_.*' '^KR02667_.*' '^KR02672_.*' '^KR02675_.*' '^KR02684_.*' '^KR02685_.*' '^KR02688_.*' '^KR02689_.*' '^KR02693_.*' '^KR02697_.*' '^KR02699_.*' '^KR02717_.*' '^KR02720_.*' '^KR02729_.*' '^KR02736_.*' '^KR02741_.*' '^KR02742_.*' '^KR02751_.*' '^KR02758_.*' '^KR02760_.*' '^KR02769_.*' '^KR02770_.*' '^KR02778_.*' '^KR02779_.*' '^KR02788_.*' '^KR02790_.*' '^KR02795_.*' '^KR02807_.*' '^KR02813_.*' '^KR02816_.*' '^KR02817_.*' '^KR02854_.*' '^KR02874_.*' '^KR02886_.*' '^KR02904_.*' '^KR02910_.*' '^KR02925_.*' '^KR03001_.*' '^KR03025_.*' '^KR03033_.*' '^KR03034_.*' '^KR03035_.*' '^KR03037_.*' '^KR03044_.*' '^KR03045_.*' '^KR03046_.*' '^KR03049_.*' '^KR03050_.*' '^KR03059_.*' '^KR03061_.*' '^KR03062_.*' '^KR03069_.*' '^KR03070_.*' '^KR03071_.*' '^KR03072_.*' '^KR03073_.*' '^KR03083_.*' '^KR03085_.*' '^KR03086_.*' '^KR03092_.*' '^KR03094_.*' '^KR03096_.*' '^KR03097_.*' '^KR03098_.*' '^KR03104_.*' '^KR03107_.*' '^KR03110_.*' '^KR03123_.*' '^KR03232_.*' '^KR03233_.*' '^KR03237_.*' '^KR03259_.*' '^KR03270_.*' '^KR03310_.*' '^KR03320_.*' '^KR03322_.*' '^KR03323_.*' '^KR03343_.*' '^KR03348_.*' '^KR03366_.*' '^KR03379_.*' '^KR03402_.*' '^KR03432_.*' '^KR03434_.*' '^KR03437_.*' '^KR03439_.*' '^KR03442_.*' '^KR03446_.*' '^KR03456_.*' '^KR03538_.*' '^KR03550_.*' '^KR03615_.*' '^KR03647_.*' '^KR03649_.*' '^KR03652_.*' '^KR03659_.*' '^KR03660_.*' '^KR03681_.*' '^KR03682_.*' '^KR03690_.*' '^KR03691_.*' '^KR03699_.*' '^KR03703_.*' '^KR03704_.*' '^KR03708_.*' '^KR03712_.*' '^KR03716_.*' '^KR03720_.*' '^KR03726_.*' '^KR03728_.*' '^KR03731_.*' '^KR03738_.*' '^KR03740_.*' '^KR03744_.*' '^KR03746_.*' '^KR03752_.*' '^KR03765_.*' '^KR03771_.*' '^KR03775_.*' '^KR03787_.*' '^KR03788_.*' '^KR03789_.*' '^KR03790_.*' '^KR03791_.*' '^KR03793_.*' '^KR03794_.*' '^KR03795_.*' '^KR03796_.*' '^KR03797_.*' '^KR03798_.*' '^KR03799_.*' '^KR03801_.*' '^KR03803_.*' '^KR03806_.*' '^KR03807_.*' '^KR03811_.*' '^KR03812_.*' '^KR03813_.*' '^KR03815_.*' '^KR03818_.*' '^KR03819_.*' '^KR03823_.*' '^KR03825_.*' '^KR03826_.*' '^KR03827_.*' '^KR03829_.*' '^KR03830_.*' '^KR03831_.*' '^KR03833_.*' '^KR03834_.*' '^KR03835_.*' '^KR03836_.*' '^KR03837_.*' '^KR03839_.*' '^KR03840_.*' '^KR03841_.*' '^KR03842_.*' '^KR03843_.*' '^KR03845_.*' '^KR03847_.*' '^KR03851_.*' '^KR03852_.*' '^KR03853_.*' '^KR03854_.*' '^KR03855_.*' '^KR03858_.*' '^KR03859_.*' '^KR03863_.*' '^KR03865_.*' '^KR03873_.*' '^KR03889_.*' '^KR03899_.*' '^KR03908_.*' '^KR03909_.*' '^KR03922_.*' '^KR03923_.*' '^KR03924_.*' '^KR03925_.*' '^KR03929_.*' '^KR03944_.*' '^KR03947_.*'
+do
+    ls | grep $filepattern | xargs -d"\n" rm
+done
+
+#Count the number of files:
+ls -l | wc -l
+#7299 files
+#754 files removed, as expected.
+
+#Note 7 missing samples that were initially not copied over from MiSeq were already transferred to data/test_raw.
+
+#For the resequenced library, plate52 and plate53 sets of sequences. Go to each of the corresponding raw data folders and remove the sequences that will not be included in the final analysis. Then transfer the remaining fastq files from these folders to data/raw
+
+#Remove sequence files that will not be used from reseq_repeat_raw
+cd /nfs/turbo/schloss-lab/tomkoset/CDI_clinical_samples/reseq_repeat_raw
+#Count the number of files:
+ls -l | wc -l #770
+for filepattern in ^KR00041_.*' '^KR00090_.*' '^KR00183_.*' '^KR00218_.*' '^KR00249_.*' '^KR00280_.*' '^KR00297_.*' '^KR00314_.*' '^KR00468_.*' '^KR00521_.*' '^KR00541_.*' '^KR00577_.*' '^KR00589_.*' '^KR00590_.*' '^KR00607_.*' '^KR00613_.*' '^KR00628_.*' '^KR00637_.*' '^KR00655_.*' '^KR00673_.*' '^KR00693_.*' '^KR00694_.*' '^KR00696_.*' '^KR00710_.*' '^KR00718_.*' '^KR00720_.*' '^KR00726_.*' '^KR00736_.*' '^KR00740_.*' '^KR00753_.*' '^KR00754_.*' '^KR00759_.*' '^KR00768_.*' '^KR00792_.*' '^KR00803_.*' '^KR00817_.*' '^KR00842_.*' '^KR00894_.*' '^KR00926_.*' '^KR00948_.*' '^KR00993_.*' '^KR00995_.*' '^KR01076_.*' '^KR01107_.*' '^KR01111_.*' '^KR01115_.*' '^KR01158_.*' '^KR01159_.*' '^KR01190_.*' '^KR01239_.*' '^KR01253_.*' '^KR01278_.*' '^KR01326_.*' '^KR01333_.*' '^KR01337_.*' '^KR01987_.*' '^KR02027_.*' '^KR02107_.*' '^KR02742_.*' '^KR02788_.*' '^KR02925_.*' '^KR03044_.*' '^KR03050_.*' '^KR03070_.*' '^KR03232_.*' '^KR03270_.*' '^KR03402_.*' '^KR03434_.*' '^KR03437_.*' '^KR03446_.*' '^KR03456_.*' '^KR03538_.*' '^KR03550_.*' '^KR03647_.*' '^KR03649_.*' '^KR03652_.*' '^KR03660_.*' '^KR03681_.*' '^KR03682_.*' '^KR03690_.*' '^KR03703_.*' '^KR03704_.*' '^KR03752_.*' '^KR03790_.*' '^KR03791_.*' '^KR03795_.*' '^KR03798_.*' '^KR03813_.*' '^KR03815_.*' '^KR03818_.*' '^KR03819_.*' '^KR03823_.*' '^KR03825_.*' '^KR03840_.*' '^KR03853_.*' '^KR03922_.*'
+do
+    ls | grep $filepattern | xargs -d"\n" rm
+done
+#Count the number of files:
+ls -l | wc -l #
+
+#Remove sequence files that will not be used from plate52_raw
+cd /nfs/turbo/schloss-lab/tomkoset/CDI_clinical_samples/plate52_raw
+#Count the number of files:
+ls -l | wc -l
+for filepattern in '^KR00041_.*' '^KR00090_.*' '^KR00183_.*' '^KR00218_.*' '^KR00249_.*' '^KR00280_.*' '^KR00297_.*' '^KR00314_.*' '^KR00541_.*' '^KR00577_.*' '^KR00589_.*' '^KR00590_.*' '^KR00607_.*' '^KR00613_.*' '^KR00637_.*' '^KR00673_.*' '^KR00694_.*' '^KR00696_.*' '^KR00710_.*' '^KR00718_.*' '^KR00726_.*' '^KR00736_.*' '^KR00753_.*' '^KR00754_.*' '^KR00759_.*' '^KR00768_.*' '^KR00792_.*' '^KR00803_.*' '^KR00894_.*' '^KR00948_.*' '^KR00993_.*' '^KR00995_.*' '^KR01076_.*' '^KR01107_.*' '^KR01115_.*' '^KR01158_.*' '^KR01159_.*' '^KR01190_.*' '^KR01239_.*' '^KR01278_.*' '^KR01326_.*' '^KR01333_.*' '^KR01337_.*' '^KR01987_.*' '^KR02027_.*' '^KR02107_.*' '^KR02742_.*' '^KR02925_.*' '^KR03044_.*' '^KR03050_.*' '^KR03232_.*' '^KR03270_.*' '^KR03402_.*' '^KR03437_.*' '^KR03446_.*' '^KR03456_.*' '^KR03538_.*' '^KR03647_.*' '^KR03649_.*' '^KR03681_.*' '^KR03682_.*' '^KR03690_.*' '^KR03703_.*' '^KR03704_.*' '^KR03752_.*' '^KR03791_.*' '^KR03795_.*' '^KR03798_.*' '^KR03813_.*' '^KR03823_.*' '^KR03825_.*' '^KR03834_.*' '^KR03840_.*' '^KR03853_.*' '^KR03922_.*'
+do
+    ls | grep $filepattern | xargs -d"\n" rm
+done
+#Count the number of files:
+ls -l | wc -l
+
+#Remove sequence files that will not be used from plate53_raw
+cd /nfs/turbo/schloss-lab/tomkoset/CDI_clinical_samples/plate53_raw
+#Remove duplicate samples from plate_53 resequenced CDI_clinical_samples
+rm KR03652v2*.fastq.gz
+rm KR01326v2*.fastq.gz
+rm KR00655v2*.fastq.gz
+#Count the number of files:
+ls -l | wc -l
+for filepattern in '^KR00655_.*' '^KR00693_.*' '^KR00720_.*' '^KR00740_.*' '^KR00768_.*' '^KR00926_.*' '^KR02788_.*' '^KR03070_.*' '^KR03434_.*' '^KR03550_.*' '^KR03652_.*' '^KR03790_.*' '^KR03818_.*' '^KR03819_.*' '^KR03834_.*'
+do
+    ls | grep $filepattern | xargs -d"\n" rm
+done
+#Count the number of files:
+ls -l | wc -l
+
+#Go back to main directory to begin transferring select sequencing files over from selected resequencing runs.
+cd /nfs/turbo/schloss-lab/tomkoset/CDI_clinical_samples
+
+#Copy resequenced sample files over to data/raw
+ls data/raw -l | wc -l
+
+cp data/reseq_repeat_raw/*.fastq.gz data/raw/
+cp data/plate52_raw/*.fastq.gz data/raw/
+cp data/plate53_raw/*.fastq.gz data/raw/
+
+#Check number of files in data/raw
+ls data/raw -l | wc -l
