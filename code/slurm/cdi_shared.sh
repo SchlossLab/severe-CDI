@@ -15,12 +15,12 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=10
-#SBATCH --mem=925GB
+#SBATCH --mem=150GB
 #SBATCH --time=7-00:00
 
 # Account
 #SBATCH --account=pschloss1
-#SBATCH --partition=largemem
+#SBATCH --partition=standarad
 
 # Logs
 #SBATCH --mail-user=tomkoset@umich.edu
@@ -40,3 +40,4 @@
 
 
 mothur code/get_good_seqs_shared_otus.batch
+mothur code/get_error.batch
