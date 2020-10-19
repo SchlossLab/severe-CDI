@@ -9,8 +9,4 @@ library(tidyverse)
 #A few sample names need to be corrected so that they will match their corresponding CDIS_Sample_ID
 shared <- read_tsv("data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.shared") %>% 
   select(-label, -numOtus) %>% 
-  mutate(CDIS_Sample_ID= as.character(Group)) %>% 
-  mutate(CDIS_Sample_ID = replace(CDIS_Sample_ID, CDIS_Sample_ID == "KR00442M1", "KR00442")) %>% #This is sample KR00442, check pattern matching for when I renamed files before running them through mothur
-  filter(CDIS_Sample_ID != "KR01437M12") #Drop KR01437M12. This well was left empty (KR01437_M1_2) as it was a duplicate of KR01437. I hadn't realized that there was a duplicate of one 
-                                         #sample in the list of aliquots I was working from until we were pulling samples from the -80.
-
+  mutate(CDIS_Sample_ID= as.character(Group)) 
