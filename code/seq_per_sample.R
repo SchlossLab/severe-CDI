@@ -102,7 +102,7 @@ missing_data_samples %>%
 #Lucas found the missing fastqs on the Miseq and shared them with me on 6/11/20.
 #I uploaded the missing fastq.gz files to the corresponding library on the Miseq_runs folder of the lab's turbo storage
 #I ran the 7 samples through mothur locally to determine number of sequences per sample. Using the code/missing_get_good_seqs_shared_otus.batch file
-missing_data <- read_tsv("data/test_mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count.summary", col_names=c("sample", "nseqs")) #3980 samples
+missing_data <- read_tsv("data/test_mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count.summary", col_names=c("sample", "nseqs")) #7 samples
 
 #Check if any samples have < 5000 sequences
 n_5000_missing <- missing_data %>% filter(nseqs < 5000) %>% select(sample) %>% nrow()
