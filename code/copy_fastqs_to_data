@@ -266,23 +266,23 @@ ls -l | wc -l
 cd /nfs/turbo/schloss-lab/tomkoset/CDI_clinical_samples/reseq_repeat_raw
 #Count the number of files:
 ls -l | wc -l #770
-for filepattern in ^KR00041_.*' '^KR00090_.*' '^KR00183_.*' '^KR00218_.*' '^KR00249_.*' '^KR00280_.*' '^KR00297_.*' '^KR00314_.*' '^KR00468_.*' '^KR00521_.*' '^KR00541_.*' '^KR00577_.*' '^KR00589_.*' '^KR00590_.*' '^KR00607_.*' '^KR00613_.*' '^KR00628_.*' '^KR00637_.*' '^KR00655_.*' '^KR00673_.*' '^KR00693_.*' '^KR00694_.*' '^KR00696_.*' '^KR00710_.*' '^KR00718_.*' '^KR00720_.*' '^KR00726_.*' '^KR00736_.*' '^KR00740_.*' '^KR00753_.*' '^KR00754_.*' '^KR00759_.*' '^KR00768_.*' '^KR00792_.*' '^KR00803_.*' '^KR00817_.*' '^KR00842_.*' '^KR00894_.*' '^KR00926_.*' '^KR00948_.*' '^KR00993_.*' '^KR00995_.*' '^KR01076_.*' '^KR01107_.*' '^KR01111_.*' '^KR01115_.*' '^KR01158_.*' '^KR01159_.*' '^KR01190_.*' '^KR01239_.*' '^KR01253_.*' '^KR01278_.*' '^KR01326_.*' '^KR01333_.*' '^KR01337_.*' '^KR01987_.*' '^KR02027_.*' '^KR02107_.*' '^KR02742_.*' '^KR02788_.*' '^KR02925_.*' '^KR03044_.*' '^KR03050_.*' '^KR03070_.*' '^KR03232_.*' '^KR03270_.*' '^KR03402_.*' '^KR03434_.*' '^KR03437_.*' '^KR03446_.*' '^KR03456_.*' '^KR03538_.*' '^KR03550_.*' '^KR03647_.*' '^KR03649_.*' '^KR03652_.*' '^KR03660_.*' '^KR03681_.*' '^KR03682_.*' '^KR03690_.*' '^KR03703_.*' '^KR03704_.*' '^KR03752_.*' '^KR03790_.*' '^KR03791_.*' '^KR03795_.*' '^KR03798_.*' '^KR03813_.*' '^KR03815_.*' '^KR03818_.*' '^KR03819_.*' '^KR03823_.*' '^KR03825_.*' '^KR03840_.*' '^KR03853_.*' '^KR03922_.*'
+for filepattern in '^KR00041_.*' '^KR00090_.*' '^KR00183_.*' '^KR00218_.*' '^KR00249_.*' '^KR00280_.*' '^KR00297_.*' '^KR00314_.*' '^KR00468_.*' '^KR00521_.*' '^KR00541_.*' '^KR00577_.*' '^KR00589_.*' '^KR00590_.*' '^KR00607_.*' '^KR00613_.*' '^KR00628_.*' '^KR00637_.*' '^KR00655_.*' '^KR00673_.*' '^KR00693_.*' '^KR00694_.*' '^KR00696_.*' '^KR00710_.*' '^KR00718_.*' '^KR00720_.*' '^KR00726_.*' '^KR00736_.*' '^KR00740_.*' '^KR00753_.*' '^KR00754_.*' '^KR00759_.*' '^KR00768_.*' '^KR00792_.*' '^KR00803_.*' '^KR00817_.*' '^KR00842_.*' '^KR00894_.*' '^KR00926_.*' '^KR00948_.*' '^KR00993_.*' '^KR00995_.*' '^KR01076_.*' '^KR01107_.*' '^KR01111_.*' '^KR01115_.*' '^KR01158_.*' '^KR01159_.*' '^KR01190_.*' '^KR01239_.*' '^KR01253_.*' '^KR01278_.*' '^KR01326_.*' '^KR01333_.*' '^KR01337_.*' '^KR01987_.*' '^KR02027_.*' '^KR02107_.*' '^KR02742_.*' '^KR02788_.*' '^KR02925_.*' '^KR03044_.*' '^KR03050_.*' '^KR03070_.*' '^KR03232_.*' '^KR03270_.*' '^KR03402_.*' '^KR03434_.*' '^KR03437_.*' '^KR03446_.*' '^KR03456_.*' '^KR03538_.*' '^KR03550_.*' '^KR03647_.*' '^KR03649_.*' '^KR03652_.*' '^KR03660_.*' '^KR03681_.*' '^KR03682_.*' '^KR03690_.*' '^KR03703_.*' '^KR03704_.*' '^KR03752_.*' '^KR03790_.*' '^KR03791_.*' '^KR03795_.*' '^KR03798_.*' '^KR03813_.*' '^KR03815_.*' '^KR03818_.*' '^KR03819_.*' '^KR03823_.*' '^KR03825_.*' '^KR03840_.*' '^KR03853_.*' '^KR03922_.*'
 do
     ls | grep $filepattern | xargs -d"\n" rm
 done
 #Count the number of files:
-ls -l | wc -l #
+ls -l | wc -l #578, 96 pairs of files removed as expected.
 
 #Remove sequence files that will not be used from plate52_raw
 cd /nfs/turbo/schloss-lab/tomkoset/CDI_clinical_samples/plate52_raw
 #Count the number of files:
-ls -l | wc -l
+ls -l | wc -l #194 files
 for filepattern in '^KR00041_.*' '^KR00090_.*' '^KR00183_.*' '^KR00218_.*' '^KR00249_.*' '^KR00280_.*' '^KR00297_.*' '^KR00314_.*' '^KR00541_.*' '^KR00577_.*' '^KR00589_.*' '^KR00590_.*' '^KR00607_.*' '^KR00613_.*' '^KR00637_.*' '^KR00673_.*' '^KR00694_.*' '^KR00696_.*' '^KR00710_.*' '^KR00718_.*' '^KR00726_.*' '^KR00736_.*' '^KR00753_.*' '^KR00754_.*' '^KR00759_.*' '^KR00768_.*' '^KR00792_.*' '^KR00803_.*' '^KR00894_.*' '^KR00948_.*' '^KR00993_.*' '^KR00995_.*' '^KR01076_.*' '^KR01107_.*' '^KR01115_.*' '^KR01158_.*' '^KR01159_.*' '^KR01190_.*' '^KR01239_.*' '^KR01278_.*' '^KR01326_.*' '^KR01333_.*' '^KR01337_.*' '^KR01987_.*' '^KR02027_.*' '^KR02107_.*' '^KR02742_.*' '^KR02925_.*' '^KR03044_.*' '^KR03050_.*' '^KR03232_.*' '^KR03270_.*' '^KR03402_.*' '^KR03437_.*' '^KR03446_.*' '^KR03456_.*' '^KR03538_.*' '^KR03647_.*' '^KR03649_.*' '^KR03681_.*' '^KR03682_.*' '^KR03690_.*' '^KR03703_.*' '^KR03704_.*' '^KR03752_.*' '^KR03791_.*' '^KR03795_.*' '^KR03798_.*' '^KR03813_.*' '^KR03823_.*' '^KR03825_.*' '^KR03834_.*' '^KR03840_.*' '^KR03853_.*' '^KR03922_.*'
 do
     ls | grep $filepattern | xargs -d"\n" rm
 done
 #Count the number of files:
-ls -l | wc -l
+ls -l | wc -l #44 files remaining, 75 pairs of files removed as expected
 
 #Remove sequence files that will not be used from plate53_raw
 cd /nfs/turbo/schloss-lab/tomkoset/CDI_clinical_samples/plate53_raw
@@ -291,23 +291,23 @@ rm KR03652v2*.fastq.gz
 rm KR01326v2*.fastq.gz
 rm KR00655v2*.fastq.gz
 #Count the number of files:
-ls -l | wc -l
+ls -l | wc -l #188 files
 for filepattern in '^KR00655_.*' '^KR00693_.*' '^KR00720_.*' '^KR00740_.*' '^KR00768_.*' '^KR00926_.*' '^KR02788_.*' '^KR03070_.*' '^KR03434_.*' '^KR03550_.*' '^KR03652_.*' '^KR03790_.*' '^KR03818_.*' '^KR03819_.*' '^KR03834_.*'
 do
     ls | grep $filepattern | xargs -d"\n" rm
 done
 #Count the number of files:
-ls -l | wc -l
+ls -l | wc -l #158 files, 30 pairs of files removed as expected
 
 #Go back to main directory to begin transferring select sequencing files over from selected resequencing runs.
 cd /nfs/turbo/schloss-lab/tomkoset/CDI_clinical_samples
 
 #Copy resequenced sample files over to data/raw
-ls data/raw -l | wc -l
+ls data/raw -l | wc -l #7299 files
 
 cp data/reseq_repeat_raw/*.fastq.gz data/raw/
 cp data/plate52_raw/*.fastq.gz data/raw/
 cp data/plate53_raw/*.fastq.gz data/raw/
 
 #Check number of files in data/raw
-ls data/raw -l | wc -l
+ls data/raw -l | wc -l #8073 files
