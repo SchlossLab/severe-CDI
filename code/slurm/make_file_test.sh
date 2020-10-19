@@ -7,7 +7,7 @@
 ###############################
 
 # Name
-#SBATCH --job-name=make.file_all
+#SBATCH --job-name=make_file_all
 
 # Resources
 # For MPI, increase ntasks-per-node
