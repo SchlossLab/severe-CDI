@@ -20,7 +20,7 @@
 
 # Account
 #SBATCH --account=pschloss1
-#SBATCH --partition=standarad
+#SBATCH --partition=standard
 
 # Logs
 #SBATCH --mail-user=tomkoset@umich.edu
