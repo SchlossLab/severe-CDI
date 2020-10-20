@@ -131,10 +131,17 @@ paste(remove_plate53_files, sep =" \n", collapse = " ")
 #Read in .files output to get a list of mock samples from all sequencing runs-----
 cdi.files <- read_tsv("data/raw/cdi.files", col_names=c("sample", "read_1", "read_2")) #no columns in .files format
 
+#Check how many samples after excluding water, mock and PBS controls
+cdi.files %>% 
+  filter(!str_detect(sample, "water")) %>% #Removes 40 water control samples
+  filter(!str_detect(sample, "mock")) %>% #Makes sure mock samples were removed
+  filter(!str_detect(sample, "PBS")) #Removes 3 PBS aliquot samples 
+#3943 samples, as expected
+
 #Generate a string of mock samples to use as input for mothur get_error.batch script for getting the sequencing error rate----
-mock_sample_list <- initial_cdi.files %>% 
+mock_sample_list <- cdi.files %>% 
   filter(str_detect(sample, "mock")) %>% 
   pull(sample) %>% 
   noquote() %>% #Remove quotations from the characters
   paste(., collapse = "-")
-
+#Paste this list of mock samples into get_error.batch and get_good_seqs_shared_otus.batch for the group = arguments
