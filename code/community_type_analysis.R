@@ -40,3 +40,12 @@ select(genus_shared, -label, -numOtus) %>%
   rename("OTU"="otu", "Size"="count", "Taxonomy"="taxon") %>%
   write_tsv(path ="data/process/cdi.genus.taxonomy")
 
+#Read in outputs from mothur's get.communitytype function----
+#Read in data to evaluate community type fit depending on the number of community types
+dmm_fit <- read_tsv("data/process/cdi.subsample.genus.genus.dmm.mix.fit")
+
+#Plot the Laplace measurement first.
+dmm_fit %>% 
+  ggplot()+
+  geom_line(aes(x = K, y = Laplace))+
+  theme_classic()
