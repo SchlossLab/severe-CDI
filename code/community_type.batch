@@ -3,4 +3,4 @@
 set.dir(input=data/process, output=data/process, seed=19760620)
 
 # Shorten filenames
-get.communitytype(shared = cdi.subsample.genus.shared, maxpartitions = 20, method = dmm)
+get.communitytype(shared = cdi.subsample.genus.shared, maxpartitions = 24, method = dmm)
