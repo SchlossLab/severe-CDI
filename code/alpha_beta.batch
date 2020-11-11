@@ -10,10 +10,19 @@ set.dir(input=data/mothur, output=data/mothur, seed=19760620)
 
 #rarefaction.single(shared=cdi.opti_mcc.shared, calc=sobs, freq=100)
 #summary.single(shared=cdi.opti_mcc.shared, calc=nseqs-coverage-invsimpson-shannon-sobs, subsample=5000)
-dist.shared(shared=cdi.opti_mcc.shared, calc=braycurtis, subsample=5000, processors=10)
+#dist.shared(shared=cdi.opti_mcc.shared, calc=braycurtis, subsample=5000, processors=10)
 
 # Generate 2 dimensional NMDS
-#nmds(phylip=cdi.opti_mcc.braycurtis.0.03.lt.ave.dist)
+##nmds(phylip=cdi.opti_mcc.braycurtis.0.03.lt.ave.dist)
 
 #Generate PCoA based on Bray-Curtis distance
-pcoa(phylip=cdi.opti_mcc.braycurtis.0.03.lt.ave.dist)
+#pcoa(phylip=cdi.opti_mcc.braycurtis.0.03.lt.ave.dist)
+
+#Calculate distance matrix and create NMDS and PCoA based on Jensen-Shannon Divergence
+dist.shared(shared=cdi.opti_mcc.shared, calc=jsd, subsample=5000, processors=10)
+
+# Generate 2 dimensional NMDS
+nmds(phylip=cdi.opti_mcc.jsd.0.03.lt.ave.dist)
+
+#Generate PCoA based on Bray-Curtis distance
+pcoa(phylip=cdi.opti_mcc.jsd.0.03.lt.ave.dist)
