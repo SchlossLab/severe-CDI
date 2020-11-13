@@ -1,0 +1,17 @@
+#Copies output files from mothur analysis needed for downstream analysis into process/
+
+cp data/mothur/cdi.taxonomy data/process/cdi.taxonomy
+
+cp data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.0.03.cons.tax.summary data/process/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.0.03.cons.tax.summary
+
+cp data/mothur/cdi.opti_mcc.0.03.subsample.shared data/process/cdi.opti_mcc.0.03.subsample.shared
+
+cp data/mothur/cdi.opti_mcc.groups.ave-std.summary data/process/cdi.opti_mcc.groups.ave-std.summary
+
+cp data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.dist data/process/cdi.opti_mcc.braycurtis.0.03.lt.ave.dist
+
+cp data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.std.dist data/process/cdi.opti_mcc.braycurtis.0.03.lt.std.dist
+
+cp data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.pcoa.loadings data/process/cdi.opti_mcc.braycurtis.0.03.lt.ave.pcoa.loadings
+
+cp data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.pcoa.axes data/process/cdi.opti_mcc.braycurtis.0.03.lt.ave.pcoa.axes
