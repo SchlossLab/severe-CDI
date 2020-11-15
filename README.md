@@ -127,17 +127,29 @@ Rscript code/reseq_samples_compare_across_runs.R
 ```
 After visualization of theta yc between runs, there was too much variation in theta yc distance for the same samples across runs. Since combining would only be relevant for a small subset of the samples (< 50), we decided to try resequencing these samples one last time (plate_53).
 
-Finalize the pairs of sequencing files we will analyze for each sample (choose the run that yielded the most sequences out of all resequencing runs).
+Finalize the pairs of sequencing files we will analyze for each sample (choose the run that yielded the most sequences out of all resequencing runs). Generate 16S sequencing preparation metadata file that tracks which microbiome aliquot was used, which plate and MiSeq library the sample was sequenced in, and which microbiome aliquot was used.
 ```
 Rscript code/select_analysis_seqs.R
 ```
-Also see lines 233 and onward from code/copy_fastqs_to_data for how files were transferred to data/raw
+Also see lines 233 and onward from code/copy_fastqs_to_data for how files were transferred to data/raw.
 
+Generate a shared file and a cons.taxonomy file for the final set of sequencing files. Calculate the overall error rate by comparing Mock control sequences to the Mock reference community from Zymo.
+```
+bash code/get_good_seqs_shared_otus.batch
+bash code/get_error.batch
+
+```
 Script to read in shared_file
 ```
 Rscript code/shared_file.R
 ```
 
+Subsample shared file to 5000 sequences, perform alpha and beta diversity analyses, and perform community type analyses
+```
+bash code/alpha_beta.batch
+bash code/community_type.batch
+Rscript code/community_type_analysis.R
+```
 ```
 git clone https://github.com/SchlossLab/LastName_BriefDescription_Journal_Year.git
 make write.paper

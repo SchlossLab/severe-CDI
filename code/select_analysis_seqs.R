@@ -29,7 +29,6 @@ plate53_data <- read_tsv("data/plate53_mothur/cdi.trim.contigs.good.unique.good.
   filter(!sample == "KR03652v2") %>% 
   filter(!sample == "KR01326v2") %>%
   filter(!sample == "KR00655v2")
-  
 
 #Combine dataframes of all sequenced samples including resequenced samples:----
 all_seq_data <- full_join(initial_runs, missing_7, by = "sample") %>% 
@@ -46,14 +45,15 @@ best_seq_data <- all_seq_data %>%
   group_by(sample) %>% 
   filter(!is.na(nseqs)) %>% #drop rows with NAs (not all samples were sequenced multiple times)
   filter(nseqs == max(nseqs)) %>% 
-  arrange(sample) 
+  arrange(sample) %>% 
+  mutate(sample = recode(sample, "KR00442M1" = "KR00442"))#fix sample name for KR00442
 #Outputs a data frame listing the sample, the best sequencing run, and the number of sequences from the best sequencing run
 
 #Check how many CDI samples fall below 5000 seqs per sample cutoff:
 best_seq_data %>% 
   filter(!str_detect(sample, "water")) %>% #Removes 40 water control samples
   filter(!str_detect(sample, "mock")) %>% #Makes sure mock samples were removed
-  filter(!str_detect(sample, "PBS")) %>%#Removes 3 PBS aliquot samples 
+  filter(!str_detect(sample, "PBS")) %>% #Removes 3 PBS aliquot samples 
   filter(nseqs < 5000) 
 # 11 samples with less than 5000 sequences
 
@@ -133,8 +133,8 @@ cdi.files <- read_tsv("data/raw/cdi.files", col_names=c("sample", "read_1", "rea
 
 #Check how many samples after excluding water, mock and PBS controls
 cdi.files %>% 
-  filter(!str_detect(sample, "water")) %>% #Removes 40 water control samples
-  filter(!str_detect(sample, "mock")) %>% #Makes sure mock samples were removed
+  filter(!str_detect(sample, "water")) %>% #Removes 45 water control samples
+  filter(!str_detect(sample, "mock")) %>% #Makes sure 44 mock samples were removed
   filter(!str_detect(sample, "PBS")) #Removes 3 PBS aliquot samples 
 #3943 samples, as expected
 
@@ -145,3 +145,90 @@ mock_sample_list <- cdi.files %>%
   noquote() %>% #Remove quotations from the characters
   paste(., collapse = "-")
 #Paste this list of mock samples into get_error.batch and get_good_seqs_shared_otus.batch for the group = arguments
+
+#Read in 16S prep metadata from initial sequencing for all samples and resequencing of a subset of samples
+cdi_16S_metadata <- read_tsv("data/raw/final_16Sprep_CDI_metadata")
+
+#Select 16S prep metadata that corresponds to the best sequencing run by joining based on best_miseq_run
+initial_16S_metadata <- cdi_16S_metadata %>% 
+  filter(!miseq_run %in% c("CDI_p48-p51_reseq_repeat", "CDIp52_Motility11-13", "CDIp53_Nick_p13-15")) %>% #Exclude the runs that were dedicated to resequencing samples
+  right_join(best_initial_run, by = c("CDIS_Sample ID" = "sample")) #right join to just keep rows in best_initial_run dataframe
+#3602
+#Join to samples that were initially missing from miseq data folder but were still part of intial sequencing runs
+initial_missing_metadata <- cdi_16S_metadata %>% 
+  filter(!miseq_run %in% c("CDI_p48-p51_reseq_repeat", "CDIp52_Motility11-13", "CDIp53_Nick_p13-15")) %>% #Exclude the runs that were dedicated to resequencing samples
+  right_join(best_missing, by = c("CDIS_Sample ID" = "sample")) #right join to just keep rows in best_initial_run dataframe
+#7
+reseq_run_repeat_metadata <- cdi_16S_metadata %>% 
+  filter(miseq_run %in% "CDI_p48-p51_reseq_repeat") %>% #Filter to samples that were part of reseq_repeat_run
+  right_join(best_reseq_run_repeat, by = c("CDIS_Sample ID" = "sample")) #right join to just keep rows in best run dataframe
+#288
+reseq_plate52_metadata <- cdi_16S_metadata %>% 
+  filter(miseq_run %in% "CDIp52_Motility11-13") %>% #Filter to samples that were part of plate_52
+  right_join(best_plate52, by = c("CDIS_Sample ID" = "sample")) #right join to just keep rows in best run dataframe
+#21
+reseq_plate53_metadata <- cdi_16S_metadata %>% 
+  filter(miseq_run %in% "CDIp53_Nick_p13-15") %>% #Filter to samples that were part of plate_53 
+  right_join(best_plate53, by = c("CDIS_Sample ID" = "sample"))  #right join to just keep rows in best run dataframe
+#78
+#Some metadata is missing from reseq_plate53_metadata. These correspond to samples from plate52 that were sequenced again with plate53 and yielded more sequences the 2nd run (reran even though they met the cutoff because there was extra space on the plate)
+reseq_plate53_missing_metadata <- reseq_plate53_metadata %>% 
+  filter(is.na(miseq_run)) %>% #35 samples with metadata missing 
+  select(`CDIS_Sample ID`, best_miseq_run, nseqs) %>% #only keep the columns with no NA entries
+  inner_join(cdi_16S_metadata %>% #Join to plate52 metadata to grab the missing metadata
+              filter(miseq_run %in% "CDIp52_Motility11-13"), by = "CDIS_Sample ID") 
+#33 samples
+#Drop samples with missing metadata from reseq_plate53_metadata since there are now accounted for in reseq_plate53_missing_metadata
+reseq_plate53_metadata <- reseq_plate53_metadata %>% 
+  filter(!is.na(miseq_run)) 
+#43 samples
+
+#Combine all metadata together for final set of samples (include mocks and waters)
+combined_metadata <- rbind(initial_16S_metadata, initial_missing_metadata, reseq_run_repeat_metadata, 
+                        reseq_plate52_metadata, reseq_plate53_missing_metadata, reseq_plate53_metadata)
+
+#get miseq_run variable names to add to control_metadata for PBS, mock, and water controls:
+miseq_runs <- unique(as.factor(combined_metadata$miseq_run))
+
+#Create temp dataframe to populate plate, plate_location, miseq_run, and group info
+control_metadata <- cdi.files %>% 
+  filter(str_detect(sample, "PBS") |str_detect(sample, "water") | str_detect(sample, "mock")) %>% 
+  select(sample) %>% #Just need the sample column
+  mutate(plate_no = str_extract(sample, "\\-*\\d+\\.*\\d*")) %>% #Extract number from character string
+  mutate(plate_no = case_when(str_detect(`sample`, "PBS") ~ "46",#Change PBS controls, which were all in plate 46
+                              TRUE ~ plate_no), 
+         plate = "plate",
+         #fill in miseq_run based on plate_no
+         miseq_run = case_when(plate_no %in% c(5, 6, 7, 8) ~ "CDI_plates_5-8",
+                               plate_no %in% c(9, 10, 11, 12) ~ "CDI_plates_9-12",
+                               plate_no %in% c(13, 14, 15, 16) ~ "CDI_plates_13-16",
+                               plate_no %in% c(17, 18, 19, 20) ~ "CDI_plates_17-20",
+                               plate_no %in% c(21, 22, 23, 24) ~ "CDI_plates_21-24",
+                               plate_no %in% c(25, 26, 27, 28) ~ "CDI_plates_25-28",
+                               plate_no %in% c(29, 30, 31, 32) ~ "CDI_plates_29-32",
+                               plate_no %in% c(33, 34, 35, 36) ~ "CDI_plates_33-36",
+                               plate_no %in% c(37, 38, 39, 40) ~ "CDI_plates_37-40",
+                               plate_no %in% c(41, 42, 43, 44) ~ "CDI_plates_41-44",
+                               plate_no %in% c(45, 46, 47) ~ "CDI_plates_44-47", #Really just plates 45 through 47
+                               plate_no %in% c(48, 49, 50, 51) ~ "CDI_p48-p51_reseq_repeat",
+                               plate_no %in% c(52) ~ "CDIp52_Motility11-13",
+                               plate_no %in% c(53) ~ "CDIp53_Nick_p13-15",
+                               TRUE ~ "none"), #All samples should be assigned to a miseq_run
+         group = case_when(str_detect(sample, "PBS") ~ "pbs_control",
+                           str_detect(sample, "mock") ~ "mock_control",
+                           str_detect(sample, "water") ~ "water_control",
+                           TRUE ~ "none")) %>% #All samples will be assigned to pbs_, mock_, or water_controls
+  unite(col = plate, plate, plate_no, sep = "_") %>% #Create plate column by uniting plate with plate_no
+  rename(`CDIS_Sample ID` = sample) #Rename sample column to match naming convention in metadata file
+  
+#Join control metadata to combined metadata
+final_metadata <- combined_metadata %>% 
+  #Remove all control samples from combined metadata
+  filter(!str_detect(`CDIS_Sample ID`, "PBS") & !str_detect(`CDIS_Sample ID`, "water") & !str_detect(`CDIS_Sample ID`, "mock")) %>%  
+  full_join(control_metadata, by = c("CDIS_Sample ID", "plate", "group", "miseq_run")) %>% 
+  #To clarify there was no overlap and Miseq run only included plate 45-47 rename this MiSeq run entry:
+  mutate(miseq_run = recode(miseq_run, "CDI_plates_44-47" = "CDI_plates_45-47"))
+
+#Export final metadata list of 16S sequenced CDI clinical samples
+final_metadata %>% 
+  write_tsv("data/process/final_CDI_16S_metadata.tsv") 
