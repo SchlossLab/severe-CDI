@@ -101,6 +101,8 @@ percent_cluster <- sample_best_cluster_fit %>%
                                      best_fitting_cluster == "Partition_8" ~ (group_cluster_total/280)*100,
                                      best_fitting_cluster == "Partition_9" ~ (group_cluster_total/484)*100,
                                      TRUE ~ 0)) %>% #No samples should fall into this category
+  mutate(group = factor(group, levels = unique(as.factor(group)))) %>% #Transform group variable into factor variable
+  mutate(group = fct_relevel(group, "diarrheal_control", "nondiarrheal_control", "case")) %>% #Specify the order of the groups
   ggplot()+
   geom_tile(aes(x=best_fitting_cluster, y=group, fill=percent_cluster))+
   theme_classic()+
