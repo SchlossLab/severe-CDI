@@ -1,5 +1,4 @@
-library(tidyverse)
-library(cowplot)
+source("code/utilities.R") #Loads libraries, reads in metadata, functions
 
 #Create .shared and .taxonomy files at the genus level to use in Dirichlet Multinomial Mixture analysis
 #Shared file:
@@ -44,10 +43,6 @@ select(genus_shared, -label, -numOtus) %>%
 #Read in outputs from mothur's get.communitytype function----
 #Read in data to evaluate community type fit depending on the number of community types
 dmm_fit <- read_tsv("data/process/cdi.subsample.genus.genus.dmm.mix.fit")
-
-#Read in metadata
-metadata <- read_tsv("data/process/final_CDI_16S_metadata.tsv") %>% 
-  rename(sample = `CDIS_Sample ID`)
 
 #Plot the Laplace measurement first.
 laplace_plot <- dmm_fit %>% 
