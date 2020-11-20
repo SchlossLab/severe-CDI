@@ -5,6 +5,17 @@ library(cowplot)
 library(readxl)
 library(vegan)
 
+#Define color scheme----
+color_scheme <- c("red", "blue", "gray60") 
+legend_groups <- c("case", "diarrheal_control", "nondiarrheal_control")
+legend_labels <- c("Case", "Diarrheal Control", "Non-Diarrheal Control")
+
+#Define shape scheme----
+shape_scheme <- c(1, 2, 0) 
+legend_groups #Same as color scheme
+legend_labels 
+
+
 #Read in metadata
 metadata <- read_tsv("data/process/final_CDI_16S_metadata.tsv") %>% 
   rename(sample = `CDIS_Sample ID`)
