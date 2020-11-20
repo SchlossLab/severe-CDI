@@ -1,6 +1,6 @@
 source("code/utilities.R") #Loads libraries, reads in metadata, functions
 
-#Read in alpha diversity values outputted from mothur
+#Read in alpha diversity values from mothur
 diversity_data <- read_tsv("data/mothur/cdi.opti_mcc.groups.ave-std.summary") %>%
   filter(method == "ave") %>%
   select(group, sobs, shannon, invsimpson, coverage) %>%
