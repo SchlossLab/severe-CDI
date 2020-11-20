@@ -103,6 +103,45 @@ percent_cluster <- sample_best_cluster_fit %>%
   theme_classic()+
   scale_fill_distiller(palette = "YlGnBu", direction = 1)
 
+#Alternative with detailed_group which breaks cases down based on stool consistency
+percent_group_detailed <- sample_best_cluster_fit %>% 
+  group_by(best_fitting_cluster, detailed_group) %>% 
+  summarize(group_cluster_total = n()) %>% 
+  #Make a new variable % group per cluster based on total group numbers
+  mutate(percent_group = case_when(detailed_group == "diarrheal_case" ~ (group_cluster_total/1459)*100,
+                                   detailed_group == "nondiarrheal_case " ~ (group_cluster_total/56)*100,
+                                   detailed_group == "unknown_case" ~ (group_cluster_total/2)*100,
+                                   detailed_group == "diarrheal_control" ~ (group_cluster_total/1506)*100,
+                                   detailed_group == "nondiarrheal_control" ~ (group_cluster_total/909)*100,
+                                   TRUE ~ 0)) %>% #No samples should fall into this category
+  ggplot()+
+  geom_tile(aes(x=best_fitting_cluster, y=detailed_group, fill=percent_group))+
+  theme_classic()+
+  scale_fill_distiller(palette = "YlGnBu", direction = 1)
+
+percent_cluster_detailed <- sample_best_cluster_fit %>% 
+  group_by(best_fitting_cluster, detailed_group) %>% 
+  summarize(group_cluster_total = n()) %>%
+  #Make a new variable % group per cluster based on total cluster numbers
+  mutate(percent_cluster = case_when(best_fitting_cluster == "Partition_1" ~ (group_cluster_total/221)*100,
+                                     best_fitting_cluster == "Partition_10" ~ (group_cluster_total/421)*100,
+                                     best_fitting_cluster == "Partition_11" ~ (group_cluster_total/464)*100,
+                                     best_fitting_cluster == "Partition_12" ~ (group_cluster_total/81)*100,
+                                     best_fitting_cluster == "Partition_2" ~ (group_cluster_total/367)*100,
+                                     best_fitting_cluster == "Partition_3" ~ (group_cluster_total/283)*100,
+                                     best_fitting_cluster == "Partition_4" ~ (group_cluster_total/504)*100,
+                                     best_fitting_cluster == "Partition_5" ~ (group_cluster_total/243)*100,
+                                     best_fitting_cluster == "Partition_6" ~ (group_cluster_total/163)*100,
+                                     best_fitting_cluster == "Partition_7" ~ (group_cluster_total/421)*100,
+                                     best_fitting_cluster == "Partition_8" ~ (group_cluster_total/280)*100,
+                                     best_fitting_cluster == "Partition_9" ~ (group_cluster_total/484)*100,
+                                     TRUE ~ 0)) %>% #No samples should fall into this category
+  mutate(detailed_group = fct_relevel(detailed_group, "diarrheal_control", "nondiarrheal_control", "nondiarrheal_case", "diarrheal_case", "unknown_case")) %>% #Specify the order of the groups
+  ggplot()+
+  geom_tile(aes(x=best_fitting_cluster, y=detailed_group, fill=percent_cluster))+
+  theme_classic()+
+  scale_fill_distiller(palette = "YlGnBu", direction = 1)
+
 test <- sample_best_cluster_fit %>% 
   group_by(best_fitting_cluster, group) %>% 
   summarise(n=n()) %>% 
