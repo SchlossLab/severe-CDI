@@ -80,14 +80,21 @@ plot_alpha_metric <- function(alpha_metric, y_axis_label){
     group_by(group) %>% 
     mutate(median = median({{ alpha_metric }})) %>% #Create column of median values for each group
     ungroup() %>% 
-    ggplot(aes(x=group, y = {{ alpha_metric }}), color = "gray90")+
+    ggplot(aes(x=group, y = {{ alpha_metric }}, color = group))+
     geom_jitter(shape = 1, size=1, alpha = 0.5, show.legend = FALSE) +
-    geom_errorbar(aes(ymax= median, ymin= median), color = "red", size = 1)+#Add line to show median of each point
+    geom_errorbar(aes(ymax= median, ymin= median), color = "black", size = 1)+#Add line to show median of each point
     labs(title=NULL, 
          x=NULL,
          y=y_axis_label)+
-    #Update x axis labels 
-    scale_x_discrete(labels = c("Case", "Diarrheal Control", "Non-Diarrheal Control"))+
+    scale_colour_manual(name=NULL,
+                        values=color_scheme,
+                        breaks=legend_groups,
+                        labels=legend_labels)+
+    scale_shape_manual(name=NULL, 
+                       values=shape_scheme,
+                       breaks=legend_groups,
+                       labels=legend_labels)+
+    scale_x_discrete(label = c("Case", "Diarrheal Control", "Non-Diarrheal Control"))+
     theme_classic()+
     theme(legend.position = "bottom",
           text = element_text(size = 19),# Change font size for entire plot
