@@ -73,3 +73,26 @@ jsd_nmds_plot <- jsd_nmds %>%
                      labels=legend_labels)+
   theme_classic() +
   theme(text = element_text(size = 16))
+
+#Alternative NMDS with Cases broken down by stool consistency
+jsd_nmds_plot_v2 <- jsd_nmds %>%
+  ggplot(aes(x=axis1, y=axis2, color = detailed_group, fill = detailed_group, shape = detailed_group))+
+  geom_point(size=2, alpha = 0.5)+
+  labs(x = "Axis 1", 
+       y = "Axis 2")+
+  scale_colour_manual(name=NULL,
+                      values=color_scheme_detailed,
+                      breaks=legend_groups_detailed,
+                      labels=legend_labels_detailed)+
+  scale_fill_manual(name=NULL,
+                    values=color_scheme_detailed,
+                    breaks=legend_groups_detailed,
+                    labels=legend_labels_detailed)+
+  scale_shape_manual(name=NULL, 
+                     values=shape_scheme_detailed,
+                     breaks=legend_groups_detailed,
+                     labels=legend_labels_detailed)+
+  theme_classic() +
+  theme(text = element_text(size = 16))
+
+  

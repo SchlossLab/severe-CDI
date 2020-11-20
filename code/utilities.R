@@ -9,17 +9,31 @@ library(vegan)
 color_scheme <- c("red", "blue", "grey50") 
 legend_groups <- c("case", "diarrheal_control", "nondiarrheal_control")
 legend_labels <- c("Case", "Diarrheal Control", "Non-Diarrheal Control")
-
+#Alternative color scheme for detailed_group where C. difficile cases are broken down by stool consistency
+color_scheme_detailed <- c("red", "red", "red", "blue", "grey50") 
+legend_groups_detailed <- c("diarrheal_case", "nondiarrheal_case", "unknown_case", "diarrheal_control", "nondiarrheal_control")
+legend_labels_detailed <- c("Diarrheal Case", "Non-Diarrheal Case", "Unknown Case", "Diarrheal Control", "Non-Diarrheal Control")
+  
 #Define shape scheme----
-shape_scheme <- c(1, 2, 0) #open
+shape_scheme <- c(0, 2, 1) #open
 shape_scheme <- c(22, 24, 21) #closed
 legend_groups #Same as color scheme
 legend_labels 
+#Alternative shape scheme for detailed_group where C. difficile cases are broken down by stool consistency
+shape_scheme_detailed <- c(0, 22, 8, 24, 21) #closed
 
 
 #Read in metadata
 metadata <- read_tsv("data/process/final_CDI_16S_metadata.tsv") %>% 
-  rename(sample = `CDIS_Sample ID`)
+  rename(sample = `CDIS_Sample ID`) %>% 
+  #Update group to reflect case as anything regardless of stool consistency
+  mutate(detailed_group = case_when(cdiff_case == "Case" & `stool_consistency` == "unformed" ~ "diarrheal_case",
+                           cdiff_case == "Control" & `stool_consistency` == "unformed" ~ "diarrheal_control",
+                           cdiff_case == "Control" & `stool_consistency` == "formed" ~ "nondiarrheal_control",
+                           cdiff_case == "Case" & `stool_consistency` == "formed" ~ "nondiarrheal_case", #56 samples that were postive for C. diff and had formed stool consistency
+                           TRUE ~ "unknown_case")) %>%  #2 Cases had unknown stool consistency
+  mutate(detailed_group = fct_relevel(detailed_group, "diarrheal_case", "nondiarrheal_case", "unknown_case", "diarrheal_control", "nondiarrheal_control")) #Specify the order of the detailed group factor
+  
 
 #Functions used in statistical analysis----
 #Function to calculate the median shannon values from a dataframe (x) grouped by treatment
