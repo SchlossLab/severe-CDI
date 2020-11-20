@@ -6,12 +6,13 @@ library(readxl)
 library(vegan)
 
 #Define color scheme----
-color_scheme <- c("red", "blue", "gray60") 
+color_scheme <- c("red", "blue", "grey50") 
 legend_groups <- c("case", "diarrheal_control", "nondiarrheal_control")
 legend_labels <- c("Case", "Diarrheal Control", "Non-Diarrheal Control")
 
 #Define shape scheme----
-shape_scheme <- c(1, 2, 0) 
+shape_scheme <- c(1, 2, 0) #open
+shape_scheme <- c(22, 24, 21) #closed
 legend_groups #Same as color scheme
 legend_labels 
 
