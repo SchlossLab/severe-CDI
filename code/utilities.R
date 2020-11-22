@@ -4,6 +4,7 @@ library(broom)
 library(cowplot)
 library(readxl)
 library(vegan)
+library(viridis) #color blind friendly palettes
 
 #Define color scheme----
 color_scheme <- c("red", "blue", "grey50") 
