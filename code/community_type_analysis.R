@@ -209,5 +209,6 @@ bacteria_in_clusters_plot <- bacteria_in_clusters %>%
 #Align heat amps
 combined_heatmaps <- align_plots(percent_cluster, bacteria_in_clusters_plot, align = 'v', axis = 'b') 
 #Combine heat maps
-plot_grid(combined_heatmaps[[1]], combined_heatmaps[[2]], rel_heights = c(1, 3), ncol = 1)
+plot_grid(combined_heatmaps[[1]], combined_heatmaps[[2]], rel_heights = c(1, 3), ncol = 1)+
+  ggsave("results/figures/community_types.png", height = 6.0, width = 8.5)
 

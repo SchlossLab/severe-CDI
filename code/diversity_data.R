@@ -139,4 +139,7 @@ shannon_plot_detailed <- plot_alpha_metric_detailed(shannon, "Shannon Diversity 
 invsimpson_plot_detailed <- plot_alpha_metric_detailed(invsimpson, "Inverse Simpson")
 richness_plot_detailed <- plot_alpha_metric_detailed(sobs, "Number of Observed OTUs")
 
-
+plot_grid(invsimpson_plot, shannon_plot, richness_plot,
+          invsimpson_plot_detailed, shannon_plot_detailed, richness_plot_detailed,
+          nrow = 2)+
+  ggsave("results/figures/alpha_diversity.png", height = 10, width = 8)
