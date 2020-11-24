@@ -1,3 +1,3 @@
-set.dir(input=data/mothur, output=data/mothur)
+set.dir(input=data/mothur, output=data/mothur, , seed=19760620)
 
-get.oturep(phylip=cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.0.03.subsample.braycurtis.0.03.lt.ave.dist,  list=cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.list)
+get.oturep(phylip=cdi.opti_mcc.braycurtis.0.03.lt.ave.dist,  list=cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.list)
