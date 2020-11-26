@@ -4,6 +4,8 @@ library(broom)
 library(cowplot)
 library(readxl)
 library(vegan)
+library(glue)
+library(ggtext)
 library(viridis) #color blind friendly palettes
 
 #Define color scheme----
