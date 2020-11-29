@@ -138,7 +138,7 @@ indiv_otu_plot <- function(otu_plot){
     scale_x_discrete(label = c("Case", "Diarrheal Control", "Non-Diarrheal Control"))+
     geom_hline(yintercept=1/5000, color="gray")+
     labs(title=specify_otu_name,
-         x="Day",
+         x=NULL,
          y="Relative abundance (%)") +
     scale_y_log10(breaks=c(1e-4, 1e-3, 1e-2, 1e-1, 1), labels=c(1e-2, 1e-1, 1, 10, 100))+
     theme_classic()+
@@ -147,7 +147,6 @@ indiv_otu_plot <- function(otu_plot){
           text = element_text(size = 18)) # Change font size for entire plot
 }
 
-otu_41 <- indiv_otu_plot("Peptostreptococcaceae (OTU 41)")
 
 for (o in c_diff_otus){
   plot <- indiv_otu_plot(o)
