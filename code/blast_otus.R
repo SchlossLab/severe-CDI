@@ -39,8 +39,23 @@ c_diff_seq_all %>% pull(sequence)
 c_diff_seq_all <- c_diff_seq_all %>% 
   mutate(ncbi_blast_result = "")
 
+#Blast search for 1 OTU: 
+#Select standard nucleotide BLAST
+#For database: select rRNA/ITS databases and 16S ribosomal RNA sequences
+
+#BLAST search for 59 Peptostreptococcaceae OTUs against C. difficile rRNA:
+#Select align 2 or more sequences. Paste 59 OTU sequences in top box
+#Place C. difficile rRNA gene in bottom box (used C. difficile ATCC 9689 Accession # NR_113132.1)
+#Saved results in "data/process/59OTus_vs_C.diff_ATCC9689-Alignment-HitTable.csv"
+blast_results <- read_csv("data/process/59OTus_vs_C.diff_ATCC9689-Alignment-HitTable.csv", 
+                          col_names = c("query acc.ver", "subject acc.ver", "% identity", "alignment", "length", "mismatches",
+                                        "gap opens", "q.start", "q.end", "subject", "evalue", "bit score"))
+#e value = Expect value parameter. Number of hits one can expect to see by chance
+#bit score: sequence similarity independent of query sequence lenght and database size. Normalized based on the rawpairwise alignment score
+
 
 #Check how abundant the potential C. difficile Otus are across each group
+#see code/taxa.R
 
 
 
