@@ -79,9 +79,81 @@ c_diff_otus <- agg_otu_data %>%
   distinct(otu) %>% 
   filter(str_detect(otu, "Peptostreptococcaceae")) %>% 
   pull(otu)
-  
-#Function to plot a list of OTUs across sources of mice at a specific timepoint:
-#Arguments: otus = list of otus to plot; timepoint = day of the experiment to plot
+
+#Function to plot a heatmap of the median relative abundances of a list of OTUs across groups
+#Arguments: otus = list of otus to plot
+hm_plot_otus <- function(otus){
+  agg_otu_data %>%
+    filter(otu %in% otus) %>%
+    group_by(group, otu_name) %>% 
+    summarize(median=median(agg_rel_abund + 1/10000),`.groups` = "drop") %>%  #Add small value (1/2Xsubssampling parameter) so that there are no infinite values with log transformation
+    ggplot()+
+    geom_tile(aes(x = group, y=otu_name, fill=median))+
+    labs(title=NULL,
+         x=NULL,
+         y=NULL)+
+    scale_fill_distiller(trans = "log10",palette = "YlGnBu", direction = 1, name = "Relative \nAbundance", breaks=c(1e-4, 1e-3, 1e-2, 1e-1, 1), labels=c(1e-2, 1e-1, 1, 10, 100), limits = c(1/10000, 1))+
+    theme_classic()+
+    scale_x_discrete(label = c("Case", "Diarrheal Control", "Non-Diarrheal Control"))+
+    theme(plot.title=element_text(hjust=0.5),
+          axis.text.x = element_text(angle = 45, hjust = 1), #Angle axis labels
+          axis.text.y = element_markdown(), #Have only the OTU names show up as italics
+          text = element_text(size = 16)) # Change font size for entire plot
+}
+
+c_diff_otu_hm_plot <- hm_plot_otus(c_diff_otus)
+save_plot("results/figures/otus_peptostreptococcaceae_hm.png", c_diff_otu_hm_plot, base_height =8, base_width = 6)
+#OTU 41 blast results match C. difficile. The rest of the Peptostreptococcaceae are mostly below the limit of detection in most samples.
+#For now just remove OTU 41 from features used in machine learning models.
+
+#of samples with >0 rel_abund for C. diff OTUs
+c_diff_otu_count <- agg_otu_data %>% 
+  filter(otu %in% c_diff_otus) %>% 
+  filter(agg_rel_abund > 0) %>% 
+  group_by(otu_name, group) %>% 
+  count() %>% 
+  ggplot(aes(y= otu_name, x = n, color=group, fill = group))+
+  geom_col(position = "dodge")+
+  labs(title="Relative abundance > 0", 
+       x="# of Samples",
+       y=NULL)+
+  scale_colour_manual(name=NULL,
+                      values=color_scheme,
+                      breaks=legend_groups,
+                      labels=legend_labels)+
+  scale_fill_manual(name=NULL,
+                      values=color_scheme,
+                      breaks=legend_groups,
+                      labels=legend_labels)+
+  theme_classic()+
+  theme(axis.text.y = element_markdown())
+save_plot("results/figures/otus_peptostreptococcaceae_sample_count_0.png", c_diff_otu_count, base_height =8, base_width = 6)
+
+
+c_diff_otu_count_subset <- agg_otu_data %>% 
+  filter(otu %in% c_diff_otus) %>% 
+  filter(agg_rel_abund > 0.001) %>% 
+  group_by(otu_name, group) %>% 
+  count() %>% 
+  ggplot(aes(y= otu_name, x = n, color=group, fill = group))+
+  geom_col(position = "dodge")+
+  labs(title="Relative abundance > 0.001", 
+       x="# of Samples",
+       y=NULL)+
+  scale_colour_manual(name=NULL,
+                      values=color_scheme,
+                      breaks=legend_groups,
+                      labels=legend_labels)+
+  scale_fill_manual(name=NULL,
+                    values=color_scheme,
+                    breaks=legend_groups,
+                    labels=legend_labels)+
+  theme_classic()+
+  theme(axis.text.y = element_markdown())
+save_plot("results/figures/otus_peptostreptococcaceae_sample_count_.001.png", c_diff_otu_count_subset, base_height =8, base_width = 6)
+
+#Function to plot a the median relative abundances of a list of OTUs across groups
+#Arguments: otus = list of otus to plot
 plot_otus <- function(otus){
   agg_otu_data %>%
     filter(otu %in% otus) %>%
@@ -109,8 +181,10 @@ plot_otus <- function(otus){
 }
 
 c_diff_otu_plot <- plot_otus(c_diff_otus)
+save_plot("results/figures/otus_peptostreptococcaceae.png", c_diff_otu_plot, base_height =8, base_width = 6)
 #OTU 41 blast results match C. difficile. The rest of the Peptostreptococcaceae are mostly below the limit of detection in most samples.
 #For now just remove OTU 41 from features used in machine learning models.
+
 
 #Lower abundance Peptostreptococccaceae
 #Function to plot otu with individual sample relative abundances
@@ -147,9 +221,6 @@ indiv_otu_plot <- function(otu_plot){
           text = element_text(size = 18)) # Change font size for entire plot
 }
 
+otu_41 <- indiv_otu_plot("Peptostreptococcaceae (OTU 41)")
+save_plot("results/figures/otus_peptostreptococcaceae_41.png", otu_41, base_height =8, base_width = 6)
 
-for (o in c_diff_otus){
-  plot <- indiv_otu_plot(o)
-  name <- paste0("rel_abund_", o, ".png")
-  save_plot(path = name, )
-}
