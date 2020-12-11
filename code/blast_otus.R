@@ -15,17 +15,61 @@ c_diff_otus <- taxonomy %>%
 #List of 59 OTUs
 
 #File containing the representative sequences for the OTUs identified in the dataset
-#Not sure how to read in .fasta files into R/whether it's worth doing
-otu_seqs <-  read.fasta("data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.0.03.rep.fasta", as.string = TRUE, forceDNAtolower = FALSE)
-otu_seqs[41]
-test <- otu_seqs %>% keep(str_detect(otu_seqs, "Otu00041"))
-otu_seqs %>% pluck(Value)
+#Function to read in fasta files, based on library(devtools) source_url("https://raw.githubusercontent.com/lrjoshi/FastaTabular/master/fasta_and_tabular.R")
+#I modified the function to remove the lines that export as .csv
+FastaToTabular <- function (filename){
+  
+  #read fasta file
+  
+  file1 <- readLines(filename)
+  
+  #find the genename location by grepping >
+  
+  location <- which((str_sub(file1,1,1))==">")
+  
+  #start an empty vector to collect name and sequence 
+  
+  name=c()
+  sequence =c()
+  
+  
+  
+  #number of genes= number of loops
+  #extract name first
+  for ( i in 1:length(location)){
+    name_line = location[i]
+    name1 = file1[name_line]
+    name=c(name,name1)
+    #extract sequence between the names
+    #the last sequence will be missed using this strategy 
+    #so, we are using if condition to extract last sequence 
+    start= location[i]+1
+    end = location[i+1]-1
+    if ( i < length (location)){
+      
+      end=end
+      
+    } else {
+      
+      end=length(file1)
+    }
+    
+    lines = start:end
+    sequence1= as.character(paste(file1[lines],collapse = ""))
+    sequence =c(sequence,sequence1)
+  }
+  
+  #now create table using name and sequence vector 
+  
+  data <- tibble(name,sequence)
+  
+  
+  #function ends
+}
 
-library(devtools)
-source_url("https://raw.githubusercontent.com/lrjoshi/FastaTabular/master/fasta_and_tabular.R")
-FastaToTabular("data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.0.03.rep.fasta")
-otu_seqs <- read_csv("dna_table.csv")
-#TODO - Update function to work with my project organization 
+#Read in fasta file containing the representative sequences for each OTU in dataset
+otu_seqs <- FastaToTabular("data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.0.03.rep.fasta")
+
 
 #Subset otu_seqs to just the rows that have a potential c_diff otu in their name (c_diff_otus)
 c_diff_seq_all <- map_df(c_diff_otus, function(c_diff_otus){
@@ -75,8 +119,72 @@ percent_identity_dist <- blast_results %>%
 save_plot("results/figures/otus_peptostreptococcaceae_blast_results.png", percent_identity_dist, base_height =5, base_width = 6)
 
 
-#Check how abundant the potential C. difficile Otus are across each group
+#Check how abundant the potential C. difficile OTUs are across each group
 #see code/taxa.R
 
+#Check individual sequences clustered into each OTU----
+#Compared code & results with Nick for his restoreCR project
+seq_by_otu <- read_tsv("data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.list")
 
+c_diff_seq <- seq_by_otu %>% 
+  select(one_of(c_diff_otus)) %>% 
+  pivot_longer(cols = one_of(c_diff_otus), names_to = 'otu', values_to = 'sequences') %>% 
+  group_by(otu) %>% 
+  nest() %>% 
+  mutate(sequence_name = map(data, ~unlist(strsplit(.$sequences, ',')))) %>% 
+  unnest(sequence_name) %>% 
+  select(-data) %>% 
+  mutate(sequence_name = paste0('>', sequence_name))
 
+seqs_fasta <- read_tsv('data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.fasta', 
+                       col_names = F)
+c_diff_fasta <- seqs_fasta %>% 
+  mutate(seq_num = rep(1:(nrow(seqs_fasta)/2), each = 2),
+         data = rep(c('sequence_name', 'sequence'), nrow(seqs_fasta)/2)) %>% 
+  pivot_wider(names_from = data, values_from = X1) %>% 
+  inner_join(c_diff_seq, by = c('sequence_name')) %>% 
+  mutate(sequence_name = paste(sequence_name, otu, sep = '_'),
+         sequence = gsub('-', '', sequence)) %>% 
+  pivot_longer(cols = c(sequence_name, sequence), names_to = 'data', values_to = 'sequence_info') %>% 
+  select(sequence_info)
+
+write.table(c_diff_fasta, "data/mothur/c_diff_unique_seqs.fasta",
+            quote=F, col.names = F, row.names = F)
+
+#BLAST search for C. difficile sequences against C. difficile rRNA:
+#Select align 2 or more sequences. Upload c_diff_unique_seqs.fasta to top box
+#Place C. difficile rRNA gene in bottom box (used C. difficile ATCC 9689 Accession # NR_113132.1)
+#Saved results in "data/process/59OTus_vs_C.diff_ATCC9689-Alignment-HitTable.csv"
+seq_blast_results <- read_csv("data/process/c_diff_seqs_vs_C.diff_ATCC9689-Alignment-HitTable.csv", 
+                          col_names = c("query_acc.ver", "subject_acc.ver", "%identity", "alignment", "length", "mismatches",
+                                        "gap opens", "q.start", "q.end", "subject", "evalue", "bit score")) %>% 
+  mutate(seq_list_no = 1:1006)
+
+seq_counts <- read_tsv("data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.pick.count_table")
+
+c_diff_seq_counts <- seq_blast_results %>% 
+  group_by(query_acc.ver) %>% 
+  summarize(percent_identity = max(`%identity`)) %>% 
+  select(sequence_name_otu = query_acc.ver, percent_identity) %>% 
+  mutate(sequence_name = gsub('_Otu\\d*', '', sequence_name_otu),
+         otu = as.numeric(gsub('.*_Otu', '', sequence_name_otu))) %>%
+  select(otu, percent_identity, sequence_name) %>% 
+  left_join(select(seq_counts, Representative_Sequence, total),
+            by = c('sequence_name' = 'Representative_Sequence'))
+                                   
+otu_41 <- c_diff_seq_counts %>% 
+  filter(otu == 41) %>% 
+  arrange(desc(total))
+#Most common OTU 41 seq has 100% identity with C. difficile ATCC 9689
+
+#Checked 2nd most common OTU 41 seq (M00967_199_000000000-J7LFV_1_2110_7389_13284) with Blast
+#Top hit with 100% identity was Intestinibacter bartlettii strain WAL 16138
+
+#3rd most common OTU 41 seq (M00967_194_000000000-CP4FK_1_1113_6651_10291)
+#Top hit has 98.81% identity with C. difficile ATCC 9689
+
+#4th most common OTU 41 seq (M00967_193_000000000-CRJK7_1_2106_15194_22562) 
+#Top hit with 98.81% % identity with C. difficile ATCC 9689
+
+#5th most common OTU 41 seq (M00967_194_000000000-CP4FK_1_1114_15707_13440)
+#Top hit with 98.81% % identity with C. difficile ATCC 9689
