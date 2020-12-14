@@ -188,3 +188,76 @@ otu_41 <- c_diff_seq_counts %>%
 
 #5th most common OTU 41 seq (M00967_194_000000000-CP4FK_1_1114_15707_13440)
 #Top hit with 98.81% % identity with C. difficile ATCC 9689
+
+#Check other most frequent potential C. diff OTUs
+otu_795 <- c_diff_seq_counts %>% 
+  filter(otu == 795) %>% 
+  arrange(desc(total))
+#1797 counts of the top sequence for OTU 795
+#Top hit Paraclostridium bifermentans with 100% identity
+#Followed by Romboutsia  with ~97%
+
+otu_1187 <- c_diff_seq_counts %>% 
+  filter(otu == 1187) %>% 
+  arrange(desc(total))
+#Top sequence for OTU 1187 with 512 counts
+#Top hit is C. diff 9689 with 98.02% identity
+
+#Look at how count totals by group (CDI, formed control, or unformed control)
+seq_counts_group <- seq_blast_results %>% 
+  group_by(query_acc.ver) %>% 
+  summarize(percent_identity = max(`%identity`)) %>% 
+  select(sequence_name_otu = query_acc.ver, percent_identity) %>% 
+  mutate(sequence_name = gsub('_Otu\\d*', '', sequence_name_otu),
+         otu = as.numeric(gsub('.*_Otu', '', sequence_name_otu))) %>%
+  select(otu, percent_identity, sequence_name) %>% 
+  left_join(seq_counts,
+            by = c('sequence_name' = 'Representative_Sequence'))
+
+group_totals <- seq_counts_group %>% 
+  select(-otu, -percent_identity, -total) %>% 
+  pivot_longer(cols = -sequence_name, names_to = "sample", values_to = "count") %>% 
+  pivot_wider(id_cols = sample, names_from = sequence_name, values_from = count) %>% 
+  left_join(select(metadata, sample, group), by = "sample") %>% #Join to obtain geoup identiy for samples
+  select(-sample) %>% 
+  pivot_longer(cols = -group, names_to = "sequence_name", values_to = "count") %>% 
+  group_by(group, sequence_name) %>% 
+  tally(count) %>% #tally counts based on otu and group identity
+  arrange(desc(n)) 
+
+#Function to visualize sequences of interest
+plot_seq <- function(seq_name, percent_identity){
+  group_totals %>% 
+    filter(sequence_name == seq_name) %>% 
+    ggplot(aes(x = group, y = n))+
+    geom_boxplot()+
+    scale_x_discrete(guide = guide_axis(n.dodge = 2))+
+    labs(title = percent_identity, 
+         y = "Counts",
+         x= NULL)+
+    theme_classic()
+}
+top_41_seq <- plot_seq("M00967_186_000000000-CPCPM_1_2113_18415_25305", "100% identity to C. difficile")
+
+next_41_seq <- plot_seq("M00967_199_000000000-J7LFV_1_2110_7389_13284", "100% identity to Intestinibacter bartlettii")
+
+plot_grid(top_41_seq, next_41_seq)+
+  ggsave("exploratory/notebook/top_2_otu41_seqs.png", height = 4, width = 8)
+
+third_41_seq <- plot_seq("M00967_194_000000000-CP4FK_1_1113_6651_10291", "98.8% identity to C. difficile")
+fourth_41_seq <- plot_seq("M00967_193_000000000-CRJK7_1_2106_15194_22562", "98.8% identity to C. difficile")
+fifth_41_seq <- plot_seq("M00967_194_000000000-CP4FK_1_1114_15707_13440", "98.8% identity to C. difficile")
+
+top_795_seq <- plot_seq("M00967_186_000000000-CPCPM_1_2114_4787_7265","100% identity to Paraclostridium bifermentans")
+top_1187_seq <- plot_seq("M00967_192_000000000-CRG28_1_1103_18581_9151","98% identity to C. difficile\n 97.2% identity to Eubacterium tenue")
+
+plot_grid(third_41_seq, fourth_41_seq, fifth_41_seq, top_795_seq, top_1187_seq)+
+  ggsave("exploratory/notebook/top3-7_c_diff_seqs.png", height = 8, width = 10)
+
+
+M00967_192_000000000-CRG28_1_1103_18581_91
+#Another way to view otu sequences with counts across groups (not useful for plotting)
+group_totals_otu <- group_totals %>% 
+  pivot_wider(id_cols = sequence_name, names_from = group, values_from = n) %>% 
+  left_join(c_diff_seq_counts, by = "sequence_name") #Join to get columns about % identity to C. diff and otu sequence clusters into
+
