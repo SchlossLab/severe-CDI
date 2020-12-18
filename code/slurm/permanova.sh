@@ -39,4 +39,4 @@
 #                   #
 #####################
 
-Rscript --max-ppsize 500000 code/pcoa_data.R
+Rscript code/pcoa_data.R
