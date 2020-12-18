@@ -6,7 +6,7 @@ library(readxl)
 library(vegan)
 library(glue)
 library(ggtext)
-library(viridis) #color blind friendly palettes
+#library(viridis) #color blind friendly palettes
 
 #Define color scheme----
 color_scheme <- c("red", "blue", "grey50") 
