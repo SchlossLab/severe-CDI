@@ -46,6 +46,19 @@ bc_pcoa <- import_ord("data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.pcoa.axes
 bc_axis1 <- axis_ord("data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.pcoa.loadings", 1)
 bc_axis2 <- axis_ord("data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.pcoa.loadings", 2)
 bc_pcoa_plot <- plot_pcoa(bc_pcoa, bc_axis1, bc_axis2)
+
+#Perform adonis----
+#Read in Bray-Curtis distance matrix
+bc_dist <- read_dist("data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.std.dist")
+bc_dist <- head(bc_dist)
+bc_variables <- tibble(sample = attr(bc_dist, "Labels")) %>% 
+  left_join(metadata, by = "sample")
+bc_adonis <- adonis(bc_dist~group/miseq_run*plate*plate_location*pbs_added, data = bc_variables, permutations = 1000) 
+
+#Select the adonis results dataframe and transform rownames into effects column
+bc_adonis_table <- as_tibble(add_rownames(test$aov.tab, var = "effects")) %>% 
+  write_tsv("data/process/adonis_bc.tsv")#Write results to .tsv file
+
 #Jensen-Shannon divergence PCoA
 jsd_pcoa <- import_ord("data/mothur/cdi.opti_mcc.jsd.0.03.lt.ave.pcoa.axes")
 jsd_axis1 <- axis_ord("data/mothur/cdi.opti_mcc.jsd.0.03.lt.ave.pcoa.loadings", 1)
