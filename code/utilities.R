@@ -29,6 +29,7 @@ shape_scheme_detailed <- c(0, 22, 8, 24, 21) #closed
 #Read in metadata
 metadata <- read_tsv("data/process/final_CDI_16S_metadata.tsv") %>% 
   rename(sample = `CDIS_Sample ID`) %>% 
+  mutate(pbs_added = replace_na(pbs_added, "no")) %>% #All NAs means PBS was not added so change to no
   #Update group to reflect case as anything regardless of stool consistency
   mutate(detailed_group = case_when(cdiff_case == "Case" & `stool_consistency` == "unformed" ~ "diarrheal_case",
                            cdiff_case == "Control" & `stool_consistency` == "unformed" ~ "diarrheal_control",
