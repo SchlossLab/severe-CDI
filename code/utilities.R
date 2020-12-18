@@ -35,7 +35,13 @@ metadata <- read_tsv("data/process/final_CDI_16S_metadata.tsv") %>%
                            cdiff_case == "Control" & `stool_consistency` == "formed" ~ "nondiarrheal_control",
                            cdiff_case == "Case" & `stool_consistency` == "formed" ~ "nondiarrheal_case", #56 samples that were postive for C. diff and had formed stool consistency
                            TRUE ~ "unknown_case")) %>%  #2 Cases had unknown stool consistency
-  mutate(detailed_group = fct_relevel(detailed_group, "diarrheal_case", "nondiarrheal_case", "unknown_case", "diarrheal_control", "nondiarrheal_control")) #Specify the order of the detailed group factor
+  mutate(detailed_group = fct_relevel(detailed_group, "diarrheal_case", "nondiarrheal_case", "unknown_case", "diarrheal_control", "nondiarrheal_control")) %>% #Specify the order of the detailed group factor
+  #Transform variables of interest for PERMANOVA tests into factor variables
+  mutate(group = factor(group, levels = unique(as.factor(group))),
+         miseq_run = factor(miseq_run, levels = unique(as.factor(miseq_run))),
+         plate = factor(plate, levels = unique(as.factor(plate))),
+         plate_location = factor(plate_location, levels = unique(as.factor(plate_location))),
+         pbs_added = factor(pbs_added, levels = unique(as.factor(pbs_added))))
   
 
 #Functions used in statistical analysis----
