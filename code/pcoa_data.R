@@ -10,16 +10,16 @@ import_ord <- function(file_path){
     rename(sample = group) %>% #group is the same as id in the metadata data frame
     left_join(metadata, by= "sample") #merge metadata and PCoA data frames
 }
-#Function to read in PCoA axis values from mothur for the percent variation represented by each PCoA axis 
+#Function to read in PCoA axis values from mothur for the percent variation represented by each PCoA axis
 axis_ord <- function(file_path, select_axis){
-  read_tsv(file_path) %>% 
-    filter(axis == select_axis) %>% 
-    pull(loading) %>% round(digits = 1) #Pull value & round to 1 decimal  
+  read_tsv(file_path) %>%
+    filter(axis == select_axis) %>%
+    pull(loading) %>% round(digits = 1) #Pull value & round to 1 decimal
 }
 
 #Function to plot PCoA data
 plot_pcoa <- function(pcoa_df, axis1_label, axis2_label){
-  pcoa_df %>% 
+  pcoa_df %>%
     ggplot(aes(x=axis1, y=axis2, color = group, fill = group, shape = group))+
     geom_point(size=2, alpha = 0.5)+
     labs(x = paste("PCoA 1 (", axis1_label, "%)", sep = ""), #Annotations for each axis from loadings file
@@ -32,7 +32,7 @@ plot_pcoa <- function(pcoa_df, axis1_label, axis2_label){
                       values=color_scheme,
                       breaks=legend_groups,
                       labels=legend_labels)+
-    scale_shape_manual(name=NULL, 
+    scale_shape_manual(name=NULL,
                        values=shape_scheme,
                        breaks=legend_groups,
                        labels=legend_labels)+
@@ -50,13 +50,13 @@ bc_pcoa_plot <- plot_pcoa(bc_pcoa, bc_axis1, bc_axis2)
 #Perform adonis----
 #Read in Bray-Curtis distance matrix
 bc_dist <- read_dist("data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.std.dist")
-bc_variables <- tibble(sample = attr(bc_dist, "Labels")) %>% 
+bc_variables <- tibble(sample = attr(bc_dist, "Labels")) %>%
   left_join(metadata, by = "sample")
-bc_adonis <- adonis(bc_dist~group/miseq_run*plate*plate_location*pbs_added, data = bc_variables, permutations = 1000) 
-
+bc_adonis <- adonis(bc_dist~group/miseq_run*plate*plate_location*pbs_added, data = bc_variables, permutations = 1)
+bc_adonis
 #Select the adonis results dataframe and transform rownames into effects column
-bc_adonis_table <- as_tibble(add_rownames(test$aov.tab, var = "effects")) %>% 
-  write_tsv("data/process/adonis_bc.tsv")#Write results to .tsv file
+bc_adonis_table <- as_tibble(rownames_to_column(bc_adonis$aov.tab, var = "effects")) %>%
+  write_tsv("data/process/permanova_bc.tsv")#Write results to .tsv file
 
 #Jensen-Shannon divergence PCoA
 jsd_pcoa <- import_ord("data/mothur/cdi.opti_mcc.jsd.0.03.lt.ave.pcoa.axes")
@@ -66,10 +66,10 @@ jsd_pcoa_plot <- plot_pcoa(jsd_pcoa, jsd_axis1, jsd_axis2)
 
 jsd_nmds <- import_ord("data/mothur/cdi.opti_mcc.jsd.0.03.lt.ave.nmds.axes")
 #No percent variation labels associated with NMDS ordination
-jsd_nmds_plot <- jsd_nmds %>% 
+jsd_nmds_plot <- jsd_nmds %>%
   ggplot(aes(x=axis1, y=axis2, color = group, fill = group, shape = group))+
   geom_point(size=2, alpha = 0.5)+
-  labs(x = "Axis 1", 
+  labs(x = "Axis 1",
        y = "Axis 2")+
   scale_colour_manual(name=NULL,
                       values=color_scheme,
@@ -79,7 +79,7 @@ jsd_nmds_plot <- jsd_nmds %>%
                       values=color_scheme,
                       breaks=legend_groups,
                       labels=legend_labels)+
-  scale_shape_manual(name=NULL, 
+  scale_shape_manual(name=NULL,
                      values=shape_scheme,
                      breaks=legend_groups,
                      labels=legend_labels)+
@@ -90,7 +90,7 @@ jsd_nmds_plot <- jsd_nmds %>%
 jsd_nmds_plot_v2 <- jsd_nmds %>%
   ggplot(aes(x=axis1, y=axis2, color = detailed_group, fill = detailed_group, shape = detailed_group))+
   geom_point(size=2, alpha = 0.5)+
-  labs(x = "Axis 1", 
+  labs(x = "Axis 1",
        y = "Axis 2")+
   scale_colour_manual(name=NULL,
                       values=color_scheme_detailed,
@@ -100,11 +100,11 @@ jsd_nmds_plot_v2 <- jsd_nmds %>%
                     values=color_scheme_detailed,
                     breaks=legend_groups_detailed,
                     labels=legend_labels_detailed)+
-  scale_shape_manual(name=NULL, 
+  scale_shape_manual(name=NULL,
                      values=shape_scheme_detailed,
                      breaks=legend_groups_detailed,
                      labels=legend_labels_detailed)+
   theme_classic() +
   theme(text = element_text(size = 16))
 
-  
+ 
