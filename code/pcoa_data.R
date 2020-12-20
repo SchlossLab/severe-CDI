@@ -52,7 +52,13 @@ bc_pcoa_plot <- plot_pcoa(bc_pcoa, bc_axis1, bc_axis2)
 bc_dist <- read_dist("data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.std.dist")
 bc_variables <- tibble(sample = attr(bc_dist, "Labels")) %>%
   left_join(metadata, by = "sample")
-bc_adonis <- adonis(bc_dist~group/miseq_run*plate*plate_location*pbs_added, data = bc_variables, permutations = 1)
+bc_adonis <- adonis(bc_dist~group, data = bc_variables, permutations = 1000)
+bc_adonis
+#Select the adonis results dataframe and transform rownames into effects column
+bc_adonis_table <- as_tibble(rownames_to_column(bc_adonis$aov.tab, var = "effects")) %>%
+  write_tsv("data/process/permanova_bc_group.tsv")#Write results to .tsv file
+
+bc_adonis <- adonis(bc_dist~group/(miseq_run*plate*plate_location*pbs_added), data = bc_variables, permutations = 1000)
 bc_adonis
 #Select the adonis results dataframe and transform rownames into effects column
 bc_adonis_table <- as_tibble(rownames_to_column(bc_adonis$aov.tab, var = "effects")) %>%
