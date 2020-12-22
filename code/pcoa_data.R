@@ -58,7 +58,7 @@ bc_adonis
 bc_adonis_table <- as_tibble(rownames_to_column(bc_adonis$aov.tab, var = "effects")) %>%
   write_tsv("data/process/permanova_bc_group.tsv")#Write results to .tsv file
 
-bc_adonis <- adonis(bc_dist~group/(miseq_run*plate*plate_location*pbs_added), data = bc_variables, permutations = 1000, parallel = 19)
+bc_adonis <- adonis(bc_dist~group/(miseq_run*plate*plate_location*pbs_added), data = bc_variables, permutations = 1000, parallel = getOption("mc.cores"))
 bc_adonis
 #Select the adonis results dataframe and transform rownames into effects column
 bc_adonis_table <- as_tibble(rownames_to_column(bc_adonis$aov.tab, var = "effects")) %>%
