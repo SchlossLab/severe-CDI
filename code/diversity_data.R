@@ -1,4 +1,6 @@
 source("code/utilities.R") #Loads libraries, reads in metadata, functions
+library(pROC)
+library(scales)
 
 #Read in alpha diversity values from mothur
 diversity_data <- read_tsv("data/mothur/cdi.opti_mcc.groups.ave-std.summary") %>%
@@ -143,3 +145,58 @@ plot_grid(invsimpson_plot, shannon_plot, richness_plot,
           invsimpson_plot_detailed, shannon_plot_detailed, richness_plot_detailed,
           nrow = 2)+
   ggsave("results/figures/alpha_diversity.png", height = 10, width = 8)
+
+#Logistic regression based on Inverse Simpson index----
+#Chose Inverse Simpson because that is metric used in Schubert et al. mBio 2014
+#Match naming convention used in Schubert et al.
+#Resources used as starting point for code: https://github.com/BTopcuoglu/machine-learning-pipelines-r
+#https://daviddalpiaz.github.io/r4sl/logistic-regression.html 
+#Format data for logistic regression:
+#Case = CDI Case
+#DC = diarrheal control
+#NDC = nondiarrheal control
+#Function to Rescale values to fit between 0 and 1
+scale_this <- function(x){
+  as.vector(rescale(x))
+}
+div_format <- diversity_data %>% 
+  select(group, invsimpson) %>%  #Only require these 2 columns
+  mutate(invsimpson = scale_this(invsimpson)) %>% #Rescale values to fit between 0 and 1
+  mutate(group = as.character(group))
+
+#Subset data so that we are only predicting 2 outcomes at a time 
+Case_NDC <- div_format %>% filter(group %in% c("case", "nondiarrheal_control")) %>% 
+  mutate(group = ifelse(group == "case", 1, 0)) #Requires values to be 0 or 1 instead of characters
+Case_DC <- div_format %>% filter(group %in% c("case", "diarrheal_control")) %>% 
+  mutate(group = ifelse(group == "case", 1, 0)) #Requires values to be 0 or 1 instead of characters
+DC_NDC <- div_format %>% filter(group %in% c("diarrheal_control", "nondiarrheal_control")) %>% 
+  mutate(group = ifelse(group == "diarrheal_control", 1, 0)) #Requires values to be 0 or 1 instead of characters
+
+#Function to run logistic regression on different data frames that you input
+log_reg <- function(data){
+  #Random order samples:
+  random_ordered <- data[sample(nrow(data)),] #Need column to specify we're only shuffling row order
+  #Number of training samples
+  number_training_samples <- ceiling(nrow(random_ordered) * 0.8)
+  #Training set
+  train <- random_ordered[1:number_training_samples,]
+  #Testing set
+  test <- random_ordered[(number_training_samples + 1):nrow(random_ordered),]
+  #glm model
+  model_glm <- glm(group ~ invsimpson, data = train, family = "binomial")
+  #test model
+  test_prob <- predict(model_glm, newdata = test, type = "response")
+  #Get 95% confidence interval
+  ci <- ci.auc(test$group, test_prob, conf.level = 0.95)
+  print(ci) #Print out confidence interval
+  #Plot roc
+  test_roc <- roc(test$group ~ test_prob, plot = TRUE, print.auc = TRUE)
+  test_roc
+}
+#Make ROC curve
+
+Case_NDC_ROC <- log_reg(Case_NDC)
+Case_DC_ROC <- log_reg(Case_DC)
+DC_NDC_ROC <- log_reg(DC_NDC)
+
+
