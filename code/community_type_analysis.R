@@ -224,10 +224,12 @@ plot_grid(combined_heatmaps[[1]], combined_heatmaps[[2]], rel_heights = c(1, 3),
 #DC = diarrheal control
 #NDC = nondiarrheal control
 
-#See utilities for format_df function. Select metric to use. Rescale values to between 0 & 1
-cluster_format <- format_df(sample_best_cluster_fit, cluster) %>% 
-  select(-cluster) %>% #Tried to do this in function, but wasn't working
-  rename(cluster = rescale) #Replace rescale name 
+#See utilities for format_df function. Select metric to use. 
+#Treat community type as a categorical variable (transoform into factor)
+cluster_format <- sample_best_cluster_fit %>% 
+  select(group, cluster) %>% 
+  mutate(group = as.character(group), 
+         cluster = factor(cluster, levels = unique(as.factor(cluster))))
 
 #Subset data so that we are only predicting 2 outcomes at a time (see code/utilities.R for more details on funcitons used)
 Case_NDC <- randomize(subset_Case_NDC(cluster_format)) 
