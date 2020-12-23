@@ -1,5 +1,7 @@
 source("code/utilities.R") #Loads libraries, reads in metadata, functions
 
+set.seed(19760620) #Same seed used for mothur analysis
+
 #Create .shared and .taxonomy files at the genus level to use in Dirichlet Multinomial Mixture analysis
 #Shared file:
 shared <- read.delim('data/mothur/cdi.opti_mcc.0.03.subsample.shared', header=T, sep='\t') %>%
@@ -211,4 +213,52 @@ combined_heatmaps <- align_plots(percent_cluster, bacteria_in_clusters_plot, ali
 #Combine heat maps
 plot_grid(combined_heatmaps[[1]], combined_heatmaps[[2]], rel_heights = c(1, 3), ncol = 1)+
   ggsave("results/figures/community_types.png", height = 6.0, width = 8.5)
+
+#Logistic regression based on community type----
+#Cluster = community type
+#Match naming convention used in Schubert et al.
+#Resources used as starting point for code: https://github.com/BTopcuoglu/machine-learning-pipelines-r
+#https://daviddalpiaz.github.io/r4sl/logistic-regression.html 
+#Format data for logistic regression:
+#Case = CDI Case
+#DC = diarrheal control
+#NDC = nondiarrheal control
+
+#See utilities for format_df function. Select metric to use. Rescale values to between 0 & 1
+cluster_format <- format_df(sample_best_cluster_fit, cluster) %>% 
+  select(-cluster) %>% #Tried to do this in function, but wasn't working
+  rename(cluster = rescale) #Replace rescale name 
+
+#Subset data so that we are only predicting 2 outcomes at a time (see code/utilities.R for more details on funcitons used)
+Case_NDC <- randomize(subset_Case_NDC(cluster_format)) 
+Case_DC <- randomize(subset_Case_DC(cluster_format)) 
+DC_NDC <- randomize(subset_DC_NDC(cluster_format))
+
+#Function to run logistic regression on different data frames that you input
+#random_ordered = formatted dataframe with rows in a random order
+log_reg <- function(random_ordered){
+  #Number of training samples
+  number_training_samples <- ceiling(nrow(random_ordered) * 0.8)
+  #Training set
+  train <- random_ordered[1:number_training_samples,]
+  #Testing set
+  test <- random_ordered[(number_training_samples + 1):nrow(random_ordered),]
+  #glm model
+  model_glm <- glm(group ~ cluster, data = train, family = "binomial")
+  #test model
+  test_prob <- predict(model_glm, newdata = test, type = "response")
+  #Get 95% confidence interval
+  ci <- ci.auc(test$group, test_prob, conf.level = 0.95)
+  print(ci) #Print out confidence interval
+  #Plot roc
+  test_roc <- roc(test$group ~ test_prob, plot = TRUE, print.auc = TRUE)
+  test_roc
+}
+#Make ROC curve
+Case_NDC_ROC <- log_reg(Case_NDC)
+Case_DC_ROC <- log_reg(Case_DC)
+DC_NDC_ROC <- log_reg(DC_NDC)
+
+#Seems a lot worse than 2014 paper at discriptinating group.
+#Only difference was treating community type as a categorical variable in the model?
 
