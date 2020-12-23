@@ -157,7 +157,9 @@ plot_grid(invsimpson_plot, shannon_plot, richness_plot,
 #NDC = nondiarrheal control
 
 #See utilities for format_df function. Select metric to use. Rescale values to between 0 & 1
-div_format <- format_df(diversity_data, invsimpson)
+div_format <- format_df(diversity_data, invsimpson) %>% 
+  select(-invsimpson) %>% #Tried to do this in function, but wasn't working
+  rename(invsimpson = rescale) #Replace rescale name 
 
 #Subset data so that we are only predicting 2 outcomes at a time (see code/utilities.R for more details on funcitons used)
 Case_NDC <- randomize(subset_Case_NDC(div_format)) 
@@ -165,6 +167,7 @@ Case_DC <- randomize(subset_Case_DC(div_format))
 DC_NDC <- randomize(subset_DC_NDC(div_format))
 
 #Function to run logistic regression on different data frames that you input
+#random_ordered = formatted dataframe with rows in a random order
 log_reg <- function(random_ordered){
   #Number of training samples
   number_training_samples <- ceiling(nrow(random_ordered) * 0.8)

@@ -53,11 +53,11 @@ scale_this <- function(x){
 
 #Narrow dataframe to 2 columns needed, rescale column that will be used to predict group
 #df = dataframe to format
-#column to use in logistic regression analysis
+#metric = column to use in logistic regression analysis
 format_df <- function(df, metric){
   df %>% 
   select(group, {{ metric }}) %>%  #Only require these 2 columns
-    mutate(invsimpson = scale_this({{ metric }})) %>% #Rescale values to fit between 0 and 1
+    mutate(rescale = scale_this({{ metric }})) %>% #Rescale values to fit between 0 and 1
     mutate(group = as.character(group))
 }
 
