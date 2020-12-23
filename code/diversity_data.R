@@ -155,27 +155,17 @@ plot_grid(invsimpson_plot, shannon_plot, richness_plot,
 #Case = CDI Case
 #DC = diarrheal control
 #NDC = nondiarrheal control
-#Function to Rescale values to fit between 0 and 1
-scale_this <- function(x){
-  as.vector(rescale(x))
-}
-div_format <- diversity_data %>% 
-  select(group, invsimpson) %>%  #Only require these 2 columns
-  mutate(invsimpson = scale_this(invsimpson)) %>% #Rescale values to fit between 0 and 1
-  mutate(group = as.character(group))
 
-#Subset data so that we are only predicting 2 outcomes at a time 
-Case_NDC <- div_format %>% filter(group %in% c("case", "nondiarrheal_control")) %>% 
-  mutate(group = ifelse(group == "case", 1, 0)) #Requires values to be 0 or 1 instead of characters
-Case_DC <- div_format %>% filter(group %in% c("case", "diarrheal_control")) %>% 
-  mutate(group = ifelse(group == "case", 1, 0)) #Requires values to be 0 or 1 instead of characters
-DC_NDC <- div_format %>% filter(group %in% c("diarrheal_control", "nondiarrheal_control")) %>% 
-  mutate(group = ifelse(group == "diarrheal_control", 1, 0)) #Requires values to be 0 or 1 instead of characters
+#See utilities for format_df function. Select metric to use. Rescale values to between 0 & 1
+div_format <- format_df(diversity_data, invsimpson)
+
+#Subset data so that we are only predicting 2 outcomes at a time (see code/utilities.R for more details on funcitons used)
+Case_NDC <- randomize(subset_Case_NDC(div_format)) 
+Case_DC <- randomize(subset_Case_DC(div_format)) 
+DC_NDC <- randomize(subset_DC_NDC(div_format))
 
 #Function to run logistic regression on different data frames that you input
-log_reg <- function(data){
-  #Random order samples:
-  random_ordered <- data[sample(nrow(data)),] #Need column to specify we're only shuffling row order
+log_reg <- function(random_ordered){
   #Number of training samples
   number_training_samples <- ceiling(nrow(random_ordered) * 0.8)
   #Training set
@@ -194,7 +184,6 @@ log_reg <- function(data){
   test_roc
 }
 #Make ROC curve
-
 Case_NDC_ROC <- log_reg(Case_NDC)
 Case_DC_ROC <- log_reg(Case_DC)
 DC_NDC_ROC <- log_reg(DC_NDC)

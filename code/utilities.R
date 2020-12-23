@@ -26,7 +26,6 @@ legend_labels
 #Alternative shape scheme for detailed_group where C. difficile cases are broken down by stool consistency
 shape_scheme_detailed <- c(0, 22, 8, 24, 21) #closed
 
-
 #Read in metadata
 metadata <- read_tsv("data/process/final_CDI_16S_metadata.tsv") %>% 
   rename(sample = `CDIS_Sample ID`) %>% 
@@ -45,6 +44,51 @@ metadata <- read_tsv("data/process/final_CDI_16S_metadata.tsv") %>%
          plate_location = factor(plate_location, levels = unique(as.factor(plate_location))),
          pbs_added = factor(pbs_added, levels = unique(as.factor(pbs_added))))
   
+
+#Functions to subset data frames and format for logistic regression----
+#Function to Rescale values to fit between 0 and 1
+scale_this <- function(x){
+  as.vector(rescale(x))
+}
+
+#Narrow dataframe to 2 columns needed, rescale column that will be used to predict group
+#df = dataframe to format
+#column to use in logistic regression analysis
+format_df <- function(df, metric){
+  df %>% 
+  select(group, {{ metric }}) %>%  #Only require these 2 columns
+    mutate(invsimpson = scale_this({{ metric }})) %>% #Rescale values to fit between 0 and 1
+    mutate(group = as.character(group))
+}
+
+#Format data for logistic regression:
+#Case = CDI Case
+#DC = diarrheal control
+#NDC = nondiarrheal control
+#Function that selects 2 groups to predict with logistic regression. 
+#Recode character entries into #s for group column.
+#Randomize order of the rows
+#df = formatted dataframe with rescaled feature values
+subset_Case_NDC <- function(df){
+  df %>% 
+    filter(group %in% c("case", "nondiarrheal_control")) %>% 
+    mutate(group = ifelse(group == "case", 1, 0)) #Requires values to be 0 or 1 instead of characters
+}
+subset_Case_DC <- function(df){
+  df %>% 
+  filter(group %in% c("case", "diarrheal_control")) %>% 
+  mutate(group = ifelse(group == "case", 1, 0)) #Requires values to be 0 or 1 instead of characters
+}
+subset_DC_NDC <- function(df){
+    df %>% 
+    filter(group %in% c("diarrheal_control", "nondiarrheal_control")) %>% 
+    mutate(group = ifelse(group == "diarrheal_control", 1, 0)) #Requires values to be 0 or 1 instead of characters
+}
+#Random order samples:
+#df to randomize based on number of rows
+randomize <- function(df){
+  df[sample(nrow(df)),] #Need column to specify we're only shuffling row order
+}
 
 #Functions used in statistical analysis----
 #Function to calculate the median shannon values from a dataframe (x) grouped by treatment
@@ -117,3 +161,4 @@ read_dist <- function(dist_file_name){
 intersect_all <- function(a,b,...){
   Reduce(intersect, list(a,b,...))
 }
+
