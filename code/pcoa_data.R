@@ -70,7 +70,7 @@ bc_adonis
 #Select the adonis results dataframe and transform rownames into effects column
 bc_adonis_table <- as_tibble(rownames_to_column(bc_adonis$aov.tab, var = "effects")) %>%
   write_tsv("data/process/permanova_bc_plate.tsv")#Write results to .tsv file
-bc_adonis <- adonis(bc_dist~olate_location, data = bc_variables, permutations = 1000, parallel = 20)
+bc_adonis <- adonis(bc_dist~plate_location, data = bc_variables, permutations = 1000, parallel = 20)
 bc_adonis
 #Select the adonis results dataframe and transform rownames into effects column
 bc_adonis_table <- as_tibble(rownames_to_column(bc_adonis$aov.tab, var = "effects")) %>%
