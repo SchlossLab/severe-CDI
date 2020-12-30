@@ -3,5 +3,5 @@ outcome_colname: outcome
 ml_methods:
  - glmnet
 kfold: 5
-ncores: 4
+ncores: 36
 nseeds: 100
