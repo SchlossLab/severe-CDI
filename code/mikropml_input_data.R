@@ -1,0 +1,39 @@
+source("code/utilities.R") #Loads libraries, reads in metadata, functions
+
+# Import otu_data for samples
+#Note: check for sub.sample version in data/mothur make sure that is the output from sub.sample
+otu_data <- read_tsv("data/mothur/cdi.opti_mcc.0.03.subsample.shared", col_types=cols(Group=col_character())) %>%
+  select(-label, -numOtus) %>%
+  rename(sample = Group) %>% #group is the same as sample in the metadata data frame
+  gather(-sample, key="otu", value="count") %>%
+  mutate(rel_abund=count/5000) %>%  #Use 5000, because this is the subsampling parameter chosen.
+  #using rel_abund also means the data will be normalized to between 0 and 1
+  filter(!otu == "Otu00041") %>% #Remove most common C. difficile OTU, we want to determine C. diff status based on the rest of the microbiota
+  pivot_wider(id_cols = sample, names_from = otu, values_from = rel_abund) %>% #Transform dataframe so that each OTU is a different column
+  left_join(select(metadata, group, sample), by = "sample") %>% 
+  rename(outcome = group) %>%  #Rename group to outcome, this is what we will classify based on OTU relative abundances
+  relocate(outcome, before = sample) %>% 
+  select(-sample) #drop sample since we no longer need this column
+
+#Make sure no controls are included in data (should be dropped since we subsampled to 5000 sequences)  
+otu_data %>% filter(outcome == "pbs_control")
+otu_data %>% filter(outcome == "water_control")
+otu_data %>% filter(outcome == "mock_control")
+
+#Subset data to just 2 outcome groups &
+#Write subsetted dataframe as .csv files to be used in the mikropml package
+subset_data <- function(outcome1, outcome2, file_name){
+  otu_data %>% 
+    filter(outcome %in% c(outcome1, outcome2)) %>% 
+    write_csv(path = paste0("data/process/ml_", file_name, ".csv"))
+    
+}
+
+#Create input data for Cases vs nondiarrheal controls 
+subset_data("case", "nondiarrheal_control", "CvNDC")
+#Create input data for Cases vs diarrheal controls
+subset_data("case", "diarrheal_control", "CvDC")
+#Create input data for diarrheal controls vs nondiarrheal controls
+subset_data("diarrheal_control", "diarrheal_control", "DCvNDC")
+
+
