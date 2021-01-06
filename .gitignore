@@ -8,6 +8,8 @@ data/*/*
 !data/process/*
 data/process/.DS_Store
 !README.md
+results/runs/*
+log/*
 
 *.qsub*
 mothur*logfile
