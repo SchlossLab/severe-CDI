@@ -1,10 +1,10 @@
 ML Results
 ================
-2020-11-13
+2021-01-06
 
-Machine learning algorithms used include: glmnet, rf, rpart2, svmRadial,
-xgbTree. Models were trained with 100 different random partitions of the
-data into training and testing sets using 5-fold cross validation.
+Machine learning algorithms used include: glmnet, rf, rpart2, svmRadial.
+Models were trained with 100 different random partitions of the data
+into training and testing sets using 5-fold cross validation.
 
 ## Model Performance
 
