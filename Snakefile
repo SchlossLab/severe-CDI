@@ -11,7 +11,13 @@ seeds = range(start_seed, start_seed + nseeds)
 rule targets:
     input:
         'report_dataset1.md'
+
+rule targets:
+    input:
         'report_dataset2.md'
+
+rule targets:
+    input:
         'report_dataset3.md'
 
 rule preprocess_data1:
