@@ -84,7 +84,7 @@ rule combine_benchmarks_1:
 rule plot_performance_1:
     input:
         R="code/plot_perf.R",
-        csv='results//dataset1/performance_results.csv'
+        csv='results/dataset1/performance_results.csv'
     output:
         plot='figures/performance_dataset1.png'
     log:
@@ -195,7 +195,7 @@ rule combine_benchmarks_2:
 rule plot_performance_2:
     input:
         R="code/plot_perf.R",
-        csv='results//dataset2/performance_results.csv'
+        csv='results/dataset2/performance_results.csv'
     output:
         plot='figures/performance_dataset2.png'
     log:
@@ -306,7 +306,7 @@ rule combine_benchmarks_3:
 rule plot_performance_3:
     input:
         R="code/plot_perf.R",
-        csv='results//dataset3/performance_results.csv'
+        csv='results/dataset3/performance_results.csv'
     output:
         plot='figures/performance_dataset3.png'
     log:
