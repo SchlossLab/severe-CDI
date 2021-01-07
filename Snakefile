@@ -8,15 +8,15 @@ nseeds = config['nseeds']
 start_seed = 100
 seeds = range(start_seed, start_seed + nseeds)
 
-rule targets:
+rule targets_1:
     input:
         'report_dataset1.md'
 
-rule targets:
+rule targets_2:
     input:
         'report_dataset2.md'
 
-rule targets:
+rule targets_3:
     input:
         'report_dataset3.md'
 
