@@ -234,20 +234,20 @@ rule clean_2:
         rm -rf {input}
         '''
 
-    rule preprocess_data3:
-        input:
-            R="code/preproc.R",
-            csv=config['dataset3']
-        output:
-            rds='data/dat_proc3.Rds'
-        log:
-            "log/preprocess_data3.txt"
-        benchmark:
-            "benchmarks/preprocess_data3.txt"
-        resources:
-            ncores=ncores
-        script:
-            "code/preproc.R"
+rule preprocess_data3:
+    input:
+        R="code/preproc.R",
+        csv=config['dataset3']
+    output:
+        rds='data/dat_proc3.Rds'
+    log:
+        "log/preprocess_data3.txt"
+    benchmark:
+        "benchmarks/preprocess_data3.txt"
+    resources:
+        ncores=ncores
+    script:
+        "code/preproc.R"
 
 rule run_ml_3:
     input:
