@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=mikropml_CvDC
+#SBATCH --job-name=mikropml_3_comparisons
 
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
@@ -16,4 +16,4 @@
 #SBATCH --mail-user=tomkoset@umich.edu
 #SBATCH --mail-type=BEGIN,END
 
-time snakemake --profile config/slurm --latency-wait 90 --configfile config/config.yml
+time snakemake --profile config/slurm --latency-wait 90 --configfile config/config.yml -n report_dataset2.md report_dataset3.md report_dataset1.md
