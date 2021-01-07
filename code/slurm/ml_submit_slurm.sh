@@ -16,4 +16,4 @@
 #SBATCH --mail-user=tomkoset@umich.edu
 #SBATCH --mail-type=BEGIN,END
 
-time snakemake --profile config/slurm --latency-wait 90 --configfile config/config.yml report_dataset2.md report_dataset3.md report_dataset1.md
+time snakemake --profile config/slurm --latency-wait 90 --configfile config/config.yml --forcerun report_dataset2.md report_dataset3.md report_dataset1.md
