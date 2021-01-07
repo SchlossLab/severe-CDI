@@ -6,7 +6,7 @@
   "nodes": 1,
   "procs": 1,
   "pmem": "8GB",
-  "walltime": "96:00:00",
+  "walltime": "72:00:00",
   "email": "tomkoset@umich.edu",
   "mail_type": "FAIL",
   "outfile": "log/hpc/jobs/{rule}.{wildcards}.out"
