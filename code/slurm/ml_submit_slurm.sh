@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=mikropml_3_comparisons
+#SBATCH --job-name=mikropml_DCvNDC
 
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
