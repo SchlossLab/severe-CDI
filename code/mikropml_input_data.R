@@ -34,6 +34,6 @@ subset_data("case", "nondiarrheal_control", "CvNDC")
 #Create input data for Cases vs diarrheal controls
 subset_data("case", "diarrheal_control", "CvDC")
 #Create input data for diarrheal controls vs nondiarrheal controls
-subset_data("diarrheal_control", "diarrheal_control", "DCvNDC")
+subset_data("diarrheal_control", "nondiarrheal_control", "DCvNDC")
 
 
