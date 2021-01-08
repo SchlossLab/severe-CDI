@@ -8,7 +8,7 @@ nseeds = config['nseeds']
 start_seed = 100
 seeds = range(start_seed, start_seed + nseeds)
 
-rule targets_1:
+rule targets:
     input:
         'report.md'
 
@@ -99,8 +99,8 @@ rule render_report:
     input:
         Rmd='report.Rmd',
         R='code/render.R',
-        perf_plot=rules.plot_performance_1.output.plot,
-        bench_plot=rules.plot_benchmarks_1.output.plot
+        perf_plot=rules.plot_performance.output.plot,
+        bench_plot=rules.plot_benchmarks.output.plot
     output:
         doc='report.md'
     log:
