@@ -1,6 +1,4 @@
 source("code/utilities.R") #Loads libraries, reads in metadata, functions
-library(pROC)
-library(scales)
 
 #Read in alpha diversity values from mothur
 diversity_data <- read_tsv("data/mothur/cdi.opti_mcc.groups.ave-std.summary") %>%
