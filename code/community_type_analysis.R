@@ -255,11 +255,19 @@ log_reg <- function(random_ordered){
   #Plot roc
   test_roc <- roc(test$group ~ test_prob, plot = TRUE, print.auc = TRUE)
   test_roc
+#  ggroc(test_roc)+
+#    annotate(paste0('AUC = ', round(test_roc$auc, digits = 3))) +
+#    geom_segment(aes(x = 0, xend = 1, y = 0, yend = 1), color="darkgrey", linetype="dashed")
+#    theme_classic()
 }
 #Make ROC curve
-Case_NDC_ROC <- log_reg(Case_NDC)
+Case_NDC_ROC <- log_reg(Case_NDC)#+
+#  ggtitle(paste0('Case vs Non-DiarrhealControls'))
+#save_plot("results/figures/community_roc_CvNDC.png", Case_NDC_ROC, base_height = 5, base_width = 5)
 Case_DC_ROC <- log_reg(Case_DC)
+#save_plot("results/figures/community_roc_CvDC.png", Case_DC_ROC, base_height = 5, base_width = 5)
 DC_NDC_ROC <- log_reg(DC_NDC)
+#save_plot("results/figures/community_roc_DCvNDC.png", DC_NDC_ROC, base_height = 5, base_width = 5)
 
 #Seems a lot worse than 2014 paper at discriptinating group.
 #Only difference was treating community type as a categorical variable in the model?
