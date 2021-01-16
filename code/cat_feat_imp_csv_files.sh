@@ -17,6 +17,6 @@ FINAL_DIR=results/
 
 for model in "glmnet" "rf"
 do
-  	head -1 $SEARCH_DIR/"$model"_*_feature-importance.csv  > $SEARCH_DIR/combined_feature-importance_"$model".csv; tail -n +2 -q $SEARCH_DIR/"$model"_*_feature-importance.csv >> $SEARCH_DIR/combined_feature-importance_"$model".csv
+  	head -1 $SEARCH_DIR/"$model"_100_feature-importance.csv  > $SEARCH_DIR/combined_feature-importance_"$model".csv; tail -n +2 -q $SEARCH_DIR/"$model"_*_feature-importance.csv >> $SEARCH_DIR/combined_feature-importance_"$model".csv
     mv $SEARCH_DIR/combined_feature-importance_"$model".csv $FINAL_DIR/combined_feature-importance_"$model".csv
 done
