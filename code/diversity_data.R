@@ -1,6 +1,4 @@
 source("code/utilities.R") #Loads libraries, reads in metadata, functions
-library(pROC)
-library(scales)
 
 #Read in alpha diversity values from mothur
 diversity_data <- read_tsv("data/mothur/cdi.opti_mcc.groups.ave-std.summary") %>%
@@ -144,7 +142,16 @@ richness_plot_detailed <- plot_alpha_metric_detailed(sobs, "Number of Observed O
 plot_grid(invsimpson_plot, shannon_plot, richness_plot,
           invsimpson_plot_detailed, shannon_plot_detailed, richness_plot_detailed,
           nrow = 2)+
-  ggsave("results/figures/alpha_diversity.png", height = 10, width = 8)
+  ggsave("results/figures/alpha_diversity.png", height = 10, width = 9.5)
+#Inverse simpson
+plot_grid(invsimpson_plot, invsimpson_plot_detailed,
+          nrow = 1)+
+  ggsave("results/figures/alpha_inv_simpson.png", height = 5, width = 4.5)
+#Richness
+plot_grid(richness_plot, richness_plot_detailed,
+          nrow = 1)+
+  ggsave("results/figures/alpha_richness.png", height = 5, width = 4.5)
+
 
 #Logistic regression based on Inverse Simpson index----
 #Chose Inverse Simpson because that is metric used in Schubert et al. mBio 2014

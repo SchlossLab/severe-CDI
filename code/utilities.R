@@ -7,6 +7,8 @@ library(vegan)
 library(glue)
 library(ggtext)
 library(parallel)
+library(pROC)
+library(scales)
 #library(viridis) #color blind friendly palettes
 
 #Define color scheme----
