@@ -20,6 +20,6 @@
   "pmem": "4GB"
  },
  "combine_hp_performance": {
-  "pmem": "16GB"
+  "pmem": "32GB"
  }
 }
