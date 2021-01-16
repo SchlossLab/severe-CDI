@@ -142,6 +142,7 @@ rule clean:
     input:
         rules.render_report.output,
         rules.plot_performance.output.plot,
+        rules.plot_hp_performance.output.plot,
         rules.plot_benchmarks.output.plot
     shell:
         '''
