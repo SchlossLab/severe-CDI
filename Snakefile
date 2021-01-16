@@ -65,7 +65,7 @@ rule combine_results:
 rule combine_feat_importance:
     input:
         R="code/combine_feat_imp.R",
-        csv=expand("results/runs/{method}_{seed}_{{type}}.csv", method = ml_methods, seed = seeds)
+        csv=expand("results/runs/{method}_{seed}_feature_importance.csv", method = ml_methods, seed = seeds)
     output:
         csv='results/{type}_feat_imp.csv'
     log:
