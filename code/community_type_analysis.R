@@ -196,7 +196,7 @@ bacteria_in_clusters_plot <- bacteria_in_clusters %>%
   mutate(cluster= as.numeric(cluster)) %>% #Transform cluster variable type from character to numeric
   ggplot() + geom_tile(aes(x=genus,y=cluster,fill=relabund))+
   scale_y_continuous(breaks = c(1:12))+
-  labs(y = "Cluster")+
+  labs(y = "Type")+
   coord_flip()+
   theme_classic()+
   theme(axis.text.y = element_text(face = "italic"))+
