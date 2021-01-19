@@ -1,0 +1,21 @@
+genus,color,overlap
+Roseburia,goldenrod,all
+Enterobacteriaceae Unclassified,goldenrod,all
+Streptococcus,goldenrod,all
+Clostridium XlVa,red,case
+Clostridium sensu stricto,red,case
+Hungatella,red,case
+Lachnospiraceae Unclassified,red,case
+Clostridium XlVb,red,case
+Coprococcus,red,case
+Bacteroides,red,case
+Flavonifractor,blue,dc
+Veillonella,blue,dc
+Bacteria Unclassified,blue,dc
+Veillonellaceae Unclassified,blue,dc
+Oscillibacter,grey50,ndc
+Blautia,grey50,ndc
+Fusicatenibacter,grey50,ndc
+Fusobacterium,grey50,ndc
+Phascolarctobacterium,grey50,ndc
+Bifidobacterium,grey50,ndc

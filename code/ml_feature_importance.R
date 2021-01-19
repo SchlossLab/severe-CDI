@@ -29,8 +29,7 @@ read_feat_imp <- function(file_path){
     rename(otu=names) %>%
     mutate(otu=paste0(gsub('TU0*', 'TU ', otu))) %>%
     separate(otu, into = c("bactname", "OTUnumber"), sep = "\\ [(]", remove = FALSE) %>% #Add columns to separate bacteria name from OTU number to utilize ggtext so that only bacteria name is italicized
-    mutate(otu_name = glue("*{bactname}* ({OTUnumber}")) %>% #Markdown notation so that only bacteria name is italicized
-    select(-bactname, -OTUnumber)
+    mutate(otu_name = glue("*{bactname}* ({OTUnumber}")) #Markdown notation so that only bacteria name is italicized
   return(final_feat_imp)
 }
 CvDC_rf <- read_feat_imp("results/CvDC/combined_feature-importance_rf.csv")
@@ -72,6 +71,48 @@ ndc <- intersect_all(CvNDC_rf_top, DCvNDC_rf_top)
 #Define colors for overlapping OTUs
 cols <- c("all" = "goldenrod", "case" = "red", "dc" = "blue", "ndc" = "grey50", "no overlap" = "black")
 
+#Create data frame of top OTUs that overlap between at least 2 random forest models:
+CvDC_rf %>% 
+  add_row(CvNDC_rf) %>% 
+  add_row(DCvNDC_rf) %>% 
+  select(otu, bactname, OTUnumber) %>% 
+  filter(otu %in% c(all, case, dc, ndc)) %>%
+  distinct(otu, bactname, OTUnumber) %>% 
+  mutate(color = case_when(otu %in% all ~ "goldenrod",
+                                 otu %in% case ~ "red",
+                                 otu %in% dc ~ "blue",
+                                 otu %in% ndc ~ "grey50",
+                                 TRUE ~ "black")) %>% 
+  mutate(overlap = case_when(otu %in% all ~ "all",
+                             otu %in% case ~ "case",
+                             otu %in% dc ~ "dc",
+                             otu %in% ndc ~ "ndc",
+                             TRUE ~ "no overlap")) %>% 
+  mutate(otu_color_name = glue("<i style='color:{color}'>{bactname}</i> ({OTUnumber}")) %>% #Markdown notation so that only bacteria name is italicized and colors will be incorporated into name
+  select(-bactname, -OTUnumber) %>% 
+  write_csv(path = "data/process/ml_rf_top_otus_overlap.csv")
+
+#Create data frame of top OTUs that do not overlap between at least 2 random forest models:
+CvDC_rf %>% 
+  add_row(CvNDC_rf) %>% 
+  add_row(DCvNDC_rf) %>% 
+  select(otu, bactname, OTUnumber) %>% 
+  distinct(otu, bactname, OTUnumber) %>% 
+  filter(otu %in% c(CvDC_rf_top, CvNDC_rf_top, DCvNDC_rf_top)) %>% 
+  mutate(color = "black") %>% 
+  mutate(model = case_when(otu %in% CvDC_rf_top ~ "CvDC",
+                             otu %in% CvNDC_rf_top ~ "CvNDC",
+                             otu %in% DCvNDC_rf_top ~ "DCvNDC",
+                             TRUE ~ "NA")) %>% 
+  mutate(overlap = case_when(otu %in% all ~ "all",
+                             otu %in% case ~ "case",
+                             otu %in% dc ~ "dc",
+                             otu %in% ndc ~ "ndc",
+                             TRUE ~ "no overlap")) %>% 
+  mutate(otu_color_name = glue("<i style='color:{color}'>{bactname}</i> ({OTUnumber}")) %>% #Markdown notation so that only bacteria name is italicized and colors will be incorporated into name
+  filter(overlap == "no overlap") %>% #Remove all features that overlap between models
+  select(-overlap, -bactname, -OTUnumber) %>% 
+  write_csv(path = "data/process/ml_rf_top_otus_no_overlap.csv")  
 #Function to filter to top OTUs for each pairwise comparison & plot results
 #df = dataframes of feature importances for all seeds
 #top_otus = dataframes of top otus
@@ -134,7 +175,6 @@ CvDC_rf <- read_feat_imp_genus("results/CvDC/genus_level/combined_feature-import
 CvNDC_rf <- read_feat_imp_genus("results/CvNDC/genus_level/combined_feature-importance_rf.csv")
 DCvNDC_rf <- read_feat_imp_genus("results/DCvNDC/genus_level/combined_feature-importance_rf.csv")
 
-
 #Function to get the top 20 features that have the largest impact on AUROC
 #df = dataframe of feature importances for the 100 seeds
 top_20_genus <- function(df){
@@ -167,6 +207,24 @@ ndc <- intersect_all(CvNDC_rf_top, DCvNDC_rf_top)
 
 #Define colors for overlapping OTUs
 cols <- c("all" = "goldenrod", "case" = "red", "dc" = "blue", "ndc" = "grey50", "no overlap" = "black")
+
+#Create data frame of top genera that overlap between at least 2 random forest models:
+tibble("genus" = all) %>% 
+  add_row(tibble("genus" = case)) %>% 
+  add_row(tibble("genus" = dc)) %>% 
+  add_row(tibble("genus" = ndc)) %>% 
+  distinct(genus) %>% 
+  mutate(color = case_when(genus %in% all ~ "goldenrod",
+                           genus %in% case ~ "red",
+                           genus %in% dc ~ "blue",
+                           genus %in% ndc ~ "grey50",
+                           TRUE ~ "black")) %>% 
+  mutate(overlap = case_when(genus %in% all ~ "all",
+                             genus %in% case ~ "case",
+                             genus %in% dc ~ "dc",
+                             genus %in% ndc ~ "ndc",
+                             TRUE ~ "no overlap")) %>% 
+  write_csv(path = "data/process/ml_rf_top_genera_overlap.csv")
 
 #Function to filter to top genuss for each pairwise comparison & plot results
 #df = dataframes of feature importances for all seeds
