@@ -1,6 +1,8 @@
 source("code/utilities.R") #Loads libraries, reads in metadata, functions
 source("code/read_taxa_data.R") #Read in taxa data
 
+agg_genus_data <- agg_taxonomic_data(genus)
+
 #Remove large data frames no longer needed
 rm(agg_taxa_data)
 rm(agg_otu)
@@ -154,4 +156,73 @@ indiv_otu_plot <- function(otu_plot){
 
 otu_41 <- indiv_otu_plot("Peptostreptococcaceae (OTU 41)")
 save_plot("results/figures/otus_peptostreptococcaceae_41.png", otu_41, base_height =8, base_width = 6)
+
+#Explore relative abundances of top features that overlap across the 3 random forest classification models---
+overlap_otu <- read_csv("data/process/ml_rf_top_otus_overlap.csv")
+overlap_otus <- overlap_otu %>% pull(otu) #list of otus
+overlap_genus <- read_csv("data/process/ml_rf_top_genera_overlap.csv")
+
+#Filter otu data to just otus of interest, join to overlap_otu to add overlap and color columns
+top_agg_otu_subset <- agg_otu_data %>% 
+  filter(otu %in% overlap_otus) %>% 
+  left_join(overlap_otu, by = "otu")
+
+top_overlap_otus_hm <- top_agg_otu_subset %>% 
+  group_by(group, otu_color_name) %>% 
+  summarize(median=median(agg_rel_abund + 1/10000),`.groups` = "drop") %>%  #Add small value (1/2Xsubssampling parameter) so that there are no infinite values with log transformation
+  ggplot()+
+  geom_tile(aes(x = group, y=otu_color_name, fill=median))+
+  labs(title=NULL,
+       x=NULL,
+       y=NULL)+
+  scale_fill_distiller(trans = "log10",palette = "YlGnBu", direction = 1, name = "Relative \nAbundance", breaks=c(1e-4, 1e-3, 1e-2, 1e-1, 1), labels=c(1e-2, 1e-1, 1, 10, 100), limits = c(1/10000, 1))+
+  theme_classic()+
+  scale_x_discrete(label = c("Case", "Diarrheal Control", "Non-Diarrheal Control"))+
+  theme(plot.title=element_text(hjust=0.5),
+        axis.text.x = element_text(angle = 45, hjust = 1), #Angle axis labels
+        axis.text.y = element_markdown(), #Have only the OTU names show up as italics
+        text = element_text(size = 16)) # Change font size for entire plot
+save_plot("results/figures/feat_imp_overlap_otus_abund.png", top_overlap_otus_hm, base_height =8, base_width = 6)
+
+#OTUs that are unique to each model
+no_overlap_otu <- read_csv("data/process/ml_rf_top_otus_no_overlap.csv")
+no_overlap_otus <- no_overlap_otu %>% pull(otu) #list of otus
+cvdc_otus <- no_overlap_otu %>% filter(model == "CvDC") %>% pull(otu)
+cvndc_otus <- no_overlap_otu %>% filter(model == "CvNDC") %>% pull(otu)
+dcvndc_otus <- no_overlap_otu %>% filter(model == "DCvNDC") %>% pull(otu) 
+
+#Filter otu data to just otus of interest, join to overlap_otu to add overlap and color columns
+no_overlap_agg_otu_subset <- agg_otu_data %>% 
+  filter(otu %in% no_overlap_otus) %>% 
+  left_join(no_overlap_otu, by = "otu")
+
+#Function to plot OTUs that were unique to each model
+#model_otus = list of otus unique to a model
+#model_name = name of model in quotes, to be used as title
+plot_unique_otus <- function(model_otus, model_name){
+  no_overlap_agg_otu_subset %>% 
+    filter(otu %in% model_otus) %>% #Select only otus for a specific model
+    group_by(group, otu_color_name) %>% 
+    mutate(median=median(agg_rel_abund + 1/10000),`.groups` = "drop") %>%  #Add small value (1/2Xsubssampling parameter) so that there are no infinite values with log transformation
+    ggplot()+
+    geom_tile(aes(x = group, y=otu_color_name, fill=median))+
+    labs(title=model_name,
+         x=NULL,
+         y=NULL)+
+    scale_fill_distiller(trans = "log10",palette = "YlGnBu", direction = 1, name = "Relative \nAbundance", breaks=c(1e-4, 1e-3, 1e-2, 1e-1, 1), labels=c(1e-2, 1e-1, 1, 10, 100), limits = c(1/10000, 1))+
+    theme_classic()+
+    scale_x_discrete(label = c("Case", "Diarrheal Control", "Non-Diarrheal Control"))+
+    theme(plot.title=element_text(hjust=0.5),
+          axis.text.x = element_text(angle = 45, hjust = 1), #Angle axis labels
+          axis.text.y = element_markdown(), #Have only the OTU names show up as italics
+          text = element_text(size = 16)) # Change font size for entire plot
+}
+
+#Plot the unique OTUs for each model----
+cvdc_unique <- plot_unique_otus(cvdc_otus, "Case v DC")  
+save_plot("results/figures/feat_imp_unique_CvDC_otus_abund.png", cvdc_unique, base_height =8, base_width = 6)
+cvndc_unique <- plot_unique_otus(cvndc_otus, "Case v NDC")  
+save_plot("results/figures/feat_imp_unique_CvNDC_otus_abund.png", cvndc_unique, base_height =8, base_width = 6)
+dcvndc_unique <- plot_unique_otus(dcvndc_otus, "DC v NDC")  
+save_plot("results/figures/feat_imp_unique_DCvNDC_otus_abund.png", dcvndc_unique, base_height =8, base_width = 6)
 
