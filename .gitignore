@@ -6,7 +6,11 @@
 
 data/*/*
 !data/process/*
+data/*.Rds
 data/process/.DS_Store
+figures/CvDC/*
+figures/CvNDC/*
+figues/DCvNDC/*
 !README.md
 results/runs/*
 log/*
