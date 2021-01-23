@@ -157,10 +157,9 @@ indiv_otu_plot <- function(otu_plot){
 otu_41 <- indiv_otu_plot("Peptostreptococcaceae (OTU 41)")
 save_plot("results/figures/otus_peptostreptococcaceae_41.png", otu_41, base_height =8, base_width = 6)
 
-#Explore relative abundances of top features that overlap across the 3 random forest classification models---
+#Explore relative abundances of top features that overlap across the 3 random forest classification models----
 overlap_otu <- read_csv("data/process/ml_rf_top_otus_overlap.csv")
 overlap_otus <- overlap_otu %>% pull(otu) #list of otus
-overlap_genus <- read_csv("data/process/ml_rf_top_genera_overlap.csv")
 
 #Filter otu data to just otus of interest, join to overlap_otu to add overlap and color columns
 top_agg_otu_subset <- agg_otu_data %>% 
@@ -184,7 +183,7 @@ top_overlap_otus_hm <- top_agg_otu_subset %>%
         text = element_text(size = 16)) # Change font size for entire plot
 save_plot("results/figures/feat_imp_overlap_otus_abund.png", top_overlap_otus_hm, base_height =8, base_width = 6)
 
-#OTUs that are unique to each model
+#OTUs that are unique to each model----
 no_overlap_otu <- read_csv("data/process/ml_rf_top_otus_no_overlap.csv")
 no_overlap_otus <- no_overlap_otu %>% pull(otu) #list of otus
 cvdc_otus <- no_overlap_otu %>% filter(model == "CvDC") %>% pull(otu)
@@ -225,4 +224,72 @@ cvndc_unique <- plot_unique_otus(cvndc_otus, "Case v NDC")
 save_plot("results/figures/feat_imp_unique_CvNDC_otus_abund.png", cvndc_unique, base_height =8, base_width = 6)
 dcvndc_unique <- plot_unique_otus(dcvndc_otus, "DC v NDC")  
 save_plot("results/figures/feat_imp_unique_DCvNDC_otus_abund.png", dcvndc_unique, base_height =8, base_width = 6)
+
+#Explore relative abundances of top genera that overlap across the 3 random forest classification models----
+overlap_genus <- read_csv("data/process/ml_rf_top_genera_overlap.csv")
+overlap_genera <- overlap_genus %>% pull(genus) #List of genera
+
+#Filter otu data to just otus of interest, join to overlap_otu to add overlap and color columns
+top_agg_genus_subset <- agg_genus_data %>% 
+  filter(genus %in% overlap_genera) %>% 
+  left_join(overlap_genus, by = "genus")
+
+top_overlap_ogenera_hm <- top_agg_genus_subset %>% 
+  group_by(group, genus_color_name) %>% 
+  summarize(median=median(agg_rel_abund + 1/10000),`.groups` = "drop") %>%  #Add small value (1/2Xsubssampling parameter) so that there are no infinite values with log transformation
+  ggplot()+
+  geom_tile(aes(x = group, y=genus_color_name, fill=median))+
+  labs(title=NULL,
+       x=NULL,
+       y=NULL)+
+  scale_fill_distiller(trans = "log10",palette = "YlGnBu", direction = 1, name = "Relative \nAbundance", breaks=c(1e-4, 1e-3, 1e-2, 1e-1, 1), labels=c(1e-2, 1e-1, 1, 10, 100), limits = c(1/10000, 1))+
+  theme_classic()+
+  scale_x_discrete(label = c("Case", "Diarrheal Control", "Non-Diarrheal Control"))+
+  theme(plot.title=element_text(hjust=0.5),
+        axis.text.x = element_text(angle = 45, hjust = 1), #Angle axis labels
+        axis.text.y = element_markdown(), #Have only the OTU names show up as italics
+        text = element_text(size = 16)) # Change font size for entire plot
+save_plot("results/figures/feat_imp_overlap_genera_abund.png", top_overlap_ogenera_hm, base_height =8, base_width = 6)
+
+#genera that are unique to each model----
+no_overlap_genus <- read_csv("data/process/ml_rf_top_genera_no_overlap.csv")
+no_overlap_genera <- no_overlap_genus %>% pull(genus) #list of otus
+cvdc_genera <- no_overlap_genus %>% filter(model == "CvDC") %>% pull(genus)
+cvndc_genera <- no_overlap_genus %>% filter(model == "CvNDC") %>% pull(genus)
+dcvndc_genera <- no_overlap_genus %>% filter(model == "DCvNDC") %>% pull(genus) 
+
+#Filter otu data to just otus of interest, join to overlap_otu to add overlap and color columns
+no_overlap_agg_genus_subset <- agg_genus_data %>% 
+  filter(genus %in% no_overlap_genera) %>% 
+  left_join(no_overlap_genus, by = "genus")
+
+#Function to plot generas that were unique to each model
+#model_genera = list of genera unique to a model
+#model_name = name of model in quotes, to be used as title
+plot_unique_genera <- function(model_genera, model_name){
+  no_overlap_agg_genus_subset %>% 
+    filter(genus %in% model_genera) %>% #Select only otus for a specific model
+    group_by(group, genus_color_name) %>% 
+    mutate(median=median(agg_rel_abund + 1/10000),`.groups` = "drop") %>%  #Add small value (1/2Xsubssampling parameter) so that there are no infinite values with log transformation
+    ggplot()+
+    geom_tile(aes(x = group, y=genus_color_name, fill=median))+
+    labs(title=model_name,
+         x=NULL,
+         y=NULL)+
+    scale_fill_distiller(trans = "log10",palette = "YlGnBu", direction = 1, name = "Relative \nAbundance", breaks=c(1e-4, 1e-3, 1e-2, 1e-1, 1), labels=c(1e-2, 1e-1, 1, 10, 100), limits = c(1/10000, 1))+
+    theme_classic()+
+    scale_x_discrete(label = c("Case", "Diarrheal Control", "Non-Diarrheal Control"))+
+    theme(plot.title=element_text(hjust=0.5),
+          axis.text.x = element_text(angle = 45, hjust = 1), #Angle axis labels
+          axis.text.y = element_markdown(), #Have only the OTU names show up as italics
+          text = element_text(size = 16)) # Change font size for entire plot
+}
+
+#Plot the unique genera for each model----
+cvdc_unique <- plot_unique_genera(cvdc_genera, "Case v DC")  
+save_plot("results/figures/feat_imp_unique_CvDC_genera_abund.png", cvdc_unique, base_height =8, base_width = 6)
+cvndc_unique <- plot_unique_genera(cvndc_genera, "Case v NDC")  
+save_plot("results/figures/feat_imp_unique_CvNDC_genera_abund.png", cvndc_unique, base_height =8, base_width = 6)
+dcvndc_unique <- plot_unique_genera(dcvndc_genera, "DC v NDC")  
+save_plot("results/figures/feat_imp_unique_DCvNDC_genera_abund.png", dcvndc_unique, base_height =8, base_width = 6)
 

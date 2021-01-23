@@ -113,7 +113,7 @@ CvDC_rf %>%
   filter(overlap == "no overlap") %>% #Remove all features that overlap between models
   select(-overlap, -bactname, -OTUnumber) %>% 
   write_csv(path = "data/process/ml_rf_top_otus_no_overlap.csv")  
-#Function to filter to top OTUs for each pairwise comparison & plot results
+#Function to filter to top OTUs for each pairwise comparison & plot results----
 #df = dataframes of feature importances for all seeds
 #top_otus = dataframes of top otus
 #comp_name = name of comparison to title the plot (in quotes)
@@ -209,10 +209,11 @@ ndc <- intersect_all(CvNDC_rf_top, DCvNDC_rf_top)
 cols <- c("all" = "goldenrod", "case" = "red", "dc" = "blue", "ndc" = "grey50", "no overlap" = "black")
 
 #Create data frame of top genera that overlap between at least 2 random forest models:
-tibble("genus" = all) %>% 
-  add_row(tibble("genus" = case)) %>% 
-  add_row(tibble("genus" = dc)) %>% 
-  add_row(tibble("genus" = ndc)) %>% 
+CvDC_rf %>% 
+  add_row(CvNDC_rf) %>% 
+  add_row(DCvNDC_rf) %>% 
+  select(genus) %>% 
+  filter(genus %in% c(all, case, dc, ndc)) %>%
   distinct(genus) %>% 
   mutate(color = case_when(genus %in% all ~ "goldenrod",
                            genus %in% case ~ "red",
@@ -224,7 +225,30 @@ tibble("genus" = all) %>%
                              genus %in% dc ~ "dc",
                              genus %in% ndc ~ "ndc",
                              TRUE ~ "no overlap")) %>% 
+  mutate(genus_color_name = glue("<i style='color:{color}'>{genus}</i>")) %>% #Markdown notation so that only bacteria name is italicized and colors will be incorporated into name
   write_csv(path = "data/process/ml_rf_top_genera_overlap.csv")
+
+#Create data frame of top genera that do not overlap between at least 2 random forest models:
+CvDC_rf %>% 
+  add_row(CvNDC_rf) %>% 
+  add_row(DCvNDC_rf) %>% 
+  select(genus) %>% 
+  distinct(genus) %>% 
+  filter(genus %in% c(CvDC_rf_top, CvNDC_rf_top, DCvNDC_rf_top)) %>% 
+  mutate(color = "black") %>% 
+  mutate(model = case_when(genus %in% CvDC_rf_top ~ "CvDC",
+                           genus %in% CvNDC_rf_top ~ "CvNDC",
+                           genus %in% DCvNDC_rf_top ~ "DCvNDC",
+                           TRUE ~ "NA")) %>% 
+  mutate(overlap = case_when(genus %in% all ~ "all",
+                             genus %in% case ~ "case",
+                             genus %in% dc ~ "dc",
+                             genus %in% ndc ~ "ndc",
+                             TRUE ~ "no overlap")) %>% 
+  mutate(genus_color_name = glue("<i style='color:{color}'>{genus}</i>")) %>% #Markdown notation so that only bacteria name is italicized and colors will be incorporated into name
+  filter(overlap == "no overlap") %>% #Remove all features that overlap between models
+  select(-overlap) %>% 
+  write_csv(path = "data/process/ml_rf_top_genera_no_overlap.csv")  
 
 #Function to filter to top genuss for each pairwise comparison & plot results
 #df = dataframes of feature importances for all seeds

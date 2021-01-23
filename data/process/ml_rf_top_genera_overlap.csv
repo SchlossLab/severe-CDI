@@ -1,21 +1,21 @@
-genus,color,overlap
-Roseburia,goldenrod,all
-Enterobacteriaceae Unclassified,goldenrod,all
-Streptococcus,goldenrod,all
-Clostridium XlVa,red,case
-Clostridium sensu stricto,red,case
-Hungatella,red,case
-Lachnospiraceae Unclassified,red,case
-Clostridium XlVb,red,case
-Coprococcus,red,case
-Bacteroides,red,case
-Flavonifractor,blue,dc
-Veillonella,blue,dc
-Bacteria Unclassified,blue,dc
-Veillonellaceae Unclassified,blue,dc
-Oscillibacter,grey50,ndc
-Blautia,grey50,ndc
-Fusicatenibacter,grey50,ndc
-Fusobacterium,grey50,ndc
-Phascolarctobacterium,grey50,ndc
-Bifidobacterium,grey50,ndc
+genus,color,overlap,genus_color_name
+Lachnospiraceae Unclassified,red,case,<i style='color:red'>Lachnospiraceae Unclassified</i>
+Bifidobacterium,grey50,ndc,<i style='color:grey50'>Bifidobacterium</i>
+Enterobacteriaceae Unclassified,goldenrod,all,<i style='color:goldenrod'>Enterobacteriaceae Unclassified</i>
+Blautia,grey50,ndc,<i style='color:grey50'>Blautia</i>
+Flavonifractor,blue,dc,<i style='color:blue'>Flavonifractor</i>
+Fusicatenibacter,grey50,ndc,<i style='color:grey50'>Fusicatenibacter</i>
+Bacteria Unclassified,blue,dc,<i style='color:blue'>Bacteria Unclassified</i>
+Veillonellaceae Unclassified,blue,dc,<i style='color:blue'>Veillonellaceae Unclassified</i>
+Oscillibacter,grey50,ndc,<i style='color:grey50'>Oscillibacter</i>
+Clostridium XlVa,red,case,<i style='color:red'>Clostridium XlVa</i>
+Clostridium XlVb,red,case,<i style='color:red'>Clostridium XlVb</i>
+Bacteroides,red,case,<i style='color:red'>Bacteroides</i>
+Clostridium sensu stricto,red,case,<i style='color:red'>Clostridium sensu stricto</i>
+Streptococcus,goldenrod,all,<i style='color:goldenrod'>Streptococcus</i>
+Coprococcus,red,case,<i style='color:red'>Coprococcus</i>
+Veillonella,blue,dc,<i style='color:blue'>Veillonella</i>
+Hungatella,red,case,<i style='color:red'>Hungatella</i>
+Phascolarctobacterium,grey50,ndc,<i style='color:grey50'>Phascolarctobacterium</i>
+Roseburia,goldenrod,all,<i style='color:goldenrod'>Roseburia</i>
+Fusobacterium,grey50,ndc,<i style='color:grey50'>Fusobacterium</i>
