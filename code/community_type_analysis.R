@@ -269,6 +269,69 @@ Case_DC_ROC <- log_reg(Case_DC)
 DC_NDC_ROC <- log_reg(DC_NDC)
 #save_plot("results/figures/community_roc_DCvNDC.png", DC_NDC_ROC, base_height = 5, base_width = 5)
 
-#Seems a lot worse than 2014 paper at discriptinating group.
+#Seems a lot worse than 2014 paper at discriminating group.
 #Only difference was treating community type as a categorical variable in the model?
 
+#Examine how samples are distributed across community types----
+#Facet by community type (cluster)
+type_dist <- sample_best_cluster_fit %>% 
+  group_by(group) %>% 
+  count(cluster, name = "type_count") %>% #Count the number of samples in each cluster separated by group
+  ungroup() %>% 
+  ggplot(aes(x = group, y = type_count, color = group, fill = group))+
+  geom_col()+
+  facet_grid(~ cluster, switch = "x")+ #switch = "x" to have facet labels on the bottom
+  scale_colour_manual(name=NULL,
+                      values=color_scheme,
+                      breaks=legend_groups,
+                      labels=legend_labels)+    
+  scale_fill_manual(name=NULL,
+                      values=color_scheme,
+                      breaks=legend_groups,
+                      labels=legend_labels)+
+  labs(y = "Number of Samples",
+       x = "Cluster")+
+  scale_y_continuous(limits = c(0, 300))+
+  scale_x_discrete(label = c("Case", "Diarrheal Control", "Non-Diarrheal Control"))+
+  theme_classic()+
+  theme(legend.position = "bottom",
+        text = element_text(size = 19),# Change font size for entire plot
+        axis.text.x = element_blank(), #Leave axis text blank
+        axis.ticks.x = element_blank(), #Get rid of x axis ticks
+        axis.title.y = element_text(size = 17),
+        strip.background = element_blank(),#Get rid of boxes for facet labels
+        strip.placement = "outside") #Have label outside axis
+save_plot("results/figures/community_type_dist.png", type_dist, base_height = 5, base_width = 8)
+  
+#Examine how samples are distributed across community types represented as percent of samples per group----
+#Facet by community type (cluster)
+type_dist_percent <- sample_best_cluster_fit %>% 
+  group_by(group) %>% 
+  add_count(cluster, name = "type_count") %>% #Make a new column with counts of the number of samples in each cluster separated by group
+  add_count(group, name = "group_total") %>% #Make a new column with the number of samples per group
+  mutate("normalized_cluster_dist" = (type_count/group_total)*100) %>% #Calculate percent of each group across clusters
+  ungroup() %>% 
+  distinct(group, cluster, normalized_cluster_dist) %>% #Only want the unique values for these 3 columns for our plot
+  ggplot(aes(x = group, y = normalized_cluster_dist, color = group, fill = group))+
+  geom_col()+
+  facet_grid(~ cluster, switch = "x")+ #switch = "x" to have facet labels on the bottom
+  scale_colour_manual(name=NULL,
+                      values=color_scheme,
+                      breaks=legend_groups,
+                      labels=legend_labels)+    
+  scale_fill_manual(name=NULL,
+                    values=color_scheme,
+                    breaks=legend_groups,
+                    labels=legend_labels)+
+  labs(y = "Percent of Samples Per Group",
+       x = NULL)+
+  scale_x_discrete(label = c("Case", "Diarrheal Control", "Non-Diarrheal Control"))+
+  theme_classic()+
+  theme(legend.position = "bottom",
+        text = element_text(size = 19),# Change font size for entire plot
+        axis.text.x = element_blank(), #Leave axis text blank
+        axis.ticks.x = element_blank(), #Get rid of x axis ticks
+        axis.title.y = element_text(size = 15),
+        strip.background = element_blank(),#Get rid of boxes for facet labels
+        strip.placement = "outside") #Have label outside axis
+save_plot("results/figures/community_type_dist_percent_group.png", type_dist_percent, base_height = 5, base_width = 8)
