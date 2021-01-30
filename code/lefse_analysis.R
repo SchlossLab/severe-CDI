@@ -41,25 +41,37 @@ lefse_results <- CvDC_results %>%
   mutate(otu_name = glue("*{bactname}* ({OTUnumber}")) #Markdown notation so that only bacteria name is italicized
 
 
-#Plots of LDA values
-CvDC_plot <- lefse_results %>% 
-  filter(comparison == "CvDC") %>% 
-  ggplot(aes(x = otu_name, y = LDA, color = group, fill = group))+
-  geom_col()+
-  coord_flip()+
-  scale_colour_manual(name=NULL,
+#Function to plots of LDA values
+#comparison_name = name of 2 group comparison to plot (in quotes)
+plot_LDA <- function(comparison_name){
+  lefse_results %>% 
+    filter(comparison == comparison_name) %>% 
+    arrange(group, LDA) %>% 
+    mutate(otu_name = factor(otu_name, levels = otu_name)) %>% #Orders the OTUs by group & LDA value
+    ggplot(aes(x = otu_name, y = LDA, color = group, fill = group))+
+    geom_col()+
+    coord_flip()+
+    scale_colour_manual(name=NULL,
+                        values=color_scheme,
+                        breaks=legend_groups,
+                        labels=legend_labels)+
+    scale_fill_manual(name=NULL,
                       values=color_scheme,
                       breaks=legend_groups,
                       labels=legend_labels)+
-  scale_fill_manual(name=NULL,
-                    values=color_scheme,
-                    breaks=legend_groups,
-                    labels=legend_labels)+
-  labs(x = NULL)+
-  theme_classic()+
-  theme(plot.title=element_text(hjust=0.5),
-        text = element_text(size = 15),# Change font size for entire plot
-        axis.text.y = element_markdown(), #Have only the OTU names show up as italics
-        strip.background = element_blank(),
-        legend.position = "none") 
+    labs(x = NULL)+
+    theme_classic()+
+    theme(plot.title=element_text(hjust=0.5),
+          text = element_text(size = 15),# Change font size for entire plot
+          axis.text.y = element_markdown(), #Have only the OTU names show up as italics
+          strip.background = element_blank(),
+          legend.position = "bottom") 
+}
+#Create LDA plots for the 3 comparisons----
+CvDC_plot <- plot_LDA("CvDC")+
+  ggsave("results/figures/lefse_CvDC.png", height = 6, width = 6)
+CvNDC_plot <- plot_LDA("CvNDC")+
+  ggsave("results/figures/lefse_CvNDC.png", height = 6, width = 6)
+DCvNDC_plot <- plot_LDA("DCvNDC")+
+  ggsave("results/figures/lefse_DCvNDC.png", height = 6, width = 6)
   
