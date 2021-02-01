@@ -324,7 +324,7 @@ type_dist_percent <- sample_best_cluster_fit %>%
                     breaks=legend_groups,
                     labels=legend_labels)+
   labs(y = "Percent of Samples Per Group",
-       x = NULL)+
+       x = "Cluster")+
   scale_x_discrete(label = c("Case", "Diarrheal Control", "Non-Diarrheal Control"))+
   theme_classic()+
   theme(legend.position = "bottom",
