@@ -1,0 +1,84 @@
+comparison,otu,LogMaxMean,group,LDA,pValue
+CvDC,Bacteroides (OTU 1),5.07173,diarrheal_control,3.59285,1.32382e-7
+CvDC,Enterobacteriaceae (OTU 2),4.96557,case,3.8173,1.87955e-8
+CvDC,Enterobacteriaceae (OTU 3),4.7827,diarrheal_control,3.28186,7.68032e-8
+CvDC,Bacteroides (OTU 4),4.61464,case,2.72029,2.67409e-5
+CvDC,Veillonella (OTU 5),4.69648,case,3.99377,1.44329e-15
+CvDC,Bacteroides (OTU 7),4.47932,case,2.18598,7.45764e-8
+CvDC,Bacteroides (OTU 8),4.40833,diarrheal_control,2.84215,1.74408e-11
+CvDC,Enterococcus (OTU 9),4.70639,diarrheal_control,4.17089,6.27284e-4
+CvDC,Phascolarctobacterium (OTU 10),4.26961,diarrheal_control,2.92479,5.01365e-6
+CvDC,Faecalibacterium (OTU 11),4.25266,diarrheal_control,3.31794,2.22045e-16
+CvDC,Parabacteroides (OTU 12),4.2925,diarrheal_control,3.35982,3.78186e-8
+CvDC,Bacteroides (OTU 14),4.15458,diarrheal_control,3.36003,2.2393e-7
+CvDC,Clostridium XlVa (OTU 15),4.28087,case,3.47159,0
+CvDC,Parabacteroides (OTU 16),4.18574,diarrheal_control,3.03096,1.43789e-6
+CvDC,Bacteroides (OTU 17),4.12601,diarrheal_control,3.2781,1.601e-7
+CvDC,Alistipes (OTU 19),4.06561,diarrheal_control,3.23984,1.73562e-11
+CvDC,Lachnospiraceae (OTU 21),4.09947,case,3.43556,0
+CvDC,Streptococcus (OTU 24),4.2047,diarrheal_control,3.95616,2.07255e-5
+CvDC,Roseburia (OTU 25),3.71832,case,2.60479,1.6225e-6
+CvDC,Hungatella (OTU 28),4.02026,case,3.63255,0
+CvDC,Clostridium XlVa (OTU 34),3.90005,case,3.40212,0
+CvDC,Blautia (OTU 35),3.64628,case,2.69536,7.33353e-5
+CvDC,Ruminococcus (OTU 36),3.68121,case,2.61582,0.0201076
+CvDC,Alistipes (OTU 40),3.58734,diarrheal_control,2.4894,2.40752e-12
+CvDC,Peptostreptococcaceae (OTU 41),3.97086,case,3.71284,0
+CvDC,Bacteroides (OTU 42),3.56805,diarrheal_control,2.56712,1.21322e-5
+CvDC,Bifidobacterium (OTU 45),3.60988,case,2.97664,0.0368092
+CvDC,Subdoligranulum (OTU 46),3.60735,case,2.73205,9.87621e-6
+CvDC,Flavonifractor (OTU 47),3.63816,case,3.11251,0
+CvDC,Oscillibacter (OTU 50),3.45502,case,2.98894,0.00804686
+CvDC,Blautia (OTU 51),3.65122,case,3.12992,0
+CvDC,Clostridium XlVa (OTU 91),3.27826,case,2.30149,2.22045e-16
+CvNDC,Bacteroides (OTU 1),5.12055,nondiarrheal_control,4.18725,2.10443e-12
+CvNDC,Enterobacteriaceae (OTU 2),4.96557,case,4.32227,0
+CvNDC,Enterobacteriaceae (OTU 3),4.77002,case,4.21413,0
+CvNDC,Bacteroides (OTU 4),4.72482,nondiarrheal_control,3.90406,9.99201e-16
+CvNDC,Veillonella (OTU 5),4.69648,case,4.11223,6.68354e-14
+CvNDC,Bacteroides (OTU 7),4.47932,case,3.64149,2.9075e-4
+CvNDC,Bacteroides (OTU 8),4.57616,nondiarrheal_control,3.92677,0
+CvNDC,Enterococcus (OTU 9),4.29243,case,3.41505,0
+CvNDC,Phascolarctobacterium (OTU 10),4.44118,nondiarrheal_control,3.59039,1.68944e-4
+CvNDC,Faecalibacterium (OTU 11),4.44476,nondiarrheal_control,3.88495,0
+CvNDC,Parabacteroides (OTU 12),4.27982,nondiarrheal_control,2.54872,2.72537e-8
+CvNDC,Bacteroides (OTU 14),4.40148,nondiarrheal_control,3.75513,1.70618e-5
+CvNDC,Clostridium XlVa (OTU 15),4.28087,case,3.77275,0
+CvNDC,Parabacteroides (OTU 16),4.1673,case,2.97739,7.75011e-5
+CvNDC,Bacteroides (OTU 17),4.08538,case,3.26062,3.77516e-5
+CvNDC,Alistipes (OTU 19),4.08859,nondiarrheal_control,3.52013,3.29793e-9
+CvNDC,Lachnospiraceae (OTU 21),4.09947,case,3.39563,5.52742e-5
+CvNDC,Streptococcus (OTU 24),3.75718,case,2.58458,1.21014e-14
+CvNDC,Roseburia (OTU 25),4.0939,nondiarrheal_control,3.60758,0
+CvNDC,Hungatella (OTU 28),4.02026,case,3.7016,2.32991e-12
+CvNDC,Clostridium XlVa (OTU 34),3.90005,case,3.45943,0
+CvNDC,Blautia (OTU 35),3.83608,nondiarrheal_control,3.33865,0
+CvNDC,Ruminococcus (OTU 36),3.68121,case,3.16087,2.38709e-9
+CvNDC,Alistipes (OTU 40),3.76894,nondiarrheal_control,3.35992,0
+CvNDC,Peptostreptococcaceae (OTU 41),3.97086,case,3.71654,0
+CvNDC,Bacteroides (OTU 42),3.70926,nondiarrheal_control,3.02934,1.28009e-13
+CvNDC,Oscillibacter (OTU 50),3.7106,nondiarrheal_control,3.34657,0
+CvNDC,Blautia (OTU 51),3.65122,case,3.29748,3.08817e-8
+CvNDC,Blautia (OTU 75),3.3217,nondiarrheal_control,2.95926,0
+CvNDC,Clostridium XlVa (OTU 91),3.27826,case,2.82654,2.27596e-14
+CvNDC,Ruminococcaceae (OTU 117),3.19189,nondiarrheal_control,3.14304,0
+DCvNDC,Bacteroides (OTU 1),5.12055,nondiarrheal_control,3.91924,5.72507e-4
+DCvNDC,Enterobacteriaceae (OTU 2),4.89229,diarrheal_control,4.1506,3.16464e-4
+DCvNDC,Enterobacteriaceae (OTU 3),4.7827,diarrheal_control,3.7535,8.83128e-6
+DCvNDC,Bacteroides (OTU 4),4.72482,nondiarrheal_control,3.79427,7.56584e-8
+DCvNDC,Bacteroides (OTU 8),4.57616,nondiarrheal_control,3.68696,6.47972e-8
+DCvNDC,Enterococcus (OTU 9),4.70639,diarrheal_control,4.22787,2.65443e-12
+DCvNDC,Faecalibacterium (OTU 11),4.44476,nondiarrheal_control,3.64733,1.19905e-8
+DCvNDC,Lachnospiraceae (OTU 21),3.91919,nondiarrheal_control,2.71404,8.03028e-5
+DCvNDC,Streptococcus (OTU 24),4.2047,diarrheal_control,3.82438,6.36128e-4
+DCvNDC,Roseburia (OTU 25),4.0939,nondiarrheal_control,3.45412,0
+DCvNDC,Blautia (OTU 35),3.83608,nondiarrheal_control,3.06729,0
+DCvNDC,Ruminococcus (OTU 36),3.63114,nondiarrheal_control,2.75377,5.28239e-5
+DCvNDC,Alistipes (OTU 40),3.76894,nondiarrheal_control,3.11004,1.06831e-4
+DCvNDC,Bacteroides (OTU 42),3.70926,nondiarrheal_control,3.20682,8.72768e-5
+DCvNDC,Bifidobacterium (OTU 45),3.63428,nondiarrheal_control,2.74828,3.37858e-9
+DCvNDC,Subdoligranulum (OTU 46),3.51867,diarrheal_control,3.01409,2.80334e-8
+DCvNDC,Flavonifractor (OTU 47),3.59064,nondiarrheal_control,2.91977,0
+DCvNDC,Oscillibacter (OTU 50),3.7106,nondiarrheal_control,3.20926,0
+DCvNDC,Blautia (OTU 75),3.3217,nondiarrheal_control,2.62475,6.35767e-11
+DCvNDC,Ruminococcaceae (OTU 117),3.19189,nondiarrheal_control,2.63839,3.77476e-15

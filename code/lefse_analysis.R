@@ -22,6 +22,10 @@ lefse_results <- CvDC_results %>%
   rename(group = Class) %>% #Rename this column so we can use the same color scheme as other plots
   filter(!is.na(pValue)) %>%  #Remove all OTUs that did not have a calculated p-value
   left_join(taxa_info, by = "OTU") %>% 
+  #Export results here to use in code/mikroml_inout_data_lefse.R
+  write_csv(path = "data/process/lefse_combined_results_ml_input.csv") 
+
+lefse_results <- %>% lefse_results %>% 
   rename(names = OTU) %>% 
   mutate(names=str_to_upper(names)) %>%
   mutate(taxa=gsub("(.*);.*","\\1",Taxonomy)) %>%
@@ -74,4 +78,9 @@ CvNDC_plot <- plot_LDA("CvNDC")+
   ggsave("results/figures/lefse_CvNDC.png", height = 6, width = 6)
 DCvNDC_plot <- plot_LDA("DCvNDC")+
   ggsave("results/figures/lefse_DCvNDC.png", height = 6, width = 6)
-  
+
+#Export lefse results for 3 comparisons----
+lefse_results %>% 
+  select(-bactname, -OTUnumber, -otu_name) %>% #drop unnecessary columns
+  relocate(comparison, before = otu) %>%  #Move comparison column position to be listed 1st
+  write_csv(path = "data/process/lefse_combined_results.csv") 
