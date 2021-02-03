@@ -36,8 +36,9 @@ metadata <- read_tsv("data/process/final_CDI_16S_metadata.tsv") %>%
   mutate(detailed_group = case_when(cdiff_case == "Case" & `stool_consistency` == "unformed" ~ "diarrheal_case",
                            cdiff_case == "Control" & `stool_consistency` == "unformed" ~ "diarrheal_control",
                            cdiff_case == "Control" & `stool_consistency` == "formed" ~ "nondiarrheal_control",
-                           cdiff_case == "Case" & `stool_consistency` == "formed" ~ "nondiarrheal_case", #56 samples that were postive for C. diff and had formed stool consistency
-                           TRUE ~ "unknown_case")) %>%  #2 Cases had unknown stool consistency
+                           cdiff_case == "Case" & `stool_consistency` == "formed" ~ "nondiarrheal_case", #56 samples that were positive for C. diff and had formed stool consistency
+                           cdiff_case == "Case" & `stool_consistency` == "unknown" ~ "unknown_case", #2 cases with unknown stool consistencies
+                           TRUE ~ "control")) %>%  #Label rest of samples as control (water and mock samples)
   mutate(detailed_group = fct_relevel(detailed_group, "diarrheal_case", "nondiarrheal_case", "unknown_case", "diarrheal_control", "nondiarrheal_control")) %>% #Specify the order of the detailed group factor
   #Transform variables of interest for PERMANOVA tests into factor variables
   mutate(group = factor(group, levels = unique(as.factor(group))),
