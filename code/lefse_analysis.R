@@ -25,7 +25,7 @@ lefse_results <- CvDC_results %>%
   #Export results here to use in code/mikroml_inout_data_lefse.R
   write_csv(path = "data/process/lefse_combined_results_ml_input.csv") 
 
-lefse_results <- %>% lefse_results %>% 
+lefse_results <- lefse_results %>% 
   rename(names = OTU) %>% 
   mutate(names=str_to_upper(names)) %>%
   mutate(taxa=gsub("(.*);.*","\\1",Taxonomy)) %>%
