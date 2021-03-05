@@ -7,7 +7,7 @@
 ###############################
 
 # Name
-#SBATCH --job-name=cdi_subsample
+#SBATCH --job-name=alpha_beta
 
 # Resources
 # For MPI, increase ntasks-per-node
@@ -15,8 +15,8 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=10
-#SBATCH --mem=180GB
-#SBATCH --time=7-00:00
+#SBATCH --mem=80GB
+#SBATCH --time=3-00:00
 
 # Account
 #SBATCH --account=pschloss1
