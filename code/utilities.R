@@ -45,8 +45,39 @@ metadata <- read_tsv("data/process/final_CDI_16S_metadata.tsv") %>%
          miseq_run = factor(miseq_run, levels = unique(as.factor(miseq_run))),
          plate = factor(plate, levels = unique(as.factor(plate))),
          plate_location = factor(plate_location, levels = unique(as.factor(plate_location))),
-         pbs_added = factor(pbs_added, levels = unique(as.factor(pbs_added))))
-  
+         pbs_added = factor(pbs_added, levels = unique(as.factor(pbs_added)))) 
+
+#Check for longitudinal samples in the dataset (multiple samples that came from the same patient)----
+#`CDIS_Study ID` corresponds to a single patient. s
+#Number of patients with multiple samples
+multi_samples <- metadata %>%
+  filter(!is.na(`CDIS_Study ID`)) %>% 
+  group_by(`CDIS_Study ID`) %>% 
+  tally() %>% 
+  filter(n > 1) %>% 
+  tally(n)
+#468 patients with multiple samples in dataset (1085 total)
+
+#Number of samples from a single patient
+single_samples <- metadata %>%
+  filter(!is.na(`CDIS_Study ID`)) %>% 
+  group_by(`CDIS_Study ID`) %>% 
+  tally() %>% 
+  filter(n == 1)
+#2858 samples are from 1 patient
+
+#Number of patients with 2 or at least 3 samples
+t2_samples <- multi_samples %>% 
+  filter(n == 2)
+#355 samples
+ta3_samples <- multi_samples %>% 
+  filter(n > 2)
+
+#List of samples that should have been resequenced (combined while arraying into extraction plates)----
+#Drop these samples from the 16S analysis
+contam_samples <- metadata %>% 
+  filter(str_detect(notes, "Need to Resequence")) %>% 
+  pull(sample)
 
 #Functions to subset data frames and format for logistic regression----
 #Function to Rescale values to fit between 0 and 1
