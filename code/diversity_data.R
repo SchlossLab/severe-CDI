@@ -117,7 +117,6 @@ plot_grid(invsimpson_plot)+
 plot_grid(richness_plot)+
   ggsave("results/figures/alpha_richness.png", height = 5, width = 4.5)
 
-
 #Logistic regression based on Inverse Simpson index----
 #Chose Inverse Simpson because that is metric used in Schubert et al. mBio 2014
 #Match naming convention used in Schubert et al.
@@ -160,7 +159,9 @@ log_reg <- function(random_ordered){
 }
 #Make ROC curve
 Case_NDC_ROC <- log_reg(Case_NDC)
+#0.69. CI: 0.6399-0.7394
 Case_DC_ROC <- log_reg(Case_DC)
+#0.544. CI: 0.4977-0.5898
 DC_NDC_ROC <- log_reg(DC_NDC)
-
+#0.621. CI: 0.5714-0.6708
 
