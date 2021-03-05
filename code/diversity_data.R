@@ -5,7 +5,8 @@ diversity_data <- read_tsv("data/mothur/cdi.opti_mcc.groups.ave-std.summary") %>
   filter(method == "ave") %>%
   select(group, sobs, shannon, invsimpson, coverage) %>%
   rename(sample = group) %>% #group is the same as sample in the metadata data frame
-  left_join(metadata, by = "sample") #Match only the samples we have sequence data for
+  left_join(metadata, by = "sample") %>%  #Match only the samples we have sequence data for
+  filter(!sample %in% contam_samples)  #Remove 2 contaminated samples
 
 #Statistical analysis----
 set.seed(19760620) #Same seed used for mothur analysis
