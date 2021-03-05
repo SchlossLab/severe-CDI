@@ -6,6 +6,7 @@ set.seed(19760620) #Same seed used for mothur analysis
 #Shared file:
 shared <- read.delim('data/mothur/cdi.opti_mcc.0.03.subsample.shared', header=T, sep='\t') %>%
   select(-label, -numOtus) %>% 
+  filter(!Group %in% contam_samples) %>% #Remove 2 contaminated samples from analysis
   gather(-Group, key=OTU, value=count)
 
 #Read in taxonomy and select genus level:
