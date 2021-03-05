@@ -14,7 +14,8 @@ design <- metadata %>%
 #Import shared file for all samples:
 #Note: check for sub.sample version in data/mothur make sure that is the output from sub.sample
 shared <- read_tsv("data/mothur/cdi.opti_mcc.0.03.subsample.shared", col_types=cols(Group=col_character())) %>%
-  left_join(design, by = c("Group" = "group")) #Join to the design file
+  left_join(design, by = c("Group" = "group")) %>% #Join to the design file
+  filter(!Group %in% contam_samples) #Remove 2 contaminated samples from analysi
 
 #Function to narrow down design & shared files to just the 2 groups of interest for the 3 sets of binary comparisons
 #sample_type1, sample_type2 = names of the 2 sample types to be compared. Needs to be in quotes
