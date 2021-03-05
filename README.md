@@ -159,14 +159,19 @@ Create custom list of samples to paste into groups argument to generate distance
 Rscript code/dist.shared_groups_list.R
 ```
 
-
-Create distance file and ordinations, and perform community type analyses
+Create distance file and ordinations
 ```
 bash code/jsd_ordination.batch
 bash code/braycurtis_ordination.batch
+```
+
+Create genus level files for community type analysis. Run get.communitytype() in mothur. Visualize results in R.
+```
+Rscript code/community_type_analysis.R
 bash code/community_type.batch
 Rscript code/community_type_analysis.R
 ```
+
 ```
 git clone https://github.com/SchlossLab/LastName_BriefDescription_Journal_Year.git
 make write.paper
