@@ -144,9 +144,26 @@ Script to read in shared_file
 Rscript code/shared_file.R
 ```
 
-Subsample shared file to 5000 sequences, perform alpha and beta diversity analyses, and perform community type analyses
+Check for contaminated samples based on Notes column, which were notes entered during DNA extractions and library preparation. 2 samples were contaminated: KR01747 and KR0179. Remove these samples from all downstream analysis
+```
+Rscript code/utilities.R
+```
+
+Subsample shared file to 5000 sequences.
 ```
 bash code/alpha_beta.batch
+```
+
+Create custom list of samples to paste into groups argument to generate distance matrix and ordinations with the 2 contaminated samples removed:
+```
+Rscript code/dist.shared_groups_list.R
+```
+
+
+Create distance file and ordinations, and perform community type analyses
+```
+bash code/jsd_ordination.batch
+bash code/braycurtis_ordination.batch
 bash code/community_type.batch
 Rscript code/community_type_analysis.R
 ```
