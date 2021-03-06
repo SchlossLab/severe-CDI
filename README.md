@@ -172,6 +172,37 @@ bash code/community_type.batch
 Rscript code/community_type_analysis.R
 ```
 
+Visualize alpha diversity and ordinations in R.
+```
+Rscript code/diversity_data.R
+Rscript code/pcoa_data.R
+```
+Create input files for lefse analysis using mothur. Run lefse analysis in mothur. Visualize lefse results in R.
+```
+Rscript code/lefse_prep_files.R
+bash code/lefse.batch
+Rscript code/lefse_analysis.R
+```
+Visualize bacterial relative abundances in R.
+```
+Rscript code/read_taxa_data.R
+Rscript code/taxa.R
+```
+
+Prepare OTU, genus, and lefse input data for mikropml pipeline.
+```
+Rscript code/mikropml_input_data.R
+Rscript code/mikropml_input_data_lefse.R
+```
+
+Run mikropl pipeline on all the different types of input data using snakemake and HPC
+Note: need to modify snakemake file to account for multiple types of input data. Currently set up to run one type of input data table at a time. Once finished, combine feature importance results.
+Tip: snakemake -n (Dry run). Snakemake --unlock (If you get an error that the directory is locked)
+```
+sbatch code/ml_submit_slurm.sh
+sbatch code/combine_feat_imp.sh.
+```
+
 ```
 git clone https://github.com/SchlossLab/LastName_BriefDescription_Journal_Year.git
 make write.paper
