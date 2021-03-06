@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=mikropml_DCvNDC_lefse
+#SBATCH --job-name=mikropml_CvNDC_lefse
 
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
