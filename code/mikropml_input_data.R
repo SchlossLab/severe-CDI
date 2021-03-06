@@ -5,6 +5,7 @@ source("code/utilities.R") #Loads libraries, reads in metadata, functions
 otu_data <- read_tsv("data/mothur/cdi.opti_mcc.0.03.subsample.shared", col_types=cols(Group=col_character())) %>%
   select(-label, -numOtus) %>%
   rename(sample = Group) %>% #group is the same as sample in the metadata data frame
+  filter(!sample %in% contam_samples) %>%  #Remove 2 contaminated samples
   gather(-sample, key="otu", value="count") %>%
   mutate(rel_abund=count/5000) %>%  #Use 5000, because this is the subsampling parameter chosen.
   #using rel_abund also means the data will be normalized to between 0 and 1
