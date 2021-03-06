@@ -1,7 +1,7 @@
 source("code/utilities.R") #Loads libraries, reads in metadata, functions
 
 #Have PCoA outputs from mothur based on Bray-Curtis or Jensen-Shannon divergence distance matrices
-#Also, have nmds output based on Jensen-Shannon divergence distance matrix
+#Also, have nmds output based on the 2 distance matrices. NMDS was used in the Schubert et al. mBio 2014 paper
 
 #Function to read in ordination (ord) values from mothur
 import_ord <- function(file_path){
@@ -37,17 +37,50 @@ plot_pcoa <- function(pcoa_df, axis1_label, axis2_label){
                        breaks=legend_groups,
                        labels=legend_labels)+
     theme_classic() +
-    theme(text = element_text(size = 16))
+    theme(text = element_text(size = 16),
+          legend.position = "bottom")
+}
+
+#Plot NMDS
+plot_nmds <- function(nmds_df){
+  nmds_df %>%
+  ggplot(aes(x=axis1, y=axis2, color = group, fill = group, shape = group))+
+  geom_point(size=2, alpha = 0.5)+
+  labs(x = "Axis 1",
+       y = "Axis 2")+
+  scale_colour_manual(name=NULL,
+                      values=color_scheme,
+                      breaks=legend_groups,
+                      labels=legend_labels)+
+  scale_fill_manual(name=NULL,
+                    values=color_scheme,
+                    breaks=legend_groups,
+                    labels=legend_labels)+
+  scale_shape_manual(name=NULL,
+                     values=shape_scheme,
+                     breaks=legend_groups,
+                     labels=legend_labels)+
+  theme_classic() +
+  theme(text = element_text(size = 16),
+        legend.position = "bottom")
 }
 
 #Read in PCoA values from mothur
-#Bray-Curtis PCoA
 bc_pcoa <- import_ord("data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.pcoa.axes")
 bc_axis1 <- axis_ord("data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.pcoa.loadings", 1)
 bc_axis2 <- axis_ord("data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.pcoa.loadings", 2)
-bc_pcoa_plot <- plot_pcoa(bc_pcoa, bc_axis1, bc_axis2)
+#Bray-Curtis PCoA----
+bc_pcoa_plot <- plot_pcoa(bc_pcoa, bc_axis1, bc_axis2)+
+  ggsave("results/figures/pcoa_bc.png", height = 6, width = 6)
 
-#Perform adonis----
+#Read in nmds values
+bc_nmds <- import_ord("data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.nmds.axes")
+#No percent variation labels associated with NMDS ordination
+#Jensen-Shannon divergence NMDS----
+bc_nmds_plot <- plot_nmds(bc_nmds)+
+  ggsave("results/figures/nmds_bc.png", height = 6, width = 6)
+
+#Perform PERMANOVA with adonis----
 #Read in Bray-Curtis distance matrix
 bc_dist <- read_dist("data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.std.dist")
 bc_variables <- tibble(sample = attr(bc_dist, "Labels")) %>%
@@ -88,30 +121,16 @@ bc_adonis
 bc_adonis_table <- as_tibble(rownames_to_column(bc_adonis$aov.tab, var = "effects")) %>%
   write_tsv("data/process/permanova_bc.tsv")#Write results to .tsv file
 
-#Jensen-Shannon divergence PCoA
+#Jensen-Shannon divergence PCoA----
 jsd_pcoa <- import_ord("data/mothur/cdi.opti_mcc.jsd.0.03.lt.ave.pcoa.axes")
 jsd_axis1 <- axis_ord("data/mothur/cdi.opti_mcc.jsd.0.03.lt.ave.pcoa.loadings", 1)
 jsd_axis2 <- axis_ord("data/mothur/cdi.opti_mcc.jsd.0.03.lt.ave.pcoa.loadings", 2)
-jsd_pcoa_plot <- plot_pcoa(jsd_pcoa, jsd_axis1, jsd_axis2)
+jsd_pcoa_plot <- plot_pcoa(jsd_pcoa, jsd_axis1, jsd_axis2)+
+  ggsave("results/figures/pcoa_bc.png", height = 6, width = 6)
 
+#Read in JSD nmds results
 jsd_nmds <- import_ord("data/mothur/cdi.opti_mcc.jsd.0.03.lt.ave.nmds.axes")
 #No percent variation labels associated with NMDS ordination
-jsd_nmds_plot <- jsd_nmds %>%
-  ggplot(aes(x=axis1, y=axis2, color = group, fill = group, shape = group))+
-  geom_point(size=2, alpha = 0.5)+
-  labs(x = "Axis 1",
-       y = "Axis 2")+
-  scale_colour_manual(name=NULL,
-                      values=color_scheme,
-                      breaks=legend_groups,
-                      labels=legend_labels)+
-  scale_fill_manual(name=NULL,
-                      values=color_scheme,
-                      breaks=legend_groups,
-                      labels=legend_labels)+
-  scale_shape_manual(name=NULL,
-                     values=shape_scheme,
-                     breaks=legend_groups,
-                     labels=legend_labels)+
-  theme_classic() +
-  theme(text = element_text(size = 16))
+#Jensen-Shannon divergence NMDS----
+jsd_nmds_plot <- plot_nmds(jsd_nmds)+
+  ggsave("results/figures/nmds_jsd.png", height = 6, width = 6)
