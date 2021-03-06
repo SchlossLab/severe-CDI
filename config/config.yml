@@ -1,4 +1,4 @@
-dataset: data/process/ml_CvNDC.csv
+dataset: data/process/ml_input_lefse_CvDC.csv
 outcome_colname: outcome
 ml_methods:
  - glmnet
