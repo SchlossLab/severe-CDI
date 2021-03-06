@@ -69,7 +69,7 @@ plot_LDA <- function(comparison_name){
           text = element_text(size = 15),# Change font size for entire plot
           axis.text.y = element_markdown(), #Have only the OTU names show up as italics
           strip.background = element_blank(),
-          legend.position = "bottom") 
+          legend.position = "none") 
 }
 #Create LDA plots for the 3 comparisons----
 CvDC_plot <- plot_LDA("CvDC")+
@@ -78,6 +78,10 @@ CvNDC_plot <- plot_LDA("CvNDC")+
   ggsave("results/figures/lefse_CvNDC.png", height = 6, width = 6)
 DCvNDC_plot <- plot_LDA("DCvNDC")+
   ggsave("results/figures/lefse_DCvNDC.png", height = 6, width = 6)
+#Combine 3 comparisons into one plot
+plot_grid(CvDC_plot, CvNDC_plot, CvNDC_plot, labels = c("A", "B", "C"), nrow = 1) +
+  ggsave("results/figures/lefse.png", height = 6.00, width = 12)
+
 
 #Export lefse results for 3 comparisons----
 lefse_results %>% 
