@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=mikropml_CvDC_genus
+#SBATCH --job-name=mikropml_CvDC_otu
 
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
