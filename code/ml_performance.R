@@ -86,6 +86,7 @@ performance <- perf_results %>%
   labs(x = NULL)+
   theme_bw()  +
   theme(legend.position = "bottom",
+        text = element_text(size = 19),# Change font size for entire plot
         strip.background = element_blank()) +#Make Strip backgrounds blank
   ggsave("results/figures/ml_performance.png", height = 5, width = 8)
 
@@ -108,6 +109,7 @@ performance_otu <- perf_results %>%
   labs(x = NULL)+
   theme_bw()  +
   theme(legend.position = "bottom",
+        text = element_text(size = 19),# Change font size for entire plot
         axis.ticks.x = element_blank(), #Remove x axis ticks
         axis.text.x = element_blank(), #Remove x axis text (all models are at the OTU level)
         strip.background = element_blank()) +#Make Strip backgrounds blank
