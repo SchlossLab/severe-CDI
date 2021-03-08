@@ -2,6 +2,9 @@ source("code/utilities.R") #Loads libraries, reads in metadata, functions
 
 set.seed(19760620) #Same seed used for mothur analysis
 
+#Used to figure out color scale:
+values = brewer_pal("qual", palette = "Dark2")(4)
+
 #Function to read in model performances:
 #file_path = path to performance results file
 #taxa_level_name = "genus" or "otu"
@@ -58,17 +61,24 @@ rf_results <- perf_results %>%
   group_by(comparison, taxa_level) %>% 
   summarize(median = median(AUC))
 
+#Examine OTU level results across different ML methods
+otu_results <- perf_results %>% 
+  filter(taxa_level == "otu") %>% 
+  group_by(comparison, method) %>% 
+  summarize(median = median(AUC))
+
 #Plot performance for all methods with all types of input data----
 performance <- perf_results %>% 
-  mutate(taxa_level = fct_relevel(taxa_level, c("lefse_otus", "genus", "otu")),
+  mutate(taxa_level = fct_relevel(taxa_level, c("otu", "genus", "lefse_otus")),
+         method = fct_relevel(method, c("rf", "svmRadial", "glmnet", "rpart2")), #Reorder methods so left to right is in order of descending AUC
          comparison = fct_relevel(comparison, c("Case-DC", "DC-NDC", "Case-NDC"))) %>% 
   ggplot(aes(x = taxa_level, y = AUC, color = method)) +
   geom_boxplot(alpha=0.5, fatten = 4) +
   facet_wrap(~comparison)+
   geom_hline(yintercept = 0.5, linetype="dashed") +
- scale_color_manual(values = brewer_pal("qual", palette = "Dark2")(4),
-                    breaks=c("glmnet", "rf", "rpart2", "svmRadial"), 
-                    labels = c("logistic regression", "random forest", "decision tree", "support vector machine")) +
+  scale_color_manual(values = c("#D95F02", "#E7298A", "#1B9E77", "#7570B3"),                     
+                     breaks=c("rf", "svmRadial", "glmnet", "rpart2"), 
+                     labels = c("random forest", "support vector machine", "logistic regression", "decision tree")) +
   scale_y_continuous(name = "AUC",
                      breaks = seq(0.4, 1, 0.1),
                      limits=c(0.4, 1),
@@ -79,3 +89,26 @@ performance <- perf_results %>%
         strip.background = element_blank()) +#Make Strip backgrounds blank
   ggsave("results/figures/ml_performance.png", height = 5, width = 8)
 
+#Plot performance for all methods with OTU input data----
+performance_otu <- perf_results %>% 
+  filter(taxa_level == "otu") %>% 
+  mutate(comparison = fct_relevel(comparison, c("Case-DC", "DC-NDC", "Case-NDC")),
+         method = fct_relevel(method, c("rf", "svmRadial", "glmnet", "rpart2"))) %>% #Reorder methods so left to right is in order of descending AUC
+  ggplot(aes(x = taxa_level, y = AUC, color = method)) +
+  geom_boxplot(alpha=0.5, fatten = 4) +
+  facet_wrap(~comparison)+
+  geom_hline(yintercept = 0.5, linetype="dashed") +
+  scale_color_manual(values = c("#D95F02", "#E7298A", "#1B9E77", "#7570B3"),                     
+                     breaks=c("rf", "svmRadial", "glmnet", "rpart2"), 
+                     labels = c("random forest", "support vector machine", "logistic regression", "decision tree")) +
+  scale_y_continuous(name = "AUC",
+                     breaks = seq(0.4, 1, 0.1),
+                     limits=c(0.4, 1),
+                     expand=c(0,0)) +
+  labs(x = NULL)+
+  theme_bw()  +
+  theme(legend.position = "bottom",
+        axis.ticks.x = element_blank(), #Remove x axis ticks
+        axis.text.x = element_blank(), #Remove x axis text (all models are at the OTU level)
+        strip.background = element_blank()) +#Make Strip backgrounds blank
+  ggsave("results/figures/ml_performance_otu.png", height = 5, width = 8)
