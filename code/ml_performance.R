@@ -88,7 +88,8 @@ performance <- perf_results %>%
   theme(legend.position = "bottom",
         text = element_text(size = 19),# Change font size for entire plot
         strip.background = element_blank()) +#Make Strip backgrounds blank
-  ggsave("results/figures/ml_performance.png", height = 5, width = 8)
+  guides(color=guide_legend(nrow = 2))+ #Legend in 2 rows so it doesn't get cut off
+  ggsave("results/figures/ml_performance.png", height = 5, width = 9)
 
 #Plot performance for all methods with OTU input data----
 performance_otu <- perf_results %>% 
@@ -113,4 +114,5 @@ performance_otu <- perf_results %>%
         axis.ticks.x = element_blank(), #Remove x axis ticks
         axis.text.x = element_blank(), #Remove x axis text (all models are at the OTU level)
         strip.background = element_blank()) +#Make Strip backgrounds blank
+  guides(color=guide_legend(nrow = 2))+   #Legend in 2 rows so it doesn't get cut off 
   ggsave("results/figures/ml_performance_otu.png", height = 5, width = 8)
