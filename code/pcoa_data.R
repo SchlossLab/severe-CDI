@@ -83,47 +83,6 @@ bc_nmds <- import_ord("data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.nmds.axes
 bc_nmds_plot <- plot_nmds(bc_nmds)+
   ggsave("results/figures/nmds_bc.png", height = 6, width = 6)
 
-#Perform PERMANOVA with adonis----
-#Read in Bray-Curtis distance matrix
-bc_dist <- read_dist("data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.std.dist")
-bc_variables <- tibble(sample = attr(bc_dist, "Labels")) %>%
-  left_join(metadata, by = "sample")
-detectCores()
-detectCores("system")
-detectCores("mc.cores")
-bc_adonis <- adonis(bc_dist~group, data = bc_variables, permutations = 1000, parallel = 20)
-bc_adonis
-#Select the adonis results dataframe and transform rownames into effects column
-bc_adonis_table <- as_tibble(rownames_to_column(bc_adonis$aov.tab, var = "effects")) %>%
-  write_tsv("data/process/permanova_bc_group.tsv")#Write results to .tsv file
-bc_adonis <- adonis(bc_dist~miseq_run, data = bc_variables, permutations = 1000, parallel = 20)
-bc_adonis
-#Select the adonis results dataframe and transform rownames into effects column
-bc_adonis_table <- as_tibble(rownames_to_column(bc_adonis$aov.tab, var = "effects")) %>%
-  write_tsv("data/process/permanova_bc_miseq_run.tsv")#Write results to .tsv file
-bc_adonis <- adonis(bc_dist~plate, data = bc_variables, permutations = 1000, parallel = 20)
-bc_adonis
-#Select the adonis results dataframe and transform rownames into effects column
-bc_adonis_table <- as_tibble(rownames_to_column(bc_adonis$aov.tab, var = "effects")) %>%
-  write_tsv("data/process/permanova_bc_plate.tsv")#Write results to .tsv file
-bc_adonis <- adonis(bc_dist~plate_location, data = bc_variables, permutations = 1000, parallel = 20)
-bc_adonis
-#Select the adonis results dataframe and transform rownames into effects column
-bc_adonis_table <- as_tibble(rownames_to_column(bc_adonis$aov.tab, var = "effects")) %>%
-  write_tsv("data/process/permanova_bc_plate_location.tsv")#Write results to .tsv file
-bc_adonis <- adonis(bc_dist~pbs_added, data = bc_variables, permutations = 1000, parallel = 20)
-bc_adonis
-#Select the adonis results dataframe and transform rownames into effects column
-bc_adonis_table <- as_tibble(rownames_to_column(bc_adonis$aov.tab, var = "effects")) %>%
-  write_tsv("data/process/permanova_bc_pbs_added.tsv")#Write results to .tsv file
-
-
-bc_adonis <- adonis(bc_dist~group/(miseq_run*plate*plate_location*pbs_added), data = bc_variables, permutations = 1000, parallel = 20)
-bc_adonis
-#Select the adonis results dataframe and transform rownames into effects column
-bc_adonis_table <- as_tibble(rownames_to_column(bc_adonis$aov.tab, var = "effects")) %>%
-  write_tsv("data/process/permanova_bc.tsv")#Write results to .tsv file
-
 #Jensen-Shannon divergence PCoA----
 jsd_pcoa <- import_ord("data/mothur/cdi.opti_mcc.jsd.0.03.lt.ave.pcoa.axes")
 jsd_axis1 <- axis_ord("data/mothur/cdi.opti_mcc.jsd.0.03.lt.ave.pcoa.loadings", 1)
@@ -131,7 +90,7 @@ jsd_axis2 <- axis_ord("data/mothur/cdi.opti_mcc.jsd.0.03.lt.ave.pcoa.loadings", 
 jsd_pcoa_plot <- plot_pcoa(jsd_pcoa, jsd_axis1, jsd_axis2)+
   ggsave("results/figures/pcoa_bc.png", height = 6, width = 6)
 
-#Read in JSD nmds results
+#Read in JSD NMDS results
 jsd_nmds <- import_ord("data/mothur/cdi.opti_mcc.jsd.0.03.lt.ave.nmds.axes")
 #No percent variation labels associated with NMDS ordination
 #Jensen-Shannon divergence NMDS----
