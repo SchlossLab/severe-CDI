@@ -39,4 +39,4 @@
 #                   #
 #####################
 
-Rscript code/pcoa_data.R
+Rscript code/permanova_analysis.R
