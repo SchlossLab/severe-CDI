@@ -19,6 +19,7 @@ taxonomy <- read_tsv(file="data/mothur/cdi.taxonomy") %>%
 otu_data <- read_tsv("data/mothur/cdi.opti_mcc.0.03.subsample.shared", col_types=cols(Group=col_character())) %>%
   select(-label, -numOtus) %>%
   rename(sample = Group) %>% #group is the same as sample in the metadata data frame
+  filter(!sample %in% contam_samples) %>% #Remove 2 contaminated samples from analysis
   gather(-sample, key="otu", value="count") %>%
   mutate(rel_abund=count/5000) #Use 5000, because this is the subsampling parameter chosen.
 
