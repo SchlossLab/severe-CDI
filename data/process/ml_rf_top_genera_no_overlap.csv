@@ -2,11 +2,9 @@ genus,color,model,genus_color_name
 Megasphaera,black,CvNDC,<i style='color:black'>Megasphaera</i>
 Enterococcus,black,CvDC,<i style='color:black'>Enterococcus</i>
 Campylobacter,black,DCvNDC,<i style='color:black'>Campylobacter</i>
-Erysipelotrichaceae Unclassified,black,CvNDC,<i style='color:black'>Erysipelotrichaceae Unclassified</i>
+Lachnospiraceae Unclassified,black,CvDC,<i style='color:black'>Lachnospiraceae Unclassified</i>
 Dorea,black,CvDC,<i style='color:black'>Dorea</i>
-Collinsella,black,CvDC,<i style='color:black'>Collinsella</i>
 Acidaminococcus,black,DCvNDC,<i style='color:black'>Acidaminococcus</i>
-Alistipes,black,CvDC,<i style='color:black'>Alistipes</i>
 Lactococcus,black,CvNDC,<i style='color:black'>Lactococcus</i>
 Dialister,black,DCvNDC,<i style='color:black'>Dialister</i>
 Lactobacillus,black,CvNDC,<i style='color:black'>Lactobacillus</i>

@@ -171,17 +171,18 @@ top_overlap_otus_hm <- top_agg_otu_subset %>%
   summarize(median=median(agg_rel_abund + 1/10000),`.groups` = "drop") %>%  #Add small value (1/2Xsubssampling parameter) so that there are no infinite values with log transformation
   ggplot()+
   geom_tile(aes(x = group, y=otu_color_name, fill=median))+
+  coord_flip()+
   labs(title=NULL,
        x=NULL,
        y=NULL)+
   scale_fill_distiller(trans = "log10",palette = "YlGnBu", direction = 1, name = "Relative \nAbundance", breaks=c(1e-4, 1e-3, 1e-2, 1e-1, 1), labels=c(1e-2, 1e-1, 1, 10, 100), limits = c(1/10000, 1))+
   theme_classic()+
-  scale_x_discrete(label = c("Case", "Diarrheal Control", "Non-Diarrheal Control"))+
+  scale_x_discrete(label = c("Non-Diarrheal Control", "Diarrheal Control", "Case"))+
   theme(plot.title=element_text(hjust=0.5),
-        axis.text.x = element_text(angle = 45, hjust = 1), #Angle axis labels
-        axis.text.y = element_markdown(), #Have only the OTU names show up as italics
+#        axis.text.x = element_text(angle = 45, hjust = 1), #Angle axis labels
+        axis.text.x = element_markdown(angle = 45, hjust = 1), #Have only the OTU names show up as italics
         text = element_text(size = 16)) # Change font size for entire plot
-save_plot("results/figures/feat_imp_overlap_otus_abund.png", top_overlap_otus_hm, base_height =8, base_width = 6)
+save_plot("results/figures/feat_imp_overlap_otus_abund.png", top_overlap_otus_hm, base_height =4, base_width = 8)
 
 #OTUs that are unique to each model----
 no_overlap_otu <- read_csv("data/process/ml_rf_top_otus_no_overlap.csv")
@@ -205,25 +206,26 @@ plot_unique_otus <- function(model_otus, model_name){
     mutate(median=median(agg_rel_abund + 1/10000),`.groups` = "drop") %>%  #Add small value (1/2Xsubssampling parameter) so that there are no infinite values with log transformation
     ggplot()+
     geom_tile(aes(x = group, y=otu_color_name, fill=median))+
-    labs(title=model_name,
+    labs(title=NULL,
          x=NULL,
          y=NULL)+
     scale_fill_distiller(trans = "log10",palette = "YlGnBu", direction = 1, name = "Relative \nAbundance", breaks=c(1e-4, 1e-3, 1e-2, 1e-1, 1), labels=c(1e-2, 1e-1, 1, 10, 100), limits = c(1/10000, 1))+
     theme_classic()+
-    scale_x_discrete(label = c("Case", "Diarrheal Control", "Non-Diarrheal Control"))+
+    scale_x_discrete(label = c("Case", "DC", "NDC"))+
     theme(plot.title=element_text(hjust=0.5),
-          axis.text.x = element_text(angle = 45, hjust = 1), #Angle axis labels
+          legend.position = "none",
+#          axis.text.x = element_text(angle = 45, hjust = 1), #Angle axis labels
           axis.text.y = element_markdown(), #Have only the OTU names show up as italics
           text = element_text(size = 16)) # Change font size for entire plot
 }
 
 #Plot the unique OTUs for each model----
 cvdc_unique <- plot_unique_otus(cvdc_otus, "Case v DC")  
-save_plot("results/figures/feat_imp_unique_CvDC_otus_abund.png", cvdc_unique, base_height =8, base_width = 6)
+save_plot("results/figures/feat_imp_unique_CvDC_otus_abund.png", cvdc_unique, base_height =3, base_width = 4)
 cvndc_unique <- plot_unique_otus(cvndc_otus, "Case v NDC")  
-save_plot("results/figures/feat_imp_unique_CvNDC_otus_abund.png", cvndc_unique, base_height =8, base_width = 6)
+save_plot("results/figures/feat_imp_unique_CvNDC_otus_abund.png", cvndc_unique, base_height =1.8, base_width = 4)
 dcvndc_unique <- plot_unique_otus(dcvndc_otus, "DC v NDC")  
-save_plot("results/figures/feat_imp_unique_DCvNDC_otus_abund.png", dcvndc_unique, base_height =8, base_width = 6)
+save_plot("results/figures/feat_imp_unique_DCvNDC_otus_abund.png", dcvndc_unique, base_height =3.2, base_width = 4)
 
 #Explore relative abundances of top genera that overlap across the 3 random forest classification models----
 overlap_genus <- read_csv("data/process/ml_rf_top_genera_overlap.csv")
@@ -280,6 +282,7 @@ plot_unique_genera <- function(model_genera, model_name){
     theme_classic()+
     scale_x_discrete(label = c("Case", "Diarrheal Control", "Non-Diarrheal Control"))+
     theme(plot.title=element_text(hjust=0.5),
+          legend.position = "none",
           axis.text.x = element_text(angle = 45, hjust = 1), #Angle axis labels
           axis.text.y = element_markdown(), #Have only the OTU names show up as italics
           text = element_text(size = 16)) # Change font size for entire plot

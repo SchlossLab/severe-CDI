@@ -1,9 +1,9 @@
 genus,color,overlap,genus_color_name
-Lachnospiraceae Unclassified,red,case,<i style='color:red'>Lachnospiraceae Unclassified</i>
+Erysipelotrichaceae Unclassified,red,case,<i style='color:red'>Erysipelotrichaceae Unclassified</i>
 Bifidobacterium,grey50,ndc,<i style='color:grey50'>Bifidobacterium</i>
 Enterobacteriaceae Unclassified,goldenrod,all,<i style='color:goldenrod'>Enterobacteriaceae Unclassified</i>
-Blautia,grey50,ndc,<i style='color:grey50'>Blautia</i>
-Flavonifractor,blue,dc,<i style='color:blue'>Flavonifractor</i>
+Blautia,goldenrod,all,<i style='color:goldenrod'>Blautia</i>
+Flavonifractor,goldenrod,all,<i style='color:goldenrod'>Flavonifractor</i>
 Fusicatenibacter,grey50,ndc,<i style='color:grey50'>Fusicatenibacter</i>
 Bacteria Unclassified,blue,dc,<i style='color:blue'>Bacteria Unclassified</i>
 Veillonellaceae Unclassified,blue,dc,<i style='color:blue'>Veillonellaceae Unclassified</i>
