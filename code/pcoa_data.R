@@ -46,8 +46,9 @@ plot_nmds <- function(nmds_df){
   nmds_df %>%
   ggplot(aes(x=axis1, y=axis2, color = group, fill = group, shape = group))+
   geom_point(size=2, alpha = 0.5)+
-  labs(x = "Axis 1",
-       y = "Axis 2")+
+  coord_fixed()+
+  labs(x = "NMDS Axis 1",
+       y = "NMDS Axis 2")+
   scale_colour_manual(name=NULL,
                       values=color_scheme,
                       breaks=legend_groups,
@@ -62,7 +63,9 @@ plot_nmds <- function(nmds_df){
                      labels=legend_labels)+
   theme_classic() +
   theme(text = element_text(size = 16),
+        legend.key.height = unit(0.25, "cm"),
         legend.position = "bottom")
+
 }
 
 #Read in PCoA values from mothur
