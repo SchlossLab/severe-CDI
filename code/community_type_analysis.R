@@ -68,20 +68,20 @@ best_cluster_group_plot <- sample_best_cluster_fit %>%
   geom_boxplot(aes(x=best_fitting_cluster, y=n, color= group))+
   coord_flip()+
   theme_classic()+
-  geom_vline(xintercept = c((1:12) - 0.5 ), color = "grey")  # Add gray lines to clearly separate partitions
+  geom_vline(xintercept = c((1:11) - 0.5 ), color = "grey")  # Add gray lines to clearly separate partitions
 
 #Figure out percent cases, nondiarrheal controls and diarrheal controls by cluster
 percent_group <- sample_best_cluster_fit %>% 
   group_by(cluster, group) %>% 
   summarize(group_cluster_total = n()) %>% 
   #Make a new variable % group per cluster based on total group numbers
-  mutate(percent_group = case_when(group == "case" ~ (group_cluster_total/1517)*100,
+  mutate(percent_group = case_when(group == "case" ~ (group_cluster_total/1516)*100,
                                            group == "diarrheal_control" ~ (group_cluster_total/1506)*100,
-                                           group == "nondiarrheal_control" ~ (group_cluster_total/909)*100,
+                                           group == "nondiarrheal_control" ~ (group_cluster_total/908)*100,
                                            TRUE ~ 0)) %>% #No samples should fall into this category
   ggplot()+
   geom_tile(aes(x=cluster, y=group, fill=percent_group))+
-  scale_y_discrete(label = c("Diarrheal Control", "Non-Diarrheal Control", "Case"))+
+  scale_y_discrete(label = c("Non-Diarrheal Control", "Diarrheal Control",  "Case"))+
   theme_classic()+
 #  scale_fill_viridis(name = "% Group") Alternative color scale
   scale_fill_distiller(palette = "YlGnBu", direction = 1, name = "% Group") 
@@ -90,25 +90,24 @@ percent_cluster <- sample_best_cluster_fit %>%
   group_by(cluster, group) %>% 
   summarize(group_cluster_total = n()) %>%
   #Make a new variable % group per cluster based on total cluster numbers
-  mutate(percent_cluster = case_when(cluster == "1" ~ (group_cluster_total/221)*100,
-                                     cluster == "10" ~ (group_cluster_total/421)*100,
-                                     cluster == "11" ~ (group_cluster_total/464)*100,
-                                     cluster == "12" ~ (group_cluster_total/81)*100,
-                                     cluster == "2" ~ (group_cluster_total/367)*100,
-                                     cluster == "3" ~ (group_cluster_total/283)*100,
-                                     cluster == "4" ~ (group_cluster_total/504)*100,
-                                     cluster == "5" ~ (group_cluster_total/243)*100,
-                                     cluster == "6" ~ (group_cluster_total/163)*100,
-                                     cluster == "7" ~ (group_cluster_total/421)*100,
-                                     cluster == "8" ~ (group_cluster_total/280)*100,
-                                     cluster == "9" ~ (group_cluster_total/484)*100,
+  mutate(percent_cluster = case_when(cluster == "1" ~ (group_cluster_total/352)*100,
+                                     cluster == "2" ~ (group_cluster_total/383)*100,
+                                     cluster == "3" ~ (group_cluster_total/157)*100,
+                                     cluster == "4" ~ (group_cluster_total/461)*100,
+                                     cluster == "5" ~ (group_cluster_total/585)*100,
+                                     cluster == "6" ~ (group_cluster_total/271)*100,
+                                     cluster == "7" ~ (group_cluster_total/83)*100,
+                                     cluster == "8" ~ (group_cluster_total/648)*100,
+                                     cluster == "9" ~ (group_cluster_total/372)*100,
+                                     cluster == "10" ~ (group_cluster_total/377)*100,
+                                     cluster == "11" ~ (group_cluster_total/241)*100,
                                      TRUE ~ 0)) %>% #No samples should fall into this category
   mutate(group = factor(group, levels = unique(as.factor(group)))) %>% #Transform group variable into factor variable
   mutate(group = fct_relevel(group, "diarrheal_control", "nondiarrheal_control", "case")) %>% #Specify the order of the groups
   ggplot()+
   geom_tile(aes(x=cluster, y=group, fill=percent_cluster))+
   scale_x_continuous(breaks = c(1:12))+
-  scale_y_discrete(label = c("Diarrheal Control", "Non-Diarrheal Control", "Case"))+
+  scale_y_discrete(label = c("Non-Diarrheal Control", "Diarrheal Control",  "Case"))+
   theme_classic()+
 #  scale_fill_viridis(name = "% Cluster") Alternate scale
   scale_fill_distiller(palette = "YlGnBu", direction = 1, name = "% Cluster")+
@@ -116,47 +115,6 @@ percent_cluster <- sample_best_cluster_fit %>%
         axis.title.x = element_blank(), #Get rid of x axis title, text, and ticks. Will combine with bacteria in cluster
         axis.text.x = element_blank(),
         axis.ticks.x = element_blank())
-
-#Alternative with detailed_group which breaks cases down based on stool consistency
-percent_group_detailed <- sample_best_cluster_fit %>% 
-  group_by(best_fitting_cluster, detailed_group) %>% 
-  summarize(group_cluster_total = n()) %>% 
-  #Make a new variable % group per cluster based on total group numbers
-  mutate(percent_group = case_when(detailed_group == "diarrheal_case" ~ (group_cluster_total/1459)*100,
-                                   detailed_group == "nondiarrheal_case " ~ (group_cluster_total/56)*100,
-                                   detailed_group == "unknown_case" ~ (group_cluster_total/2)*100,
-                                   detailed_group == "diarrheal_control" ~ (group_cluster_total/1506)*100,
-                                   detailed_group == "nondiarrheal_control" ~ (group_cluster_total/909)*100,
-                                   TRUE ~ 0)) %>% #No samples should fall into this category
-  ggplot()+
-  geom_tile(aes(x=best_fitting_cluster, y=detailed_group, fill=percent_group))+
-  theme_classic()+
-  scale_fill_viridis(name = "% Group")
-#  scale_fill_distiller(palette = "YlGnBu", direction = 1, name = "% Group")
-
-percent_cluster_detailed <- sample_best_cluster_fit %>% 
-  group_by(cluster, detailed_group) %>% 
-  summarize(group_cluster_total = n()) %>%
-  #Make a new variable % group per cluster based on total cluster numbers
-  mutate(percent_cluster = case_when(cluster == "1" ~ (group_cluster_total/221)*100,
-                                     cluster == "10" ~ (group_cluster_total/421)*100,
-                                     cluster == "11" ~ (group_cluster_total/464)*100,
-                                     cluster == "12" ~ (group_cluster_total/81)*100,
-                                     cluster == "2" ~ (group_cluster_total/367)*100,
-                                     cluster == "3" ~ (group_cluster_total/283)*100,
-                                     cluster == "4" ~ (group_cluster_total/504)*100,
-                                     cluster == "5" ~ (group_cluster_total/243)*100,
-                                     cluster == "6" ~ (group_cluster_total/163)*100,
-                                     cluster == "7" ~ (group_cluster_total/421)*100,
-                                     cluster == "8" ~ (group_cluster_total/280)*100,
-                                     cluster == "9" ~ (group_cluster_total/484)*100,
-                                     TRUE ~ 0)) %>% #No samples should fall into this category
-  mutate(detailed_group = fct_relevel(detailed_group, "diarrheal_control", "nondiarrheal_control", "nondiarrheal_case", "diarrheal_case", "unknown_case")) %>% #Specify the order of the groups
-  ggplot()+
-  geom_tile(aes(x=cluster, y=detailed_group, fill=percent_cluster))+
-  theme_classic()+
-  scale_fill_viridis(name = "% Cluster")
-#  scale_fill_distiller(palette = "YlGnBu", direction = 1, name = "% Cluster")
 
 #Exploratory-figure out a better way to calculate percent group and percent cluster
 test <- sample_best_cluster_fit %>% 
@@ -196,7 +154,7 @@ bacteria_in_clusters_plot <- bacteria_in_clusters %>%
   mutate(cluster=str_replace(cluster,"P(\\d*).mean","\\1")) %>% 
   mutate(cluster= as.numeric(cluster)) %>% #Transform cluster variable type from character to numeric
   ggplot() + geom_tile(aes(x=genus,y=cluster,fill=relabund))+
-  scale_y_continuous(breaks = c(1:12))+
+  scale_y_continuous(breaks = c(1:11))+
   labs(y = "Type")+
   coord_flip()+
   theme_classic()+
@@ -292,7 +250,7 @@ type_dist <- sample_best_cluster_fit %>%
                       labels=legend_labels)+
   labs(y = "Number of Samples",
        x = "Cluster")+
-  scale_y_continuous(limits = c(0, 300))+
+  scale_y_continuous(limits = c(0, 340))+
   scale_x_discrete(label = c("Case", "Diarrheal Control", "Non-Diarrheal Control"))+
   theme_classic()+
   theme(legend.position = "bottom",
