@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=mikropml_CvDC_otu
+#SBATCH --job-name=mikropml_IDSA_severity
 
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
