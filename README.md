@@ -175,7 +175,7 @@ Rscript code/community_type_analysis.R
 Visualize alpha diversity and ordinations in R.
 ```
 Rscript code/diversity_data.R
-Rscript code/pcoa_data.R
+Rscript code/ordination_data.R
 ```
 Create input files for lefse analysis using mothur. Run lefse analysis in mothur. Visualize lefse results in R.
 ```
