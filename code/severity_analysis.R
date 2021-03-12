@@ -81,8 +81,8 @@ all_lab_values <- lab_values %>%
 #Classify severe CDIs based on IDSA severity criteria
 cdi_lab_values <- all_lab_values %>% 
   filter(group == "case") %>% #1159/1517 cases with data
-  mutate(idsa_severity = case_when(wbc >= 15 | creat > 1.5 ~ "Severe",
-                                   TRUE ~ "Not Severe")) %>% 
+  mutate(idsa_severity = case_when(wbc >= 15 | creat > 1.5 ~ "yes",
+                                   TRUE ~ "no")) %>% 
   select(sample, idsa_severity)
 
 #Write out idsa_severity results----
