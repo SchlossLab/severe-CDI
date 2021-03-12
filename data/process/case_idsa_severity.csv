@@ -1,0 +1,1160 @@
+sample,idsa_severity
+KR00808,Not Severe
+KR00813,Severe
+KR00831,Not Severe
+KR01794,Severe
+KR01795,Not Severe
+KR01796,Severe
+KR01797,Not Severe
+KR01798,Severe
+KR01804,Severe
+KR01809,Severe
+KR01817,Not Severe
+KR01818,Severe
+KR01820,Severe
+KR01823,Not Severe
+KR01824,Severe
+KR01825,Not Severe
+KR01843,Severe
+KR01844,Severe
+KR01845,Not Severe
+KR01846,Not Severe
+KR01848,Not Severe
+KR01865,Severe
+KR01871,Severe
+KR01873,Not Severe
+KR01874,Severe
+KR01875,Not Severe
+KR01876,Not Severe
+KR01877,Severe
+KR01878,Not Severe
+KR01890,Severe
+KR01891,Not Severe
+KR01895,Not Severe
+KR01896,Not Severe
+KR01907,Severe
+KR01910,Not Severe
+KR01912,Not Severe
+KR01913,Not Severe
+KR01914,Not Severe
+KR01929,Severe
+KR01936,Not Severe
+KR01942,Not Severe
+KR01943,Severe
+KR01952,Not Severe
+KR01953,Not Severe
+KR01954,Not Severe
+KR01955,Not Severe
+KR01961,Severe
+KR01962,Severe
+KR01966,Severe
+KR01967,Not Severe
+KR01969,Not Severe
+KR01979,Severe
+KR01980,Not Severe
+KR01985,Severe
+KR01986,Not Severe
+KR01987,Severe
+KR01988,Not Severe
+KR01990,Not Severe
+KR01997,Not Severe
+KR01998,Not Severe
+KR01999,Not Severe
+KR02006,Severe
+KR02030,Severe
+KR02031,Not Severe
+KR02032,Not Severe
+KR02033,Not Severe
+KR02034,Not Severe
+KR02035,Not Severe
+KR02036,Severe
+KR02037,Severe
+KR02038,Severe
+KR02039,Not Severe
+KR02059,Not Severe
+KR02060,Severe
+KR02067,Severe
+KR02068,Severe
+KR02075,Not Severe
+KR02076,Not Severe
+KR02077,Not Severe
+KR02079,Not Severe
+KR02080,Not Severe
+KR02081,Not Severe
+KR02082,Not Severe
+KR02083,Not Severe
+KR02084,Not Severe
+KR02095,Not Severe
+KR02098,Not Severe
+KR02099,Not Severe
+KR02100,Severe
+KR02101,Not Severe
+KR02102,Not Severe
+KR02110,Not Severe
+KR02111,Severe
+KR02123,Severe
+KR02124,Severe
+KR02126,Not Severe
+KR02128,Not Severe
+KR02130,Severe
+KR02131,Severe
+KR02138,Severe
+KR02139,Severe
+KR02140,Not Severe
+KR02147,Severe
+KR02160,Severe
+KR02161,Not Severe
+KR02173,Not Severe
+KR02174,Severe
+KR02176,Not Severe
+KR02186,Not Severe
+KR02192,Severe
+KR02194,Not Severe
+KR02195,Not Severe
+KR02196,Not Severe
+KR02197,Not Severe
+KR02198,Not Severe
+KR02199,Not Severe
+KR02200,Not Severe
+KR02218,Not Severe
+KR02219,Severe
+KR02226,Severe
+KR02227,Not Severe
+KR02228,Not Severe
+KR02230,Not Severe
+KR02241,Not Severe
+KR02243,Not Severe
+KR02244,Severe
+KR02245,Not Severe
+KR02246,Severe
+KR02261,Severe
+KR02262,Severe
+KR02266,Not Severe
+KR02267,Severe
+KR02275,Severe
+KR02276,Severe
+KR02282,Not Severe
+KR02283,Not Severe
+KR02286,Severe
+KR02287,Severe
+KR02288,Not Severe
+KR02289,Not Severe
+KR02291,Not Severe
+KR02292,Severe
+KR02293,Severe
+KR02303,Not Severe
+KR02305,Severe
+KR02306,Severe
+KR02310,Severe
+KR02331,Not Severe
+KR02333,Severe
+KR02335,Not Severe
+KR02344,Not Severe
+KR02345,Severe
+KR02347,Not Severe
+KR02348,Not Severe
+KR02349,Severe
+KR02362,Not Severe
+KR02363,Severe
+KR02370,Not Severe
+KR02373,Severe
+KR02386,Severe
+KR02407,Severe
+KR02408,Not Severe
+KR02409,Not Severe
+KR02410,Severe
+KR02412,Not Severe
+KR02413,Not Severe
+KR02415,Not Severe
+KR02416,Not Severe
+KR02433,Severe
+KR02434,Severe
+KR02441,Severe
+KR02442,Not Severe
+KR02443,Severe
+KR02444,Not Severe
+KR02450,Severe
+KR02451,Severe
+KR02452,Severe
+KR02453,Not Severe
+KR02455,Not Severe
+KR02467,Not Severe
+KR02468,Not Severe
+KR02469,Not Severe
+KR02470,Severe
+KR02471,Not Severe
+KR02473,Severe
+KR02483,Severe
+KR02484,Severe
+KR02485,Severe
+KR02490,Severe
+KR02491,Severe
+KR02492,Not Severe
+KR02494,Not Severe
+KR02508,Severe
+KR02511,Severe
+KR02512,Not Severe
+KR02513,Not Severe
+KR02514,Not Severe
+KR02524,Severe
+KR02529,Severe
+KR02531,Not Severe
+KR02537,Not Severe
+KR02538,Severe
+KR02539,Severe
+KR02553,Severe
+KR02554,Severe
+KR02556,Not Severe
+KR02557,Not Severe
+KR02565,Not Severe
+KR02566,Not Severe
+KR02576,Not Severe
+KR02577,Not Severe
+KR02578,Not Severe
+KR02587,Severe
+KR02588,Not Severe
+KR02589,Not Severe
+KR02591,Not Severe
+KR02592,Not Severe
+KR02601,Not Severe
+KR02602,Severe
+KR02603,Not Severe
+KR02615,Not Severe
+KR02624,Not Severe
+KR02625,Not Severe
+KR02626,Not Severe
+KR02628,Severe
+KR02629,Severe
+KR02630,Not Severe
+KR02631,Severe
+KR02639,Not Severe
+KR02640,Not Severe
+KR02644,Not Severe
+KR02645,Not Severe
+KR02649,Not Severe
+KR02650,Not Severe
+KR02660,Severe
+KR02662,Not Severe
+KR02663,Not Severe
+KR02664,Severe
+KR02665,Not Severe
+KR02666,Not Severe
+KR02667,Severe
+KR02668,Not Severe
+KR02669,Not Severe
+KR02686,Severe
+KR02687,Not Severe
+KR02701,Not Severe
+KR02702,Not Severe
+KR02703,Not Severe
+KR02704,Severe
+KR02705,Not Severe
+KR02707,Not Severe
+KR02708,Severe
+KR02710,Severe
+KR02711,Severe
+KR02713,Severe
+KR02715,Severe
+KR02716,Severe
+KR02717,Severe
+KR02718,Not Severe
+KR02735,Not Severe
+KR02739,Severe
+KR02740,Not Severe
+KR02751,Severe
+KR02752,Not Severe
+KR02762,Not Severe
+KR02763,Not Severe
+KR02764,Not Severe
+KR02765,Not Severe
+KR02766,Severe
+KR02767,Severe
+KR02774,Not Severe
+KR02775,Not Severe
+KR02776,Severe
+KR02783,Severe
+KR02784,Not Severe
+KR02786,Not Severe
+KR02794,Severe
+KR02806,Not Severe
+KR02808,Not Severe
+KR02809,Not Severe
+KR02810,Severe
+KR02820,Not Severe
+KR02821,Not Severe
+KR02822,Severe
+KR02831,Severe
+KR02832,Not Severe
+KR02833,Severe
+KR02834,Severe
+KR02835,Not Severe
+KR02836,Not Severe
+KR02852,Not Severe
+KR02853,Not Severe
+KR02854,Severe
+KR02858,Not Severe
+KR02862,Severe
+KR02869,Not Severe
+KR02870,Not Severe
+KR02871,Not Severe
+KR02881,Severe
+KR02882,Severe
+KR02883,Not Severe
+KR02884,Not Severe
+KR02885,Not Severe
+KR02886,Not Severe
+KR02887,Severe
+KR02888,Not Severe
+KR02889,Not Severe
+KR02890,Severe
+KR02891,Severe
+KR02892,Severe
+KR02893,Severe
+KR02894,Severe
+KR02895,Severe
+KR02912,Severe
+KR02913,Not Severe
+KR02917,Not Severe
+KR02918,Severe
+KR02919,Severe
+KR02930,Severe
+KR02931,Not Severe
+KR02932,Severe
+KR02933,Severe
+KR02936,Severe
+KR02937,Severe
+KR02938,Severe
+KR02939,Not Severe
+KR02940,Not Severe
+KR02941,Severe
+KR02942,Not Severe
+KR02958,Severe
+KR02978,Not Severe
+KR02979,Not Severe
+KR02980,Severe
+KR02981,Severe
+KR02982,Not Severe
+KR02983,Not Severe
+KR02984,Not Severe
+KR02985,Not Severe
+KR02986,Not Severe
+KR02987,Not Severe
+KR02988,Not Severe
+KR02989,Severe
+KR03010,Not Severe
+KR03011,Severe
+KR03014,Severe
+KR03015,Not Severe
+KR03016,Severe
+KR03030,Not Severe
+KR03032,Severe
+KR03034,Severe
+KR03035,Not Severe
+KR03036,Severe
+KR03037,Severe
+KR03038,Severe
+KR03040,Not Severe
+KR03041,Not Severe
+KR03059,Severe
+KR03060,Not Severe
+KR03062,Severe
+KR03063,Severe
+KR03064,Not Severe
+KR03080,Not Severe
+KR03081,Severe
+KR03091,Not Severe
+KR03092,Severe
+KR03093,Not Severe
+KR03094,Not Severe
+KR03095,Not Severe
+KR03096,Not Severe
+KR03097,Severe
+KR03098,Severe
+KR03099,Severe
+KR03100,Severe
+KR03109,Severe
+KR03110,Not Severe
+KR03111,Not Severe
+KR03118,Not Severe
+KR03119,Not Severe
+KR03124,Severe
+KR03125,Not Severe
+KR03126,Severe
+KR03127,Not Severe
+KR03143,Severe
+KR03144,Not Severe
+KR03145,Severe
+KR03147,Severe
+KR03148,Severe
+KR03150,Not Severe
+KR03151,Severe
+KR03152,Severe
+KR03153,Severe
+KR03155,Severe
+KR03169,Severe
+KR03170,Severe
+KR03171,Severe
+KR03174,Not Severe
+KR03176,Severe
+KR03184,Severe
+KR03187,Not Severe
+KR03188,Not Severe
+KR03189,Not Severe
+KR03190,Not Severe
+KR03191,Severe
+KR03192,Severe
+KR03200,Severe
+KR03201,Severe
+KR03208,Not Severe
+KR03217,Not Severe
+KR03218,Severe
+KR03219,Not Severe
+KR03220,Severe
+KR03221,Severe
+KR03222,Severe
+KR03223,Not Severe
+KR03224,Severe
+KR03225,Severe
+KR03226,Not Severe
+KR03236,Not Severe
+KR03237,Severe
+KR03241,Not Severe
+KR03246,Severe
+KR03247,Not Severe
+KR03260,Severe
+KR03262,Not Severe
+KR03263,Severe
+KR03264,Severe
+KR03265,Severe
+KR03266,Severe
+KR03267,Severe
+KR03268,Severe
+KR03269,Not Severe
+KR03270,Not Severe
+KR03271,Severe
+KR03272,Not Severe
+KR03287,Not Severe
+KR03288,Severe
+KR03295,Severe
+KR03305,Severe
+KR03306,Severe
+KR03307,Not Severe
+KR03308,Severe
+KR03309,Severe
+KR03310,Not Severe
+KR03313,Not Severe
+KR03314,Not Severe
+KR03316,Not Severe
+KR03329,Not Severe
+KR03330,Not Severe
+KR03334,Not Severe
+KR03335,Severe
+KR03342,Severe
+KR03343,Not Severe
+KR03344,Not Severe
+KR03345,Not Severe
+KR03363,Not Severe
+KR03371,Not Severe
+KR03372,Not Severe
+KR03375,Not Severe
+KR03377,Not Severe
+KR03378,Not Severe
+KR03379,Not Severe
+KR03380,Not Severe
+KR03381,Not Severe
+KR03382,Severe
+KR03383,Not Severe
+KR03384,Severe
+KR03409,Not Severe
+KR03410,Severe
+KR03411,Severe
+KR03414,Not Severe
+KR03430,Severe
+KR03431,Not Severe
+KR03432,Severe
+KR03433,Severe
+KR03434,Not Severe
+KR03435,Severe
+KR03436,Severe
+KR03437,Severe
+KR03438,Severe
+KR03439,Severe
+KR03441,Not Severe
+KR03451,Severe
+KR03452,Severe
+KR03453,Not Severe
+KR03463,Not Severe
+KR03464,Not Severe
+KR03469,Severe
+KR03470,Severe
+KR03471,Severe
+KR03472,Severe
+KR03491,Not Severe
+KR03492,Severe
+KR03493,Not Severe
+KR03494,Not Severe
+KR03496,Severe
+KR03499,Severe
+KR03500,Not Severe
+KR03501,Severe
+KR03511,Severe
+KR03515,Not Severe
+KR03516,Not Severe
+KR03517,Not Severe
+KR03521,Severe
+KR03523,Severe
+KR03531,Severe
+KR03534,Not Severe
+KR03544,Not Severe
+KR03550,Not Severe
+KR03551,Severe
+KR03552,Severe
+KR03553,Not Severe
+KR03566,Severe
+KR03567,Not Severe
+KR03568,Not Severe
+KR03569,Not Severe
+KR03570,Not Severe
+KR03571,Severe
+KR03572,Not Severe
+KR03580,Severe
+KR03581,Not Severe
+KR03582,Severe
+KR03583,Severe
+KR03584,Not Severe
+KR03592,Not Severe
+KR03593,Not Severe
+KR03598,Severe
+KR03607,Not Severe
+KR03608,Severe
+KR03609,Severe
+KR03610,Not Severe
+KR03611,Not Severe
+KR03612,Not Severe
+KR03624,Not Severe
+KR03628,Not Severe
+KR03639,Severe
+KR03640,Not Severe
+KR03641,Not Severe
+KR03642,Severe
+KR03643,Not Severe
+KR03657,Not Severe
+KR03658,Not Severe
+KR03659,Not Severe
+KR03660,Not Severe
+KR03671,Severe
+KR03687,Severe
+KR03688,Severe
+KR03690,Severe
+KR03691,Not Severe
+KR03692,Not Severe
+KR03693,Not Severe
+KR03694,Not Severe
+KR03695,Not Severe
+KR03696,Not Severe
+KR03710,Not Severe
+KR03711,Not Severe
+KR03716,Not Severe
+KR03717,Not Severe
+KR03724,Severe
+KR03725,Severe
+KR03736,Severe
+KR03737,Severe
+KR03739,Severe
+KR03740,Severe
+KR03741,Not Severe
+KR03742,Not Severe
+KR03743,Not Severe
+KR03744,Not Severe
+KR03745,Not Severe
+KR03746,Not Severe
+KR03747,Not Severe
+KR03748,Severe
+KR03749,Severe
+KR03764,Not Severe
+KR03766,Severe
+KR03767,Not Severe
+KR03775,Not Severe
+KR03776,Severe
+KR03778,Severe
+KR03785,Not Severe
+KR03786,Severe
+KR03787,Severe
+KR03788,Severe
+KR03792,Severe
+KR03793,Not Severe
+KR03794,Not Severe
+KR03795,Severe
+KR03796,Not Severe
+KR03797,Not Severe
+KR03810,Not Severe
+KR03811,Severe
+KR03812,Severe
+KR03819,Severe
+KR03822,Not Severe
+KR03823,Severe
+KR03825,Not Severe
+KR03826,Severe
+KR03827,Severe
+KR03843,Not Severe
+KR03844,Not Severe
+KR03852,Severe
+KR03858,Severe
+KR03860,Not Severe
+KR03869,Severe
+KR03873,Not Severe
+KR03875,Severe
+KR03876,Severe
+KR03887,Not Severe
+KR03888,Severe
+KR03889,Not Severe
+KR03890,Not Severe
+KR03901,Not Severe
+KR03902,Severe
+KR03903,Severe
+KR03906,Severe
+KR03907,Not Severe
+KR03908,Not Severe
+KR03922,Severe
+KR03923,Severe
+KR03927,Not Severe
+KR03929,Severe
+KR03930,Severe
+KR03937,Severe
+KR03938,Not Severe
+KR03947,Not Severe
+KR03948,Not Severe
+KR03954,Not Severe
+KR02125,Not Severe
+KR02145,Not Severe
+KR02229,Not Severe
+KR02590,Not Severe
+KR02991,Not Severe
+KR03017,Not Severe
+KR03175,Not Severe
+KR03545,Not Severe
+KR03689,Not Severe
+KR00196,Not Severe
+KR00055,Not Severe
+KR00985,Not Severe
+KR01783,Not Severe
+KR01088,Severe
+KR01744,Not Severe
+KR00170,Not Severe
+KR00852,Not Severe
+KR01147,Severe
+KR00810,Not Severe
+KR01692,Not Severe
+KR01600,Severe
+KR01690,Severe
+KR01452,Not Severe
+KR00569,Severe
+KR00194,Severe
+KR00972,Not Severe
+KR00104,Severe
+KR00682,Not Severe
+KR00584,Not Severe
+KR00453,Severe
+KR00061,Severe
+KR01247,Severe
+KR01784,Not Severe
+KR00509,Severe
+KR00696,Not Severe
+KR00442,Severe
+KR00446,Not Severe
+KR01086,Not Severe
+KR01316,Not Severe
+KR01634,Not Severe
+KR01514,Not Severe
+KR01202,Not Severe
+KR00347,Severe
+KR00977,Not Severe
+KR01415,Severe
+KR01646,Not Severe
+KR00644,Not Severe
+KR00231,Not Severe
+KR00218,Not Severe
+KR01110,Not Severe
+KR01606,Severe
+KR00973,Not Severe
+KR00356,Not Severe
+KR01400,Severe
+KR00026,Not Severe
+KR00600,Not Severe
+KR00552,Not Severe
+KR01094,Severe
+KR01129,Severe
+KR00506,Not Severe
+KR00495,Not Severe
+KR01536,Severe
+KR01788,Not Severe
+KR00399,Not Severe
+KR00082,Not Severe
+KR01077,Not Severe
+KR00122,Severe
+KR01313,Not Severe
+KR00188,Not Severe
+KR01082,Not Severe
+KR00160,Not Severe
+KR00814,Severe
+KR01636,Not Severe
+KR00145,Severe
+KR01404,Severe
+KR01206,Severe
+KR01073,Not Severe
+KR01740,Severe
+KR01558,Severe
+KR00594,Not Severe
+KR00456,Not Severe
+KR01390,Severe
+KR01322,Not Severe
+KR01242,Not Severe
+KR00048,Not Severe
+KR00248,Not Severe
+KR00816,Not Severe
+KR00542,Severe
+KR01473,Not Severe
+KR01265,Not Severe
+KR00215,Not Severe
+KR00180,Not Severe
+KR00301,Severe
+KR00614,Not Severe
+KR01515,Not Severe
+KR00213,Severe
+KR01083,Severe
+KR00121,Not Severe
+KR00263,Severe
+KR00500,Not Severe
+KR00975,Severe
+KR00535,Not Severe
+KR01438,Not Severe
+KR01743,Not Severe
+KR00124,Not Severe
+KR00200,Not Severe
+KR00360,Severe
+KR00984,Not Severe
+KR01359,Not Severe
+KR01134,Not Severe
+KR00119,Not Severe
+KR00992,Not Severe
+KR00384,Not Severe
+KR01550,Not Severe
+KR00038,Not Severe
+KR00901,Not Severe
+KR00633,Severe
+KR00227,Not Severe
+KR01176,Not Severe
+KR01080,Severe
+KR00566,Not Severe
+KR00271,Not Severe
+KR00612,Not Severe
+KR00908,Not Severe
+KR00148,Severe
+KR00169,Not Severe
+KR01635,Severe
+KR00656,Not Severe
+KR00554,Not Severe
+KR01713,Not Severe
+KR01676,Not Severe
+KR00910,Severe
+KR00348,Not Severe
+KR00019,Severe
+KR01622,Not Severe
+KR00823,Not Severe
+KR01399,Not Severe
+KR00927,Severe
+KR01425,Not Severe
+KR01785,Severe
+KR00822,Severe
+KR00645,Not Severe
+KR00339,Severe
+KR00244,Severe
+KR01602,Not Severe
+KR01412,Severe
+KR00014,Severe
+KR00601,Not Severe
+KR00571,Not Severe
+KR00272,Not Severe
+KR00165,Not Severe
+KR00426,Not Severe
+KR00913,Not Severe
+KR01437,Not Severe
+KR00404,Not Severe
+KR01638,Not Severe
+KR00110,Not Severe
+KR00311,Severe
+KR00565,Not Severe
+KR00123,Severe
+KR01317,Severe
+KR00821,Not Severe
+KR01593,Not Severe
+KR01321,Not Severe
+KR00619,Not Severe
+KR01597,Not Severe
+KR01084,Not Severe
+KR00527,Severe
+KR00536,Not Severe
+KR00397,Not Severe
+KR01574,Not Severe
+KR00383,Severe
+KR00702,Severe
+KR00054,Not Severe
+KR01329,Not Severe
+KR00963,Not Severe
+KR00345,Not Severe
+KR01078,Not Severe
+KR01493,Not Severe
+KR01230,Not Severe
+KR01520,Severe
+KR01020,Severe
+KR01085,Not Severe
+KR00802,Not Severe
+KR00018,Not Severe
+KR00714,Not Severe
+KR00108,Severe
+KR00175,Severe
+KR01623,Not Severe
+KR01592,Not Severe
+KR00646,Not Severe
+KR01674,Severe
+KR00987,Not Severe
+KR01025,Not Severe
+KR00611,Not Severe
+KR01625,Severe
+KR01074,Severe
+KR00598,Not Severe
+KR01696,Not Severe
+KR01616,Severe
+KR01556,Severe
+KR00803,Severe
+KR01200,Not Severe
+KR00197,Not Severe
+KR01490,Not Severe
+KR00477,Severe
+KR00824,Not Severe
+KR00373,Not Severe
+KR00686,Severe
+KR00440,Not Severe
+KR01675,Severe
+KR00825,Severe
+KR00035,Not Severe
+KR00126,Severe
+KR00027,Not Severe
+KR01648,Severe
+KR01599,Not Severe
+KR00502,Not Severe
+KR00016,Not Severe
+KR00826,Not Severe
+KR01376,Severe
+KR01568,Not Severe
+KR01318,Not Severe
+KR00683,Not Severe
+KR00555,Not Severe
+KR01320,Not Severe
+KR01289,Severe
+KR01057,Severe
+KR00593,Not Severe
+KR01027,Not Severe
+KR00632,Severe
+KR00201,Not Severe
+KR01492,Severe
+KR00804,Severe
+KR01087,Severe
+KR00096,Not Severe
+KR00398,Not Severe
+KR01314,Not Severe
+KR00212,Severe
+KR00245,Not Severe
+KR01487,Not Severe
+KR01655,Not Severe
+KR01463,Severe
+KR01486,Severe
+KR01312,Not Severe
+KR00493,Severe
+KR00712,Not Severe
+KR01465,Severe
+KR00541,Not Severe
+KR01161,Not Severe
+KR00300,Severe
+KR00039,Not Severe
+KR00329,Severe
+KR00617,Severe
+KR00310,Severe
+KR00603,Not Severe
+KR01360,Not Severe
+KR00346,Severe
+KR01573,Severe
+KR00764,Not Severe
+KR00911,Not Severe
+KR00034,Severe
+KR00020,Severe
+KR01698,Not Severe
+KR00974,Severe
+KR01414,Not Severe
+KR00374,Severe
+KR00325,Severe
+KR00590,Not Severe
+KR00553,Severe
+KR01005,Not Severe
+KR00246,Not Severe
+KR01693,Severe
+KR00022,Severe
+KR00147,Not Severe
+KR01231,Not Severe
+KR01472,Not Severe
+KR01137,Severe
+KR00259,Not Severe
+KR01697,Not Severe
+KR01489,Severe
+KR00390,Not Severe
+KR00481,Not Severe
+KR00076,Not Severe
+KR00815,Not Severe
+KR01008,Not Severe
+KR00564,Not Severe
+KR01028,Severe
+KR00830,Not Severe
+KR00841,Not Severe
+KR01491,Not Severe
+KR00788,Severe
+KR00031,Severe
+KR01081,Not Severe
+KR01036,Severe
+KR00015,Not Severe
+KR00551,Not Severe
+KR00315,Not Severe
+KR01752,Severe
+KR01355,Not Severe
+KR01203,Not Severe
+KR00322,Severe
+KR00789,Severe
+KR00146,Not Severe
+KR00728,Severe
+KR01138,Not Severe
+KR01572,Severe
+KR00970,Not Severe
+KR00324,Severe
+KR00191,Severe
+KR01205,Severe
+KR01149,Not Severe
+KR00843,Not Severe
+KR00234,Not Severe
+KR01092,Not Severe
+KR00056,Not Severe
+KR00540,Not Severe
+KR00261,Severe
+KR01717,Severe
+KR01212,Not Severe
+KR01440,Severe
+KR01567,Severe
+KR00809,Not Severe
+KR00599,Not Severe
+KR01527,Severe
+KR00929,Not Severe
+KR00651,Not Severe
+KR01356,Not Severe
+KR00595,Not Severe
+KR01262,Not Severe
+KR00174,Severe
+KR00905,Severe
+KR01431,Severe
+KR01135,Not Severe
+KR00828,Severe
+KR00090,Severe
+KR00701,Severe
+KR01133,Not Severe
+KR00971,Not Severe
+KR00162,Not Severe
+KR00091,Not Severe
+KR00298,Severe
+KR00094,Not Severe
+KR00695,Severe
+KR00025,Not Severe
+KR00385,Not Severe
+KR00817,Not Severe
+KR01410,Not Severe
+KR00452,Severe
+KR00258,Severe
+KR00037,Not Severe
+KR01301,Severe
+KR00961,Not Severe
+KR00976,Not Severe
+KR01526,Not Severe
+KR01272,Not Severe
+KR00120,Severe
+KR01687,Not Severe
+KR01194,Not Severe
+KR00032,Not Severe
+KR00664,Not Severe
+KR00928,Not Severe
+KR01496,Not Severe
+KR00093,Not Severe
+KR00164,Not Severe
+KR00592,Not Severe
+KR01627,Severe
+KR01557,Not Severe
+KR01358,Not Severe
+KR01494,Severe
+KR00247,Not Severe
+KR00534,Not Severe
+KR01441,Severe
+KR00092,Not Severe
+KR00710,Severe
+KR00299,Severe
+KR01264,Severe
+KR01416,Severe
+KR00475,Not Severe
+KR00327,Not Severe
+KR00137,Not Severe
+KR00050,Severe
+KR00479,Not Severe
+KR00909,Not Severe
+KR00668,Not Severe
+KR01590,Severe
+KR00496,Severe
+KR00685,Severe
+KR01311,Not Severe
+KR00445,Severe
+KR00052,Severe
+KR00482,Not Severe
+KR01175,Severe
+KR01037,Not Severe
+KR01357,Not Severe
+KR00829,Severe
+KR00226,Not Severe
+KR01451,Not Severe
+KR01464,Not Severe
+KR01439,Not Severe
+KR01093,Not Severe
+KR00805,Not Severe
+KR00112,Severe
+KR00906,Not Severe
+KR01629,Not Severe
+KR01781,Not Severe
+KR00711,Not Severe
+KR01525,Severe
+KR00355,Not Severe
+KR01148,Not Severe
+KR01495,Severe
+KR01207,Severe
+KR00498,Severe
+KR01405,Severe
+KR00662,Not Severe
+KR00548,Severe
+KR01160,Severe
+KR00649,Severe
+KR01406,Not Severe
+KR00190,Not Severe
+KR00017,Severe
+KR01787,Not Severe
+KR01039,Not Severe
+KR00330,Not Severe
+KR00460,Not Severe
+KR00109,Not Severe
+KR01056,Severe
+KR00024,Severe
+KR00684,Not Severe
+KR00567,Not Severe
+KR00983,Not Severe
+KR00787,Not Severe
+KR01633,Not Severe
+KR00028,Not Severe
+KR00136,Severe
+KR01079,Severe
+KR00338,Severe
+KR01654,Not Severe
+KR01605,Not Severe
+KR00703,Not Severe
+KR01201,Not Severe
+KR00040,Severe
+KR01426,Not Severe
+KR01132,Not Severe
+KR01524,Severe
+KR00173,Not Severe
+KR01136,Severe
+KR00602,Not Severe
+KR01549,Not Severe
+KR00421,Not Severe
+KR01213,Not Severe
+KR00097,Not Severe
+KR01466,Not Severe
+KR01026,Not Severe
+KR00066,Not Severe
+KR01644,Not Severe
+KR00171,Severe
+KR01516,Not Severe
+KR00013,Severe
+KR01591,Not Severe
+KR01038,Not Severe
+KR00486,Not Severe
+KR00806,Severe
+KR00785,Severe
+KR01488,Not Severe
+KR00321,Not Severe
+KR01362,Not Severe
+KR01075,Not Severe
+KR01315,Not Severe
+KR01786,Not Severe
+KR01598,Severe
+KR00296,Not Severe
+KR01204,Not Severe
+KR00648,Not Severe
+KR00550,Not Severe
+KR01474,Not Severe
+KR00903,Severe
+KR01628,Severe
+KR00405,Not Severe
+KR00613,Not Severe
+KR00854,Not Severe
+KR01417,Not Severe
+KR01745,Not Severe
+KR00591,Severe
+KR01751,Not Severe
+KR01548,Not Severe
+KR00161,Not Severe
+KR00490,Severe
+KR00663,Not Severe
+KR00647,Severe
+KR00480,Severe
+KR00391,Not Severe
+KR01771,Severe
+KR00944,Not Severe
+KR00497,Not Severe
+KR01263,Severe
+KR00053,Not Severe
+KR01346,Severe
+KR00396,Not Severe
+KR00340,Not Severe
+KR00149,Severe
+KR01691,Not Severe
+KR00293,Severe
+KR00848,Not Severe
+KR00819,Severe
+KR00029,Not Severe
+KR00111,Not Severe
+KR00232,Not Severe
+KR00478,Not Severe
+KR00047,Not Severe
+KR00314,Severe
+KR00303,Severe
+KR00574,Not Severe
+KR00855,Not Severe
+KR00295,Not Severe
+KR00986,Severe
+KR01475,Not Severe
+KR00033,Severe
+KR00962,Not Severe
+KR00280,Not Severe
+KR00699,Not Severe
+KR01601,Severe
+KR00403,Not Severe
+KR00351,Severe
+KR00538,Severe
+KR00681,Severe
+KR01319,Not Severe
+KR01354,Not Severe
+KR00297,Not Severe
+KR00083,Not Severe
+KR01241,Not Severe
+KR00071,Not Severe
+KR00428,Not Severe
