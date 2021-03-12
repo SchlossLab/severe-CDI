@@ -41,12 +41,15 @@ plot_pcoa <- function(pcoa_df, axis1_label, axis2_label){
           legend.position = "bottom")
 }
 
-#Plot NMDS
+#Plot NMDS as density plot
 plot_nmds <- function(nmds_df){
   nmds_df %>%
-  ggplot(aes(x=axis1, y=axis2, color = group, fill = group, shape = group))+
+  ggplot(aes(x=axis1, y=axis2, color = group, fill = group))+
+#  geom_density2d()+ #Density plot, hard to see without the points, the points
   geom_point(size=2, alpha = 0.5)+
-  coord_fixed()+
+  stat_ellipse(geom = "polygon", level = 0.75, alpha = 0.5, show.legend = FALSE)+ #Semi-transparent ellipse
+
+  coord_fixed(xlim = c(-0.8, 0.8), ylim = c(-0.8, 0.8))+
   labs(x = "NMDS Axis 1",
        y = "NMDS Axis 2")+
   scale_colour_manual(name=NULL,
@@ -57,10 +60,6 @@ plot_nmds <- function(nmds_df){
                     values=color_scheme,
                     breaks=legend_groups,
                     labels=legend_labels)+
-  scale_shape_manual(name=NULL,
-                     values=shape_scheme,
-                     breaks=legend_groups,
-                     labels=legend_labels)+
   theme_classic() +
   theme(text = element_text(size = 16),
         legend.key.height = unit(0.25, "cm"),
@@ -78,6 +77,7 @@ bc_pcoa_plot <- plot_pcoa(bc_pcoa, bc_axis1, bc_axis2)+
 
 #Read in nmds values
 bc_nmds <- import_ord("data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.nmds.axes")
+
 #No percent variation labels associated with NMDS ordination
 #Jensen-Shannon divergence NMDS----
 bc_nmds_plot <- plot_nmds(bc_nmds)+
