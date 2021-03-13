@@ -3,7 +3,7 @@ outcome_colname: outcome
 ml_methods:
  - glmnet
  - rf
- - rpart2
+# - rpart2
  - svmRadial
 kfold: 5
 ncores: 36
