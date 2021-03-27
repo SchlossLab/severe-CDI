@@ -1,8 +1,6 @@
-# Generate lefse analysis for 3 different comparison types based on corresponding shared & design files
+# Generate lefse analysis for IDSA status based on corresponding shared & design files
 #https://mothur.org/wiki/lefse/
 set.dir(input=data/process, output=data/process, seed=19760620)
 
 # Perform lefse on the 3 sets of input files
-lefse(shared = CvDC.shared, design=CvDC.design)
-lefse(shared = CvNDC.shared, design=CvNDC.design)
-lefse(shared = DCvNDC.shared, design=DCvNDC.design)
+lefse(shared = idsa.shared, design=idsa.design)
