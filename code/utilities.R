@@ -7,39 +7,21 @@ library(vegan)
 library(glue)
 library(ggtext)
 library(parallel)
-#library(pROC)
 #library(scales)
 #library(viridis) #color blind friendly palettes
 
 #Define color scheme----
-color_scheme <- c("red", "blue", "grey50") 
-legend_groups <- c("case", "diarrheal_control", "nondiarrheal_control")
-legend_labels <- c("Case", "Diarrheal Control", "Non-Diarrheal Control")
-#Alternative color scheme for detailed_group where C. difficile cases are broken down by stool consistency
-color_scheme_detailed <- c("red", "red", "red", "blue", "grey50") 
-legend_groups_detailed <- c("diarrheal_case", "nondiarrheal_case", "unknown_case", "diarrheal_control", "nondiarrheal_control")
-legend_labels_detailed <- c("Diarrheal Case", "Non-Diarrheal Case", "Unknown Case", "Diarrheal Control", "Non-Diarrheal Control")
-  
-#Define shape scheme----
-shape_scheme <- c(0, 2, 1) #open
-shape_scheme <- c(22, 24, 21) #closed
-legend_groups #Same as color scheme
-legend_labels 
-#Alternative shape scheme for detailed_group where C. difficile cases are broken down by stool consistency
-shape_scheme_detailed <- c(0, 22, 8, 24, 21) #closed
-
+#IDSA Color Scheme
+#Define color scheme----
+color_scheme <- c("#91bfdb", "#d73027") 
+legend_idsa <- c("no", "yes")
+legend_labels <- c("Not Severe", "IDSA Severe")
+ 
 #Read in metadata
 metadata <- read_tsv("data/process/final_CDI_16S_metadata.tsv") %>% 
   rename(sample = `CDIS_Sample ID`) %>% 
   mutate(pbs_added = replace_na(pbs_added, "no")) %>% #All NAs means PBS was not added so change to no
   #Update group to reflect case as anything regardless of stool consistency
-  mutate(detailed_group = case_when(cdiff_case == "Case" & `stool_consistency` == "unformed" ~ "diarrheal_case",
-                           cdiff_case == "Control" & `stool_consistency` == "unformed" ~ "diarrheal_control",
-                           cdiff_case == "Control" & `stool_consistency` == "formed" ~ "nondiarrheal_control",
-                           cdiff_case == "Case" & `stool_consistency` == "formed" ~ "nondiarrheal_case", #56 samples that were positive for C. diff and had formed stool consistency
-                           cdiff_case == "Case" & `stool_consistency` == "unknown" ~ "unknown_case", #2 cases with unknown stool consistencies
-                           TRUE ~ "control")) %>%  #Label rest of samples as control (water and mock samples)
-  mutate(detailed_group = fct_relevel(detailed_group, "diarrheal_case", "nondiarrheal_case", "unknown_case", "diarrheal_control", "nondiarrheal_control")) %>% #Specify the order of the detailed group factor
   #Transform variables of interest for PERMANOVA tests into factor variables
   mutate(group = factor(group, levels = unique(as.factor(group))),
          miseq_run = factor(miseq_run, levels = unique(as.factor(miseq_run))),
@@ -47,37 +29,46 @@ metadata <- read_tsv("data/process/final_CDI_16S_metadata.tsv") %>%
          plate_location = factor(plate_location, levels = unique(as.factor(plate_location))),
          pbs_added = factor(pbs_added, levels = unique(as.factor(pbs_added)))) 
 
-#Check for longitudinal samples in the dataset (multiple samples that came from the same patient)----
-#`CDIS_Study ID` corresponds to a single patient. s
-#Number of patients with multiple samples
-multi_samples <- metadata %>%
-  filter(!is.na(`CDIS_Study ID`)) %>% 
-  group_by(`CDIS_Study ID`) %>% 
-  tally() %>% 
-  filter(n > 1) %>% 
-  tally(n)
-#468 patients with multiple samples in dataset (1085 total)
-
-#Number of samples from a single patient
-single_samples <- metadata %>%
-  filter(!is.na(`CDIS_Study ID`)) %>% 
-  group_by(`CDIS_Study ID`) %>% 
-  tally() %>% 
-  filter(n == 1)
-#2858 samples are from 1 patient
-
-#Number of patients with 2 or at least 3 samples
-t2_samples <- multi_samples %>% 
-  filter(n == 2)
-#355 samples
-ta3_samples <- multi_samples %>% 
-  filter(n > 2)
-
 #List of samples that should have been resequenced (combined while arraying into extraction plates)----
 #Drop these samples from the 16S analysis
 contam_samples <- metadata %>% 
   filter(str_detect(notes, "Need to Resequence")) %>% 
   pull(sample)
+
+#Drop 2 contaminated samples from metadata----
+metadata <- metadata %>% 
+  filter(!sample %in%contam_samples)
+
+#CDI metadata: filter metadata to just CDI cases
+cdi_metadata <- metadata %>% 
+  filter(group == "case")
+
+#Check for longitudinal samples in the dataset (multiple samples that came from the same patient)----
+#`CDIS_Study ID` corresponds to a single patient. s
+#Number of patients with multiple samples
+multi_samples <- cdi_metadata %>%
+  filter(!is.na(`CDIS_Study ID`)) %>% 
+  group_by(`CDIS_Study ID`) %>% 
+  tally() %>% 
+  filter(n > 1) %>% 
+  tally(n)
+#185 patients with multiple samples in dataset (424 samples)
+
+#Number of samples from a single patient
+single_samples <- cdi_metadata %>%
+  filter(!is.na(`CDIS_Study ID`)) %>% 
+  group_by(`CDIS_Study ID`) %>% 
+  tally() %>% 
+  filter(n == 1)
+#1092 samples are from 1 patient
+
+#Number of patients with 2 or at least 3 samples
+t2_samples <- multi_samples %>% 
+  filter(n == 2)
+#0 samples
+ta3_samples <- multi_samples %>% 
+  filter(n > 2)
+#425 samples
 
 #Functions to subset data frames and format for logistic regression----
 #Function to Rescale values to fit between 0 and 1
