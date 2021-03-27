@@ -96,3 +96,35 @@ cdi_severity_n <- cdi_lab_values %>%
   tally
 #691 Not severe CDIs
 #468 severe CDIs
+
+#IDSA Color Scheme
+#Define color scheme----
+color_scheme <- c("#91bfdb", "#d73027") 
+legend_idsa <- c("no", "yes")
+legend_labels <- c("Not Severe", "IDSA Severe")
+
+#Plot number of severe and not severe CDIs
+idsa_count <- cdi_lab_values %>% 
+    ggplot(aes(x=idsa_severity, color = idsa_severity, fill = idsa_severity))+
+    geom_bar(show.legend = FALSE) +
+    labs(title=NULL, 
+         x=NULL)+
+    scale_colour_manual(name=NULL,
+                        values=color_scheme,
+                        breaks=legend_idsa,
+                        labels=legend_labels)+
+    scale_fill_manual(name=NULL,
+                        values=color_scheme,
+                        breaks=legend_idsa,
+                        labels=legend_labels)+
+    scale_x_discrete(label = c("Not Severe", "IDSA Severe"))+
+    theme_classic()+
+    theme(legend.position = "bottom",
+          text = element_text(size = 19),# Change font size for entire plot
+          axis.text.x = element_text(angle = 45, hjust = 1), #Angle axis labels
+          axis.title.y = element_text(size = 17)) 
+
+#Save tally of severity status
+plot_grid(idsa_count)+
+  ggsave("results/figures/idsa_severe_n.png", height = 5, width = 4.5)
+

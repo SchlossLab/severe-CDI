@@ -88,50 +88,7 @@ mv zymo.align data/references/zymo_mock.align
 rm -rf zymo* ZymoBIOMICS.STD.refseq.v2* zymo_temp.fasta
 ```
 
-Record of commands used to copy raw data files from miseq_runs folder to my project's raw data folders.
-```
-copy_fastqs_to_data
-```
-
-Test of mothur v1.44 in schloss-lab/bin. I initially had errors and Pat helped figure out what the issue was.
-```
-test_fastqs_to_data
-mothur code/test_get_good_seqs_shared_otus.batch
-```
-
-Initial analysis runs to determine number of sequences per sample:
-```
-mothur code/get_good_seqs_shared_otus.batch
-Rscript code/seq_per_sample.R
-```
-
-Analysis of the 7 samples that were accidentally not transferred over from the MiSeq:
-```
-mothur code/missing_get_good_seqs_shared_otus.batch
-```
-
-Resequencing analysis runs to determine number of sequences per sample for library (repeat of the library since the 1st run had a MiSeq clustering error) and 2 individual plates of resequenced samples:
-```
-mothur code/reseq_get_good_seqs_shared_otus.batch
-mothur code/reseq_repeat_get_good_seqs_shared_otus.batch
-mothur code/plate52_get_good_seqs_shared_otus.batch
-mothur code/plate53_get_good_seqs_shared_otus.batch
-Rscript code/reseq_seq_per_sample.R
-```
-
-Test if it is feasible to combine sequences across different MiSeq runs
-```
-bash code/copy_fastqs_to_combine_test
-mothur code/combine_test_get_good_seqs.batch
-Rscript code/reseq_samples_compare_across_runs.R
-```
-After visualization of theta yc between runs, there was too much variation in theta yc distance for the same samples across runs. Since combining would only be relevant for a small subset of the samples (< 50), we decided to try resequencing these samples one last time (plate_53).
-
-Finalize the pairs of sequencing files we will analyze for each sample (choose the run that yielded the most sequences out of all resequencing runs). Generate 16S sequencing preparation metadata file that tracks which microbiome aliquot was used, which plate and MiSeq library the sample was sequenced in, and which microbiome aliquot was used.
-```
-Rscript code/select_analysis_seqs.R
-```
-Also see lines 233 and onward from code/copy_fastqs_to_data for how files were transferred to data/raw.
+Starting with the shared and metadata files from Tomkovich_CDI_clinical_samples, which were generated as described below.
 
 Generate a shared file and a cons.taxonomy file for the final set of sequencing files. Calculate the overall error rate by comparing Mock control sequences to the Mock reference community from Zymo.
 ```
@@ -165,13 +122,6 @@ bash code/jsd_ordination.batch
 bash code/braycurtis_ordination.batch
 ```
 
-Create genus level files for community type analysis. Run get.communitytype() in mothur. Visualize results in R.
-```
-Rscript code/community_type_analysis.R
-bash code/community_type.batch
-Rscript code/community_type_analysis.R
-```
-
 Visualize alpha diversity and ordinations in R.
 ```
 Rscript code/diversity_data.R
@@ -192,7 +142,6 @@ Rscript code/taxa.R
 Prepare OTU, genus, and lefse input data for mikropml pipeline.
 ```
 Rscript code/mikropml_input_data.R
-Rscript code/mikropml_input_data_lefse.R
 ```
 
 Run mikropl pipeline on all the different types of input data using snakemake and HPC
@@ -201,6 +150,10 @@ Tip: snakemake -n (Dry run). Snakemake --unlock (If you get an error that the di
 ```
 sbatch code/ml_submit_slurm.sh
 sbatch code/combine_feat_imp.sh.
+```
+Examine feature importance for best perfroming model (random forest) after running mikropml pipeline.
+```
+Rscript code/ml_feature_importance.R
 ```
 
 ```
