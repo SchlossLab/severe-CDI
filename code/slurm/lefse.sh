@@ -7,7 +7,7 @@
 ###############################
 
 # Name
-#SBATCH --job-name=cdi_lefse
+#SBATCH --job-name=idsa_lefse
 
 # Resources
 # For MPI, increase ntasks-per-node
