@@ -18,7 +18,7 @@ design <- metadata %>%
 #Import shared file for all samples and join to IDSA design:
 #Note: check for sub.sample version in data/mothur make sure that is the output from sub.sample
 shared <- read_tsv("data/mothur/cdi.opti_mcc.0.03.subsample.shared", col_types=cols(Group=col_character())) %>%
-  left_join(design, by = c("Group" = "group")) %>% #Join to the design file
+  right_join(design, by = c("Group" = "group")) %>% #Join to the design file
   filter(!Group %in% contam_samples) %>%  #Remove 2 contaminated samples from analysis
   select(-sample_type) %>% #This column is not needed for shared file
   write_tsv(paste0("data/process/idsa.shared")) #Output as tsv file
