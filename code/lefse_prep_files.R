@@ -24,8 +24,6 @@ shared <- read_tsv("data/mothur/cdi.opti_mcc.0.03.subsample.shared", col_types=c
   write_tsv(paste0("data/process/idsa.shared")) #Output as tsv file
 
 #Create final IDSA design file: 
-final_design <- shared %>% 
-  select(Group, sample_type) %>% #Only these columns needed for design file
-  rename(group = Group) %>%  #According to mothur wiki, the group column in the design file should be lower case
+final_design <- design %>% 
   write_tsv(paste0("data/process/idsa.design")) #Output as tsv file
 
