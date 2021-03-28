@@ -31,7 +31,7 @@ IDSA_otu_results <- IDSA_otu %>%
 performance_otu_idsa <- IDSA_otu %>% 
   filter(taxa_level == "otu") %>% 
   mutate(method = fct_relevel(method, c("rf", "glmnet", "svmRadial"))) %>% #Reorder methods so left to right is in order of descending AUC
-  ggplot(aes(x = taxa_level, y = prAUC, color = method)) +
+  ggplot(aes(x = method, y = prAUC, color = method)) +
   geom_boxplot(alpha=0.5, fatten = 4) +
   geom_hline(yintercept = 0.5, linetype="dashed") +
   scale_color_manual(values = c("#D95F02", "#1B9E77", "#E7298A"),                     
@@ -54,7 +54,7 @@ performance_otu_idsa <- IDSA_otu %>%
 performance_otu_idsa_AUC <- IDSA_otu %>% 
   filter(taxa_level == "otu") %>% 
   mutate(method = fct_relevel(method, c("glmnet", "rf", "svmRadial"))) %>% #Reorder methods so left to right is in order of descending AUC
-  ggplot(aes(x = taxa_level, y = AUC, color = method)) +
+  ggplot(aes(x = method, y = AUC, color = method)) +
   geom_boxplot(alpha=0.5, fatten = 4) +
   geom_hline(yintercept = 0.5, linetype="dashed") +
   scale_color_manual(values = c("#1B9E77", "#D95F02", "#E7298A"),                     
