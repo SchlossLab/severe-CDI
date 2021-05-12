@@ -1,5 +1,5 @@
 
-## TITLE OF YOUR PAPER GOES HERE
+## Repository where we started to look at bacterial features associated with adverse CDI outcomes. Note: Intial analysis used IDSA severe CDI definition to group cases into not severe and IDSA severe categories.
 
 YOUR PAPER'S ABSTRACT GOES HERE
 
@@ -48,15 +48,41 @@ YOUR PAPER'S ABSTRACT GOES HERE
 #### Dependencies and locations
 * Gnu Make should be located in the user's PATH
 * mothur (v1.43.0) should be located in the user's PATH
-R (v. 4.0.2) should be located in the user's PATH
+* FFmpeg should be located in the user's PATH
+* R (v. 4.0.2) should be located in the user's PATH
 * R packages:
-  * tidyverse_1.3.0
-  * knitr v1.29
-  * rmarkdown v2.3
+    * broom v0.7.0
+    * tidyverse_1.3.0
+    * cowplot v1.0.0
+    * vegan v2.5-6
+    * knitr v1.29
+    * rmarkdown v2.3
+    * ggpubr v.0.4.0
+    * gganimate v1.0.6
+    * readxl v1.3.1
+    * glue v1.4.1
+    * ggtext v0.1.0
+	  * magick v2.6.0
+	  * here 1.0.1
 * Analysis assumes the use of 10 processors
 
-
 #### Running analysis
+
+Download 16S rRNA sequencing dataset from the NCBI Sequence Read Archive (BioProject Accession no. PRJN_______).
+```
+git clone https://github.com/SchlossLab/XXXX_adverse_CDIs
+```
+
+Transfer 16S rRNA sequencing fastq.gz files into XXXX_adverse_CDIs/data/raw
+```
+cd XXXX_adverse_CDIs
+```
+
+Classify CDI case samples into severe and not severe categories based on IDSA severity criteria.
+```
+Rscript code/severity_analysis.R
+```
+
 Obtain the SILVA reference alignment from version 132 described at https://mothur.org/blog/2018/SILVA-v132-reference-files/. We will use the SEED v. 132, which contain 12,083 bacterial sequences. This also contains the reference taxonomy. We will limit the databases to only include bacterial sequences.
 ```
 wget -N https://mothur.s3.us-east-2.amazonaws.com/wiki/silva.seed_v132.tgz
@@ -100,32 +126,21 @@ Script to read in shared_file
 ```
 Rscript code/shared_file.R
 ```
-
-Check for contaminated samples based on Notes column, which were notes entered during DNA extractions and library preparation. 2 samples were contaminated: KR01747 and KR0179. Remove these samples from all downstream analysis
-```
-Rscript code/utilities.R
-```
-
 Subsample shared file to 5000 sequences.
 ```
 bash code/alpha_beta.batch
 ```
+Examine potential *C. difficile* sequences in the dataset.
+```
+bash code/get_oturep.batch
+Rscript code/blast_otus.R
 
-Create custom list of samples to paste into groups argument to generate distance matrix and ordinations with the 2 contaminated samples removed:
+#To run get_oturep.batch on HPC:
+sbatch code/slurm/get_oturep.sh
 ```
-Rscript code/dist.shared_groups_list.R
-```
-
-Create distance file and ordinations
-```
-bash code/jsd_ordination.batch
-bash code/braycurtis_ordination.batch
-```
-
-Visualize alpha diversity and ordinations in R.
+Visualize alpha diversity in R.
 ```
 Rscript code/diversity_data.R
-Rscript code/ordination_data.R
 ```
 Create input files for lefse analysis using mothur. Run lefse analysis in mothur. Visualize lefse results in R.
 ```
@@ -133,17 +148,10 @@ Rscript code/lefse_prep_files.R
 bash code/lefse.batch
 Rscript code/lefse_analysis.R
 ```
-Visualize bacterial relative abundances in R.
-```
-Rscript code/read_taxa_data.R
-Rscript code/taxa.R
-```
-
 Prepare OTU, genus, and lefse input data for mikropml pipeline.
 ```
 Rscript code/mikropml_input_data.R
 ```
-
 Run mikropl pipeline on all the different types of input data using snakemake and HPC
 Note: need to modify snakemake file to account for multiple types of input data. Currently set up to run one type of input data table at a time. Once finished, combine feature importance results.
 Tip: snakemake -n (Dry run). Snakemake --unlock (If you get an error that the directory is locked)
@@ -155,8 +163,17 @@ Examine feature importance for best perfroming model (random forest) after runni
 ```
 Rscript code/ml_feature_importance.R
 ```
-
+Visualize bacterial relative abundances in R.
 ```
-git clone https://github.com/SchlossLab/LastName_BriefDescription_Journal_Year.git
-make write.paper
+Rscript code/read_taxa_data.R
+Rscript code/taxa.R
+```
+Create IDSA severity analysis summary figure.
+```
+Rscript code/idsa_analysis_summary.R
+```
+
+Generate the paper.
+```
+open submission/manuscript.Rmd and knit to Word or PDF document.
 ```
