@@ -1,8 +1,8 @@
 
-## Repository where we started to look at bacterial features associated with adverse CDI outcomes. Note: Intial analysis used IDSA severe CDI definition to group cases into not severe and IDSA severe categories.
+## Repository where we started to look at bacterial features associated with adverse CDI outcomes. 
 
 YOUR PAPER'S ABSTRACT GOES HERE
-
+Note: Initial analysis used IDSA severe CDI definition to group cases into not severe and IDSA severe categories.
 
 
 
@@ -62,8 +62,8 @@ YOUR PAPER'S ABSTRACT GOES HERE
     * readxl v1.3.1
     * glue v1.4.1
     * ggtext v0.1.0
-	  * magick v2.6.0
-	  * here 1.0.1
+	 * magick v2.6.0
+	 * here 1.0.1
 * Analysis assumes the use of 10 processors
 
 #### Running analysis
