@@ -4,8 +4,6 @@
 YOUR PAPER'S ABSTRACT GOES HERE
 Note: Initial analysis used IDSA severe CDI definition to group cases into not severe and IDSA severe categories.
 
-
-
 ### Overview
 
 	project
@@ -14,10 +12,10 @@ Note: Initial analysis used IDSA severe CDI definition to group cases into not s
 	|- LICENSE         # the license for this project
 	|
 	|- submission/
-	| |- study.Rmd    # executable Rmarkdown for this study, if applicable
-	| |- study.md     # Markdown (GitHub) version of the *.Rmd file
-	| |- study.tex    # TeX version of *.Rmd file
-	| |- study.pdf    # PDF version of *.Rmd file
+	| |- manuscript.Rmd    # executable Rmarkdown for this manuscript
+	| |- manuscript.md     # Markdown (GitHub) version of the *.Rmd file
+	| |- manuscript.tex    # TeX version of *.Rmd file
+	| |- manuscript.pdf    # PDF version of *.Rmd file
 	| |- header.tex   # LaTeX header file to format pdf version of manuscript
 	| |- references.bib # BibTeX formatted references
 	| |- XXXX.csl     # csl file to format references for journal XXX
