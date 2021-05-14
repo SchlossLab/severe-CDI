@@ -148,18 +148,18 @@ Rscript code/lefse_prep_files.R
 bash code/lefse.batch
 Rscript code/lefse_analysis.R
 ```
-Prepare OTU, genus, and lefse input data for mikropml pipeline.
+Prepare OTU, genus, and lefse input data for mikropml pipeline. Remove the OTU with most abundant *C. difficile* sequences from the imput data.
 ```
 Rscript code/mikropml_input_data.R
 ```
-Run mikropl pipeline on all the different types of input data using snakemake and HPC
+Run mikropml pipeline on the input data using snakemake and an HPC.
 Note: need to modify snakemake file to account for multiple types of input data. Currently set up to run one type of input data table at a time. Once finished, combine feature importance results.
 Tip: snakemake -n (Dry run). Snakemake --unlock (If you get an error that the directory is locked)
 ```
 sbatch code/ml_submit_slurm.sh
 sbatch code/combine_feat_imp.sh.
 ```
-Examine feature importance for best perfroming model (random forest) after running mikropml pipeline.
+Examine feature importance for best performing model (random forest) after running mikropml pipeline.
 ```
 Rscript code/ml_feature_importance.R
 ```
