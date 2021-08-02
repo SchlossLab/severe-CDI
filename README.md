@@ -66,7 +66,7 @@ Note: Initial analysis used IDSA severe CDI definition to group cases into not s
 
 #### Running analysis
 
-Download 16S rRNA sequencing dataset from the NCBI Sequence Read Archive (BioProject Accession no. PRJN_______).
+Download 16S rRNA sequencing dataset from the NCBI Sequence Read Archive (BioProject Accession no. PRJNA729511).
 ```
 git clone https://github.com/SchlossLab/XXXX_adverse_CDIs
 ```
