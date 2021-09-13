@@ -21,3 +21,4 @@ mothur*logfile
 *.docx
 *.out
 
+.snakemake/
