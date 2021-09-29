@@ -1,5 +1,5 @@
 
-## Repository where we started to look at bacterial features associated with adverse CDI outcomes. 
+## Repository where we started to look at bacterial features associated with adverse CDI outcomes.
 
 YOUR PAPER'S ABSTRACT GOES HERE
 Note: Initial analysis used IDSA severe CDI definition to group cases into not severe and IDSA severe categories.
@@ -76,12 +76,12 @@ Transfer 16S rRNA sequencing fastq.gz files into XXXX_adverse_CDIs/data/raw
 cd XXXX_adverse_CDIs
 ```
 
-Classify CDI case samples into severe and not severe categories based on IDSA severity criteria.
+[x] Classify CDI case samples into severe and not severe categories based on IDSA severity criteria.
 ```
 Rscript code/severity_analysis.R
 ```
 
-Obtain the SILVA reference alignment from version 132 described at https://mothur.org/blog/2018/SILVA-v132-reference-files/. We will use the SEED v. 132, which contain 12,083 bacterial sequences. This also contains the reference taxonomy. We will limit the databases to only include bacterial sequences.
+[x] Obtain the SILVA reference alignment from version 132 described at https://mothur.org/blog/2018/SILVA-v132-reference-files/. We will use the SEED v. 132, which contain 12,083 bacterial sequences. This also contains the reference taxonomy. We will limit the databases to only include bacterial sequences.
 ```
 wget -N https://mothur.s3.us-east-2.amazonaws.com/wiki/silva.seed_v132.tgz
 tar xvzf Silva.seed_v132.tgz silva.seed_v132.align silva.seed_v132.tax
@@ -92,7 +92,7 @@ rm Silva.seed_v132.tgz silva.seed_v132.*
 mothur "#pcr.seqs(fasta=data/references/silva.seed.align, start=11894, end=25319, keepdots=F, processors=8)"
 mv data/references/silva.seed.pcr.align data/references/silva.v4.align
 ```
-Obtain the RDP reference taxonomy. The current version is v11.5 and we use a "special" pds version of the database files, which are described at https://mothur.org/blog/2017/RDP-v16-reference_files/.
+[x] Obtain the RDP reference taxonomy. The current version is v11.5 and we use a "special" pds version of the database files, which are described at https://mothur.org/blog/2017/RDP-v16-reference_files/.
 ```
 wget -N https://mothur.s3.us-east-2.amazonaws.com/wiki/trainset16_022016.pds.tgz
 tar xvzf Trainset16_022016.pds.tgz trainset16_022016.pds
@@ -100,7 +100,7 @@ mv trainset16_022016.pds/* data/references/
 rm -rf trainset16_022016.pds
 rm Trainset16_022016.pds.tgz
 ```
-Obtain the Zymo mock community data; note that Zymo named the 5 operon of Salmonella twice instead of the 7 operon.
+[x] Obtain the Zymo mock community data; note that Zymo named the 5 operon of Salmonella twice instead of the 7 operon.
 ```
 wget -N https://s3.amazonaws.com/zymo-files/BioPool/ZymoBIOMICS.STD.refseq.v2.zip
 unzip ZymoBIOMICS.STD.refseq.v2.zip
@@ -114,21 +114,21 @@ rm -rf zymo* ZymoBIOMICS.STD.refseq.v2* zymo_temp.fasta
 
 Starting with the shared and metadata files from Tomkovich_CDI_clinical_samples, which were generated as described below.
 
-Generate a shared file and a cons.taxonomy file for the final set of sequencing files. Calculate the overall error rate by comparing Mock control sequences to the Mock reference community from Zymo.
+[x] Generate a shared file and a cons.taxonomy file for the final set of sequencing files. Calculate the overall error rate by comparing Mock control sequences to the Mock reference community from Zymo.
 ```
 bash code/get_good_seqs_shared_otus.batch
 bash code/get_error.batch
 
 ```
-Script to read in shared_file
+[ ] Script to read in shared_file
 ```
 Rscript code/shared_file.R
 ```
-Subsample shared file to 5000 sequences.
+[ ] Subsample shared file to 5000 sequences.
 ```
 bash code/alpha_beta.batch
 ```
-Examine potential *C. difficile* sequences in the dataset.
+[ ] Examine potential *C. difficile* sequences in the dataset.
 ```
 bash code/get_oturep.batch
 Rscript code/blast_otus.R
@@ -136,42 +136,42 @@ Rscript code/blast_otus.R
 #To run get_oturep.batch on HPC:
 sbatch code/slurm/get_oturep.sh
 ```
-Visualize alpha diversity in R.
+[ ] Visualize alpha diversity in R.
 ```
 Rscript code/diversity_data.R
 ```
-Create input files for lefse analysis using mothur. Run lefse analysis in mothur. Visualize lefse results in R.
+[ ] Create input files for lefse analysis using mothur. Run lefse analysis in mothur. Visualize lefse results in R.
 ```
 Rscript code/lefse_prep_files.R
 bash code/lefse.batch
 Rscript code/lefse_analysis.R
 ```
-Prepare OTU, genus, and lefse input data for mikropml pipeline. Remove the OTU with most abundant *C. difficile* sequences from the imput data.
+[ ] Prepare OTU, genus, and lefse input data for mikropml pipeline. Remove the OTU with most abundant *C. difficile* sequences from the imput data.
 ```
 Rscript code/mikropml_input_data.R
 ```
-Run mikropml pipeline on the input data using snakemake and an HPC.
+[x] Run mikropml pipeline on the input data using snakemake and an HPC.
 Note: need to modify snakemake file to account for multiple types of input data. Currently set up to run one type of input data table at a time. Once finished, combine feature importance results.
 Tip: snakemake -n (Dry run). Snakemake --unlock (If you get an error that the directory is locked)
 ```
 sbatch code/ml_submit_slurm.sh
 sbatch code/combine_feat_imp.sh.
 ```
-Examine feature importance for best performing model (random forest) after running mikropml pipeline.
+[ ] Examine feature importance for best performing model (random forest) after running mikropml pipeline.
 ```
 Rscript code/ml_feature_importance.R
 ```
-Visualize bacterial relative abundances in R.
+[ ] Visualize bacterial relative abundances in R.
 ```
 Rscript code/read_taxa_data.R
 Rscript code/taxa.R
 ```
-Create IDSA severity analysis summary figure.
+[ ] Create IDSA severity analysis summary figure.
 ```
 Rscript code/idsa_analysis_summary.R
 ```
 
-Generate the paper.
+[ ] Generate the paper.
 ```
 open submission/manuscript.Rmd and knit to Word or PDF document.
 ```
