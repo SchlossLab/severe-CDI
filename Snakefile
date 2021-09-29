@@ -17,6 +17,7 @@ rule targets:
 
 rule classify_idsa_severity:
     input:
+        'code/severity_analysis.R',
         "code/utilities.R",
         "data/process/final_CDI_16S_metadata.tsv",
         "data/raw/max_creat.csv",
