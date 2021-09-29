@@ -120,7 +120,45 @@ rule get_error:
         rules.get_good_seqs_shared_otus.output
     shell:
         """
+        mothur "#
         set.current(inputdir=data/plate53_mothur, outputdir=data/plate53_mothur, processors=8)
         get.groups(count=cdi.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table, fasta=cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.fasta, taxonomy=cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pds.wang.pick.taxonomy, groups=mock10-mock11-mock12-mock13-mock14-mock15-mock16-mock17-mock18-mock19-mock20-mock21-mock22-mock23-mock24-mock25-mock26-mock28-mock30-mock32-mock33-mock34-mock35-mock36-mock37-mock38-mock39-mock40-mock41-mock42-mock43-mock44-mock45-mock46-mock47-mock48-mock51-mock51b-mock52-mock53-mock5-mock6-mock7-mock9)
         seq.error(fasta=current, count=current, reference=data/references/zymo_mock.align, aligned=F)
+        "
         """
+
+rule alpha_beta:
+    input:
+        taxonomy="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.0.03.cons.taxonomy",
+        shared="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.shared"
+    shell:
+        """
+        mothur "#
+        set.dir(input=data/mothur, output=data/mothur, seed=19760620)
+        rename.file(taxonomy={input.taxonomy}, shared={input.shared})
+        #sub.sample(shared=cdi.opti_mcc.shared, size=5000)
+        #rarefaction.single(shared=cdi.opti_mcc.shared, calc=sobs, freq=100)
+        #summary.single(shared=cdi.opti_mcc.shared, calc=nseqs-coverage-invsimpson-shannon-sobs, subsample=5000)
+        "
+        """
+
+rule get_oturep:
+    input:
+        list="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.list",
+        fasta="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.fasta",
+        phylip="data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.dist",
+        count_table="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.pick.count_table"
+    shell:
+        """
+        mothur: "#
+        set.dir(input=data/mothur, output=data/mothur, seed=19760620)
+        get.otulist( list={input.list}, label=0.03)
+        bin.seqs(list ={input.list}, fasta={input.fasta})
+        get.oturep(phylip={input.phylip}, count={input.count_table},  list={input.list}, fasta=cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.0.03.fasta)
+        "
+        """
+
+
+    # input:
+    #     r="code/shared_file.R"
+    #     tsv="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.shared"

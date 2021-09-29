@@ -120,11 +120,11 @@ bash code/get_good_seqs_shared_otus.batch
 bash code/get_error.batch
 
 ```
-[ ] Script to read in shared_file
+[-] Script to read in shared_file
 ```
 Rscript code/shared_file.R
 ```
-[ ] Subsample shared file to 5000 sequences.
+[x] Subsample shared file to 5000 sequences.
 ```
 bash code/alpha_beta.batch
 ```
