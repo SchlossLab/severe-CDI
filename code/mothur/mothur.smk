@@ -179,17 +179,51 @@ rule blast_otus:
     script:
         "code/blast_otus.R"
 
-    rule diversity_data:
-        input:
-            "code/diversity_data.R",
-            "code/utilities.R",
-            "data/mothur/cdi.opti_mcc.groups.ave-std.summary",
-            "data/process/case_idsa_severity.csv"
-        output:
-            png1="results/figures/idsa_alpha_inv_simpson.png",
-            png2="results/figures/idsa_alpha_richness.png"
-        script:
-            "code/diversity_data.R"
+rule diversity_data:
+    input:
+        "code/diversity_data.R",
+        "code/utilities.R",
+        "data/mothur/cdi.opti_mcc.groups.ave-std.summary",
+        "data/process/case_idsa_severity.csv"
+    output:
+        png1="results/figures/idsa_alpha_inv_simpson.png",
+        png2="results/figures/idsa_alpha_richness.png"
+    script:
+        "code/diversity_data.R"
+
+rule lefse_prep_files:
+    input:
+        "code/lefse_prep_files.R",
+        "code/utilities.R",
+        "data/process/case_idsa_severity.csv",
+        "data/mothur/cdi.opti_mcc.0.03.subsample.shared"
+    output:
+        tsv1="data/process/idsa.shared",
+        tsv2="data/process/idsa.design"
+    script:
+        "code/lefse_prep_files.R"
+
+#what is the input or output for this one??
+rule lefse:
+    shell:
+    """
+    mothur: "#
+    set.dir(input=data/process, output=data/process, seed=19760620)
+    lefse(shared = idsa.shared, design=idsa.design)
+    "
+    """
+rule lefse_analysis:
+    input:
+        "code/lefse_analysis.R",
+        "code/utilities.R",
+        "data/process/idsa.0.03.lefse_summary",
+        'data/mothur/cdi.taxonomy'
+    output:
+        png="results/figures/idsa_lefse_plot.png",
+        csv="data/process/idsa_lefse_results.csv"
+    script:
+        "code/lefse_analysis.R"
+
     # input:
     #     r="code/shared_file.R"
     #     tsv="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.shared"

@@ -136,11 +136,11 @@ Rscript code/blast_otus.R
 #To run get_oturep.batch on HPC:
 sbatch code/slurm/get_oturep.sh
 ```
-[ ] Visualize alpha diversity in R.
+[x] Visualize alpha diversity in R.
 ```
 Rscript code/diversity_data.R
 ```
-[ ] Create input files for lefse analysis using mothur. Run lefse analysis in mothur. Visualize lefse results in R.
+[x] Create input files for lefse analysis using mothur. Run lefse analysis in mothur. Visualize lefse results in R.
 ```
 Rscript code/lefse_prep_files.R
 bash code/lefse.batch
