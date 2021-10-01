@@ -128,7 +128,7 @@ Rscript code/shared_file.R
 ```
 bash code/alpha_beta.batch
 ```
-[ ] Examine potential *C. difficile* sequences in the dataset.
+[x] Examine potential *C. difficile* sequences in the dataset.
 ```
 bash code/get_oturep.batch
 Rscript code/blast_otus.R
