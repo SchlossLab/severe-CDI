@@ -179,18 +179,17 @@ rule blast_otus:
     script:
         "code/blast_otus.R"
 
-
-rule diversity_data:
-    input:
-        "code/diversity_data.R",
-        "code/utilities.R",
-        "data/mothur/cdi.opti_mcc.groups.ave-std.summary",
-        "data/process/case_idsa_severity.csv"
-    output:
-        png1="results/figures/idsa_alpha_inv_simpson.png",
-        png2="results/figures/idsa_alpha_richness.png"
-    script:
-        "code/diversity_data.R"
+    rule diversity_data:
+        input:
+            "code/diversity_data.R",
+            "code/utilities.R",
+            "data/mothur/cdi.opti_mcc.groups.ave-std.summary",
+            "data/process/case_idsa_severity.csv"
+        output:
+            png1="results/figures/idsa_alpha_inv_simpson.png",
+            png2="results/figures/idsa_alpha_richness.png"
+        script:
+            "code/diversity_data.R"
     # input:
     #     r="code/shared_file.R"
     #     tsv="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.shared"
