@@ -212,6 +212,8 @@ rule lefse:
     lefse(shared = idsa.shared, design=idsa.design)
     "
     """
+
+    
 rule lefse_analysis:
     input:
         "code/lefse_analysis.R",
@@ -223,6 +225,17 @@ rule lefse_analysis:
         csv="data/process/idsa_lefse_results.csv"
     script:
         "code/lefse_analysis.R"
+
+rule mikropml_input_data:
+    input:
+        "code/mikropml_input_data.R",
+        "code/utilities.R",
+        "data/mothur/cdi.opti_mcc.0.03.subsample.shared",
+        "data/process/case_idsa_severity.csv"
+    output:
+        csv="data/process/ml_idsa_severity.csv"
+    script:
+        "code/mikropml_input_data.R"
 
     # input:
     #     r="code/shared_file.R"
