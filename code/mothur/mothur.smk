@@ -205,20 +205,24 @@ rule lefse_prep_files:
 
 #what is the input or output for this one??
 rule lefse:
+    input:
+        rules.lefse_prep_files.output
+    output:
+        summary="data/process/idsa.0.03.lefse_summary"
     shell:
-    """
-    mothur: "#
-    set.dir(input=data/process, output=data/process, seed=19760620)
-    lefse(shared = idsa.shared, design=idsa.design)
-    "
-    """
+        """
+        mothur: "#
+        set.dir(input=data/process, output=data/process, seed=19760620)
+        lefse(shared = {input.shared}, design={input.design})
+        "
+        """
 
-    
+
 rule lefse_analysis:
     input:
         "code/lefse_analysis.R",
         "code/utilities.R",
-        "data/process/idsa.0.03.lefse_summary",
+        rules.lefse.output,
         'data/mothur/cdi.taxonomy'
     output:
         png="results/figures/idsa_lefse_plot.png",
