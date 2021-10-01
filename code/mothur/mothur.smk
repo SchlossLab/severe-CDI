@@ -159,6 +159,26 @@ rule get_oturep:
         """
 
 
+rule blast_otus:
+    input:
+        "code/blast_otus.R",
+        "code/utilities.R",
+        "data/mothur/cdi.taxonomy",
+        "data/process/59OTus_vs_C.diff_ATCC9689-Alignment-HitTable.csv",
+        "data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.list",
+        'data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.fasta',
+        "data/process/c_diff_seqs_vs_C.diff_ATCC9689-Alignment-HitTable.csv",
+        "data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.pick.count_table"
+    output:
+        plot="results/figures/otus_peptostreptococcaceae_blast_results.png",
+        table="data/mothur/c_diff_unique_seqs.fasta",
+        png1="exploratory/notebook/top_2_otu41_seqs.png",
+        png2="exploratory/notebook/top3-7_c_diff_seqs.png",
+        png3="exploratory/notebook/top_2_otu41_seqs_sample.png",
+        png4="exploratory/notebook/top3-7_c_diff_seqs_sample.png",
+    script:
+        "code/blast_otus.R"
+        
     # input:
     #     r="code/shared_file.R"
     #     tsv="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.shared"
