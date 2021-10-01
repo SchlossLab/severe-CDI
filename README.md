@@ -140,13 +140,13 @@ sbatch code/slurm/get_oturep.sh
 ```
 Rscript code/diversity_data.R
 ```
-[x] Create input files for lefse analysis using mothur. Run lefse analysis in mothur. Visualize lefse results in R.
+[-] Create input files for lefse analysis using mothur. Run lefse analysis in mothur. Visualize lefse results in R.
 ```
 Rscript code/lefse_prep_files.R
 bash code/lefse.batch
 Rscript code/lefse_analysis.R
 ```
-[ ] Prepare OTU, genus, and lefse input data for mikropml pipeline. Remove the OTU with most abundant *C. difficile* sequences from the imput data.
+[x] Prepare OTU, genus, and lefse input data for mikropml pipeline. Remove the OTU with most abundant *C. difficile* sequences from the imput data.
 ```
 Rscript code/mikropml_input_data.R
 ```
