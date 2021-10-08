@@ -157,16 +157,16 @@ Tip: snakemake -n (Dry run). Snakemake --unlock (If you get an error that the di
 sbatch code/ml_submit_slurm.sh
 sbatch code/combine_feat_imp.sh.
 ```
-[ ] Examine feature importance for best performing model (random forest) after running mikropml pipeline.
+[x] Examine feature importance for best performing model (random forest) after running mikropml pipeline.
 ```
 Rscript code/ml_feature_importance.R
 ```
-[ ] Visualize bacterial relative abundances in R.
+[x] Visualize bacterial relative abundances in R.
 ```
 Rscript code/read_taxa_data.R
 Rscript code/taxa.R
 ```
-[ ] Create IDSA severity analysis summary figure.
+[x] Create IDSA severity analysis summary figure.
 ```
 Rscript code/idsa_analysis_summary.R
 ```
