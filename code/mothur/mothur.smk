@@ -241,6 +241,55 @@ rule mikropml_input_data:
     script:
         "code/mikropml_input_data.R"
 
+#check on input for this function (there was mention of file_path in file)
+rule ml_feature_importance:
+    input:
+        "code/ml_feature_importance.R",
+        "code/utilities.R",
+        "results/idsa_severity/combined_feature-importance_rf.csv"
+    output:
+        png="results/figures/feat_imp_rf_idsa_severity.png"
+    script:
+        "code/ml_feature_importance.R"
+
+rule read_taxa_data:
+    input:
+        "code/read_taxa_data.R",
+        "code/utilities.R",
+        "data/mothur/cdi.taxonomy",
+        "data/mothur/cdi.opti_mcc.0.03.subsample.shared"
+#what is the output?
+    script:
+        "code/read_taxa_data.R"
+
+rule taxa:
+    input:
+        "code/taxa.R",
+        "code/utilities.R",
+        "code/read_taxa_data.R",
+        "data/process/case_idsa_severity.csv",
+        "results/idsa_severity/combined_feature-importance_rf.csv"
+    output:
+        png="results/figures/otus_peptostreptococcaceae.png",
+        png2="results/figures/feat_imp_idsa_severe_otus_abund.png"
+    script:
+        "code/taxa.R"
+
+rule idsa_analysis_summary:
+    input:
+        "code/idsa_analysis_summary.R",
+        "code/utilities.R",
+        "results/figures/idsa_severe_n.png",
+        rules.diversity_data.output.png1,
+        "results/figures/ml_performance_idsa_otu.png",
+        "results/figures/ml_performance_idsa_otu_AUC.png",
+        rules.ml_feature_importance.output.png,
+        rules.taxa.output.png2
+    output:
+        pdf="results/figures/severe_idsa_summary.pdf"
+    script:
+        "code/idsa_analysis_summary.R"
+
     # input:
     #     r="code/shared_file.R"
     #     tsv="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.shared"
