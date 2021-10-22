@@ -1,13 +1,13 @@
 {
  "__default__": {
-  "account_slurm": "pschloss1",
+  "account_slurm": "pschloss0",
   "partition": "standard",
   "jobname": "{rule}.{wildcards}",
   "nodes": 1,
   "procs": 1,
   "pmem": "8GB",
   "walltime": "48:00:00",
-  "email": "tomkoset@umich.edu",
+  "email": "mlcoden@umich.edu",
   "mail_type": "FAIL",
   "outfile": "log/hpc/jobs/{rule}.{wildcards}.out"
  },
@@ -21,5 +21,19 @@
  },
  "combine_hp_performance": {
   "pmem": "150GB"
+  },
+  "get_silva": {
+   "procs": "{resources.ncores}"
+  },
+  "get_zymo": {
+   "procs": "{resources.ncores}"
+ },
+  "get_good_seqs_shared_otus": {
+   "procs": "{resources.ncores}"
+ },
+ "get_error": {
+  "procs": "{resources.ncores}"
  }
+ #do i need one for alpha_beta or get_oturep, lefse
+
 }
