@@ -1,10 +1,11 @@
-name: smk-ML
+name: adverseCDI
 channels:
   - conda-forge
   - bioconda
   - defaults
   - r
 dependencies:
+  - mothur
   - r-base=4
   - r-cowplot
   - r-doFuture
