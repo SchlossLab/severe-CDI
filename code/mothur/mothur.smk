@@ -1,8 +1,8 @@
 with open(f"data/SRR_Acc_List.txt", 'r') as file:
     sra_list = [line.strip() for line in file]
     #TODO: delete this line when done testing
-    #sra_list=sra_list[0:4]
-    
+    sra_list=sra_list[0:4]
+
     #log files for mothur commands,specify resources, use i/o using {}
     #run each command on snakemake and see if they work or not
 rule get_silva:
@@ -64,7 +64,7 @@ rule get_zymo:
         rm -rf zymo* ZymoBIOMICS.STD.refseq.v2* zymo_temp.fasta
         '''
 
-rule download_most:
+rule download_sra:
     input:
         list="data/SRR_Acc_List.txt"
     output:
@@ -87,7 +87,9 @@ rule download_most:
 rule get_good_seqs_shared_otus:
     input:
         fastq=[f"data/raw/{sra}_{i}.fastq.gz" for sra in sra_list for i in (1,2)],
-        silva=rules.get_silva.output.v4
+        silva=rules.get_silva.output.v4,
+        rdp=rules.get_rdp.output,
+        zymo=rules.get_zymo.output
     output:
         cds="data/raw/cds.files"
     log:
