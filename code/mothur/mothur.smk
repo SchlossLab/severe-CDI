@@ -5,6 +5,7 @@ with open(f"data/SRR_Acc_List.txt", 'r') as file:
 
     #log files for mothur commands,specify resources, use i/o using {}
     #run each command on snakemake and see if they work or not
+    #add to mothur commands: set.logfile(file={log});
 rule get_silva:
     output:
         full='data/references/silva.seed.align',
@@ -59,7 +60,8 @@ rule get_zymo:
         rm ZymoBIOMICS.STD.refseq.v2/ssrRNAs/*itochondria_ssrRNA.fasta #V4 primers don't come close to annealing to these
         cat ZymoBIOMICS.STD.refseq.v2/ssrRNAs/*fasta > zymo_temp.fasta
         sed '0,/Salmonella_enterica_16S_5/{{s/Salmonella_enterica_16S_5/Salmonella_enterica_16S_7/}}' zymo_temp.fasta > zymo.fasta
-        mothur "#align.seqs(fasta=zymo.fasta, reference={input.silva_v4}, processors={resources.ncores})"
+        mothur "#set.logfile(file={log});
+        align.seqs(fasta=zymo.fasta, reference={input.silva_v4}, processors={resources.ncores})"
         mv zymo.align {output.align}
         rm -rf zymo* ZymoBIOMICS.STD.refseq.v2* zymo_temp.fasta
         '''
@@ -102,6 +104,7 @@ rule get_good_seqs_shared_otus:
     shell:
         """
         mothur "#
+            set.logfile(file={log});
             make.file(inputdir={params.inputdir}, type=gz, prefix=cdi);
             make.contigs(file=cdi.files, inputdir={params.inputdir}, outputdir={params.outputdir}, processors={resources.ncores});
             summary.seqs(fasta=cdi.trim.contigs.fasta, processors={resources.ncores});
