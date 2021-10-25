@@ -58,7 +58,7 @@ rule get_zymo:
         unzip ZymoBIOMICS.STD.refseq.v2.zip
         rm ZymoBIOMICS.STD.refseq.v2/ssrRNAs/*itochondria_ssrRNA.fasta #V4 primers don't come close to annealing to these
         cat ZymoBIOMICS.STD.refseq.v2/ssrRNAs/*fasta > zymo_temp.fasta
-        sed '0,/Salmonella_enterica_16S_5/{s/Salmonella_enterica_16S_5/Salmonella_enterica_16S_7/}' zymo_temp.fasta > zymo.fasta
+        sed '0,/Salmonella_enterica_16S_5/{{s/Salmonella_enterica_16S_5/Salmonella_enterica_16S_7/}}' zymo_temp.fasta > zymo.fasta
         mothur "#align.seqs(fasta=zymo.fasta, reference={input.silva_v4}, processors={resources.ncores})"
         mv zymo.align {output.align}
         rm -rf zymo* ZymoBIOMICS.STD.refseq.v2* zymo_temp.fasta
