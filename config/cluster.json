@@ -1,11 +1,11 @@
 {
  "__default__": {
-  "account_slurm": "pschloss0",
+  "account_slurm": "pschloss1",
   "partition": "standard",
   "jobname": "{rule}.{wildcards}",
   "nodes": 1,
   "procs": 1,
-  "pmem": "8GB",
+  "pmem": "4GB",
   "walltime": "48:00:00",
   "email": "mlcoden@umich.edu",
   "mail_type": "FAIL",
@@ -34,6 +34,4 @@
  "get_error": {
   "procs": "{resources.ncores}"
  }
- #do i need one for alpha_beta or get_oturep, lefse
-
 }
