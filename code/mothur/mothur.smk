@@ -5,7 +5,7 @@ with open(f"data/SRR_Acc_List.txt", 'r') as file:
 
     #log files for mothur commands,specify resources, use i/o using {}
     #run each command on snakemake and see if they work or not
-    #add to mothur commands: set.logfile(file={log});
+
 rule get_silva:
     output:
         full='data/references/silva.seed.align',
@@ -16,6 +16,7 @@ rule get_silva:
         ncores=8
     shell:
         """
+        source /etc/profile.d/http_proxy.sh
         wget -N https://mothur.s3.us-east-2.amazonaws.com/wiki/silva.seed_v132.tgz
         tar xvzf Silva.seed_v132.tgz silva.seed_v132.align silva.seed_v132.tax
 
@@ -27,7 +28,8 @@ rule get_silva:
         mv silva.seed_v132.pick.align data/references/silva.seed.align
         rm Silva.seed_v132.tgz silva.seed_v132.*
 
-        mothur "#set.dir(output=data/references/);
+        mothur "#set.logfile(file={log});
+                set.dir(output=data/references/);
                 pcr.seqs(fasta={output.full}, start=11894, end=25319, keepdots=F, processors=8)"
         mv data/references/silva.seed.pcr.align {output.v4}
         """
@@ -37,6 +39,7 @@ rule get_rdp:
         directory('data/references/rdp/')
     shell:
         """
+        source /etc/profile.d/http_proxy.sh
         wget -N https://mothur.s3.us-east-2.amazonaws.com/wiki/trainset16_022016.pds.tgz
         tar xvzf Trainset16_022016.pds.tgz trainset16_022016.pds
         mv trainset16_022016.pds/* data/references/rdp/
@@ -55,6 +58,7 @@ rule get_zymo:
         ncores=12
     shell:
         '''
+        source /etc/profile.d/http_proxy.sh
         wget -N https://s3.amazonaws.com/zymo-files/BioPool/ZymoBIOMICS.STD.refseq.v2.zip
         unzip ZymoBIOMICS.STD.refseq.v2.zip
         rm ZymoBIOMICS.STD.refseq.v2/ssrRNAs/*itochondria_ssrRNA.fasta #V4 primers don't come close to annealing to these
@@ -145,7 +149,7 @@ rule get_error:
         ncores=8
     shell:
         """
-        mothur "#
+        mothur "#set.logfile(file={log});
         set.current(inputdir=data/plate53_mothur, outputdir=data/plate53_mothur, processors={resources.ncores});
         get.groups(count=cdi.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table, fasta=cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.fasta, taxonomy=cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pds.wang.pick.taxonomy, groups=mock10-mock11-mock12-mock13-mock14-mock15-mock16-mock17-mock18-mock19-mock20-mock21-mock22-mock23-mock24-mock25-mock26-mock28-mock30-mock32-mock33-mock34-mock35-mock36-mock37-mock38-mock39-mock40-mock41-mock42-mock43-mock44-mock45-mock46-mock47-mock48-mock51-mock51b-mock52-mock53-mock5-mock6-mock7-mock9);
         seq.error(fasta=current, count=current, reference=data/references/zymo_mock.align, aligned=F)
@@ -160,7 +164,7 @@ rule alpha_beta:
         "log/mothur/alpha_beta.log"
     shell:
         """
-        mothur "#
+        mothur "#set.logfile(file={log});
         set.dir(input=data/mothur, output=data/mothur, seed=19760620);
         rename.file(taxonomy={input.taxonomy}, shared={input.shared});
         #sub.sample(shared=cdi.opti_mcc.shared, size=5000);
@@ -179,7 +183,7 @@ rule get_oturep:
         "log/mothur/get_oturep.log"
     shell:
         """
-        mothur: "#
+        mothur: "#set.logfile(file={log});
         set.dir(input=data/mothur, output=data/mothur, seed=19760620);
         get.otulist( list={input.list}, label=0.03);
         bin.seqs(list ={input.list}, fasta={input.fasta});
@@ -243,7 +247,7 @@ rule lefse:
         "log/mothur/lefse.log"
     shell:
         """
-        mothur: "#
+        mothur: "#set.logfile(file={log});
         set.dir(input=data/process, output=data/process, seed=19760620);
         lefse(shared = {input.shared}, design={input.design})
         "
