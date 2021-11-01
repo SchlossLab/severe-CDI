@@ -18,7 +18,7 @@ rule get_silva:
         """
         source /etc/profile.d/http_proxy.sh
         wget -N https://mothur.s3.us-east-2.amazonaws.com/wiki/silva.seed_v132.tgz
-        tar xvzf Silva.seed_v132.tgz silva.seed_v132.align silva.seed_v132.tax
+        tar xvzf silva.seed_v132.tgz silva.seed_v132.align silva.seed_v132.tax
 
         mothur "#set.logfile(file={log});
                 set.dir(output=data/references/);
@@ -26,7 +26,7 @@ rule get_silva:
                 degap.seqs(fasta=silva.seed_v132.pick.align, processors={resources.ncores})
                 "
         mv silva.seed_v132.pick.align data/references/silva.seed.align
-        rm Silva.seed_v132.tgz silva.seed_v132.*
+        rm silva.seed_v132.tgz silva.seed_v132.*
 
         mothur "#set.logfile(file={log});
                 set.dir(output=data/references/);
@@ -41,10 +41,10 @@ rule get_rdp:
         """
         source /etc/profile.d/http_proxy.sh
         wget -N https://mothur.s3.us-east-2.amazonaws.com/wiki/trainset16_022016.pds.tgz
-        tar xvzf Trainset16_022016.pds.tgz trainset16_022016.pds
+        tar xvzf trainset16_022016.pds.tgz trainset16_022016.pds
         mv trainset16_022016.pds/* data/references/rdp/
         rm -rf trainset16_022016.pds
-        rm Trainset16_022016.pds.tgz
+        rm trainset16_022016.pds.tgz
         """
 
 rule get_zymo:
