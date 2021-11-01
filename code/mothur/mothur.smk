@@ -75,7 +75,7 @@ rule get_zymo:
         rm ZymoBIOMICS.STD.refseq.v2/ssrRNAs/*itochondria_ssrRNA.fasta #V4 primers don't come close to annealing to these
         cat ZymoBIOMICS.STD.refseq.v2/ssrRNAs/*fasta > zymo_temp.fasta
         sed '0,/Salmonella_enterica_16S_5/{{s/Salmonella_enterica_16S_5/Salmonella_enterica_16S_7/}}' zymo_temp.fasta > zymo.fasta
-        mothur "#set.logfile(file={log});
+        mothur "#set.logfile(name={log});
         align.seqs(fasta=zymo.fasta, reference={input.silva_v4}, processors={resources.ncores})"
         mv zymo.align {output.align}
         rm -rf zymo* ZymoBIOMICS.STD.refseq.v2* zymo_temp.fasta
@@ -120,7 +120,7 @@ rule get_good_seqs_shared_otus:
     shell:
         """
         mothur "#
-            set.logfile(file={log});
+            set.logfile(name={log});
             make.file(inputdir={params.inputdir}, type=gz, prefix=cdi);
             make.contigs(file=cdi.files, inputdir={params.inputdir}, outputdir={params.outputdir}, processors={resources.ncores});
             summary.seqs(fasta=cdi.trim.contigs.fasta, processors={resources.ncores});
@@ -161,7 +161,7 @@ rule get_error:
         ncores=8
     shell:
         """
-        mothur "#set.logfile(file={log});
+        mothur "#set.logfile(name={log});
         set.current(inputdir=data/plate53_mothur, outputdir=data/plate53_mothur, processors={resources.ncores});
         get.groups(count=cdi.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table, fasta=cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.fasta, taxonomy=cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pds.wang.pick.taxonomy, groups=mock10-mock11-mock12-mock13-mock14-mock15-mock16-mock17-mock18-mock19-mock20-mock21-mock22-mock23-mock24-mock25-mock26-mock28-mock30-mock32-mock33-mock34-mock35-mock36-mock37-mock38-mock39-mock40-mock41-mock42-mock43-mock44-mock45-mock46-mock47-mock48-mock51-mock51b-mock52-mock53-mock5-mock6-mock7-mock9);
         seq.error(fasta=current, count=current, reference=data/references/zymo_mock.align, aligned=F)
@@ -176,7 +176,7 @@ rule alpha_beta:
         "log/mothur/alpha_beta.log"
     shell:
         """
-        mothur "#set.logfile(file={log});
+        mothur "#set.logfile(name={log});
         set.dir(input=data/mothur, output=data/mothur, seed=19760620);
         rename.file(taxonomy={input.taxonomy}, shared={input.shared});
         #sub.sample(shared=cdi.opti_mcc.shared, size=5000);
@@ -195,7 +195,7 @@ rule get_oturep:
         "log/mothur/get_oturep.log"
     shell:
         """
-        mothur: "#set.logfile(file={log});
+        mothur: "#set.logfile(name={log});
         set.dir(input=data/mothur, output=data/mothur, seed=19760620);
         get.otulist( list={input.list}, label=0.03);
         bin.seqs(list ={input.list}, fasta={input.fasta});
@@ -259,7 +259,7 @@ rule lefse:
         "log/mothur/lefse.log"
     shell:
         """
-        mothur: "#set.logfile(file={log});
+        mothur: "#set.logfile(name={log});
         set.dir(input=data/process, output=data/process, seed=19760620);
         lefse(shared = {input.shared}, design={input.design})
         "
