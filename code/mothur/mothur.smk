@@ -30,20 +30,20 @@ rule get_silva:
 
         mothur "#set.logfile(file={log});
                 set.dir(output=data/references/);
-                pcr.seqs(fasta={output.full}, start=11894, end=25319, keepdots=F, processors=8)"
+                pcr.seqs(fasta={output.full}, start=11894, end=25319, keepdots=F, processors={resources.ncores})"
         mv data/references/silva.seed.pcr.align {output.v4}
         """
 
 rule get_rdp:
     output:
-        reference='data/references/trainset16_022016.pds.fasta'
-	taxonomy='data/references/trainset16_022016.pds.tax'
+        reference='data/references/trainset16_022016.pds.fasta',
+	    taxonomy='data/references/trainset16_022016.pds.tax'
     shell:
         """
         source /etc/profile.d/http_proxy.sh
         wget -N https://mothur.s3.us-east-2.amazonaws.com/wiki/trainset16_022016.pds.tgz
         tar xvzf trainset16_022016.pds.tgz trainset16_022016.pds
-        mv trainset16_022016.pds/* data/references/rdp/
+        mv trainset16_022016.pds/* data/references/
         rm -rf trainset16_022016.pds
         rm trainset16_022016.pds.tgz
         """
@@ -95,7 +95,8 @@ rule get_good_seqs_shared_otus:
     input:
         fastq=[f"data/raw/{sra}_{i}.fastq.gz" for sra in sra_list for i in (1,2)],
         silva=rules.get_silva.output.v4,
-        rdp=rules.get_rdp.output,
+        reference=rules.get_rdp.output.reference,
+	    taxonomy=rules.get_rdp.output.taxonomy,
         zymo=rules.get_zymo.output
     output:
         cds="data/raw/cds.files"
@@ -126,7 +127,7 @@ rule get_good_seqs_shared_otus:
             chimera.vsearch(fasta=current, count=current, dereplicate=T, processors={resources.ncores});
             remove.seqs(fasta=current, accnos=current);
             summary.seqs(fasta=current, count=current, processors={resources.ncores});
-            classify.seqs(fasta=current, count=current, reference=data/references/trainset16_022016.pds.fasta, taxonomy=data/references/trainset16_022016.pds.tax, cutoff=80);
+            classify.seqs(fasta=current, count=current, reference={input.reference}, taxonomy={input.taxonomy}, cutoff=80);
             remove.lineage(fasta=current, count=current, taxonomy=current, taxon=Chloroplast-Mitochondria-unknown-Archaea-Eukaryota);
             count.seqs(name=current, group=current);
 
