@@ -101,7 +101,7 @@ rule download_sra:
         """
 
 
-rule get_good_seqs_shared_otus:
+rule process_samples:
     input:
         fastq=[f"data/raw/{sra}_{i}.fastq.gz" for sra in sra_list for i in (1,2)],
         silva=rules.get_silva.output.v4,
@@ -111,7 +111,7 @@ rule get_good_seqs_shared_otus:
     output:
         cds="data/raw/cds.files"
     log:
-        "log/mothur/get_good_seqs_shared_otus.log"
+        "log/mothur/process_samples.log"
     resources:
         ncores=10
     params:
@@ -154,7 +154,7 @@ rule get_good_seqs_shared_otus:
 # SET: Need to update to capture all the mocks for CDI samples (2-4 per library, named according to plate number). Currently set up to check error in resequencing library
 rule get_error:
     input:
-        rules.get_good_seqs_shared_otus.output
+        rules.process_samples.output
     log:
         "log/mothur/get_error.log"
     resources:
