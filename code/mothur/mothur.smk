@@ -6,7 +6,22 @@ with open(f"data/SRR_Acc_List.txt", 'r') as file:
     #log files for mothur commands,specify resources, use i/o using {}
     #run each command on snakemake and see if they work or not
 
+rule download_silva:
+    output:
+        fasta='data/references/silva.seed_v132.align',
+        tax='data/references/silva.seed_v132.tax'
+    shell:
+        """
+        source /etc/profile.d/http_proxy.sh
+        wget -N https://mothur.s3.us-east-2.amazonaws.com/wiki/silva.seed_v132.tgz
+        tar xvzf silva.seed_v132.tgz silva.seed_v132.align silva.seed_v132.tax
+        mv silva.* data/references/
+        """
+
 rule get_silva:
+    input:
+        fasta=rules.download_silva.output.fasta,
+        tax=rules.download_silva.output.tax
     output:
         full='data/references/silva.seed.align',
         v4='data/references/silva.v4.align'
@@ -16,17 +31,12 @@ rule get_silva:
         ncores=8
     shell:
         """
-        source /etc/profile.d/http_proxy.sh
-        wget -N https://mothur.s3.us-east-2.amazonaws.com/wiki/silva.seed_v132.tgz
-        tar xvzf silva.seed_v132.tgz silva.seed_v132.align silva.seed_v132.tax
-
         mothur "#set.logfile(file={log});
-                set.dir(output=data/references/);
-                get.lineage(fasta=silva.seed_v132.align, taxonomy=silva.seed_v132.tax, taxon=Bacteria);
+                set.dir(output=data/references/, input=data/references/);
+                get.lineage(fasta={input.fasta}, taxonomy={input.tax}, taxon=Bacteria);
                 degap.seqs(fasta=silva.seed_v132.pick.align, processors={resources.ncores})
                 "
-        mv silva.seed_v132.pick.align data/references/silva.seed.align
-        rm silva.seed_v132.tgz silva.seed_v132.*
+        mv data/references/silva.seed_v132.pick.align {output.full}
 
         mothur "#set.logfile(file={log});
                 set.dir(output=data/references/);
