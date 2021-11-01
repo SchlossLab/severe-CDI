@@ -16,4 +16,4 @@
 #SBATCH --mail-user=mlcoden@umich.edu
 #SBATCH --mail-type=BEGIN,END
 
-time snakemake --profile config/slurm --latency-wait 90 get_good_seqs_shared_otus
+time snakemake --profile config/slurm --latency-wait 90 process_samples 

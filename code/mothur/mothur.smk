@@ -1,7 +1,7 @@
 with open(f"data/SRR_Acc_List.txt", 'r') as file:
     sra_list = [line.strip() for line in file]
     #TODO: delete this line when done testing
-    sra_list=sra_list[0:4]
+    #sra_list=sra_list[0:4]
 
     #log files for mothur commands,specify resources, use i/o using {}
     #run each command on snakemake and see if they work or not
