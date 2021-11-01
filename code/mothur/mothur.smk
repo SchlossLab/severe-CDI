@@ -31,14 +31,14 @@ rule get_silva:
         ncores=8
     shell:
         """
-        mothur "#set.logfile(file={log});
+        mothur "#set.logfile(name={log});
                 set.dir(output=data/references/, input=data/references/);
                 get.lineage(fasta={input.fasta}, taxonomy={input.tax}, taxon=Bacteria);
                 degap.seqs(fasta=silva.seed_v132.pick.align, processors={resources.ncores})
                 "
         mv data/references/silva.seed_v132.pick.align {output.full}
 
-        mothur "#set.logfile(file={log});
+        mothur "#set.logfile(name={log});
                 set.dir(output=data/references/);
                 pcr.seqs(fasta={output.full}, start=11894, end=25319, keepdots=F, processors={resources.ncores})"
         mv data/references/silva.seed.pcr.align {output.v4}
