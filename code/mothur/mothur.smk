@@ -36,7 +36,8 @@ rule get_silva:
 
 rule get_rdp:
     output:
-        directory('data/references/rdp/')
+        reference='data/references/trainset16_022016.pds.fasta'
+	taxonomy='data/references/trainset16_022016.pds.tax'
     shell:
         """
         source /etc/profile.d/http_proxy.sh
