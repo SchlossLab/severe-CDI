@@ -28,8 +28,9 @@
   "get_zymo": {
    "procs": "{resources.ncores}"
  },
-  "get_good_seqs_shared_otus": {
-   "procs": "{resources.ncores}"
+  "process_samples": {
+   "procs": "{resources.ncores}",
+   "pmem": "8GB"
  },
  "get_error": {
   "procs": "{resources.ncores}"
