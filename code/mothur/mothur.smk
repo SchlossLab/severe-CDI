@@ -142,7 +142,7 @@ rule process_samples:
             summary.seqs(fasta=current, count=current, processors={resources.ncores});
             classify.seqs(fasta=current, count=current, reference={input.reference}, taxonomy={input.taxonomy}, cutoff=80);
             remove.lineage(fasta=current, count=current, taxonomy=current, taxon=Chloroplast-Mitochondria-unknown-Archaea-Eukaryota);
-            count.seqs(name=current, group=current);
+            count.seqs(name=current, group=current)
         "
         """
 
