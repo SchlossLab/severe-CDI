@@ -109,10 +109,10 @@ rule process_samples:
 	    taxonomy=rules.get_rdp.output.taxonomy,
         zymo=rules.get_zymo.output
     output:
-        cds="data/raw/cds.files",
+        cds="data/mothur/cds.files",
         fasta="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.fasta",
         taxonomy="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pds.wang.pick.taxonomy",
-        count_table="cdi.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table"
+        count_table="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table"
     log:
         "log/mothur/process_samples.log"
     resources:
@@ -153,7 +153,8 @@ rule cluster_otus:
         taxonomy=rules.process_samples.output.taxonomy,
         count_table=rules.process_samples.output.count_table
     output:
-        shared="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.shared"
+        shared="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.shared",
+        taxonomy="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.0.03.cons.taxonomy"
     resources:
         ncores=10
     params:
@@ -170,28 +171,10 @@ rule cluster_otus:
             classify.otu(list=current, count=current, taxonomy=current, label=0.03)
             "
         """
-#TODO: is this the count file for cluster.split? cdi.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table
-# SET: Need to update to capture all the mocks for CDI samples (2-4 per library, named according to plate number). Currently set up to check error in resequencing library
-#probably won't need this
-rule get_error:
-    input:
-        rules.process_samples.output
-    log:
-        "log/mothur/get_error.log"
-    resources:
-        ncores=8
-    shell:
-        """
-        mothur "#set.logfile(name={log});
-        set.current(inputdir=data/plate53_mothur, outputdir=data/plate53_mothur, processors={resources.ncores});
-        get.groups(count=cdi.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table, fasta=cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.fasta, taxonomy=cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pds.wang.pick.taxonomy, groups=mock10-mock11-mock12-mock13-mock14-mock15-mock16-mock17-mock18-mock19-mock20-mock21-mock22-mock23-mock24-mock25-mock26-mock28-mock30-mock32-mock33-mock34-mock35-mock36-mock37-mock38-mock39-mock40-mock41-mock42-mock43-mock44-mock45-mock46-mock47-mock48-mock51-mock51b-mock52-mock53-mock5-mock6-mock7-mock9);
-        seq.error(fasta=current, count=current, reference=data/references/zymo_mock.align, aligned=F)
-        "
-        """
 
 rule alpha_beta:
     input:
-        taxonomy="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.0.03.cons.taxonomy",
+        taxonomy=rules.cluster_otus.output.taxonomy,
         shared=rules.cluster_otus.output.shared
     log:
         "log/mothur/alpha_beta.log"
@@ -200,9 +183,9 @@ rule alpha_beta:
         mothur "#set.logfile(name={log});
         set.dir(input=data/mothur, output=data/mothur, seed=19760620);
         rename.file(taxonomy={input.taxonomy}, shared={input.shared});
-        #sub.sample(shared=cdi.opti_mcc.shared, size=5000);
-        #rarefaction.single(shared=cdi.opti_mcc.shared, calc=sobs, freq=100);
-        #summary.single(shared=cdi.opti_mcc.shared, calc=nseqs-coverage-invsimpson-shannon-sobs, subsample=5000)
+        sub.sample(shared=cdi.opti_mcc.shared, size=5000);
+        rarefaction.single(shared=cdi.opti_mcc.shared, calc=sobs, freq=100);
+        summary.single(shared=cdi.opti_mcc.shared, calc=nseqs-coverage-invsimpson-shannon-sobs, subsample=5000)
         "
         """
 
@@ -358,6 +341,25 @@ rule idsa_analysis_summary:
         severe_isda_summary="results/figures/severe_idsa_summary.pdf"
     script:
         "code/idsa_analysis_summary.R"
+
+
+# SET: Need to update to capture all the mocks for CDI samples (2-4 per library, named according to plate number). Currently set up to check error in resequencing library
+#probably won't need this
+rule get_error:
+    input:
+        rules.process_samples.output
+    log:
+        "log/mothur/get_error.log"
+    resources:
+        ncores=8
+    shell:
+        """
+        mothur "#set.logfile(name={log});
+        set.current(inputdir=data/plate53_mothur, outputdir=data/plate53_mothur, processors={resources.ncores});
+        get.groups(count=cdi.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table, fasta=cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.fasta, taxonomy=cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pds.wang.pick.taxonomy, groups=mock10-mock11-mock12-mock13-mock14-mock15-mock16-mock17-mock18-mock19-mock20-mock21-mock22-mock23-mock24-mock25-mock26-mock28-mock30-mock32-mock33-mock34-mock35-mock36-mock37-mock38-mock39-mock40-mock41-mock42-mock43-mock44-mock45-mock46-mock47-mock48-mock51-mock51b-mock52-mock53-mock5-mock6-mock7-mock9);
+        seq.error(fasta=current, count=current, reference=data/references/zymo_mock.align, aligned=F)
+        "
+        """
 
     # input:
     #     r="code/shared_file.R"
