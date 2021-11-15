@@ -109,7 +109,6 @@ rule process_samples:
 	    taxonomy=rules.get_rdp.output.taxonomy,
         zymo=rules.get_zymo.output
     output:
-        cdi="data/mothur/cdi.files",
         fasta="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.fasta",
         taxonomy="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pds.wang.pick.taxonomy",
         count_table="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table"
