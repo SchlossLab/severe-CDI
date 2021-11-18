@@ -32,6 +32,10 @@
    "procs": "{resources.ncores}",
    "pmem": "8GB"
  },
+ "cluster_otus": {
+  "procs": "{resources.ncores}",
+  "pmem": "8GB"
+},
  "get_error": {
   "procs": "{resources.ncores}"
  }
