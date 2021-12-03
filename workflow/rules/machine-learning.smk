@@ -1,7 +1,7 @@
 
 rule preprocess_data:
     input:
-        R="code/preproc.R",
+        R="workflow/scripts/preproc.R",
         csv=config['dataset']
     output:
         rds='data/dat_proc.Rds'
@@ -12,11 +12,11 @@ rule preprocess_data:
     resources:
         ncores=ncores
     script:
-        "code/preproc.R"
+        "workflow/scripts/preproc.R"
 
 rule run_ml:
     input:
-        R="code/ml.R",
+        R="workflow/scripts/ml.R",
         rds=rules.preprocess_data.output.rds
     output:
         model="results/runs/{method}_{seed}_model.Rds",
@@ -34,11 +34,11 @@ rule run_ml:
     resources:
         ncores=ncores
     script:
-        "code/ml.R"
+        "workflow/scripts/ml.R"
 
 rule combine_results:
     input:
-        R="code/combine_results.R",
+        R="workflow/scripts/combine_results.R",
         csv=expand("results/runs/{method}_{seed}_{{type}}.csv", method = ml_methods, seed = seeds)
     output:
         csv='results/{type}_results.csv'
@@ -47,11 +47,11 @@ rule combine_results:
     benchmark:
         "benchmarks/combine_results_{type}.txt"
     script:
-        "code/combine_results.R"
+        "workflow/scripts/combine_results.R"
 
 rule combine_feat_importance:
     input:
-        R="code/combine_feat_imp.R",
+        R="workflow/scripts/combine_feat_imp.R",
         csv=expand("results/runs/{method}_{seed}_feature_importance.csv", method = ml_methods, seed = seeds)
     output:
         csv='results/{type}_feat_imp.csv'
@@ -60,11 +60,11 @@ rule combine_feat_importance:
     benchmark:
         "benchmarks/combine_feat_imp_{type}.txt"
     script:
-        "code/combine_feat_imp.R"
+        "workflow/scripts/combine_feat_imp.R"
 
 rule combine_hp_performance:
     input:
-        R='code/combine_hp_perf.R',
+        R='workflow/scripts/combine_hp_perf.R',
         rds=expand('results/runs/{{method}}_{seed}_model.Rds', seed=seeds)
     output:
         rds='results/hp_performance_results_{method}.Rds'
@@ -73,61 +73,61 @@ rule combine_hp_performance:
     benchmark:
         "benchmarks/combine_hp_perf_{method}.txt"
     script:
-        "code/combine_hp_perf.R"
+        "workflow/scripts/combine_hp_perf.R"
 
 rule combine_benchmarks:
     input:
-        R='code/combine_benchmarks.R',
+        R='workflow/scripts/combine_benchmarks.R',
         tsv=expand(rules.run_ml.benchmark, method = ml_methods, seed = seeds)
     output:
         csv='results/benchmarks_results.csv'
     log:
         'log/combine_benchmarks.txt'
     script:
-        'code/combine_benchmarks.R'
+        'workflow/scripts/combine_benchmarks.R'
 
 rule plot_performance:
     input:
-        R="code/plot_perf.R",
+        R="workflow/scripts/plot_perf.R",
         csv='results/performance_results.csv'
     output:
         plot='figures/performance.png'
     log:
         "log/plot_performance.txt"
     script:
-        "code/plot_perf.R"
+        "workflow/scripts/plot_perf.R"
 
 rule plot_hp_performance:
     input:
-        R='code/plot_hp_perf.R',
+        R='workflow/scripts/plot_hp_perf.R',
         rds=rules.combine_hp_performance.output.rds,
     output:
         plot='figures/hp_performance_{method}.png'
     log:
         'log/plot_hp_perf_{method}.txt'
     script:
-        'code/plot_hp_perf.R'
+        'workflow/scripts/plot_hp_perf.R'
 
 rule plot_benchmarks:
     input:
-        R='code/plot_benchmarks.R',
+        R='workflow/scripts/plot_benchmarks.R',
         csv=rules.combine_benchmarks.output.csv
     output:
         plot='figures/benchmarks.png'
     log:
         'log/plot_benchmarks.txt'
     script:
-        'code/plot_benchmarks.R'
+        'workflow/scripts/plot_benchmarks.R'
 
 rule render_report:
     input:
-        Rmd='report.Rmd',
-        R='code/render.R',
+        Rmd='workflow/report/report.Rmd',
+        R='workflow/scripts/render.R',
         perf_plot=rules.plot_performance.output.plot,
         hp_plot=expand(rules.plot_hp_performance.output.plot, method = ml_methods),
         bench_plot=rules.plot_benchmarks.output.plot
     output:
-        doc='report.md'
+        doc='workflow/report/report.md'
     log:
         "log/render_report.txt"
     params:
@@ -136,7 +136,7 @@ rule render_report:
         ncores=ncores,
         kfold=kfold
     script:
-        'code/render.R'
+        'workflow/scripts/render.R'
 
 rule clean:
     input:
