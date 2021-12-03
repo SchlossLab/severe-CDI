@@ -9,8 +9,7 @@ rule preprocess_data:
         "log/preprocess_data.txt"
     benchmark:
         "benchmarks/preprocess_data.txt"
-    resources:
-        ncores=ncores
+    threads: ncores
     script:
         "workflow/scripts/preproc.R"
 
@@ -31,8 +30,7 @@ rule run_ml:
         method="{method}",
         seed="{seed}",
         kfold=kfold
-    resources:
-        ncores=ncores
+    threads: ncores
     script:
         "workflow/scripts/ml.R"
 

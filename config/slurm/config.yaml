@@ -1,24 +1,33 @@
-cluster: "sbatch 
-            --job-name {rule}.{wildcards} 
-            --account pschloss1
-            --partition standard
-            --mail-user mlcoden@umich.edu
-            --mail-type FAIL
-            --nodes 1
-            --ntasks {resources.ncores}
-            --mem-per-cpu {resources.mem_gb}
-            --time {resources.walltime}
-            --output log/hpc/jobs/{rule}.{wildcards}.out
-          "
+cluster: 
+    mkdir -p log/hpc/jobs/{rule}/ &&
+    sbatch 
+        --job-name={rule}-{wildcards} 
+        --account={resources.account}
+        --partition={resources.partition}
+        --mail-user={resources.email}
+        --mail-type={resources.mail_on}
+        --nodes=1
+        --ntasks=1
+        --cpus-per-task={threads}
+        --mem-per-cpu={resources.mem_mb}MB
+        --time={resources.time}
+        --output=log/hpc/jobs/{rule}/{wildcards}.out
+default-resources:
+  - account=pschloss1
+  - partition=standard
+  - email=YOUR_EMAIL_HERE
+  - mail_on=FAIL
+  - mem_mb=500
+  - time="24:00:00"
+conda-frontend: "mamba"
+immediate-submit: False        
 jobs: 4999
-immediate-submit: False
-verbose: true
-notemp: true
 keep-going: true
 latency-wait: 120
+max-jobs-per-second: 100
+max-status-checks-per-second: 100
+notemp: true
+printshellcmds: true
+scheduler: greedy
 use-conda: true
-conda-frontend: "mamba"
-default-resources:
-  - ncores=1
-  - mem_gb=1
-  - walltime="48:00:00"
+verbose: true
