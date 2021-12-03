@@ -21,3 +21,7 @@ mothur*logfile
 *.out
 
 .snakemake/
+
+# user-specific files
+*KLS*
+*MLC*
