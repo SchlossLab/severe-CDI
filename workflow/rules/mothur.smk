@@ -112,10 +112,12 @@ rule process_samples:
         count_table="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table"
     log:
         "log/mothur/process_samples.log"
-    threads: 10
     params:
         inputdir='data/raw',
         outputdir='data/mothur'
+    threads: 10
+    resources:
+        mem_mb=8000
     shell:
         """
         mothur "#
@@ -155,6 +157,8 @@ rule cluster_otus:
     params:
         inputdir='data/mothur',
         outputdir='data/mothur'
+    resources:
+        mem_mb=MEM_PER_GB*16
     shell:
         """
         mothur "#
@@ -179,6 +183,7 @@ rule alpha_beta:
         subsample_shared="data/mothur/cdi.opti_mcc.0.03.subsample.shared"
     log:
         "log/mothur/alpha_beta.log"
+    
     shell:
         """
         mothur "#set.logfile(name={log});
@@ -229,9 +234,9 @@ rule blast_otus:
     script:
         "scripts/blast_otus.R"
 
-rule diversity_data:
+rule plot_diversity_data:
     input:
-        "scripts/diversity_data.R",
+        "scripts/plot_diversity_data.R",
         "scripts/utilities.R",
         "data/mothur/cdi.opti_mcc.groups.ave-std.summary",
         "data/process/case_idsa_severity.csv"
@@ -239,7 +244,7 @@ rule diversity_data:
         inv_simpson="results/figures/idsa_alpha_inv_simpson.png",
         richness="results/figures/idsa_alpha_richness.png"
     script:
-        "scripts/diversity_data.R"
+        "scripts/plot_diversity_data.R"
 
 rule lefse_prep_files:
     input:
@@ -270,7 +275,6 @@ rule lefse:
         "
         """
 
-
 rule lefse_analysis:
     input:
         "scripts/lefse_analysis.R",
@@ -283,6 +287,7 @@ rule lefse_analysis:
     script:
         "scripts/lefse_analysis.R"
 
+# Sarah T's version of preparing the data for ML
 rule mikropml_input_data:
     input:
         "scripts/mikropml_input_data.R",
@@ -295,7 +300,9 @@ rule mikropml_input_data:
         "scripts/mikropml_input_data.R"
 
 #check on input for this function (there was mention of file_path in file)
-rule ml_feature_importance:
+# TODO: move to ml workflow
+# TODO: actually maybe we should have a plot/plotting/figures workflow?
+rule plot_ml_feature_importance:
     input:
         "scripts/ml_feature_importance.R",
         "scripts/utilities.R",
@@ -305,19 +312,9 @@ rule ml_feature_importance:
     script:
         "scripts/ml_feature_importance.R"
 
-rule read_taxa_data:
+rule plot_taxa:
     input:
-        "scripts/read_taxa_data.R",
-        "scripts/utilities.R",
-        "data/mothur/cdi.taxonomy",
-        "data/mothur/cdi.opti_mcc.0.03.subsample.shared"
-#what is the output?
-    script:
-        "scripts/read_taxa_data.R"
-
-rule taxa:
-    input:
-        "scripts/taxa.R",
+        "scripts/plot_taxa.R",
         "scripts/utilities.R",
         "scripts/read_taxa_data.R",
         "data/process/case_idsa_severity.csv",
@@ -328,7 +325,7 @@ rule taxa:
     script:
         "scripts/taxa.R"
 
-rule idsa_analysis_summary:
+rule plot_idsa_analysis_summary:
     input:
         "scripts/idsa_analysis_summary.R",
         "scripts/utilities.R",
@@ -343,24 +340,3 @@ rule idsa_analysis_summary:
     script:
         "scripts/idsa_analysis_summary.R"
 
-
-# SET: Need to update to capture all the mocks for CDI samples (2-4 per library, named according to plate number). Currently set up to check error in resequencing library
-#probably won't need this
-rule get_error:
-    input:
-        rules.process_samples.output
-    log:
-        "log/mothur/get_error.log"
-    threads: 8
-    shell:
-        """
-        mothur "#set.logfile(name={log});
-        set.current(inputdir=data/plate53_mothur, outputdir=data/plate53_mothur, processors={threads});
-        get.groups(count=cdi.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table, fasta=cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.fasta, taxonomy=cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pds.wang.pick.taxonomy, groups=mock10-mock11-mock12-mock13-mock14-mock15-mock16-mock17-mock18-mock19-mock20-mock21-mock22-mock23-mock24-mock25-mock26-mock28-mock30-mock32-mock33-mock34-mock35-mock36-mock37-mock38-mock39-mock40-mock41-mock42-mock43-mock44-mock45-mock46-mock47-mock48-mock51-mock51b-mock52-mock53-mock5-mock6-mock7-mock9);
-        seq.error(fasta=current, count=current, reference=data/references/zymo_mock.align, aligned=F)
-        "
-        """
-
-    # input:
-    #     r="scripts/shared_file.R"
-    #     tsv="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.shared"

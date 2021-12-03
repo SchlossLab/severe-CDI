@@ -1,5 +1,6 @@
 configfile: 'config/default.yml'
 
+MEM_PER_GB=1024
 ncores = config['ncores']
 ml_methods = config['ml_methods']
 kfold = config['kfold']
