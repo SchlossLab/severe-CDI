@@ -6,7 +6,7 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=100MB
-#SBATCH --time=48:00:00
+#SBATCH --time=72:00:00
 
 #SBATCH --output=log/hpc/slurm-%j_%x.out
 
@@ -16,4 +16,4 @@
 #SBATCH --mail-user=mlcoden@umich.edu
 #SBATCH --mail-type=BEGIN,END
 
-time snakemake --profile config/slurm --latency-wait 90 process_samples 
+time snakemake --profile config/slurm --latency-wait 90 alpha_beta 
