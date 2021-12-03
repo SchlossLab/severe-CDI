@@ -8,7 +8,7 @@ ml_results <- mikropml::run_ml(
   dataset = data_processed,
   method = snakemake@params[["method"]],
   outcome_colname = snakemake@params[['outcome_colname']],
-  find_feature_importance = TRUE,
+  find_feature_importance = FALSE,
   kfold = as.numeric(snakemake@params[['kfold']]),
   seed = as.numeric(snakemake@params[["seed"]])
 )
