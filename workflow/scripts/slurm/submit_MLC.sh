@@ -13,8 +13,8 @@
 #SBATCH --account=pschloss1
 #SBATCH --partition=standard
 
-#SBATCH --mail-user=${USER}@umich.edu
+#SBATCH --mail-user=$USER@umich.edu
 #SBATCH --mail-type=BEGIN,END
 
 mkdir -p log/hpc/
-time snakemake --profile config/slurm_MLC -s workflow/Snakefile
+time snakemake --profile config/slurm -s workflow/Snakefile

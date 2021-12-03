@@ -14,7 +14,7 @@ results/DCvNDC/*
 !README.md
 results/runs/*
 
-*.qsub*
+log/
 mothur*logfile
 *temp*
 *.docx

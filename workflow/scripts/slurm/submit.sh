@@ -13,7 +13,7 @@
 #SBATCH --account=pschloss1
 #SBATCH --partition=standard
 
-#SBATCH --mail-user=${USER}@umich.edu
+#SBATCH --mail-user=YOUR_EMAIL_HERE
 #SBATCH --mail-type=BEGIN,END
 
 mkdir -p log/hpc/
