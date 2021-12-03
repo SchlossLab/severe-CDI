@@ -9,7 +9,6 @@ cluster: "sbatch
             --mem-per-cpu {cluster.pmem} 
             --time {cluster.walltime} 
             --output {cluster.outfile} "
-cluster-config: "config/cluster.yaml"
 jobs: 4999
 immediate-submit: False
 verbose: true
