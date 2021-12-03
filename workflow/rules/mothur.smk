@@ -27,20 +27,19 @@ rule get_silva:
         v4='data/references/silva.v4.align'
     log:
         "log/mothur/get_silva.log"
-    resources:
-        ncores=8
+    threads: 8
     shell:
         """
         mothur "#set.logfile(name={log});
                 set.dir(output=data/references/, input=data/references/);
                 get.lineage(fasta={input.fasta}, taxonomy={input.tax}, taxon=Bacteria);
-                degap.seqs(fasta=silva.seed_v132.pick.align, processors={resources.ncores})
+                degap.seqs(fasta=silva.seed_v132.pick.align, processors={threads})
                 "
         mv data/references/silva.seed_v132.pick.align {output.full}
 
         mothur "#set.logfile(name={log});
                 set.dir(output=data/references/);
-                pcr.seqs(fasta={output.full}, start=11894, end=25319, keepdots=F, processors={resources.ncores})"
+                pcr.seqs(fasta={output.full}, start=11894, end=25319, keepdots=F, processors={threads})"
         mv data/references/silva.seed.pcr.align {output.v4}
         """
 
@@ -65,8 +64,7 @@ rule get_zymo:
         align='data/references/zymo_mock.align'
     log:
         "log/mothur/get_zymo.log"
-    resources:
-        ncores=12
+    threads: 12
     shell:
         '''
         source /etc/profile.d/http_proxy.sh
@@ -76,7 +74,7 @@ rule get_zymo:
         cat ZymoBIOMICS.STD.refseq.v2/ssrRNAs/*fasta > zymo_temp.fasta
         sed '0,/Salmonella_enterica_16S_5/{{s/Salmonella_enterica_16S_5/Salmonella_enterica_16S_7/}}' zymo_temp.fasta > zymo.fasta
         mothur "#set.logfile(name={log});
-        align.seqs(fasta=zymo.fasta, reference={input.silva_v4}, processors={resources.ncores})"
+        align.seqs(fasta=zymo.fasta, reference={input.silva_v4}, processors={threads})"
         mv zymo.align {output.align}
         rm -rf zymo* ZymoBIOMICS.STD.refseq.v2* zymo_temp.fasta
         '''
@@ -114,8 +112,7 @@ rule process_samples:
         count_table="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table"
     log:
         "log/mothur/process_samples.log"
-    resources:
-        ncores=10
+    threads: 10
     params:
         inputdir='data/raw',
         outputdir='data/mothur'
@@ -124,21 +121,21 @@ rule process_samples:
         mothur "#
             set.logfile(name={log});
             make.file(inputdir={params.inputdir}, type=gz, prefix=cdi);
-            make.contigs(file=cdi.files, inputdir={params.inputdir}, outputdir={params.outputdir}, processors={resources.ncores});
-            summary.seqs(fasta=cdi.trim.contigs.fasta, processors={resources.ncores});
-            screen.seqs(fasta=current, group=current, maxambig=0, maxlength=275, maxhomop=8, processors={resources.ncores});
+            make.contigs(file=cdi.files, inputdir={params.inputdir}, outputdir={params.outputdir}, processors={threads});
+            summary.seqs(fasta=cdi.trim.contigs.fasta, processors={threads});
+            screen.seqs(fasta=current, group=current, maxambig=0, maxlength=275, maxhomop=8, processors={threads});
             unique.seqs(fasta=current);
             count.seqs(name=current, group=current);
-            summary.seqs(count=cdi.trim.contigs.good.count_table, processors={resources.ncores});
-            align.seqs(fasta=current, reference={input.silva}, processors={resources.ncores});
-            screen.seqs(fasta=current, count=current, start=1968, end=11550, processors={resources.ncores});
-            summary.seqs(fasta=current, count=current, processors={resources.ncores});
-            filter.seqs(fasta=current, vertical=T, trump=., processors={resources.ncores});
+            summary.seqs(count=cdi.trim.contigs.good.count_table, processors={threads});
+            align.seqs(fasta=current, reference={input.silva}, processors={threads});
+            screen.seqs(fasta=current, count=current, start=1968, end=11550, processors={threads});
+            summary.seqs(fasta=current, count=current, processors={threads});
+            filter.seqs(fasta=current, vertical=T, trump=., processors={threads});
             unique.seqs(fasta=current, count=current);
-            pre.cluster(fasta=current, count=current, diffs=2, processors={resources.ncores});
-            chimera.vsearch(fasta=current, count=current, dereplicate=T, processors={resources.ncores});
+            pre.cluster(fasta=current, count=current, diffs=2, processors={threads});
+            chimera.vsearch(fasta=current, count=current, dereplicate=T, processors={threads});
             remove.seqs(fasta=current, accnos=current);
-            summary.seqs(fasta=current, count=current, processors={resources.ncores});
+            summary.seqs(fasta=current, count=current, processors={threads});
             classify.seqs(fasta=current, count=current, reference={input.reference}, taxonomy={input.taxonomy}, cutoff=80);
             remove.lineage(fasta=current, count=current, taxonomy=current, taxon=Chloroplast-Mitochondria-unknown-Archaea-Eukaryota);
             count.seqs(name=current, group=current)
@@ -154,8 +151,7 @@ rule cluster_otus:
     output:
         shared="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.shared",
         taxonomy="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.0.03.cons.taxonomy"
-    resources:
-        ncores=10
+    threads: 10
     params:
         inputdir='data/mothur',
         outputdir='data/mothur'
@@ -163,8 +159,8 @@ rule cluster_otus:
         """
         mothur "#
             set.dir(input=data/mothur, output=data/mothur, seed=19760620);
-            set.current(processors={resources.ncores});
-            cluster.split(fasta={input.fasta}, count={input.count_table}, taxonomy={input.taxonomy}, cutoff=0.03, taxlevel=4, processors={resources.ncores});
+            set.current(processors={threads});
+            cluster.split(fasta={input.fasta}, count={input.count_table}, taxonomy={input.taxonomy}, cutoff=0.03, taxlevel=4, processors={threads});
             count.groups(count=current);
             make.shared(list=current, count=current, label=0.03);
             classify.otu(list=current, count=current, taxonomy=current, label=0.03)
@@ -355,12 +351,11 @@ rule get_error:
         rules.process_samples.output
     log:
         "log/mothur/get_error.log"
-    resources:
-        ncores=8
+    threads: 8
     shell:
         """
         mothur "#set.logfile(name={log});
-        set.current(inputdir=data/plate53_mothur, outputdir=data/plate53_mothur, processors={resources.ncores});
+        set.current(inputdir=data/plate53_mothur, outputdir=data/plate53_mothur, processors={threads});
         get.groups(count=cdi.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table, fasta=cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.fasta, taxonomy=cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pds.wang.pick.taxonomy, groups=mock10-mock11-mock12-mock13-mock14-mock15-mock16-mock17-mock18-mock19-mock20-mock21-mock22-mock23-mock24-mock25-mock26-mock28-mock30-mock32-mock33-mock34-mock35-mock36-mock37-mock38-mock39-mock40-mock41-mock42-mock43-mock44-mock45-mock46-mock47-mock48-mock51-mock51b-mock52-mock53-mock5-mock6-mock7-mock9);
         seq.error(fasta=current, count=current, reference=data/references/zymo_mock.align, aligned=F)
         "
