@@ -10,6 +10,8 @@ rule preprocess_data:
     benchmark:
         "benchmarks/preprocess_data.txt"
     threads: ncores
+    params:
+        mem_mb=MEM_PER_GB*2
     script:
         "workflow/scripts/preproc.R"
 
@@ -31,6 +33,8 @@ rule run_ml:
         seed="{seed}",
         kfold=kfold
     threads: ncores
+    resources:
+        mem_mb=MEM_PER_GB*4
     script:
         "workflow/scripts/ml.R"
 
