@@ -120,15 +120,15 @@ bash code/get_good_seqs_shared_otus.batch
 bash code/get_error.batch
 
 ```
-[ ] Script to read in shared_file
+[-] Script to read in shared_file
 ```
 Rscript code/shared_file.R
 ```
-[ ] Subsample shared file to 5000 sequences.
+[x] Subsample shared file to 5000 sequences.
 ```
 bash code/alpha_beta.batch
 ```
-[ ] Examine potential *C. difficile* sequences in the dataset.
+[x] Examine potential *C. difficile* sequences in the dataset.
 ```
 bash code/get_oturep.batch
 Rscript code/blast_otus.R
@@ -136,17 +136,17 @@ Rscript code/blast_otus.R
 #To run get_oturep.batch on HPC:
 sbatch code/slurm/get_oturep.sh
 ```
-[ ] Visualize alpha diversity in R.
+[x] Visualize alpha diversity in R.
 ```
 Rscript code/diversity_data.R
 ```
-[ ] Create input files for lefse analysis using mothur. Run lefse analysis in mothur. Visualize lefse results in R.
+[-] Create input files for lefse analysis using mothur. Run lefse analysis in mothur. Visualize lefse results in R.
 ```
 Rscript code/lefse_prep_files.R
 bash code/lefse.batch
 Rscript code/lefse_analysis.R
 ```
-[ ] Prepare OTU, genus, and lefse input data for mikropml pipeline. Remove the OTU with most abundant *C. difficile* sequences from the imput data.
+[x] Prepare OTU, genus, and lefse input data for mikropml pipeline. Remove the OTU with most abundant *C. difficile* sequences from the imput data.
 ```
 Rscript code/mikropml_input_data.R
 ```
@@ -157,16 +157,16 @@ Tip: snakemake -n (Dry run). Snakemake --unlock (If you get an error that the di
 sbatch code/ml_submit_slurm.sh
 sbatch code/combine_feat_imp.sh.
 ```
-[ ] Examine feature importance for best performing model (random forest) after running mikropml pipeline.
+[x] Examine feature importance for best performing model (random forest) after running mikropml pipeline.
 ```
 Rscript code/ml_feature_importance.R
 ```
-[ ] Visualize bacterial relative abundances in R.
+[x] Visualize bacterial relative abundances in R.
 ```
 Rscript code/read_taxa_data.R
 Rscript code/taxa.R
 ```
-[ ] Create IDSA severity analysis summary figure.
+[x] Create IDSA severity analysis summary figure.
 ```
 Rscript code/idsa_analysis_summary.R
 ```
