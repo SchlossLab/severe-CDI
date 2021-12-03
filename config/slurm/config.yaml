@@ -17,7 +17,7 @@ default-resources:
   - partition=standard
   - email=YOUR_EMAIL_HERE
   - mail_on=FAIL
-  - mem_mb=500
+  - mem_mb=512
   - time="24:00:00"
 conda-frontend: "mamba"
 immediate-submit: False        
