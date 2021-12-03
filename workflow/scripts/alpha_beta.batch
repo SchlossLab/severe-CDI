@@ -1,0 +1,12 @@
+# Generate subsample shared files, alpha diversity calculations
+# Decided subsampling parameter based on count.groups results.
+set.dir(input=data/mothur, output=data/mothur, seed=19760620)
+
+# Shorten filenames
+rename.file(taxonomy=cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.0.03.cons.taxonomy, shared=cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.shared)
+
+# Subsample data
+#sub.sample(shared=cdi.opti_mcc.shared, size=5000)
+
+#rarefaction.single(shared=cdi.opti_mcc.shared, calc=sobs, freq=100)
+#summary.single(shared=cdi.opti_mcc.shared, calc=nseqs-coverage-invsimpson-shannon-sobs, subsample=5000)

@@ -1,0 +1,7 @@
+set.dir(input=data/mothur, output=data/mothur, seed=19760620)
+
+get.otulist( list=cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.list, label=0.03)
+
+bin.seqs(list =cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.list, fasta=cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.fasta)
+
+get.oturep(phylip=cdi.opti_mcc.braycurtis.0.03.lt.ave.dist, count =cdi.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.pick.count_table,  list=cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.list, fasta =cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.0.03.fasta)
