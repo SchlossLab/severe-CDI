@@ -17,4 +17,4 @@
 #SBATCH --mail-type=BEGIN,END
 
 mkdir -p log/hpc/
-time snakemake --profile config/slurm_KLS -s workflow/Snakefile
+time snakemake --profile config/slurm -s workflow/Snakefile

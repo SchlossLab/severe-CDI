@@ -15,7 +15,7 @@ cluster:
 default-resources:
   - account=pschloss1
   - partition=standard
-  - email=YOUR_EMAIL_HERE
+  - email="$USER@umich.edu" # assumes your username is your email @umich
   - mail_on=FAIL
   - mem_mb=500
   - time="24:00:00"
