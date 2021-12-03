@@ -1,10 +1,7 @@
-dataset: data/process/ml_idsa_severity.csv
-outcome_colname: outcome
+dataset: data/process/cases_severity_OTUs.csv
+outcome_colname: idsa_severity
 ml_methods:
  - glmnet
- - rf
-# - rpart2
- - svmRadial
 kfold: 5
 ncores: 36
-nseeds: 100
+nseeds: 2
