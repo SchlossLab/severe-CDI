@@ -13,7 +13,7 @@
 #SBATCH --account=pschloss1
 #SBATCH --partition=standard
 
-#SBATCH --mail-user=mlcoden@umich.edu
+#SBATCH --mail-user=${USER}@umich.edu
 #SBATCH --mail-type=BEGIN,END
 
 time snakemake --profile config/slurm -s workflow/Snakefile
