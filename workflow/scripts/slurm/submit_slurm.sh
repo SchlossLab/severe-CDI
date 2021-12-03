@@ -16,4 +16,4 @@
 #SBATCH --mail-user=mlcoden@umich.edu
 #SBATCH --mail-type=BEGIN,END
 
-time snakemake --profile config/slurm --latency-wait 90 alpha_beta 
+time snakemake --profile config/slurm -s workflow/Snakefile
