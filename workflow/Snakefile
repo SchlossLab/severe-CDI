@@ -20,7 +20,7 @@ rule classify_idsa_severity:
         'code/severity_analysis.R',
         "code/utilities.R",
         "data/process/final_CDI_16S_metadata.tsv",
-        "data/raw/max_creat.csv",
+        "data/raw/max_creat.csv", # TODO: email SET to get these files
         "data/raw/max_wbc.csv",
         "data/raw/r21_fullcohort_edited_deidentified.csv",
         "data/raw/HPI-1878 Lab.csv"
@@ -29,3 +29,11 @@ rule classify_idsa_severity:
         png="results/figures/idsa_severe_n.png"
     script:
         'code/severity_analysis.R'
+
+rule prep_data_for_ml:
+    input:
+        'scripts/prep_data_for_ml.R'
+    output:
+        'data/process/cases_severity_OTUs.csv'
+    script:
+        'scripts/prep_data_for_ml.R'
