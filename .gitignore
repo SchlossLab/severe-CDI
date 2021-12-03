@@ -13,7 +13,6 @@ results/CvNDC/*
 results/DCvNDC/*
 !README.md
 results/runs/*
-log/*
 
 *.qsub*
 mothur*logfile
