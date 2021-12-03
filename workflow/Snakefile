@@ -8,12 +8,12 @@ nseeds = config['nseeds']
 start_seed = 100
 seeds = range(start_seed, start_seed + nseeds)
 
-include: 'code/mothur/mothur.smk'
-include: 'code/machine-learning/machine-learning.smk'
+include: 'rules/mothur.smk'
+include: 'rules/machine-learning.smk'
 
 rule targets:
     input:
-        'report.md'
+        'workflow/report/report.md'
 
 rule classify_idsa_severity:
     input:
