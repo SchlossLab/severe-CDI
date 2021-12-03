@@ -109,7 +109,9 @@ rule process_samples:
 	    taxonomy=rules.get_rdp.output.taxonomy,
         zymo=rules.get_zymo.output
     output:
-        cds="data/raw/cds.files"
+        fasta="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.fasta",
+        taxonomy="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pds.wang.pick.taxonomy",
+        count_table="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table"
     log:
         "log/mothur/process_samples.log"
     resources:
@@ -139,39 +141,40 @@ rule process_samples:
             summary.seqs(fasta=current, count=current, processors={resources.ncores});
             classify.seqs(fasta=current, count=current, reference={input.reference}, taxonomy={input.taxonomy}, cutoff=80);
             remove.lineage(fasta=current, count=current, taxonomy=current, taxon=Chloroplast-Mitochondria-unknown-Archaea-Eukaryota);
-            count.seqs(name=current, group=current);
+            count.seqs(name=current, group=current)
+        "
+        """
 
+
+rule cluster_otus:
+    input:
+        fasta=rules.process_samples.output.fasta,
+        taxonomy=rules.process_samples.output.taxonomy,
+        count_table=rules.process_samples.output.count_table
+    output:
+        shared="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.shared",
+        taxonomy="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.0.03.cons.taxonomy"
+    resources:
+        ncores=10
+    params:
+        inputdir='data/mothur',
+        outputdir='data/mothur'
+    shell:
+        """
+        mothur "#
             set.dir(input=data/mothur, output=data/mothur, seed=19760620);
             set.current(processors={resources.ncores});
-            remove.groups(count=cdi.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table, fasta=cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.fasta, taxonomy=cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pds.wang.pick.taxonomy, groups=mock10-mock11-mock12-mock13-mock14-mock15-mock16-mock17-mock18-mock19-mock20-mock21-mock22-mock23-mock24-mock25-mock26-mock28-mock30-mock32-mock33-mock34-mock35-mock36-mock37-mock38-mock39-mock40-mock41-mock42-mock43-mock44-mock45-mock46-mock47-mock48-mock51-mock51b-mock52-mock53-mock5-mock6-mock7-mock9);
-            cluster.split(fasta=current, count=current, taxonomy=current, cutoff=0.03, taxlevel=4, processors={resources.ncores});
+            cluster.split(fasta={input.fasta}, count={input.count_table}, taxonomy={input.taxonomy}, cutoff=0.03, taxlevel=4, processors={resources.ncores});
             count.groups(count=current);
             make.shared(list=current, count=current, label=0.03);
             classify.otu(list=current, count=current, taxonomy=current, label=0.03)
             "
         """
 
-# SET: Need to update to capture all the mocks for CDI samples (2-4 per library, named according to plate number). Currently set up to check error in resequencing library
-rule get_error:
-    input:
-        rules.process_samples.output
-    log:
-        "log/mothur/get_error.log"
-    resources:
-        ncores=8
-    shell:
-        """
-        mothur "#set.logfile(name={log});
-        set.current(inputdir=data/plate53_mothur, outputdir=data/plate53_mothur, processors={resources.ncores});
-        get.groups(count=cdi.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table, fasta=cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.fasta, taxonomy=cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pds.wang.pick.taxonomy, groups=mock10-mock11-mock12-mock13-mock14-mock15-mock16-mock17-mock18-mock19-mock20-mock21-mock22-mock23-mock24-mock25-mock26-mock28-mock30-mock32-mock33-mock34-mock35-mock36-mock37-mock38-mock39-mock40-mock41-mock42-mock43-mock44-mock45-mock46-mock47-mock48-mock51-mock51b-mock52-mock53-mock5-mock6-mock7-mock9);
-        seq.error(fasta=current, count=current, reference=data/references/zymo_mock.align, aligned=F)
-        "
-        """
-
 rule alpha_beta:
     input:
-        taxonomy="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.0.03.cons.taxonomy",
-        shared="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.shared"
+        taxonomy=rules.cluster_otus.output.taxonomy,
+        shared=rules.cluster_otus.output.shared
     log:
         "log/mothur/alpha_beta.log"
     shell:
@@ -179,9 +182,9 @@ rule alpha_beta:
         mothur "#set.logfile(name={log});
         set.dir(input=data/mothur, output=data/mothur, seed=19760620);
         rename.file(taxonomy={input.taxonomy}, shared={input.shared});
-        #sub.sample(shared=cdi.opti_mcc.shared, size=5000);
-        #rarefaction.single(shared=cdi.opti_mcc.shared, calc=sobs, freq=100);
-        #summary.single(shared=cdi.opti_mcc.shared, calc=nseqs-coverage-invsimpson-shannon-sobs, subsample=5000)
+        sub.sample(shared=cdi.opti_mcc.shared, size=5000);
+        rarefaction.single(shared=cdi.opti_mcc.shared, calc=sobs, freq=100);
+        summary.single(shared=cdi.opti_mcc.shared, calc=nseqs-coverage-invsimpson-shannon-sobs, subsample=5000)
         "
         """
 
@@ -337,6 +340,25 @@ rule idsa_analysis_summary:
         severe_isda_summary="results/figures/severe_idsa_summary.pdf"
     script:
         "code/idsa_analysis_summary.R"
+
+
+# SET: Need to update to capture all the mocks for CDI samples (2-4 per library, named according to plate number). Currently set up to check error in resequencing library
+#probably won't need this
+rule get_error:
+    input:
+        rules.process_samples.output
+    log:
+        "log/mothur/get_error.log"
+    resources:
+        ncores=8
+    shell:
+        """
+        mothur "#set.logfile(name={log});
+        set.current(inputdir=data/plate53_mothur, outputdir=data/plate53_mothur, processors={resources.ncores});
+        get.groups(count=cdi.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table, fasta=cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.fasta, taxonomy=cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pds.wang.pick.taxonomy, groups=mock10-mock11-mock12-mock13-mock14-mock15-mock16-mock17-mock18-mock19-mock20-mock21-mock22-mock23-mock24-mock25-mock26-mock28-mock30-mock32-mock33-mock34-mock35-mock36-mock37-mock38-mock39-mock40-mock41-mock42-mock43-mock44-mock45-mock46-mock47-mock48-mock51-mock51b-mock52-mock53-mock5-mock6-mock7-mock9);
+        seq.error(fasta=current, count=current, reference=data/references/zymo_mock.align, aligned=F)
+        "
+        """
 
     # input:
     #     r="code/shared_file.R"
