@@ -175,6 +175,12 @@ rule alpha_beta:
     input:
         taxonomy=rules.cluster_otus.output.taxonomy,
         shared=rules.cluster_otus.output.shared
+    output:
+        shared="data/mothur/cdi.opti_mcc.shared",
+        taxonomy="data/mothur/cdi.taxonomy",
+        summary="data/mothur/cdi.opti_mcc.groups.ave-std.summary",
+        rarefaction="data/mothur/cdi.opti_mcc.groups.rarefaction",
+        subsample_shared="data/mothur/cdi.opti_mcc.0.03.subsample.shared"
     log:
         "log/mothur/alpha_beta.log"
     shell:
