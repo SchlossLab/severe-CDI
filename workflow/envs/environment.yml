@@ -15,5 +15,5 @@ dependencies:
   - r-mikropml
   - r-rmarkdown
   - r-rpart
-  - r-tidyverse=1.3
-  - snakemake=5
+  - r-tidyverse>=1.3
+  - snakemake=6.12.1
