@@ -16,4 +16,5 @@
 #SBATCH --mail-user=${USER}@umich.edu
 #SBATCH --mail-type=BEGIN,END
 
+mkdir -p log/hpc/
 time snakemake --profile config/slurm -s workflow/Snakefile
