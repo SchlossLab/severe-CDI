@@ -9,7 +9,7 @@ rule preprocess_data:
     benchmark:
         "benchmarks/preprocess_data_{outcome}.txt"
     threads: ncores
-    params:
+    resources:
         mem_mb=MEM_PER_GB*2
     script:
         "workflow/scripts/preproc.R"
