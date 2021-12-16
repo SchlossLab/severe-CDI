@@ -50,8 +50,7 @@ multi_samples <- cdi_metadata %>%
   filter(!is.na(`CDIS_Study ID`)) %>% 
   group_by(`CDIS_Study ID`) %>% 
   tally() %>% 
-  filter(n > 1) %>% 
-  tally(n)
+  filter(n > 1) 
 #185 patients with multiple samples in dataset (424 samples)
 
 #Number of samples from a single patient
@@ -62,13 +61,13 @@ single_samples <- cdi_metadata %>%
   filter(n == 1)
 #1092 samples are from 1 patient
 
-#Number of patients with 2 or at least 3 samples
-t2_samples <- multi_samples %>% 
-  filter(n == 2)
-#0 samples
-ta3_samples <- multi_samples %>% 
-  filter(n > 2)
-#425 samples
+# samples per patient
+cdi_metadata %>% 
+  filter(!is.na(`CDIS_Study ID`)) %>% 
+  group_by(`CDIS_Study ID`) %>% 
+  tally(name = "n_samples") %>% 
+  group_by(n_samples) %>% 
+  tally(name = "n_patients") 
 
 #Functions to subset data frames and format for logistic regression----
 #Function to Rescale values to fit between 0 and 1
