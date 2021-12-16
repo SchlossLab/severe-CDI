@@ -14,7 +14,7 @@ include: 'rules/machine-learning.smk'
 
 rule targets:
     input:
-        'workflow/report/report.md'
+        expand('results/predict_{outcome}/{type}_results.csv', outcome = ['idsa'], type = ['performance'])
 
 rule classify_idsa_severity:
     input:
@@ -33,8 +33,8 @@ rule classify_idsa_severity:
 
 rule prep_data_for_ml:
     input:
-        'scripts/prep_data_for_ml.R'
+        'workflow/scripts/prep_data_for_ml.R'
     output:
-        'data/process/cases_severity_OTUs.csv'
+        'data/process/idsa_OTUs.csv'
     script:
-        'scripts/prep_data_for_ml.R'
+        'workflow/scripts/prep_data_for_ml.R'

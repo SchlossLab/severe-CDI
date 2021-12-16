@@ -330,11 +330,11 @@ rule plot_idsa_analysis_summary:
         "scripts/idsa_analysis_summary.R",
         "scripts/utilities.R",
         "results/figures/idsa_severe_n.png",
-        rules.diversity_data.output.inv_simpson,
+        rules.plot_diversity_data.output.inv_simpson,
         "results/figures/ml_performance_idsa_otu.png",
         "results/figures/ml_performance_idsa_otu_AUC.png",
-        rules.ml_feature_importance.output.isda_severity_png,
-        rules.taxa.output.severe_otus
+        rules.plot_ml_feature_importance.output.isda_severity_png,
+        rules.plot_taxa.output.severe_otus
     output:
         severe_isda_summary="results/figures/severe_idsa_summary.pdf"
     script:
