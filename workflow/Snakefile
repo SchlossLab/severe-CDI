@@ -36,5 +36,7 @@ rule prep_data_for_ml:
         'workflow/scripts/prep_data_for_ml.R'
     output:
         'data/process/idsa_OTUs.csv'
+    resources:
+        mem_mb=MEM_PER_GB*8
     script:
-        'workflow/scripts/prep_data_for_ml.R'
+        'scripts/prep_data_for_ml.R'
