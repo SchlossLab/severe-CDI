@@ -18,6 +18,7 @@ idsa_sra <-
 
 cases_severity_OTUs <- left_join(idsa_sra, dat_shared, by = "Group") %>% 
   filter(cdiff_case == 'Case', !is.na(idsa_severity)) %>% 
-  select(idsa_severity, starts_with("Otu"))
+  select(idsa_severity, starts_with("Otu")) %>% 
+  rename(idsa=idsa_severity)
 
 cases_severity_OTUs %>% write_csv(here('data', 'process', 'idsa_OTUs.csv'))

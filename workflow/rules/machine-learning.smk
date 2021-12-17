@@ -12,7 +12,7 @@ rule preprocess_data:
     resources:
         mem_mb=MEM_PER_GB*2
     script:
-        "workflow/scripts/preproc.R"
+        "../scripts/preproc.R"
 
 rule run_ml:
     input:
@@ -24,7 +24,7 @@ rule run_ml:
     log: "log/predict_{outcome}/run_ml.{method}_{seed}.txt"
     benchmark: "benchmarks/predict_{outcome}/run_ml.{method}_{seed}.txt"
     params:
-        outcome_colname=config['outcome_colname'],
+        outcome_colname="{outcome}",
         method="{method}",
         seed="{seed}",
         kfold=kfold
@@ -32,7 +32,7 @@ rule run_ml:
     resources:
         mem_mb=MEM_PER_GB*4
     script:
-        "workflow/scripts/ml.R"
+        "../scripts/ml.R"
 
 rule combine_results:
     input:
@@ -43,5 +43,5 @@ rule combine_results:
     benchmark:
         "benchmarks/predict_{outcome}/combine_results_{type}.txt"
     script:
-        "workflow/scripts/combine_results.R"
+        "../scripts/combine_results.R"
 
