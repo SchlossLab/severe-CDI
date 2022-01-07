@@ -2,6 +2,7 @@
 .Rhistory
 .RData
 
+core.*
 .DS_Store
 
 data/*/*
