@@ -1,4 +1,4 @@
-source("workflow/scripts/log_smk.R")
+source(snakemake@input[["logR"]])
 doFuture::registerDoFuture()
 future::plan(future::multicore, workers = snakemake@threads)
 
