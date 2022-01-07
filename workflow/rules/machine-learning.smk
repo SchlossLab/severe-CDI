@@ -2,7 +2,8 @@
 rule preprocess_data:
     input:
         R="workflow/rules/scripts/preproc.R",
-        csv="data/process/{outcome}_OTUs.csv"
+        csv="data/process/{outcome}_OTUs.csv",
+        logR="workflow/rules/scripts/log_smk.R"
     output:
         rds='data/process/dat_proc_{outcome}.Rds'
     log: "log/preprocess_data_{outcome}.txt"
