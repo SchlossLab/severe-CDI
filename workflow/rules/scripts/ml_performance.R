@@ -1,4 +1,4 @@
-source("code/utilities.R") #Loads libraries, reads in metadata, functions
+source("workflow/rules/scripts/utilities.R")  #Loads libraries, reads in metadata, functions
 
 set.seed(19760620) #Same seed used for mothur analysis
 
@@ -48,8 +48,8 @@ performance_otu_idsa <- IDSA_otu %>%
         axis.ticks.x = element_blank(), #Remove x axis ticks
         axis.text.x = element_blank(), #Remove x axis text (all models are at the OTU level)
         strip.background = element_blank()) +#Make Strip backgrounds blank
-  guides(color=guide_legend(nrow = 2))+   #Legend in 2 rows so it doesn't get cut off 
-  ggsave("results/figures/ml_performance_idsa_otu.png", height = 5, width = 7)
+  guides(color=guide_legend(nrow = 2))   #Legend in 2 rows so it doesn't get cut off 
+ggsave("results/figures/ml_performance_idsa_otu.png", height = 5, width = 7)
 
 performance_otu_idsa_AUC <- IDSA_otu %>% 
   filter(taxa_level == "otu") %>% 
