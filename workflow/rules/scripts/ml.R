@@ -1,4 +1,3 @@
-# source("code/log_smk.R")
 source(snakemake@input[["logR"]])
 
 doFuture::registerDoFuture()
@@ -16,4 +15,3 @@ ml_results <- mikropml::run_ml(
 
 saveRDS(ml_results$trained_model, file = snakemake@output[["model"]])
 readr::write_csv(ml_results$performance, snakemake@output[["perf"]])
-readr::write_csv(ml_results$feature_importance, snakemake@output[["feat"]])
