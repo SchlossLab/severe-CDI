@@ -18,7 +18,8 @@ rule preprocess_data:
 rule run_ml:
     input:
         R="workflow/rules/scripts/ml.R",
-        rds=rules.preprocess_data.output.rds
+        rds=rules.preprocess_data.output.rds,
+        logR="workflow/rules/scripts/log_smk.R"
     output:
         model="results/predict_{outcome}/{method}_{seed}_model.Rds",
         perf=temp("results/predict_{outcome}/{method}_{seed}_performance.csv")
