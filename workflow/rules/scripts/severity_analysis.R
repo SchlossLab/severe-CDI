@@ -48,7 +48,7 @@ r21_metadata_box <- read_csv("data/raw/r21_fullcohort_edited_deidentified.csv") 
 
 #Check stool sample collection date column against the column currenlty listed for metadata 
 #Read in lab values for ~1500 samples that the Data Office already pulled clinical data for----
-do_lab_values <- read_csv("data/raw/HPI-1878 Lab.csv") %>% 
+do_lab_values <- data.table::fread('data/raw/HPI-1878_Lab.csv.gz') %>% 
   #Select columns needed
   select(SAMPLE_ID, LAB_COLLECT_DTTM, RESULT_TEST_CODE, RESULT_VALUE, UNITS) %>% 
   rename(sample = SAMPLE_ID,
