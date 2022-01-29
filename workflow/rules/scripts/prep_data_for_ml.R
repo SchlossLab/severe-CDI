@@ -19,6 +19,10 @@ idsa_sra <-
 multi_samples <- idsa_sra %>% group_by(patient_id) %>% filter(cdiff_case == "Case") %>% tally() %>% filter(n > 1)
 # idsa_sra %>% filter(patient_id %in% multi_samples[["patient_id"]])
 #TODO: get one sample per patient
+sort_by_patient <-idsa_sra %>% group_by(patient_id)
+sort_by_patient[
+  with(sort_by_patient, order(patient_id, collection_date)),
+]
 
 cases_severity_OTUs <- left_join(idsa_sra, dat_shared, by = "Group") %>% 
   filter(cdiff_case == 'Case', !is.na(idsa_severity)) %>% 
