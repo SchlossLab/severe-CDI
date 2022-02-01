@@ -1,4 +1,4 @@
-source("code/log_smk.R")
+source("workflow/rules/scripts/log_smk.R")
 library(tidyverse)
 
 read_bench <- function(filename) {

@@ -1,4 +1,4 @@
-source("code/utilities.R") #Loads libraries, reads in metadata, functions
+source("workflow/rules/scripts/utilities.R") #Loads libraries, reads in metadata, functions
 
 #Read in shared and taxonomy files for all samples----
 # Import taxonomy into data frame and clean up taxonomy names
@@ -20,7 +20,7 @@ otu_data <- read_tsv("data/mothur/cdi.opti_mcc.0.03.subsample.shared", col_types
   select(-label, -numOtus) %>%
   rename(sample = Group) %>% #group is the same as sample in the metadata data frame
   #Join to just the CDI samples to reduce the size of the file
-  right_join(select(cdi_metadata, sample), by = "sample") %>% 
+  right_join(select(cdi_metadata, sample), by = "sample") %>%
   filter(!sample %in% contam_samples) %>% #Remove 2 contaminated samples from analysis
   gather(-sample, key="otu", value="count") %>%
   mutate(rel_abund=count/5000) #Use 5000, because this is the subsampling parameter chosen.
@@ -59,7 +59,7 @@ agg_otu_data <- inner_join(agg_otu, taxa_info, by="key") %>%
   mutate(taxa=gsub("(.*);.*","\\1",Taxonomy)) %>%
   mutate(taxa=gsub("(.*)_.*","\\1",Taxonomy)) %>%
   mutate(taxa=gsub("(.*);.*","\\1",Taxonomy)) %>%
-  mutate(taxa=str_replace_all(taxa, c("Clostridium_" = "Clostridium "))) %>% 
+  mutate(taxa=str_replace_all(taxa, c("Clostridium_" = "Clostridium "))) %>%
   mutate(taxa=gsub(".*;","",taxa)) %>%
   mutate(taxa=gsub("(.*)_.*","\\1",taxa)) %>%
   mutate(taxa=gsub('[0-9]+', '', taxa)) %>%

@@ -1,5 +1,5 @@
-source("code/utilities.R") #Loads libraries, reads in metadata, functions
-source("code/read_taxa_data.R") #Read in taxa data
+source("workflow/rules/scripts/utilities.R") #Loads libraries, reads in metadata, functions
+source("workflow/rules/scripts/read_taxa_data.R") #Read in taxa data
 
 agg_genus_data <- agg_taxonomic_data(genus)
 
@@ -7,14 +7,14 @@ agg_genus_data <- agg_taxonomic_data(genus)
 rm(agg_taxa_data)
 rm(agg_otu)
 
-idsa_severity <- read_csv("data/process/case_idsa_severity.csv") 
-agg_otu_data <- agg_otu_data %>% 
+idsa_severity <- read_csv("data/process/case_idsa_severity.csv")
+agg_otu_data <- agg_otu_data %>%
   right_join(idsa_severity, by = "sample")
 
 #List of C. difficile OTus
-c_diff_otus <- agg_otu_data %>% 
-  distinct(otu) %>% 
-  filter(str_detect(otu, "Peptostreptococcaceae")) %>% 
+c_diff_otus <- agg_otu_data %>%
+  distinct(otu) %>%
+  filter(str_detect(otu, "Peptostreptococcaceae")) %>%
   pull(otu)
 
 #Function to plot a heatmap of the median relative abundances of a list of OTUs across groups
@@ -22,7 +22,7 @@ c_diff_otus <- agg_otu_data %>%
 hm_plot_otus <- function(otus){
   agg_otu_data %>%
     filter(otu %in% otus) %>%
-    group_by(idsa_severity, otu_name) %>% 
+    group_by(idsa_severity, otu_name) %>%
     summarize(median=median(agg_rel_abund + 1/10000),`.groups` = "drop") %>%  #Add small value (1/2Xsubssampling parameter) so that there are no infinite values with log transformation
     ggplot()+
     geom_tile(aes(x = idsa_severity, y=otu_name, fill=median))+
@@ -81,9 +81,9 @@ idsa_severe_rf <- read_feat_imp("results/idsa_severity/combined_feature-importan
 #Top 20 OTUs for each input dataset with the random forest model
 idsa_severe_rf_top <- top_20(idsa_severe_rf) %>% pull(otu)
 #Plot top 20 OTUs
-idsa_severe_otus_hm <- agg_otu_data %>% 
+idsa_severe_otus_hm <- agg_otu_data %>%
       filter(otu %in% idsa_severe_rf_top) %>% #Select only otus for a specific model
-      group_by(idsa_severity, otu_name) %>% 
+      group_by(idsa_severity, otu_name) %>%
       mutate(median=median(agg_rel_abund + 1/10000),`.groups` = "drop") %>%  #Add small value (1/2Xsubssampling parameter) so that there are no infinite values with log transformation
       ggplot()+
       geom_tile(aes(x = idsa_severity, y=otu_name, fill=median))+
@@ -100,4 +100,3 @@ idsa_severe_otus_hm <- agg_otu_data %>%
             axis.text.y = element_markdown(), #Have only the OTU names show up as italics
             text = element_text(size = 16)) # Change font size for entire plot
 save_plot("results/figures/feat_imp_idsa_severe_otus_abund.png", idsa_severe_otus_hm, base_height =4, base_width = 4)
-
