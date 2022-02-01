@@ -1,4 +1,4 @@
-source("code/utilities.R") #Loads libraries, reads in metadata, functions
+source("workflow/rules/scripts/utilities.R") #Loads libraries, reads in metadata, functions
 
 a <- ggdraw() + draw_image("results/figures/idsa_severe_n.png")
 b <- ggdraw() + draw_image("results/figures/idsa_alpha_inv_simpson.png")

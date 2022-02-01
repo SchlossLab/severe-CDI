@@ -1,4 +1,4 @@
-source("code/utilities.R") #Loads libraries, reads in metadata, functions
+source("workflow/rules/scripts/utilities.R") #Loads libraries, reads in metadata, functions
 
 set.seed(19760620) #Same seed used for mothur analysis
 
@@ -10,9 +10,9 @@ set.seed(19760620) #Same seed used for mothur analysis
 idsa_severity <- read_csv("data/process/case_idsa_severity.csv")
 
 #Narrow down metadata to samples with IDSA severity status and selectonly the columns needed for lefse (sample and idsa_severity)
-design <- metadata %>% 
-  right_join(idsa_severity, by = "sample") %>% 
-  select(sample, idsa_severity) %>% 
+design <- metadata %>%
+  right_join(idsa_severity, by = "sample") %>%
+  select(sample, idsa_severity) %>%
   rename(sample_type = idsa_severity, group = sample)  #For design file the individual sample IDs should be in the first column named group. Give group designation the alternative name: sample_type
 
 #Import shared file for all samples and join to IDSA design:
@@ -23,7 +23,6 @@ shared <- read_tsv("data/mothur/cdi.opti_mcc.0.03.subsample.shared", col_types=c
   select(-sample_type) %>% #This column is not needed for shared file
   write_tsv(paste0("data/process/idsa.shared")) #Output as tsv file
 
-#Create final IDSA design file: 
-final_design <- design %>% 
+#Create final IDSA design file:
+final_design <- design %>%
   write_tsv(paste0("data/process/idsa.design")) #Output as tsv file
-
