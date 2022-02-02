@@ -2,6 +2,8 @@ library(tidyverse)
 library(here)
 library(data.table)
 
+source(here('workflow', 'rules', 'scripts', 'filter_first_samples.R'))
+
 dat_shared <- fread(here('data', 'mothur', 'cdi.opti_mcc.shared'))
 metadata <- read_tsv(here('data', 'process', 'final_CDI_16S_metadata.tsv')) %>% 
   rename(sample_id = `CDIS_Sample ID`, patient_id = `CDIS_Study ID`)
@@ -19,25 +21,10 @@ idsa_sra <-
 multi_samples <- idsa_sra %>% group_by(patient_id) %>% filter(cdiff_case == "Case") %>% tally() %>% filter(n > 1)
 # idsa_sra %>% filter(patient_id %in% multi_samples[["patient_id"]])
 #TODO: get one sample per patient
-sort_by_patient <-idsa_sra %>% group_by(patient_id)
-sorted <- sort_by_patient[
-  with(sort_by_patient, order(patient_id, collection_date)),
-]
-count <- 2
-my_entry <- sorted[1, 4]
-for (entry in sorted) {
-  if (sorted[count, 4] == my_entry) {
-    sorted <- sorted %>% slice(-c(count))
-    my_entry <- sorted[count, 4]
-  }
-  else {
-    my_entry <- sorted[count, 4]
-    ++count;
-  }
-}
-print(count)
 
-cases_severity_OTUs <- left_join(idsa_sra, dat_shared, by = "Group") %>% 
+one_sample_per_patient <- filter_first_samples(idsa_sra)
+
+cases_severity_OTUs <- left_join(one_sample_per_patient, dat_shared, by = "Group") %>% 
   filter(cdiff_case == 'Case', !is.na(idsa_severity)) %>% 
   select(idsa_severity, starts_with("Otu")) %>% 
   rename(idsa=idsa_severity)
