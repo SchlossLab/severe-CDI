@@ -1,18 +1,11 @@
-
+#' filter a dataframe to just one sample per patient, selecting the earliest sample
 filter_first_samples <- function(idsa_sra) {
-  sort_by_patient <- idsa_sra %>% group_by(patient_id)
-  sorted <- sort_by_patient[with(sort_by_patient, order(patient_id, collection_date)),]
-  count <- 2
-  my_entry <- sorted[1, "patient_id"]
-  for (entry in sorted) {
-    if (sorted[count, "patient_id"] == my_entry) {
-      sorted <- sorted %>% slice(-c(count))
-      my_entry <- sorted[count, "patient_id"]
-    }
-    else {
-      my_entry <- sorted[count, "patient_id"]
-      ++count
-    }
-  }
-  return(sorted)
+  # modified from https://www.statology.org/select-first-row-in-group-dplyr/
+  idsa_sra %>% 
+    group_by(patient_id) %>% 
+    arrange(collection_date) %>% 
+    filter(row_number() == 1) %>% 
+    arrange(patient_id) %>% 
+    ungroup() %>% 
+    return()
 }
