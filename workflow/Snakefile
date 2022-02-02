@@ -40,3 +40,10 @@ rule prep_data_for_ml:
         mem_mb=MEM_PER_GB*8
     script:
         'scripts/prep_data_for_ml.R'
+
+rule test_R_code:
+    input:
+        R='tests/testthat.R',
+        scripts=[os.path.join('workflow/rules/scripts', file.strip('test-')) for file in os.listdir('tests/testthat')]
+    script:
+        '../tests/testthat.R'
