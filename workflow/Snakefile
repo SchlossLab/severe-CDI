@@ -18,8 +18,8 @@ rule targets:
 
 rule classify_idsa_severity:
     input:
-        'code/severity_analysis.R',
-        "code/utilities.R",
+        'scripts/severity_analysis.R',
+        "scripts/utilities.R",
         "data/process/final_CDI_16S_metadata.tsv",
         "data/raw/max_creat.csv", # TODO: email SET to get these files
         "data/raw/max_wbc.csv",
@@ -29,11 +29,12 @@ rule classify_idsa_severity:
         csv="data/process/case_idsa_severity.csv",
         png="results/figures/idsa_severe_n.png"
     script:
-        'code/severity_analysis.R'
+        'scripts/severity_analysis.R'
 
 rule prep_data_for_ml:
     input:
-        'workflow/scripts/prep_data_for_ml.R'
+        R='workflow/scripts/prep_data_for_ml.R',
+        dep='workflow/scripts/filter_first_samples.R'
     output:
         'data/process/idsa_OTUs.csv'
     resources:
