@@ -14,7 +14,7 @@ include: 'rules/machine-learning.smk'
 
 rule targets:
     input:
-        expand('results/predict_{outcome}/{type}_results.csv', outcome = ['idsa'], type = ['performance'])
+        expand('results/predict_{outcome}/{type}_results.csv', outcome = ['idsa'], type = ['performance', 'feature-importance'])
 
 rule classify_idsa_severity:
     input:

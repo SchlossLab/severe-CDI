@@ -21,10 +21,12 @@ rule run_ml:
         rds=rules.preprocess_data.output.rds,
         logR="workflow/scripts/log_smk.R"
     output:
-        model="results/predict_{outcome}/{method}_{seed}_model.Rds",
-        perf=temp("results/predict_{outcome}/{method}_{seed}_performance.csv")
-    log: "log/predict_{outcome}/run_ml.{method}_{seed}.txt"
-    benchmark: "benchmarks/predict_{outcome}/run_ml.{method}_{seed}.txt"
+        model="results/predict_{outcome}/runs/{method}_{seed}_model.Rds",
+        perf="results/predict_{outcome}/runs/{method}_{seed}_performance.csv",
+        feat="results/predict_{outcome}/runs/{method}_{seed}_feature-importance.csv",
+        test="results/predict_{outcome}/runs/{method}_{seed}_test-data.csv"
+    log: "log/predict_{outcome}/runs/run_ml.{method}_{seed}.txt"
+    benchmark: "benchmarks/predict_{outcome}/runs/run_ml.{method}_{seed}.txt"
     params:
         outcome_colname="{outcome}",
         method="{method}",
@@ -39,10 +41,14 @@ rule run_ml:
 rule combine_results:
     input:
         R="workflow/scripts/combine_results.R",
-        csv=expand("results/predict_{{outcome}}/{method}_{seed}_{{type}}.csv", method = ml_methods, seed = seeds)
+        csv=expand("results/predict_{{outcome}}/runs/{method}_{seed}_{{type}}.csv", method = ml_methods, seed = seeds)
     output: csv='results/predict_{outcome}/{type}_results.csv'
     log: "log/predict_{outcome}/combine_results_{type}.txt"
     benchmark:
         "benchmarks/predict_{outcome}/combine_results_{type}.txt"
     script:
         "../scripts/combine_results.R"
+
+# TODO: rule to plot performance boxplot
+
+# TODO: rule to plot feature importance
