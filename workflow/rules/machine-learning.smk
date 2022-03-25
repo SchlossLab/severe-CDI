@@ -52,7 +52,7 @@ rule combine_results:
 rule plot_perf:
     input:
         R="workflow/rules/scripts/plot_perf.R",
-        csv="results/predict_{{outcome}}/performance_results.csv"
+        csv="results/predict_{outcome}/performance_results.csv"
     output: png="figures/predict_{outcome}/plot_perf.png"
     log: "log/predict_{outcome}/plot_perf.txt"
     benchmark:
