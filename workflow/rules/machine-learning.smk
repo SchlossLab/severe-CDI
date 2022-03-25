@@ -53,9 +53,9 @@ rule plot_perf:
     input:
         R="workflow/rules/scripts/plot_perf.R",
         csv="results/predict_{{outcome}}/performance_results.csv"
-    output: png="figures/predict_{outcome}/plot_perf_{type}.png"
-    log: "log/predict_{outcome}/plot_perf_{type}.txt"
+    output: png="figures/predict_{outcome}/plot_perf.png"
+    log: "log/predict_{outcome}/plot_perf.txt"
     benchmark:
-        "benchmarks/predict_{outcome}/plot_perf_{type}.txt"
+        "benchmarks/predict_{outcome}/plot_perf.txt"
     script:
         "scripts/plot_perf.R"
