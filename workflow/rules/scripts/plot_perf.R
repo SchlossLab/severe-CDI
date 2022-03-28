@@ -24,4 +24,4 @@ perf_plot <- snakemake@input[["csv"]] %>%
         plot.margin = unit(x = c(0, 5, 0, 0), units = "pt"),
         axis.title.y = element_blank()
     )
-ggsave(snakemake@output[["plot"]], plot = perf_plot, device = "png")
+ggsave(snakemake@output[["png"]], plot = perf_plot, device = "png")
