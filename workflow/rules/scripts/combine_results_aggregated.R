@@ -1,4 +1,3 @@
-source("workflow/rules/scripts/log_smk.R")
 library(glue)
 library(here)
 library(tidyverse)
