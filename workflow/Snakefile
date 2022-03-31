@@ -17,7 +17,7 @@ include: 'rules/machine-learning.smk'
 rule targets:
     input:
         expand('results/{type}_results_aggregated.csv', type = result_types),
-        expand("figures/predict_{outcome}/plot_perf.png", outcome = outcomes)
+        "figures/plot_perf.png"
 
 rule classify_idsa_severity:
     input:
@@ -56,18 +56,6 @@ rule prep_severity_data_for_ml:
         mem_mb=MEM_PER_GB*8
     script:
         'scripts/prep_severity_data_for_ml.R'
-
-rule combine_results_aggregated:
-    input:
-        R='workflow/rules/scripts/combine_results_aggregated.R',
-        csv=expand('results/predict_{outcome}/{{type}}_results.csv',
-                   outcome = outcomes)
-    output:
-        csv='results/{type}_results_aggregated.csv'
-    params:
-        outcomes=outcomes
-    script:
-        'rules/scripts/combine_results_aggregated.R'
 
 rule test_R_code:
     input:
