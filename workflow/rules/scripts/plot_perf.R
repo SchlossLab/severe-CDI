@@ -17,7 +17,7 @@ perf_plot <- dat %>%
     geom_vline(xintercept = 0.5, linetype = "dashed") +
     geom_boxplot() +
     facet_wrap('metric', ncol = 1) +
-    xlim(0.5, 1) +
+    #xlim(0.5, 1) +
     labs(x = "Performance", y = "") +
     theme_bw() +
     theme(
