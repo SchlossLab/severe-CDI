@@ -5,6 +5,7 @@
 core.*
 .DS_Store
 
+benchmarks/
 data/*/*
 !data/process/*
 data/*.Rds
