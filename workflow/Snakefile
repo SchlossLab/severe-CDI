@@ -67,7 +67,7 @@ rule combine_results_aggregated:
     params:
         outcomes=outcomes
     script:
-        'workflow/rules/scripts/combine_results_aggregated.R'
+        'rules/scripts/combine_results_aggregated.R'
 
 rule test_R_code:
     input:
