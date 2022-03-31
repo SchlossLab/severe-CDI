@@ -1,8 +1,7 @@
 source("workflow/rules/scripts/log_smk.R")
 library(tidyverse)
-
-perf_plot <- snakemake@input[["csv"]] %>%
-  read_csv() %>%
+dat <- read_csv(snakemake@input[["csv"]])
+perf_plot <- dat %>%
     rename(
         `train AUROC` = cv_metric_AUC,
         `test AUROC` = AUC,
@@ -12,11 +11,12 @@ perf_plot <- snakemake@input[["csv"]] %>%
                  names_to = "metric"
     ) %>%
     mutate(metric = factor(metric,
-                           levels = c("test AUPRC", "test AUROC", "train AUROC")
+                           levels = c("train AUROC", "test AUROC", "test AUPRC")
     )) %>%
-    ggplot(aes(x = value, y = metric)) +
+    ggplot(aes(x = value, y = outcome)) +
     geom_vline(xintercept = 0.5, linetype = "dashed") +
     geom_boxplot() +
+    facet_wrap('metric', ncol = 1) +
     xlim(0.5, 1) +
     labs(x = "Performance", y = "") +
     theme_bw() +

@@ -44,18 +44,27 @@ rule combine_results:
         csv=expand("results/predict_{{outcome}}/runs/{method}_{seed}_{{type}}.csv", method = ml_methods, seed = seeds)
     output: csv='results/predict_{outcome}/{type}_results.csv'
     log: "log/predict_{outcome}/combine_results_{type}.txt"
-    benchmark:
-        "benchmarks/predict_{outcome}/combine_results_{type}.txt"
     script:
         "scripts/combine_results.R"
+
+rule combine_results_aggregated:
+    input:
+        R='workflow/rules/scripts/combine_results_aggregated.R',
+        csv=expand('results/predict_{outcome}/{{type}}_results.csv',
+                   outcome = outcomes)
+    output:
+        csv='results/{type}_results_aggregated.csv'
+    params:
+        outcomes=outcomes
+    script:
+        'rules/scripts/combine_results_aggregated.R'
 
 rule plot_perf:
     input:
         R="workflow/rules/scripts/plot_perf.R",
-        csv="results/predict_{outcome}/performance_results.csv"
-    output: png="figures/predict_{outcome}/plot_perf.png"
-    log: "log/predict_{outcome}/plot_perf.txt"
-    benchmark:
-        "benchmarks/predict_{outcome}/plot_perf.txt"
+        csv="results/performance_results_aggregated.csv"
+    output:
+        png="figures/plot_perf.png"
+    log: "log/plot_perf.txt"
     script:
         "scripts/plot_perf.R"
