@@ -13,9 +13,9 @@ cluster:
         --time={resources.time}
         --output=log/hpc/jobs/{rule}/{wildcards}.out
 default-resources:
-  - account=pschloss1
+  - account=YOUR_ACCOUNT # enter your slurm account here
   - partition=standard
-  - email=$USER@umich.edu # assumes your username is your email @umich
+  - email=YOUR_EMAIL # enter your email here
   - mail_on=FAIL
   - mem_mb=512
   - time="24:00:00"
