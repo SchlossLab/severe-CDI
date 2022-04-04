@@ -1,7 +1,8 @@
-dataset: data/process/cases_severity_OTUs.csv
-outcome_colname: idsa_severity
 ml_methods:
  - glmnet
 kfold: 5
 ncores: 4
 nseeds: 2
+outcomes:
+  - idsa
+  - allcause
