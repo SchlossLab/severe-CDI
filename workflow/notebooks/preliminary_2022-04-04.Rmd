@@ -1,0 +1,176 @@
+---
+title: "Preliminary results for predicting adverse CDI outcomes"
+date: "`r Sys.Date()`"
+output: 
+  github_document:
+    html_preview: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r deps}
+library(tidyverse)
+library(here)
+library(data.table)
+
+source(here('workflow', 'scripts', 'filter_first_samples.R')) 
+```
+
+## Load data
+
+```{r data}
+dat_shared <- fread(here('data', 'mothur', 'cdi.opti_mcc.shared')) %>% rename(Run = Group)
+metadat <- read_tsv(here('data', 'process', 'final_CDI_16S_metadata.tsv')) %>% 
+  rename(sample_id = `CDIS_Sample ID`, patient_id = `CDIS_Study ID`)
+```
+
+```{r tally_idsa}
+idsa_sra <-
+  full_join(
+    read_csv((
+      here('data', 'process', 'case_idsa_severity.csv')
+    )) %>%
+      rename(sample_id = sample),
+    read_csv(here('data', 'SraRunTable.csv')) %>% 
+      rename(sample_id = sample_title),
+    by = "sample_id"
+  ) %>%
+  select(sample_id, idsa_severity, Run, patient_id, collection_date) %>%
+  left_join(metadat %>% select(sample_id, cdiff_case),
+            by = "sample_id")
+
+multi_samples <-
+  idsa_sra %>% 
+  group_by(patient_id) %>% 
+  filter(cdiff_case == "Case") %>% 
+  tally() %>% 
+  filter(n > 1)
+
+one_sample_per_patient_idsa <- filter_first_samples(idsa_sra)
+
+cases_severity_OTUs_idsa <-
+  left_join(one_sample_per_patient_idsa, dat_shared, 
+            by = "Run") %>%
+  filter(cdiff_case == 'Case', !is.na(idsa_severity)) %>%
+  select(idsa_severity, starts_with("Otu")) %>%
+  rename(idsa = idsa_severity)
+```
+
+
+```{r tally_attrib}
+attrib_dat <-
+  full_join(read_csv((here('data', 'raw', 'mishare', 'clinical_outcomes.csv'))) %>%
+              rename(sample_id = SAMPLE_ID),
+            read_csv(here('data', 'SraRunTable.csv')) %>% 
+              rename(sample_id = sample_title), by = "sample_id") %>% 
+  rename(attrib = ATTRIB_SEVERECDI) %>% 
+  mutate(attrib = case_when(attrib == 0 ~ "no",
+                            attrib == 1 ~ "yes",
+                            TRUE ~ NA_character_)) %>% 
+  select(sample_id, patient_id, collection_date, attrib, Run) %>% 
+  left_join(metadat %>% 
+              select(sample_id, cdiff_case), by = "sample_id") 
+
+multi_samples_attrib <- attrib_dat %>% 
+  group_by(patient_id) %>% 
+  filter(cdiff_case == "Case") %>% 
+  tally() %>% 
+  filter(n > 1)
+
+one_sample_per_patient_attrib <- filter_first_samples(attrib_dat)
+
+cases_severity_OTUs_attrib <- 
+  left_join(one_sample_per_patient_attrib, dat_shared, by = "Run") %>% 
+  filter(cdiff_case == 'Case', !is.na(attrib)) %>% 
+  select(attrib, starts_with("Otu")) 
+```
+
+```{r tally_allcause}
+allcause_dat <-
+  full_join(read_csv((here('data', 'raw', 'mishare', 'clinical_outcomes_pt2.csv'))) %>%
+              rename(sample_id = SAMPLE_ID),
+            read_csv(here('data', 'SraRunTable.csv')) %>% rename(sample_id = sample_title),
+            by = "sample_id") %>% 
+  rename(unattrib = UNATTRIB_SEVERECDI) %>% 
+  mutate(unattrib = case_when(unattrib == 0 ~ "no",
+                              unattrib == 1 ~ "yes",
+                              TRUE ~ NA_character_)) %>% 
+  select(sample_id, patient_id, collection_date, unattrib, Run) %>% 
+  left_join(metadat %>% 
+              select(sample_id, cdiff_case),by = "sample_id") %>% 
+  left_join(attrib_dat, 
+            by = c("sample_id", "patient_id", "collection_date", "cdiff_case", "Run")) %>% 
+  mutate(allcause = case_when((attrib=="yes") | (unattrib=="yes") ~ "yes", 
+                              (attrib=="no") | (unattrib=="no") ~ "no",
+                              is.na(attrib) | is.na(unattrib) ~ NA_character_)
+         )
+
+multi_samples_allcause <- allcause_dat %>% 
+  group_by(patient_id) %>% 
+  filter(cdiff_case == "Case") %>% 
+  tally() %>% 
+  filter(n > 1)
+
+one_sample_per_patient_allcause <- filter_first_samples(allcause_dat)
+
+cases_severity_OTUs_allcause <-
+  left_join(one_sample_per_patient_allcause, dat_shared, by = "Run") %>%
+  filter(cdiff_case == 'Case', !is.na(allcause)) %>%
+  select(allcause, starts_with("Otu")) 
+
+```
+
+## CDI cases
+
+```{r cdi-cases}
+idsa_sra %>% group_by(cdiff_case) %>% tally()
+```
+
+### excluding longitudinal samples
+
+```{r cdi-cases_one-per-patient}
+idsa_sra %>% filter_first_samples() %>% group_by(cdiff_case) %>% tally()
+```
+
+
+## IDSA severity
+
+```{r idsa}
+cases_severity_OTUs_idsa %>% group_by(idsa) %>% tally()
+```
+
+## Attributable severity
+
+```{r attrib}
+cases_severity_OTUs_attrib %>% group_by(attrib) %>% tally()
+```
+
+
+## All-cause severity
+
+```{r allcause}
+one_sample_per_patient_allcause %>% filter(cdiff_case == 'Case') %>%  group_by(attrib, unattrib, allcause) %>% tally()
+cases_severity_OTUs_allcause %>% group_by(allcause) %>% tally()
+```
+
+
+## idsa x attrib x allcause
+
+```{r sum}
+case_dat <- full_join(one_sample_per_patient_idsa, 
+                      one_sample_per_patient_allcause, 
+                      by = c('sample_id', 'patient_id', 'Run', 'collection_date', 'cdiff_case')
+                      ) %>% 
+  filter(cdiff_case == 'Case') %>% 
+  rename(idsa = idsa_severity)
+case_dat %>% 
+  group_by(idsa, attrib, unattrib) %>% 
+  tally()
+case_dat %>% 
+  group_by(idsa, allcause) %>% 
+  tally()
+```
+
