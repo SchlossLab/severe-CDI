@@ -216,8 +216,8 @@ rule get_oturep:
 
 rule blast_otus:
     input:
-        "scripts/blast_otus.R",
-        "scripts/utilities.R",
+        "workflow/scripts/blast_otus.R",
+        "workflow/scripts/utilities.R",
         "data/mothur/cdi.taxonomy",
         "data/process/59OTus_vs_C.diff_ATCC9689-Alignment-HitTable.csv",
         "data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.list",
@@ -232,31 +232,31 @@ rule blast_otus:
         top2_sample="exploratory/notebook/top_2_otu41_seqs_sample.png",
         top3_7_sample="exploratory/notebook/top3-7_c_diff_seqs_sample.png",
     script:
-        "scripts/blast_otus.R"
+        "../scripts/blast_otus.R"
 
 rule plot_diversity_data:
     input:
-        "scripts/plot_diversity_data.R",
-        "scripts/utilities.R",
+        "workflow/scripts/plot_diversity_data.R",
+        "workflow/scripts/utilities.R",
         "data/mothur/cdi.opti_mcc.groups.ave-std.summary",
         "data/process/case_idsa_severity.csv"
     output:
         inv_simpson="results/figures/idsa_alpha_inv_simpson.png",
         richness="results/figures/idsa_alpha_richness.png"
     script:
-        "scripts/plot_diversity_data.R"
+        "../scripts/plot_diversity_data.R"
 
 rule lefse_prep_files:
     input:
-        "scripts/lefse_prep_files.R",
-        "scripts/utilities.R",
+        "workflow/scripts/lefse_prep_files.R",
+        "workflow/scripts/utilities.R",
         "data/process/case_idsa_severity.csv",
         "data/mothur/cdi.opti_mcc.0.03.subsample.shared"
     output:
         shared="data/process/idsa.shared",
         design="data/process/idsa.design"
     script:
-        "scripts/lefse_prep_files.R"
+        "../scripts/lefse_prep_files.R"
 
 #what is the input or output for this one??
 rule lefse:
@@ -277,58 +277,58 @@ rule lefse:
 
 rule lefse_analysis:
     input:
-        "scripts/lefse_analysis.R",
-        "scripts/utilities.R",
+        "workflow/scripts/lefse_analysis.R",
+        "workflow/scripts/utilities.R",
         rules.lefse.output,
         'data/mothur/cdi.taxonomy'
     output:
         lefse_plot="results/figures/idsa_lefse_plot.png",
         lefse_results="data/process/idsa_lefse_results.csv"
     script:
-        "scripts/lefse_analysis.R"
+        "../scripts/lefse_analysis.R"
 
 # Sarah T's version of preparing the data for ML
 rule mikropml_input_data:
     input:
-        "scripts/mikropml_input_data.R",
-        "scripts/utilities.R",
+        "workflow/scripts/mikropml_input_data.R",
+        "workflow/scripts/utilities.R",
         "data/mothur/cdi.opti_mcc.0.03.subsample.shared",
         "data/process/case_idsa_severity.csv"
     output:
         isda_severity="data/process/ml_idsa_severity.csv"
     script:
-        "scripts/mikropml_input_data.R"
+        "../scripts/mikropml_input_data.R"
 
 #check on input for this function (there was mention of file_path in file)
 # TODO: move to ml workflow
 # TODO: actually maybe we should have a plot/plotting/figures workflow?
 rule plot_ml_feature_importance:
     input:
-        "scripts/ml_feature_importance.R",
-        "scripts/utilities.R",
+        "workflow/scripts/ml_feature_importance.R",
+        "workflow/scripts/utilities.R",
         "results/idsa_severity/combined_feature-importance_rf.csv"
     output:
         isda_severity_png="results/figures/feat_imp_rf_idsa_severity.png"
     script:
-        "scripts/ml_feature_importance.R"
+        "../scripts/ml_feature_importance.R"
 
 rule plot_taxa:
     input:
-        "scripts/plot_taxa.R",
-        "scripts/utilities.R",
-        "scripts/read_taxa_data.R",
+        "workflow/scripts/plot_taxa.R",
+        "workflow/scripts/utilities.R",
+        "workflow/scripts/read_taxa_data.R",
         "data/process/case_idsa_severity.csv",
         "results/idsa_severity/combined_feature-importance_rf.csv"
     output:
         otus="results/figures/otus_peptostreptococcaceae.png",
         severe_otus="results/figures/feat_imp_idsa_severe_otus_abund.png"
     script:
-        "scripts/taxa.R"
+        "../scripts/taxa.R"
 
 rule plot_idsa_analysis_summary:
     input:
-        "scripts/idsa_analysis_summary.R",
-        "scripts/utilities.R",
+        "workflow/scripts/idsa_analysis_summary.R",
+        "workflow/scripts/utilities.R",
         "results/figures/idsa_severe_n.png",
         rules.plot_diversity_data.output.inv_simpson,
         "results/figures/ml_performance_idsa_otu.png",
@@ -338,5 +338,5 @@ rule plot_idsa_analysis_summary:
     output:
         severe_isda_summary="results/figures/severe_idsa_summary.pdf"
     script:
-        "scripts/idsa_analysis_summary.R"
+        "../scripts/idsa_analysis_summary.R"
 
