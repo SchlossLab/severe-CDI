@@ -34,20 +34,11 @@ rule classify_idsa_severity:
     script:
         'scripts/severity_analysis.R'
 
-rule prep_idsa_data_for_ml:
-    input:
-        R='workflow/scripts/prep_data_for_ml.R',
-        dep='workflow/scripts/filter_first_samples.R'
-    output:
-        'data/process/idsa_OTUs.csv'
-    resources:
-        mem_mb=MEM_PER_GB*8
-    script:
-        'scripts/prep_data_for_ml.R'
-
 rule prep_severity_data_for_ml:
     input:
         R='workflow/scripts/prep_severity_data_for_ml.R',
+        dep='workflow/scripts/filter_first_samples.R',
+        idsa='data/process/idsa_OTUs.csv',
         attrib='data/raw/mishare/clinical_outcomes.csv',
         allcause='data/raw/mishare/clinical_outcomes_pt2.csv'
     output:
