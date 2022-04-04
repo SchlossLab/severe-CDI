@@ -1,7 +1,7 @@
 cluster: 
     mkdir -p log/hpc/jobs/{rule}/ &&
-    sbatch 
-        --job-name={rule}-{wildcards} 
+    sbatch
+        --job-name={rule}-{wildcards}
         --account={resources.account}
         --partition={resources.partition}
         --mail-user={resources.email}
@@ -20,7 +20,7 @@ default-resources:
   - mem_mb=512
   - time="24:00:00"
 conda-frontend: "mamba"
-immediate-submit: False        
+immediate-submit: False
 jobs: 4999
 keep-going: true
 latency-wait: 120

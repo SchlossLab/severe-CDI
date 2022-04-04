@@ -1,9 +1,9 @@
 
 rule preprocess_data:
     input:
-        R="workflow/rules/scripts/preproc.R",
+        R="workflow/scripts/preproc.R",
         csv="data/process/{outcome}_OTUs.csv",
-        logR="workflow/rules/scripts/log_smk.R"
+        logR="workflow/scripts/log_smk.R"
     output:
         rds='data/process/dat_proc_{outcome}.Rds'
     log: "log/preprocess_data_{outcome}.txt"
@@ -13,13 +13,13 @@ rule preprocess_data:
     resources:
         mem_mb=MEM_PER_GB*2
     script:
-        "scripts/preproc.R"
+        "../scripts/preproc.R"
 
 rule run_ml:
     input:
-        R="workflow/rules/scripts/ml.R",
+        R="workflow/scripts/ml.R",
         rds=rules.preprocess_data.output.rds,
-        logR="workflow/rules/scripts/log_smk.R"
+        logR="workflow/scripts/log_smk.R"
     output:
         model="results/predict_{outcome}/runs/{method}_{seed}_model.Rds",
         perf="results/predict_{outcome}/runs/{method}_{seed}_performance.csv",
@@ -36,20 +36,20 @@ rule run_ml:
     resources:
         mem_mb=MEM_PER_GB*4
     script:
-        "scripts/ml.R"
+        "../scripts/ml.R"
 
 rule combine_results:
     input:
-        R="workflow/rules/scripts/combine_results.R",
+        R="workflow/scripts/combine_results.R",
         csv=expand("results/predict_{{outcome}}/runs/{method}_{seed}_{{type}}.csv", method = ml_methods, seed = seeds)
     output: csv='results/predict_{outcome}/{type}_results.csv'
     log: "log/predict_{outcome}/combine_results_{type}.txt"
     script:
-        "scripts/combine_results.R"
+        "../scripts/combine_results.R"
 
 rule combine_results_aggregated:
     input:
-        R='workflow/rules/scripts/combine_results_aggregated.R',
+        R='workflow/scripts/combine_results_aggregated.R',
         csv=expand('results/predict_{outcome}/{{type}}_results.csv',
                    outcome = outcomes)
     output:
@@ -57,14 +57,15 @@ rule combine_results_aggregated:
     params:
         outcomes=outcomes
     script:
-        'rules/scripts/combine_results_aggregated.R'
+        '../scripts/combine_results_aggregated.R'
 
 rule plot_perf:
     input:
-        R="workflow/rules/scripts/plot_perf.R",
+        R="workflow/scripts/plot_perf.R",
         csv="results/performance_results_aggregated.csv"
     output:
         png="figures/plot_perf.png"
     log: "log/plot_perf.txt"
     script:
-        "scripts/plot_perf.R"
+        "../scripts/plot_perf.R"
+

@@ -2,7 +2,7 @@ library(tidyverse)
 library(here)
 library(data.table)
 
-source(here('workflow', 'rules', 'scripts', 'filter_first_samples.R'))
+source(here('workflow', 'scripts', 'filter_first_samples.R'))
 
 dat_shared <- fread(here('data', 'mothur', 'cdi.opti_mcc.shared'))
 metadata <- read_tsv(here('data', 'process', 'final_CDI_16S_metadata.tsv')) %>% 
