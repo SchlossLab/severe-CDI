@@ -26,7 +26,8 @@ jobs:
           git config --local user.name "GitHub"
       - name: Install build dependencies
         run: |
-          Rscript -e "install.packages(c('knitr', 'styler','usethis'))"
+          Rscript -e "install.packages(c('styler','usethis'),
+                                       repos = 'https://cloud.r-project.org')"
           python -m pip install --upgrade pip
           pip install black snakefmt
       - name: Style R code
