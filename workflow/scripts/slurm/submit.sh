@@ -10,7 +10,7 @@
 
 #SBATCH --output=log/hpc/slurm-%j_%x.out
 
-#SBATCH --account=pschloss1
+#SBATCH --account=YOUR_ACCOUNT_HERE
 #SBATCH --partition=standard
 
 #SBATCH --mail-user=YOUR_EMAIL_HERE
