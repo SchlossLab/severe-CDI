@@ -14,6 +14,7 @@ attrib_dat <-
             read_csv(here('data', 'SraRunTable.csv')) %>% rename(sample_id = sample_title),
             by = "sample_id") %>% 
   rename(attrib = ATTRIB_SEVERECDI) %>% 
+  mutate(attrib=case_when(attrib == 0 ~ "no", attrib == 1 ~ "yes", TRUE ~ NA_character_)) %>% 
   select(sample_id, patient_id, collection_date, attrib, Run) %>% 
   left_join(metadata %>% select(sample_id, cdiff_case), 
             by = "sample_id") 
@@ -24,7 +25,7 @@ one_sample_per_patient <- filter_first_samples(attrib_dat)
 
 cases_severity_OTUs <- left_join(one_sample_per_patient, dat_shared, by = "Run") %>% 
   filter(cdiff_case == 'Case', !is.na(attrib)) %>% 
-  select(attrib, starts_with("Otu")) %>% mutate(attrib=case_when(attrib == 0 ~ "no", attrib == 1 ~ "yes", TRUE ~ NA_character_))
+  select(attrib, starts_with("Otu")) 
 
 cases_severity_OTUs %>% write_csv(here('data', 'process', 'attrib_OTUs.csv'))
 
@@ -39,8 +40,8 @@ allcause_dat <-
   left_join(metadata %>% select(sample_id, cdiff_case), 
             by = "sample_id") %>% 
   left_join(attrib_dat, by = c("sample_id", "patient_id", "collection_date", "cdiff_case", "Run")) %>% 
-  mutate(allcause=case_when((attrib==1) | (unattrib==1) ~ "yes", 
-                            (attrib==0) | (unattrib==0) ~ "no",
+  mutate(allcause=case_when((attrib=="yes") | (unattrib=="yes") ~ "yes", 
+                            (attrib=="no") | (unattrib=="no") ~ "no",
                             is.na(attrib) | is.na(unattrib) ~ NA_character_))
 
 multi_samples <- allcause_dat %>% group_by(patient_id) %>% filter(cdiff_case == "Case") %>% tally() %>% filter(n > 1)
