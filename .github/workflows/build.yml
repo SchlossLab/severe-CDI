@@ -11,7 +11,7 @@ jobs:
     runs-on: macOS-latest
     strategy:
       matrix:
-        python-version: [3.8]
+        python-version: [3.9]
 
     steps:
       - uses: actions/checkout@v2
@@ -26,9 +26,10 @@ jobs:
           git config --local user.name "GitHub"
       - name: Install build dependencies
         run: |
-          Rscript -e "install.packages(c('styler','usethis'))"
+          Rscript -e "install.packages(c('styler','usethis'),
+                                       repos = 'https://cloud.r-project.org')"
           python -m pip install --upgrade pip
-          pip install snakefmt
+          pip install black snakefmt
       - name: Style R code
         run: |
           Rscript -e 'usethis::use_tidy_style()'
@@ -40,7 +41,7 @@ jobs:
       - name: Style Python code
         run: |
           black .
-          #snakefmt .
+          snakefmt .
           git add .
           git diff-index --quiet HEAD \
           || git commit \

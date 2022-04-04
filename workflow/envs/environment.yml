@@ -18,4 +18,4 @@ dependencies:
   - r-rpart
   - r-testthat
   - r-tidyverse>=1.3
-  - snakemake=6.12.1
+  - snakemake>=6.12
