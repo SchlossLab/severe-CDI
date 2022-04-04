@@ -8,13 +8,16 @@ kfold = config['kfold']
 nseeds = config['nseeds']
 start_seed = 100
 seeds = range(start_seed, start_seed + nseeds)
+outcomes = config['outcomes']
+result_types = ['performance', 'feature-importance']
 
 include: 'rules/mothur.smk'
 include: 'rules/machine-learning.smk'
 
 rule targets:
     input:
-        expand('results/predict_{outcome}/{type}_results.csv', outcome = ['idsa'], type = ['performance'])
+        expand('results/{type}_results_aggregated.csv', type = result_types),
+        "figures/plot_perf.png"
 
 rule classify_idsa_severity:
     input:
@@ -31,7 +34,7 @@ rule classify_idsa_severity:
     script:
         'scripts/severity_analysis.R'
 
-rule prep_data_for_ml:
+rule prep_idsa_data_for_ml:
     input:
         R='workflow/scripts/prep_data_for_ml.R',
         dep='workflow/scripts/filter_first_samples.R'
@@ -41,6 +44,19 @@ rule prep_data_for_ml:
         mem_mb=MEM_PER_GB*8
     script:
         'scripts/prep_data_for_ml.R'
+
+rule prep_severity_data_for_ml:
+    input:
+        R='workflow/scripts/prep_severity_data_for_ml.R',
+        attrib='data/raw/mishare/clinical_outcomes.csv',
+        allcause='data/raw/mishare/clinical_outcomes_pt2.csv'
+    output:
+        attrib='data/process/attrib_OTUs.csv',
+        allcause='data/process/allcause_OTUs.csv'
+    resources:
+        mem_mb=MEM_PER_GB*8
+    script:
+        'scripts/prep_severity_data_for_ml.R'
 
 rule test_R_code:
     input:
