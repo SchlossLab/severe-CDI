@@ -7,14 +7,15 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
 ```
 
 
 ```{r deps}
-library(tidyverse)
-library(here)
 library(data.table)
+library(here)
+library(knitr)
+library(tidyverse)
 
 source(here('workflow', 'scripts', 'filter_first_samples.R')) 
 ```
@@ -126,34 +127,34 @@ cases_severity_OTUs_allcause <-
 ## CDI cases
 
 ```{r cdi-cases}
-idsa_sra %>% group_by(cdiff_case) %>% tally()
+idsa_sra %>% group_by(cdiff_case) %>% tally() %>% kable()
 ```
 
 ### excluding longitudinal samples
 
 ```{r cdi-cases_one-per-patient}
-idsa_sra %>% filter_first_samples() %>% group_by(cdiff_case) %>% tally()
+idsa_sra %>% filter_first_samples() %>% group_by(cdiff_case) %>% tally() %>% kable()
 ```
 
 
 ## IDSA severity
 
 ```{r idsa}
-cases_severity_OTUs_idsa %>% group_by(idsa) %>% tally()
+cases_severity_OTUs_idsa %>% group_by(idsa) %>% tally() %>% kable()
 ```
 
 ## Attributable severity
 
 ```{r attrib}
-cases_severity_OTUs_attrib %>% group_by(attrib) %>% tally()
+cases_severity_OTUs_attrib %>% group_by(attrib) %>% tally() %>% kable()
 ```
 
 
 ## All-cause severity
 
 ```{r allcause}
-one_sample_per_patient_allcause %>% filter(cdiff_case == 'Case') %>%  group_by(attrib, unattrib, allcause) %>% tally()
-cases_severity_OTUs_allcause %>% group_by(allcause) %>% tally()
+one_sample_per_patient_allcause %>% filter(cdiff_case == 'Case') %>%  group_by(attrib, unattrib, allcause) %>% tally() %>% kable()
+cases_severity_OTUs_allcause %>% group_by(allcause) %>% tally() %>% kable()
 ```
 
 
@@ -168,9 +169,9 @@ case_dat <- full_join(one_sample_per_patient_idsa,
   rename(idsa = idsa_severity)
 case_dat %>% 
   group_by(idsa, attrib, unattrib) %>% 
-  tally()
+  tally() %>% kable()
 case_dat %>% 
   group_by(idsa, allcause) %>% 
-  tally()
+  tally() %>% kable()
 ```
 
