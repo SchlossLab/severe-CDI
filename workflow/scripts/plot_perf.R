@@ -14,11 +14,11 @@ perf_plot <- dat %>%
                            levels = c("train AUROC", "test AUROC", "test AUPRC")
     )) %>%
     filter(metric != "test AUPRC") %>% # TODO: plot PRC separately with different baseline
-    ggplot(aes(x = value, y = outcome, color = outcome)) +
+    ggplot(aes(x = value, y = outcome, color = metric)) +
     geom_vline(xintercept = 0.5, linetype = "dashed") +
     geom_boxplot() +
     scale_color_brewer(palette = 'Dark2') +
-    facet_wrap('metric', ncol = 1) +
+    #facet_wrap('metric', ncol = 1) +
     #xlim(0.5, 1) +
     labs(x = "Performance", y = "") +
     theme_bw() +
