@@ -1,107 +1,14 @@
 Preliminary results for predicting adverse CDI outcomes
 ================
-2022-04-05
-
-    ## here() starts at /Users/kelly/projects/schloss-lab/adverse-CDI
-
-    ## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──
-
-    ## ✓ ggplot2 3.3.5     ✓ purrr   0.3.4
-    ## ✓ tibble  3.1.6     ✓ dplyr   1.0.8
-    ## ✓ tidyr   1.2.0     ✓ stringr 1.4.0
-    ## ✓ readr   2.1.1     ✓ forcats 0.5.1
-
-    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-    ## x dplyr::between()   masks data.table::between()
-    ## x dplyr::filter()    masks stats::filter()
-    ## x dplyr::first()     masks data.table::first()
-    ## x dplyr::lag()       masks stats::lag()
-    ## x dplyr::last()      masks data.table::last()
-    ## x purrr::transpose() masks data.table::transpose()
+2022-04-19
 
 ## Load data
 
-    ## Rows: 4035 Columns: 14
-    ## ── Column specification ────────────────────────────────────────────────────────
-    ## Delimiter: "\t"
-    ## chr  (12): CDIS_Study ID, CDIS_Aliquot ID, plate, plate_location, pbs_added,...
-    ## dbl   (1): nseqs
-    ## dttm  (1): CDIS_collect date
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-    ## Rows: 1159 Columns: 2
-    ## ── Column specification ────────────────────────────────────────────────────────
-    ## Delimiter: ","
-    ## chr (2): sample, idsa_severity
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+    ## Warning: One or more parsing issues, see `problems()` for details
 
     ## Warning: One or more parsing issues, see `problems()` for details
 
-    ## Rows: 4032 Columns: 89
-    ## ── Column specification ────────────────────────────────────────────────────────
-    ## Delimiter: ","
-    ## chr  (51): Run, Assay Type, BioProject, BioSample, BioSampleModel, Center Na...
-    ## dbl   (3): AvgSpotLen, Bases, Bytes
-    ## lgl  (34): diet, Genotype, organism_count, perturbation, Abx, Asian, Black, ...
-    ## dttm  (1): ReleaseDate
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-    ## New names:
-    ## * `` -> ...1
-
-    ## Rows: 1338 Columns: 27
-    ## ── Column specification ────────────────────────────────────────────────────────
-    ## Delimiter: ","
-    ## chr  (8): SAMPLE_ID, SUBJECT_ID, CDIFF_SAMPLE_DATE, ANTIGEN_TEST, TOXIN_TEST...
-    ## dbl (19): ...1, CDIFF_POS_POST_NM, DEATH_14_YN, DEATH_30_YN, DEATH_365_YN, D...
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
     ## Warning: One or more parsing issues, see `problems()` for details
-
-    ## Rows: 4032 Columns: 89
-    ## ── Column specification ────────────────────────────────────────────────────────
-    ## Delimiter: ","
-    ## chr  (51): Run, Assay Type, BioProject, BioSample, BioSampleModel, Center Na...
-    ## dbl   (3): AvgSpotLen, Bases, Bytes
-    ## lgl  (34): diet, Genotype, organism_count, perturbation, Abx, Asian, Black, ...
-    ## dttm  (1): ReleaseDate
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-    ## New names:
-    ## * `` -> ...1
-
-    ## Rows: 2472 Columns: 22
-    ## ── Column specification ────────────────────────────────────────────────────────
-    ## Delimiter: ","
-    ## chr   (5): SAMPLE_ID, ANTIGEN_TEST, TOXIN_TEST, PCR_TEST, CDIFF_RESULT_TEXT
-    ## dbl  (15): ...1, CDIFF_POS_POST_NM, DEATH_14_YN, DEATH_30_YN, DEATH_365_YN, ...
-    ## date  (2): CDIFF_SAMPLE_DATE, CDIFF_COLLECT_DTM
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-    ## Warning: One or more parsing issues, see `problems()` for details
-
-    ## Rows: 4032 Columns: 89
-    ## ── Column specification ────────────────────────────────────────────────────────
-    ## Delimiter: ","
-    ## chr  (51): Run, Assay Type, BioProject, BioSample, BioSampleModel, Center Na...
-    ## dbl   (3): AvgSpotLen, Bases, Bytes
-    ## lgl  (34): diet, Genotype, organism_count, perturbation, Abx, Asian, Black, ...
-    ## dttm  (1): ReleaseDate
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 
 ## CDI cases
 
