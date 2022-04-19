@@ -2,14 +2,6 @@ Preliminary results for predicting adverse CDI outcomes
 ================
 2022-04-19
 
-## Load data
-
-    ## Warning: One or more parsing issues, see `problems()` for details
-
-    ## Warning: One or more parsing issues, see `problems()` for details
-
-    ## Warning: One or more parsing issues, see `problems()` for details
-
 ## CDI cases
 
 | cdiff_case |    n |

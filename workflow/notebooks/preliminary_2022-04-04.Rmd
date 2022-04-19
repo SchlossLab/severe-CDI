@@ -8,7 +8,8 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE,
-                      message = FALSE)
+                      message = FALSE,
+                      warning = FALSE)
 ```
 
 
@@ -20,8 +21,6 @@ library(tidyverse)
 
 source(here('workflow', 'scripts', 'filter_first_samples.R')) 
 ```
-
-## Load data
 
 ```{r data}
 dat_shared <- fread(here('data', 'mothur', 'cdi.opti_mcc.shared')) %>% rename(Run = Group)
