@@ -34,11 +34,9 @@ unattrib_dat <- read_csv(here('data', 'raw', 'mishare',
                               'clinical_outcomes_pt2.csv'))  %>% 
   select(-CDIFF_SAMPLE_DATE, -CDIFF_COLLECT_DTM)
 metadat <- bind_rows(attrib_dat, unattrib_dat) %>% 
-  select(SAMPLE_ID, SUBJECT_ID, 
-         IDSA_severe, ATTRIB_SEVERECDI, UNATTRIB_SEVERECDI) %>% 
+  select(SAMPLE_ID, SUBJECT_ID, ATTRIB_SEVERECDI, UNATTRIB_SEVERECDI) %>% 
   rename(sample_id = SAMPLE_ID, 
          subject_id = SUBJECT_ID,
-         idsa = IDSA_severe,
          attrib = ATTRIB_SEVERECDI,
          unattrib = UNATTRIB_SEVERECDI) %>% 
   full_join(read_tsv(here('data', 'process', 'final_CDI_16S_metadata.tsv')) %>% 
@@ -46,7 +44,11 @@ metadat <- bind_rows(attrib_dat, unattrib_dat) %>%
                      subject_id = `CDIS_Study ID`,
                      collection_date = `CDIS_collect date`), 
             by = c('sample_id', 'subject_id')) %>% 
-  select(sample_id, subject_id, collection_date, cdiff_case, group, idsa, attrib, unattrib) %>% 
+  full_join(read_csv(here('data', 'process', 'case_idsa_severity.csv')) %>% 
+              rename(sample_id = sample,
+                     idsa = idsa_severity),
+            by = 'sample_id') %>% 
+  select(sample_id, subject_id, collection_date, cdiff_case, idsa, attrib, unattrib) %>% 
   filter(!is.na(cdiff_case)) %>% 
   mutate(allcause = case_when((attrib == 1 | unattrib == 1) ~ 'yes',
                               (attrib == 0 & unattrib == 0) ~ 'no',
@@ -58,7 +60,6 @@ metadat <- bind_rows(attrib_dat, unattrib_dat) %>%
 multi_samples <-
   metadat %>% 
   group_by(subject_id) %>% 
-  filter(group == "case") %>% 
   tally() %>% 
   filter(n > 1)
 

@@ -25,11 +25,9 @@ unattrib_dat <- read_csv(here('data', 'raw', 'mishare',
                               'clinical_outcomes_pt2.csv'))  %>% 
   select(-CDIFF_SAMPLE_DATE, -CDIFF_COLLECT_DTM)
 metadat <- bind_rows(attrib_dat, unattrib_dat) %>% 
-  select(SAMPLE_ID, SUBJECT_ID, 
-         IDSA_severe, ATTRIB_SEVERECDI, UNATTRIB_SEVERECDI) %>% 
+  select(SAMPLE_ID, SUBJECT_ID, ATTRIB_SEVERECDI, UNATTRIB_SEVERECDI) %>% 
   rename(sample_id = SAMPLE_ID, 
          subject_id = SUBJECT_ID,
-         idsa = IDSA_severe,
          attrib = ATTRIB_SEVERECDI,
          unattrib = UNATTRIB_SEVERECDI) %>% 
   full_join(read_tsv(here('data', 'process', 'final_CDI_16S_metadata.tsv')) %>% 
@@ -37,7 +35,11 @@ metadat <- bind_rows(attrib_dat, unattrib_dat) %>%
                      subject_id = `CDIS_Study ID`,
                      collection_date = `CDIS_collect date`), 
             by = c('sample_id', 'subject_id')) %>% 
-  select(sample_id, subject_id, collection_date, cdiff_case, group, idsa, attrib, unattrib) %>% 
+  full_join(read_csv(here('data', 'process', 'case_idsa_severity.csv')) %>% 
+              rename(sample_id = sample,
+                     idsa = idsa_severity),
+            by = 'sample_id') %>% 
+  select(sample_id, subject_id, collection_date, cdiff_case, idsa, attrib, unattrib) %>% 
   filter(!is.na(cdiff_case)) %>% 
   mutate(allcause = case_when((attrib == 1 | unattrib == 1) ~ 'yes',
                               (attrib == 0 & unattrib == 0) ~ 'no',
@@ -49,7 +51,6 @@ metadat <- bind_rows(attrib_dat, unattrib_dat) %>%
 multi_samples <-
   metadat %>% 
   group_by(subject_id) %>% 
-  filter(group == "case") %>% 
   tally() %>% 
   filter(n > 1)
 
@@ -86,10 +87,10 @@ metadat_cases %>% group_by(idsa) %>% tally() %>% kable()
 ```
 
 | idsa |   n |
-|-----:|----:|
-|    0 | 201 |
-|    1 | 122 |
-|   NA | 867 |
+|:-----|----:|
+| no   | 543 |
+| yes  | 388 |
+| NA   | 259 |
 
 ## Attributable severity
 
@@ -135,17 +136,18 @@ metadat_cases %>%
 ```
 
 | idsa | attrib | unattrib |   n |
-|-----:|-------:|---------:|----:|
-|    0 |      0 |        0 | 190 |
-|    0 |      0 |        1 |   4 |
-|    0 |      1 |        1 |   7 |
-|    1 |      0 |        0 |  97 |
-|    1 |      0 |        1 |   9 |
-|    1 |      1 |        1 |  16 |
-|   NA |      0 |        0 | 205 |
-|   NA |      0 |        1 |   5 |
-|   NA |      1 |        1 |   3 |
-|   NA |     NA |       NA | 654 |
+|:-----|-------:|---------:|----:|
+| no   |      0 |        0 | 250 |
+| no   |      0 |        1 |   5 |
+| no   |      1 |        1 |   6 |
+| no   |     NA |       NA | 282 |
+| yes  |      0 |        0 | 126 |
+| yes  |      0 |        1 |  13 |
+| yes  |      1 |        1 |  18 |
+| yes  |     NA |       NA | 231 |
+| NA   |      0 |        0 | 116 |
+| NA   |      1 |        1 |   2 |
+| NA   |     NA |       NA | 141 |
 
 ``` r
 metadat_cases %>% 
@@ -154,11 +156,13 @@ metadat_cases %>%
 ```
 
 | idsa | allcause |   n |
-|-----:|:---------|----:|
-|    0 | no       | 190 |
-|    0 | yes      |  11 |
-|    1 | no       |  97 |
-|    1 | yes      |  25 |
-|   NA | no       | 205 |
-|   NA | yes      |   8 |
-|   NA | NA       | 654 |
+|:-----|:---------|----:|
+| no   | no       | 250 |
+| no   | yes      |  11 |
+| no   | NA       | 282 |
+| yes  | no       | 126 |
+| yes  | yes      |  31 |
+| yes  | NA       | 231 |
+| NA   | no       | 116 |
+| NA   | yes      |   2 |
+| NA   | NA       | 141 |
