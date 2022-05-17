@@ -37,11 +37,15 @@ rule classify_idsa_severity:
 rule prep_severity_data_for_ml:
     input:
         R='workflow/scripts/prep_severity_data_for_ml.R',
-        dep='workflow/scripts/filter_first_samples.R',
-        idsa='data/process/idsa_OTUs.csv',
+        fcn='workflow/scripts/filter_first_samples.R',
+        sra='data/SraRunTable.csv',
+        otu='data/mothur/cdi.opti_mcc.shared',
+        meta='data/process/final_CDI_16S_metadata.tsv',
+        idsa='data/process/case_idsa_severity.csv',
         attrib='data/raw/mishare/clinical_outcomes.csv',
-        allcause='data/raw/mishare/clinical_outcomes_pt2.csv'
+        unattrib='data/raw/mishare/clinical_outcomes_pt2.csv'
     output:
+        idsa='data/process/idsa_OTUs.csv',
         attrib='data/process/attrib_OTUs.csv',
         allcause='data/process/allcause_OTUs.csv'
     resources:
