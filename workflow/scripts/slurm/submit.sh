@@ -17,6 +17,4 @@
 #SBATCH --mail-type=BEGIN,END
 
 mkdir -p log/hpc/
-source ~/miniconda3/etc/profile.d/conda.sh
-conda activate adverseCDI
 time snakemake --profile config/slurm -s workflow/Snakefile
