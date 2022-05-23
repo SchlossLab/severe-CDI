@@ -1,4 +1,4 @@
-source("workflow/rules/scripts/utilities.R") #Loads libraries, reads in metadata, functions
+source("workflow/scripts/utilities.R") #Loads libraries, reads in metadata, functions
 
 # Import otu_data for samples----
 #Note: check for sub.sample version in data/mothur make sure that is the output from sub.sample

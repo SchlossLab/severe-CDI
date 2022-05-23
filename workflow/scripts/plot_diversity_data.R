@@ -1,4 +1,4 @@
-source("workflow/rules/scripts/utilities.R") #Loads libraries, reads in metadata, functions
+source("workflow/scripts/utilities.R") #Loads libraries, reads in metadata, functions
 
 #Read in alpha diversity values from mothur
 diversity_data <- read_tsv("data/mothur/cdi.opti_mcc.groups.ave-std.summary") %>%

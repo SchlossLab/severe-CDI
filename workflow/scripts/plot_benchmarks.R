@@ -1,4 +1,4 @@
-source("workflow/rules/scripts/log_smk.R")
+source("workflow/scripts/log_smk.R")
 library(tidyverse)
 
 dat <- read_csv(snakemake@input[['csv']]) %>%

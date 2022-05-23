@@ -1,5 +1,5 @@
-source("workflow/rules/scripts/utilities.R") #Loads libraries, reads in metadata, functions
-source("workflow/rules/scripts/read_taxa_data.R") #Read in taxa data
+source("workflow/scripts/utilities.R") #Loads libraries, reads in metadata, functions
+source("workflow/scripts/read_taxa_data.R") #Read in taxa data
 
 agg_genus_data <- agg_taxonomic_data(genus)
 

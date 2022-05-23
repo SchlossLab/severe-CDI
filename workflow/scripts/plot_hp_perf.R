@@ -1,4 +1,4 @@
-source("workflow/rules/scripts/log_smk.R")
+source("workflow/scripts/log_smk.R")
 
 hp_perf <- readRDS(snakemake@input[["rds"]])
 hp_plot_list <- lapply(hp_perf$params, function(param){

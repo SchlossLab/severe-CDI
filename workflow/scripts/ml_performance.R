@@ -1,4 +1,4 @@
-source("workflow/rules/scripts/utilities.R")  #Loads libraries, reads in metadata, functions
+source("workflow/scripts/utilities.R")  #Loads libraries, reads in metadata, functions
 
 set.seed(19760620) #Same seed used for mothur analysis
 

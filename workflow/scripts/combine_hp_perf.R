@@ -1,4 +1,4 @@
-source("workflow/rules/scripts/log_smk.R")
+source("workflow/scripts/log_smk.R")
 
 models <- lapply(snakemake@input[["rds"]], function(x) readRDS(x))
 hp_perf <- mikropml::combine_hp_performance(models)

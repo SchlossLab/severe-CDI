@@ -1,4 +1,4 @@
-source("workflow/rules/scripts/utilities.R") #Loads libraries, reads in metadata, functions
+source("workflow/scripts/utilities.R") #Loads libraries, reads in metadata, functions
 
 #Read in shared and taxonomy files for all samples----
 # Import taxonomy into data frame and clean up taxonomy names
