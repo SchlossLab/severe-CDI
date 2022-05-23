@@ -1,4 +1,4 @@
-source("workflow/rules/scripts/log_smk.R")
+source("workflow/scripts/log_smk.R")
 library(tidyverse)
 feat_dat <- read_csv("results/predict_allcause/feature-importance_results.csv")
 tax_dat <- schtools::read_tax("data/mothur/cdi.taxonomy") # do i need the .tsv?

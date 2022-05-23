@@ -1,4 +1,4 @@
-source("workflow/rules/scripts/utilities.R") #Loads libraries, reads in metadata, functions
+source("workflow/scripts/utilities.R") #Loads libraries, reads in metadata, functions
 #Identify the bacterial OTUs that correspond to C. difficile
 
 #Read in taxonomy:
