@@ -69,3 +69,12 @@ rule plot_perf:
     script:
         "../scripts/plot_perf.R"
 
+rule plot_feat_imp:
+    input:
+        R="workflow/scripts/plot_feat_imp.R",
+        csv="feature-importance_results_aggregated.csv"
+    output:
+        png="figures/plot_feat_imp.png"
+    log: "log/plot_feat_imp.txt"
+    script:
+        "../scripts/plot_feat_imp.R"
