@@ -55,6 +55,7 @@ multi_samples <- metadat %>%
   filter(n > 1)
 metadat_1s <- filter_first_samples(metadat)
 metadat_cases <- metadat_1s %>% filter(cdiff_case == 'Case')
+metadat_cases %>% write_csv(here('data', 'process', 'cases_metadata.csv'))
 shared_dat <- left_join(metadat_cases, otu_dat, by = 'sample_id')
 
 shared_dat %>% 
