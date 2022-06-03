@@ -29,4 +29,4 @@ perf_plot <- dat %>%
         legend.margin = margin(0, 0, 0, 0, unit = "pt")
     )
 ggsave("figures/plot_perf.png", plot = perf_plot, device = "png", 
-       width = 5, height = 5)
+       width = 5, height = 3)
