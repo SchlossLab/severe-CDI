@@ -15,7 +15,7 @@ top_otus_dat <- dat %>%
     group_by(outcome, label_html) %>% 
     summarize(median_auroc = median(perf_metric_diff)) %>% #Get the median performance metric diff. for each feature
     #arrange(desc(median)) %>% #Arrange from largest median to smallest
-    slice_max(n = 10, order_by = median_auroc)
+    slice_max(n = 5, order_by = median_auroc)
 
 top_otus_order <- top_otus_dat %>%
   group_by(label_html) %>% 
@@ -87,6 +87,6 @@ ggsave(
     filename = here('figures', 'plot_feat_imp.png'), 
     plot = combined_plot,
     device = "png", dpi = 300, 
-    units = "in", width = 6, height = 5
+    units = "in", width = 5, height = 4
 )
 
