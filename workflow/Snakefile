@@ -47,11 +47,23 @@ rule prep_severity_data_for_ml:
     output:
         idsa='data/process/idsa_OTUs.csv',
         attrib='data/process/attrib_OTUs.csv',
-        allcause='data/process/allcause_OTUs.csv'
+        allcause='data/process/allcause_OTUs.csv',
+        cases='data/process/cases_metadata.csv'
     resources:
         mem_mb=MEM_PER_GB*8
     script:
         'scripts/prep_severity_data_for_ml.R'
+
+
+rule plot_complex_upset:
+    input:
+        csv=rules.prep_severity_data_for_ml.output.cases
+    output:
+        'figures/outcomes_complex_upset.png'
+    env:
+        'envs/complex-upset.yml'
+    script:
+        'scripts/plot_complex_upset.R'
 
 rule test_R_code:
     input:
