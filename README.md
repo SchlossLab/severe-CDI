@@ -1,4 +1,4 @@
-# Adverse-CDI
+# severe-CDI
 
-Investigating bacterial features associated with adverse CDI outcomes.
+Investigating bacterial features associated with severe CDI outcomes.
 
