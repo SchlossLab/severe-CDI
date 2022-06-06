@@ -59,7 +59,7 @@ rule plot_complex_upset:
     input:
         csv=rules.prep_severity_data_for_ml.output.cases
     output:
-        'figures/outcomes_complex_upset.png'
+        'figures/severity_complex_upset_plot.png'
     env:
         'envs/complex-upset.yml'
     script:
