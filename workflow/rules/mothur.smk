@@ -186,7 +186,8 @@ rule alpha_beta:
         rename.file(taxonomy={input.taxonomy}, shared={input.shared});
         sub.sample(shared=cdi.opti_mcc.shared, size=5000);
         rarefaction.single(shared=cdi.opti_mcc.shared, calc=sobs, freq=100);
-        summary.single(shared=cdi.opti_mcc.shared, calc=nseqs-coverage-invsimpson-shannon-sobs, subsample=5000)
+        summary.single(shared=cdi.opti_mcc.shared, calc=nseqs-coverage-invsimpson-shannon-sobs, subsample=5000);
+        dist.shared();
         "
         """
 
