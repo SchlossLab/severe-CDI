@@ -8,3 +8,9 @@ outcomes:
   - idsa
   - allcause
   - attrib
+tax_levels:
+  - OTU
+  - genus
+metrics:
+  - AUC
+  - F1

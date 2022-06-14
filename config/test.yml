@@ -4,5 +4,8 @@ kfold: 5
 ncores: 4
 nseeds: 2
 outcomes:
-  - idsa
-  - allcause
+  - attrib
+tax_levels:
+  - OTU
+metrics:
+  - AUC

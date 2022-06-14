@@ -1,10 +1,5 @@
 with open(f"data/SRR_Acc_List.txt", 'r') as file:
     sra_list = [line.strip() for line in file]
-    #TODO: delete this line when done testing
-    #sra_list=sra_list[0:4]
-
-    #log files for mothur commands,specify resources, use i/o using {}
-    #run each command on snakemake and see if they work or not
 
 rule download_silva:
     output:
@@ -183,7 +178,7 @@ rule alpha_beta:
         subsample_shared="data/mothur/cdi.opti_mcc.0.03.subsample.shared"
     log:
         "log/mothur/alpha_beta.log"
-    
+
     shell:
         """
         mothur "#set.logfile(name={log});
@@ -234,18 +229,6 @@ rule blast_otus:
     script:
         "../scripts/blast_otus.R"
 
-rule plot_diversity_data:
-    input:
-        "workflow/scripts/plot_diversity_data.R",
-        "workflow/scripts/utilities.R",
-        "data/mothur/cdi.opti_mcc.groups.ave-std.summary",
-        "data/process/case_idsa_severity.csv"
-    output:
-        inv_simpson="results/figures/idsa_alpha_inv_simpson.png",
-        richness="results/figures/idsa_alpha_richness.png"
-    script:
-        "../scripts/plot_diversity_data.R"
-
 rule lefse_prep_files:
     input:
         "workflow/scripts/lefse_prep_files.R",
@@ -258,10 +241,8 @@ rule lefse_prep_files:
     script:
         "../scripts/lefse_prep_files.R"
 
-#what is the input or output for this one??
 rule lefse:
     input:
-    #FIX this
         rules.lefse_prep_files.output
     output:
         lefse_summary="data/process/idsa.0.03.lefse_summary"
@@ -286,57 +267,3 @@ rule lefse_analysis:
         lefse_results="data/process/idsa_lefse_results.csv"
     script:
         "../scripts/lefse_analysis.R"
-
-# Sarah T's version of preparing the data for ML
-rule mikropml_input_data:
-    input:
-        "workflow/scripts/mikropml_input_data.R",
-        "workflow/scripts/utilities.R",
-        "data/mothur/cdi.opti_mcc.0.03.subsample.shared",
-        "data/process/case_idsa_severity.csv"
-    output:
-        isda_severity="data/process/ml_idsa_severity.csv"
-    script:
-        "../scripts/mikropml_input_data.R"
-
-#check on input for this function (there was mention of file_path in file)
-# TODO: move to ml workflow
-# TODO: actually maybe we should have a plot/plotting/figures workflow?
-rule plot_ml_feature_importance:
-    input:
-        "workflow/scripts/ml_feature_importance.R",
-        "workflow/scripts/utilities.R",
-        "results/idsa_severity/combined_feature-importance_rf.csv"
-    output:
-        isda_severity_png="results/figures/feat_imp_rf_idsa_severity.png"
-    script:
-        "../scripts/ml_feature_importance.R"
-
-rule plot_taxa:
-    input:
-        "workflow/scripts/plot_taxa.R",
-        "workflow/scripts/utilities.R",
-        "workflow/scripts/read_taxa_data.R",
-        "data/process/case_idsa_severity.csv",
-        "results/idsa_severity/combined_feature-importance_rf.csv"
-    output:
-        otus="results/figures/otus_peptostreptococcaceae.png",
-        severe_otus="results/figures/feat_imp_idsa_severe_otus_abund.png"
-    script:
-        "../scripts/taxa.R"
-
-rule plot_idsa_analysis_summary:
-    input:
-        "workflow/scripts/idsa_analysis_summary.R",
-        "workflow/scripts/utilities.R",
-        "results/figures/idsa_severe_n.png",
-        rules.plot_diversity_data.output.inv_simpson,
-        "results/figures/ml_performance_idsa_otu.png",
-        "results/figures/ml_performance_idsa_otu_AUC.png",
-        rules.plot_ml_feature_importance.output.isda_severity_png,
-        rules.plot_taxa.output.severe_otus
-    output:
-        severe_isda_summary="results/figures/severe_idsa_summary.pdf"
-    script:
-        "../scripts/idsa_analysis_summary.R"
-
