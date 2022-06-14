@@ -5,7 +5,7 @@ rule plot_complex_upset:
     output:
         png='figures/complex-upset_plot_{dataset}.png'
     conda:
-        'envs/complex-upset.yml'
+        '../envs/complex-upset.yml'
     script:
         '../scripts/plot_complex_upset.R'
 
@@ -33,21 +33,6 @@ rule plot_taxa:
         severe_otus="results/figures/feat_imp_idsa_severe_otus_abund.png"
     script:
         "../scripts/taxa.R"
-
-rule plot_idsa_analysis_summary:
-    input:
-        "workflow/scripts/idsa_analysis_summary.R",
-        "workflow/scripts/utilities.R",
-        "results/figures/idsa_severe_n.png",
-        rules.plot_diversity_data.output.inv_simpson,
-        "results/figures/ml_performance_idsa_otu.png",
-        "results/figures/ml_performance_idsa_otu_AUC.png",
-        rules.plot_ml_feature_importance.output.isda_severity_png,
-        rules.plot_taxa.output.severe_otus
-    output:
-        severe_isda_summary="results/figures/severe_idsa_summary.pdf"
-    script:
-        "../scripts/idsa_analysis_summary.R"
 
 rule plot_perf:
     input:
