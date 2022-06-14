@@ -178,7 +178,8 @@ rule alpha_beta:
         subsample_shared="data/mothur/cdi.opti_mcc.0.03.subsample.shared"
     log:
         "log/mothur/alpha_beta.log"
-
+    conda:
+        "../envs/mothur.yml"
     shell:
         """
         mothur "#set.logfile(name={log});
