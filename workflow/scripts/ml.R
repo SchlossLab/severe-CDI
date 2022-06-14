@@ -1,10 +1,11 @@
 source(snakemake@input[["logR"]])
 add_cols <- function(dat) {
   dat %>%
-    mutate(outcome = snakemake@params[['outcome_colname']],
-           taxlevel = snakemake@params[['taxlevel']],
-           metric = snakemake@params[['metric']],
-           dataset = snakemake@params[['dataset']])
+    mutate(outcome = snakemake@wildcards[['outcome_colname']],
+           taxlevel = snakemake@wildcards[['taxlevel']],
+           metric = snakemake@wildcards[['metric']],
+           dataset = snakemake@wildcards[['dataset']],
+           trainfrac = snakemake@wildcards[['trainfrac']])
 }
 
 doFuture::registerDoFuture()
@@ -14,10 +15,11 @@ data_processed <- readRDS(snakemake@input[["rds"]])$dat_transformed
 ml_results <- mikropml::run_ml(
   dataset = data_processed,
   method = snakemake@params[["method"]],
-  outcome_colname = snakemake@params[['outcome_colname']],
+  outcome_colname = snakemake@wildcards[['outcome_colname']],
   find_feature_importance = TRUE,
   kfold = as.numeric(snakemake@params[['kfold']]),
-  seed = as.numeric(snakemake@params[["seed"]])
+  seed = as.numeric(snakemake@params[["seed"]]),
+  training_frac = as.numeric(snakemake@wildcards[['trainfrac']])
 )
 
 ml_results$performance %>%

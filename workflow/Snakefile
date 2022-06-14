@@ -11,8 +11,9 @@ kfold = config['kfold']
 outcomes = config['outcomes']
 tax_levels = config['tax_levels']
 metrics = config['metrics']
-
+train_fracs = config['train_frac']
 datasets = ['full', 'int']
+
 result_types = ['performance', 'feature-importance']
 
 include: 'rules/mothur.smk'
