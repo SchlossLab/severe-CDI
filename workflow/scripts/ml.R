@@ -1,4 +1,6 @@
 source(snakemake@input[["logR"]])
+library(tidyverse)
+
 add_cols <- function(dat) {
   dat %>%
     mutate(outcome = snakemake@wildcards[['outcome_colname']],
