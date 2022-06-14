@@ -1,14 +1,18 @@
-dispconfigfile: 'config/default.yml'
+configfile: 'config/default.yml'
 
-MEM_PER_GB=1024
+MEM_PER_GB = 1024
+start_seed = 100
+nseeds = config['nseeds']
+seeds = range(start_seed, start_seed + nseeds)
+
 ncores = config['ncores']
 ml_methods = config['ml_methods']
 kfold = config['kfold']
-
-nseeds = config['nseeds']
-start_seed = 100
-seeds = range(start_seed, start_seed + nseeds)
 outcomes = config['outcomes']
+tax_levels = config['tax_levels']
+metrics = config['metrics']
+
+datasets = ['full', 'int']
 result_types = ['performance', 'feature-importance']
 
 include: 'rules/mothur.smk'
@@ -24,7 +28,7 @@ rule classify_idsa_severity:
         'scripts/severity_analysis.R',
         "scripts/utilities.R",
         "data/process/final_CDI_16S_metadata.tsv",
-        "data/raw/max_creat.csv", # TODO: email SET to get these files
+        "data/raw/max_creat.csv",
         "data/raw/max_wbc.csv",
         "data/raw/r21_fullcohort_edited_deidentified.csv",
         "data/raw/HPI-1878 Lab.csv"
@@ -45,29 +49,22 @@ rule prep_severity_data_for_ml:
         attrib='data/raw/mishare/clinical_outcomes.csv',
         unattrib='data/raw/mishare/clinical_outcomes_pt2.csv'
     output:
-        idsa='data/process/idsa_OTUs.csv',
-        attrib='data/process/attrib_OTUs.csv',
-        allcause='data/process/allcause_OTUs.csv',
-        cases='data/process/cases_metadata.csv'
+        idsa=expand('data/process/{outcome}_{dataset}_{taxlevel}.csv',
+                    outcome = ['idsa', 'attrib', 'allcause'],
+                    dataset = datasets,
+                    taxlevel = ['OTU']#, 'genus']
+                    ),
+        cases=expand('data/process/cases_{dataset}_metadata.csv',
+                     dataset = datasets)
     resources:
         mem_mb=MEM_PER_GB*8
     script:
         'scripts/prep_severity_data_for_ml.R'
 
-
-rule plot_complex_upset:
-    input:
-        csv=rules.prep_severity_data_for_ml.output.cases
-    output:
-        'figures/severity_complex_upset_plot.png'
-    env:
-        'envs/complex-upset.yml'
-    script:
-        'scripts/plot_complex_upset.R'
-
 rule test_R_code:
     input:
         R='tests/testthat.R',
-        scripts=[os.path.join('workflow/rules/scripts', file.strip('test-')) for file in os.listdir('tests/testthat')]
+        scripts=[os.path.join('workflow/rules/scripts',
+                 file.strip('test-')) for file in os.listdir('tests/testthat')]
     script:
         '../tests/testthat.R'
