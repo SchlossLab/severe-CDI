@@ -11,13 +11,11 @@ rule plot_complex_upset:
 
 rule plot_diversity:
     input:
-        "workflow/scripts/plot_diversity.R",
-        "workflow/scripts/utilities.R",
-        "data/mothur/cdi.opti_mcc.groups.ave-std.summary",
-        'data/process/cases_full_metadata.csv'
+        R="workflow/scripts/plot_diversity.R",
+        div="data/mothur/cdi.opti_mcc.groups.ave-std.summary",
+        meta="data/process/cases_int_metadata.csv"
     output:
-        inv_simpson="figures/alpha_inv-simpson.png",
-        richness="figures/alpha_richness.png"
+        alpha="figures/alpha_div.png"
     script:
         '../scripts/plot_diversity.R'
 
