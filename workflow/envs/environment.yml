@@ -1,4 +1,4 @@
-name: adverseCDI
+name: severeCDI
 channels:
   - conda-forge
   - bioconda
