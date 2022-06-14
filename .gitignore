@@ -7,9 +7,7 @@ core.*
 
 benchmarks/
 data/*/*
-!data/process/*
-data/*.Rds
-data/process/.DS_Store
+data/process/
 results/CvDC/*
 results/CvNDC/*
 results/DCvNDC/*
