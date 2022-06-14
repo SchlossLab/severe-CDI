@@ -12,8 +12,7 @@ results/CvDC/*
 results/CvNDC/*
 results/DCvNDC/*
 !README.md
-results/runs/
-results/*/runs/
+results/predict_*/
 
 log/
 mothur*logfile
