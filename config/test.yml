@@ -9,3 +9,5 @@ tax_levels:
   - OTU
 metrics:
   - AUC
+train_frac:
+  - 0.8

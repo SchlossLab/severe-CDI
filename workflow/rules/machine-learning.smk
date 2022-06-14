@@ -21,19 +21,16 @@ rule run_ml:
         rds=rules.preprocess_data.output.rds,
         logR="workflow/scripts/log_smk.R"
     output:
-        model="results/predict_{outcome}/taxlevel_{taxlevel}/metric_{metric}/dataset_{dataset}/runs/{method}_{seed}_model.Rds",
-        perf="results/predict_{outcome}/taxlevel_{taxlevel}/metric_{metric}/dataset_{dataset}/runs/{method}_{seed}_performance.csv",
-        feat="results/predict_{outcome}/taxlevel_{taxlevel}/metric_{metric}/dataset_{dataset}/runs/{method}_{seed}_feature-importance.csv",
-        test="results/predict_{outcome}/taxlevel_{taxlevel}/metric_{metric}/dataset_{dataset}/runs/{method}_{seed}_test-data.csv"
-    log: "log/predict_{outcome}/taxlevel_{taxlevel}/metric_{metric}/dataset_{dataset}/runs/run_ml.{method}_{seed}.txt"
-    benchmark: "benchmarks/predict_{outcome}/taxlevel_{taxlevel}/metric_{metric}/dataset_{dataset}/runs/run_ml.{method}_{seed}.txt"
+        model="results/predict_{outcome}/taxlevel_{taxlevel}/metric_{metric}/dataset_{dataset}/trainfrac_{trainfrac}/runs/{method}_{seed}_model.Rds",
+        perf="results/predict_{outcome}/taxlevel_{taxlevel}/metric_{metric}/dataset_{dataset}/trainfrac_{trainfrac}/runs/{method}_{seed}_performance.csv",
+        feat="results/predict_{outcome}/taxlevel_{taxlevel}/metric_{metric}/dataset_{dataset}/trainfrac_{trainfrac}/runs/{method}_{seed}_feature-importance.csv",
+        test="results/predict_{outcome}/taxlevel_{taxlevel}/metric_{metric}/dataset_{dataset}/trainfrac_{trainfrac}/runs/{method}_{seed}_test-data.csv"
+    log: "log/predict_{outcome}/taxlevel_{taxlevel}/metric_{metric}/dataset_{dataset}/trainfrac_{trainfrac}/runs/run_ml.{method}_{seed}.txt"
+    benchmark: "benchmarks/predict_{outcome}/taxlevel_{taxlevel}/metric_{metric}/dataset_{dataset}/trainfrac_{trainfrac}/runs/run_ml.{method}_{seed}.txt"
     params:
-        outcome_colname="{outcome}",
         method="{method}",
         seed="{seed}",
-        kfold=kfold,
-        metric="{metric}",
-        dataset="{dataset}"
+        kfold=kfold
     threads: ncores
     resources:
         mem_mb=MEM_PER_GB*4
@@ -43,9 +40,10 @@ rule run_ml:
 rule combine_results:
     input:
         R="workflow/scripts/combine_results.R",
-        csv=expand("results/predict_{outcome}/taxlevel_{taxlevel}/metric_{metric}/dataset_{dataset}/runs/{method}_{seed}_{{type}}.csv",
+        csv=expand("results/predict_{outcome}/taxlevel_{taxlevel}/metric_{metric}/dataset_{dataset}/trainfrac_{trainfrac}/runs/{method}_{seed}_{{type}}.csv",
                     outcome = outcomes, taxlevel = tax_levels, metric = metrics,
-                    dataset = datasets, method = ml_methods, seed = seeds)
+                    dataset = datasets, trainfrac = train_fracs,
+                    method = ml_methods, seed = seeds)
     output: csv='results/{type}_results_aggregated.csv'
     log: "log/combine_results_{type}.txt"
     script:
