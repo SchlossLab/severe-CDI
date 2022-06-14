@@ -1,7 +1,7 @@
 library(tidyverse)
 library(ComplexUpset)
 library(glue)
-dat <- read_csv('data/process/cases_metadata.csv') %>% 
+dat <- read_csv(snakemake@input[['csv']]) %>% 
   select(sample_id, idsa, attrib, allcause) %>% 
   pivot_longer(-sample_id, names_to = 'severity_metric', values_to = 'is_severe') %>% 
   mutate(is_severe = case_when(is_severe == 'yes' ~ TRUE,
@@ -52,9 +52,14 @@ dat_upset <- dat %>%
          ) %>% 
   select(sample_id, all_of(severity_metrics)) 
 
+if (stringr::str_detect(snakemake@input[['csv']], 'int')) {
+  dat_upset <- dat_upset %>% select(-ends_with('NA'))
+  severity_metrics <- severity_metrics %>% 
+    Filter(function(x) {!stringr::str_detect(x, 'NA')}, .)
+}
 
 
 upset_plot <- dat_upset %>% 
   upset(severity_metrics, name = 'severity_metric')
 
-ggsave(filename = 'figures/severity_complex_upset_plot.png', plot = upset_plot)
+ggsave(filename = snakemake@output[['png']], plot = upset_plot)

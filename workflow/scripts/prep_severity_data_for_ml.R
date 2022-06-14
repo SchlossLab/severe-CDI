@@ -74,7 +74,7 @@ shared_dat %>%
 metadat_cases_intersect <- metadat_cases %>% 
   filter(!is.na(idsa) & !is.na(attrib) & !is.na(allcause)) 
 metadat_cases_intersect %>% 
-  write_csv(here('data', 'process', 'cases_full_metadata.csv'))
+  write_csv(here('data', 'process', 'cases_int_metadata.csv'))
 
 shared_dat_intersect <- left_join(metadat_cases_intersect, 
                                   otu_dat, 
