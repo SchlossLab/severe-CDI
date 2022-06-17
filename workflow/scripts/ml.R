@@ -3,7 +3,7 @@ library(tidyverse)
 
 add_cols <- function(dat) {
   dat %>%
-    mutate(outcome = snakemake@wildcards[['outcome_colname']],
+    mutate(outcome = snakemake@wildcards[['outcome']],
            taxlevel = snakemake@wildcards[['taxlevel']],
            metric = snakemake@wildcards[['metric']],
            dataset = snakemake@wildcards[['dataset']],
@@ -17,7 +17,7 @@ data_processed <- readRDS(snakemake@input[["rds"]])$dat_transformed
 ml_results <- mikropml::run_ml(
   dataset = data_processed,
   method = snakemake@params[["method"]],
-  outcome_colname = snakemake@wildcards[['outcome_colname']],
+  outcome_colname = snakemake@wildcards[['outcome']],
   find_feature_importance = TRUE,
   kfold = as.numeric(snakemake@params[['kfold']]),
   seed = as.numeric(snakemake@params[["seed"]]),
