@@ -2,7 +2,9 @@ source("workflow/scripts/log_smk.R")
 library(tidyverse)
 dat <- read_csv("results/performance_results_aggregated.csv")
 perf_plot <- dat %>%
-    pivot_longer(c(cv_metric_AUC, AUC, prAUC, F1),
+    rename(AUROC = AUC,
+           AUPRC = prAUC) %>% 
+    pivot_longer(c(AUROC, AUPRC, F1),
                  names_to = "perf_metric"
                  ) %>%
     mutate(data = case_when(stringr::str_detect(perf_metric, 'cv_metric_AUC') ~ 'train',
@@ -37,7 +39,7 @@ precrec_plot <- dat %>%
   facet_wrap(vars(dataset, method, metric))
 
 ggsave("figures/plot_perf.png", plot = perf_plot, device = "png", 
-       width = 5, height = 3)
+       width = 6, height = 6)
 ggsave("figures/plot_sensspec.png", plot = sensspec_plot, device = "png", 
        width = 5, height = 5)
 ggsave("figures/plot_precrec.png", plot = precrec_plot, device = "png", 
