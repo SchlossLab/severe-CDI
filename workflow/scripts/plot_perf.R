@@ -43,6 +43,6 @@ precrec_plot <- dat %>%
 ggsave("figures/plot_perf.png", plot = perf_plot, device = "png", 
        width = 5, height = 5)
 ggsave("figures/plot_sensspec.png", plot = sensspec_plot, device = "png", 
-       width = 5, height = 4)
+       width = 5, height = 3)
 ggsave("figures/plot_precrec.png", plot = precrec_plot, device = "png", 
-       width = 5, height = 4)
+       width = 5, height = 3)
