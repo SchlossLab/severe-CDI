@@ -32,15 +32,17 @@ perf_plot <- dat %>%
 sensspec_plot <- dat %>% 
   ggplot(aes(Specificity, Sensitivity, color = outcome)) +
   geom_jitter(alpha = 0.7) +
-  facet_wrap(vars(metric))
+  facet_wrap(vars(metric)) +
+  theme_bw()
 precrec_plot <- dat %>% 
   ggplot(aes(Recall, Precision, color = outcome)) +
   geom_jitter(alpha = 0.7) +
-  facet_wrap(vars(metric))
+  facet_wrap(vars(metric)) +
+  theme_bw()
 
 ggsave("figures/plot_perf.png", plot = perf_plot, device = "png", 
        width = 5, height = 5)
 ggsave("figures/plot_sensspec.png", plot = sensspec_plot, device = "png", 
-       width = 5, height = 5)
+       width = 5, height = 4)
 ggsave("figures/plot_precrec.png", plot = precrec_plot, device = "png", 
-       width = 5, height = 5)
+       width = 5, height = 4)
