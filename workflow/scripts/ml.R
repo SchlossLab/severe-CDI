@@ -21,7 +21,8 @@ ml_results <- mikropml::run_ml(
   find_feature_importance = TRUE,
   kfold = as.numeric(snakemake@params[['kfold']]),
   seed = as.numeric(snakemake@params[["seed"]]),
-  training_frac = as.numeric(snakemake@wildcards[['trainfrac']])
+  training_frac = as.numeric(snakemake@wildcards[['trainfrac']]),
+  perf_metric_name = snakemake@wildcards[['metric']]
 )
 
 ml_results$performance %>%
