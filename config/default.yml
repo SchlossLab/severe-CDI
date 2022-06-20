@@ -3,17 +3,17 @@ ml_methods:
  - rf
 kfold: 5
 ncores: 36
-nseeds: 100
+nseeds: 10
 outcomes:
   - idsa
   - allcause
   - attrib
 tax_levels:
   - OTU
-  - genus
 metrics:
   - AUC
   - F1
 train_frac:
   - 0.8
   - 0.65
+
