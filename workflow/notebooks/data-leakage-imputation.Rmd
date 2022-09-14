@@ -24,6 +24,8 @@ library(tidyverse)
 allcause_full_dat <- fread(here('data','process','allcause_full_OTU.csv'))
 ```
 
+## is there any missing data?
+
 ## what's the distribution of missing data?
 
 TODO histogram showing # of NA's in OTU columns.
