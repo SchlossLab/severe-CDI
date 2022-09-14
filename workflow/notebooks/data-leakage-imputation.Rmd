@@ -1,0 +1,47 @@
+---
+title: "Data leakage - does imputation before or after splitting matter?"
+date: "`r Sys.Date()`"
+output: 
+  github_document:
+    html_preview: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = FALSE,
+                      warning = FALSE,
+                      fig.path = 'figures')
+```
+```{r deps}
+library(data.table)
+library(here)
+library(mikropml)
+library(tidyverse)
+```
+
+## load data
+
+```{r load_data}
+allcause_full_dat <- fread(here('data','process','allcause_full_OTU.csv'))
+```
+
+## what's the distribution of missing data?
+
+TODO histogram showing # of NA's in OTU columns.
+
+## does the median value change before/after splitting?
+
+### compute medians on entire dataset
+
+### compute medians on just training set
+
+```{r one-train-set}
+training_inds <- get_partition_indices(allcause_full_dat %>% pull('allcause'),
+        training_frac = 0.8,
+        groups = NULL,
+        group_partitions = NULL
+      )
+allcause_train_dat <- allcause_full_dat[training_inds, ]
+```
+
+
+### compare median differences -- histogram
