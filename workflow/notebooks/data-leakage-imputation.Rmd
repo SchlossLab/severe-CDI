@@ -25,6 +25,9 @@ allcause_full_dat <- fread(here('data','process','allcause_full_OTU.csv'))
 ```
 
 ## is there any missing data?
+```{r count_nas}
+colSums(is.na(allcause_full_dat))
+```
 
 ## what's the distribution of missing data?
 
