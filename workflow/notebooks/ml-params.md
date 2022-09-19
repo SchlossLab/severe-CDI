@@ -34,6 +34,8 @@ parameter choices to investigate:
     outcomes not missing (`int`)
 -   `method`: random forest (`rf`) vs L2 logistic regression (`glmnet`)
 -   `metric`: optimize model for `AUROC` vs `F1`
+-   taxonomic level: OTU vs genus. TODO: train models on genus level
+    features
 
 ## training fraction
 
