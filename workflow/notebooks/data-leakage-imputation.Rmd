@@ -24,6 +24,8 @@ library(tidyverse)
 allcause_full_dat <- fread(here('data','process','allcause_full_OTU.csv'))
 ```
 
+TODO: also check attrib & idsa data sets
+
 ## is there any missing data?
 ```{r count_nas}
 temp <- colSums(is.na(allcause_full_dat)) 
@@ -33,7 +35,7 @@ sum(temp)
 
 ## what's the distribution of missing data?
 
-TODO histogram showing # of NA's in OTU columns.
+TODO histogram showing # of NA's in OTU columns instead of barplot (too many OTUs for barplot)
 ```{r plot_histogram}
 missing.values <- allcause_full_dat %>%
     gather(key = "key", value = "val") %>%
