@@ -1,0 +1,74 @@
+---
+title: "Severe CDI manuscript"
+bibliography: references.bib
+csl: mbio.csl
+fontsize: 12pt
+date: last-modified
+date-format: medium
+toc: true
+lof: true
+number-sections: false
+format: 
+  pdf:
+    geometry:
+      - margin=1in
+    keep-tex: true
+    include-in-header: header.tex
+  html: default
+  gfm: default
+author:
+  - name: Kelly L. Sovacool
+    orcid: 0000-0003-3283-829X
+    affiliations:
+      - ref: bioinf
+  - name: Sarah E. Tomkovich
+    affiliations:
+      - ref: micro
+  - name: Megan L. Coden
+    affiliations:
+      - ref: mcdb
+  - name: Vincent B. Young
+    affiliations:
+      - ref: micro
+      - ref: intmed
+  - name: Krishna Rao
+    affiliations:
+      - ref: intmed
+  - name: Patrick D. Schloss
+    email: pschloss@umich.edu
+    corresponding: true
+    orcid: 0000-0002-6935-4275
+    affiliations:
+      - ref: micro
+      - ref: ccmb
+affiliations:
+  - id: bioinf
+    name: Department of Computational Medicine & Bioinformatics, University of Michigan
+  - id: micro
+    name: Department of Microbiology & Immunology, University of Michigan
+  - id: mcdb
+    name: Department of Molecular, Cellular, and Developmental Biology, University of Michigan
+  - id: intmed
+    name: Division of Infectious Diseases, Department of Internal Medicine, University of Michigan
+  - id: ccmb
+    name: Center for Computational Medicine and Bioinformatics, University of Michigan
+---
+
+## Abstract
+
+
+\newpage
+
+## Introduction
+
+
+## Results and Discussion
+
+
+## Conclusions
+
+
+## Materials and Methods
+
+
+## References
