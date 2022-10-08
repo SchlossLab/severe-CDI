@@ -26,6 +26,18 @@ allcause_full_dat <- fread(here('data','process','allcause_full_OTU.csv'))
 
 TODO: also check attrib & idsa data sets
 
+```{r count_num_nas}
+count_num_nas <- function(dat) {
+  temp <- colSums(is.na(dat)) 
+  sum(temp)
+}
+```
+
+
+```{r run_funcs}
+count_num_nas(allcause_full_dat)
+```
+
 ## is there any missing data?
 ```{r count_nas}
 temp <- colSums(is.na(allcause_full_dat)) 
@@ -47,7 +59,7 @@ missing.values <- allcause_full_dat %>%
     arrange(desc(num.missing)) 
 missing.values %>%
   ggplot() +
-    geom_bar(aes(x=key, y=num.missing), stat = 'identity') +
+    geom_histogram(aes(x=key, y=num.missing), stat = 'identity') +
     labs(x='variable', y="number of missing values", title='Number of missing values') +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
@@ -59,7 +71,7 @@ temp <- colSums(is.na(dat))
 head(temp)
 sum(temp)
 missing.values <- dat %>%
-    gather(key = "key", value = "val") %>%
+    pivot_longer(everything(), names_to = "key", values_to = "val") %>%
     mutate(is.missing = is.na(val)) %>%
     group_by(key, is.missing) %>%
     summarise(num.missing = n()) %>%
@@ -68,7 +80,7 @@ missing.values <- dat %>%
     arrange(desc(num.missing)) 
 missing.values %>%
   ggplot() +
-    geom_bar(aes(x=key, y=num.missing), stat = 'identity') +
+    geom_histogram(aes(x=key), stat = 'count', binwidth=100) +
     labs(x='variable', y="number of missing values", title='Number of missing values') +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
