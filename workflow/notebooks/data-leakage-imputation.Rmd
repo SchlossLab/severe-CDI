@@ -36,6 +36,9 @@ sum(temp)
 ## what's the distribution of missing data?
 
 TODO histogram showing # of NA's in OTU columns instead of barplot (too many OTUs for barplot)
+
+TODO functions to find NAs and create histogram
+
 ```{r plot_histogram}
 missing.values <- allcause_full_dat %>%
     gather(key = "key", value = "val") %>%
