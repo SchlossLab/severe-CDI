@@ -22,6 +22,8 @@ library(tidyverse)
 
 ```{r load_data}
 allcause_full_dat <- fread(here('data','process','allcause_full_OTU.csv'))
+attrib_full_dat <- fread(here('data','process','attrib_full_OTU.csv'))
+idsa_full_dat <- fread(here('data','process','idsa_full_OTU.csv'))
 ```
 
 TODO: also check attrib & idsa data sets
@@ -36,32 +38,24 @@ count_num_nas <- function(dat) {
 
 ```{r run_funcs}
 count_num_nas(allcause_full_dat)
-```
-
-## is there any missing data?
-```{r count_nas}
-temp <- colSums(is.na(allcause_full_dat)) 
-head(temp)
-sum(temp)
+count_num_nas(attrib_full_dat)
+count_num_nas(idsa_full_dat)
 ```
 
 ## what's the distribution of missing data?
 
 TODO histogram showing # of NA's in OTU columns instead of barplot (too many OTUs for barplot)
 ```{r plot_histogram}
-missing.values <- allcause_full_dat %>%
-    gather(key = "key", value = "val") %>%
-    mutate(is.missing = is.na(val)) %>%
-    group_by(key, is.missing) %>%
-    summarise(num.missing = n()) %>%
-    filter(is.missing==T) %>%
-    select(-is.missing) %>%
-    arrange(desc(num.missing)) 
-missing.values %>%
-  ggplot() +
-    geom_histogram(aes(x=key, y=num.missing), stat = 'identity') +
-    labs(x='variable', y="number of missing values", title='Number of missing values') +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+plot_histogram = function(dat) {
+  missing.values <- dat %>%
+    pivot_longer(everything(), names_to = "key", values_to = "val") %>%
+    mutate(is.missing = is.na(val)) %>% 
+    filter(is.missing)
+  missing.values %>%
+    ggplot() +
+      geom_histogram(aes(key), stat="count", color="black", bins=2) +
+      labs(x='variable', y="number of missing values", title='Number of missing values')
+}
 ```
 ```{r check_works_with_simple_frame}
 dat <- data.frame(x1 = c(NA, 5, 5, NA, 1, 2),
@@ -72,17 +66,12 @@ head(temp)
 sum(temp)
 missing.values <- dat %>%
     pivot_longer(everything(), names_to = "key", values_to = "val") %>%
-    mutate(is.missing = is.na(val)) %>%
-    group_by(key, is.missing) %>%
-    summarise(num.missing = n()) %>%
-    filter(is.missing==T) %>%
-    select(-is.missing) %>%
-    arrange(desc(num.missing)) 
+    mutate(is.missing = is.na(val)) %>% 
+    filter(is.missing)
 missing.values %>%
   ggplot() +
-    geom_histogram(aes(x=key), stat = 'count', binwidth=100) +
-    labs(x='variable', y="number of missing values", title='Number of missing values') +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+    geom_histogram(aes(key), stat="count", color="black", bins=2) +
+    labs(x='variable', y="number of missing values", title='Number of missing values')
 ```
 
 ## does the median value change before/after splitting?
