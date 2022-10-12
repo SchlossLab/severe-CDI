@@ -10,10 +10,11 @@ outcomes:
   - attrib
 tax_levels:
   - OTU
+  - genus
 metrics:
   - AUC
   - F1
+  - MCC
 train_frac:
   - 0.8
   - 0.65
-
