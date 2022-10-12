@@ -192,6 +192,21 @@ rule alpha_beta:
         "
         """
 
+rule get_genus_level:
+    input:
+        shared=rules.alpha_beta.output.shared,
+        taxonomy=rules.alpha_beta.output.taxonomy
+    output:
+        shared="data/mothur/cdi.opti_mcc.genus.shared",
+        taxonomy="data/mothur/cdi.genus.taxonomy"
+    log:
+        "log/mothur/get_genus_level.log"
+    conda:
+        "../envs/environment.yml"
+    script:
+        "../scripts/get_genus_level.R"
+
+
 rule get_oturep:
     input:
         list="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.list",
