@@ -51,10 +51,10 @@ rule prep_severity_data_for_ml:
         attrib='data/raw/mishare/clinical_outcomes.csv',
         unattrib='data/raw/mishare/clinical_outcomes_pt2.csv'
     output:
-        idsa=expand('data/process/{outcome}_{dataset}_{taxlevel}.csv',
+        csv=expand('data/process/{outcome}_{dataset}_{taxlevel}.csv',
                     outcome = ['idsa', 'attrib', 'allcause'],
                     dataset = datasets,
-                    taxlevel = ['OTU']#, 'genus']
+                    taxlevel = ['OTU']
                     ),
         cases=expand('data/process/cases_{dataset}_metadata.csv',
                      dataset = datasets)
@@ -62,6 +62,20 @@ rule prep_severity_data_for_ml:
         mem_mb=MEM_PER_GB*8
     script:
         'scripts/prep_severity_data_for_ml.R'
+
+rule prep_genus_data_for_ml:
+    input:
+        full_metadata='data/process/cases_full_metadata.csv',
+        int_metadata='data/process/cases_int_metadata.csv',
+        shared="data/mothur/cdi.opti_mcc.genus.shared"
+    output:
+        csv=expand('data/process/{outcome}_{dataset}_{taxlevel}.csv',
+                    outcome = ['idsa', 'attrib', 'allcause'],
+                    dataset = datasets,
+                    taxlevel = ['genus']
+                    )
+    script:
+        'scripts/prep_genus_data_for_ml.R'
 
 rule test_R_code:
     input:
