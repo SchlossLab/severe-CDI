@@ -1,6 +1,6 @@
 Data leakage - does imputation before or after splitting matter?
 ================
-2022-09-19
+2022-10-12
 
 ``` r
 library(data.table)
@@ -13,45 +13,54 @@ library(tidyverse)
 
 ``` r
 allcause_full_dat <- fread(here('data','process','allcause_full_OTU.csv'))
+attrib_full_dat <- fread(here('data','process','attrib_full_OTU.csv'))
+idsa_full_dat <- fread(here('data','process','idsa_full_OTU.csv'))
 ```
 
-## is there any missing data?
+TODO: also check attrib & idsa data sets
 
 ``` r
-temp <- colSums(is.na(allcause_full_dat)) 
-head(temp)
+count_num_nas <- function(dat) {
+  temp <- colSums(is.na(dat)) 
+  sum(temp)
+}
 ```
 
-    ## allcause Otu00001 Otu00002 Otu00003 Otu00004 Otu00005 
-    ##        0        0        0        0        0        0
+``` r
+count_num_nas(allcause_full_dat)
+```
+
+    ## [1] 0
 
 ``` r
-sum(temp)
+count_num_nas(attrib_full_dat)
+```
+
+    ## [1] 0
+
+``` r
+count_num_nas(idsa_full_dat)
 ```
 
     ## [1] 0
 
 ## what’s the distribution of missing data?
 
-TODO histogram showing \# of NA’s in OTU columns.
+TODO histogram showing \# of NA’s in OTU columns instead of barplot (too
+many OTUs for barplot)
 
 ``` r
-missing.values <- allcause_full_dat %>%
-    gather(key = "key", value = "val") %>%
-    mutate(is.missing = is.na(val)) %>%
-    group_by(key, is.missing) %>%
-    summarise(num.missing = n()) %>%
-    filter(is.missing==T) %>%
-    select(-is.missing) %>%
-    arrange(desc(num.missing)) 
-missing.values %>%
-  ggplot() +
-    geom_bar(aes(x=key, y=num.missing), stat = 'identity') +
-    labs(x='variable', y="number of missing values", title='Number of missing values') +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+plot_histogram = function(dat) {
+  missing.values <- dat %>%
+    pivot_longer(everything(), names_to = "key", values_to = "val") %>%
+    mutate(is.missing = is.na(val)) %>% 
+    filter(is.missing)
+  missing.values %>%
+    ggplot() +
+      geom_histogram(aes(key), stat="count", color="black", bins=2) +
+      labs(x='variable', y="number of missing values", title='Number of missing values')
+}
 ```
-
-![](figures/plot_histogram-1.png)<!-- -->
 
 ``` r
 dat <- data.frame(x1 = c(NA, 5, 5, NA, 1, 2),
@@ -72,18 +81,13 @@ sum(temp)
 
 ``` r
 missing.values <- dat %>%
-    gather(key = "key", value = "val") %>%
-    mutate(is.missing = is.na(val)) %>%
-    group_by(key, is.missing) %>%
-    summarise(num.missing = n()) %>%
-    filter(is.missing==T) %>%
-    select(-is.missing) %>%
-    arrange(desc(num.missing)) 
+    pivot_longer(everything(), names_to = "key", values_to = "val") %>%
+    mutate(is.missing = is.na(val)) %>% 
+    filter(is.missing)
 missing.values %>%
   ggplot() +
-    geom_bar(aes(x=key, y=num.missing), stat = 'identity') +
-    labs(x='variable', y="number of missing values", title='Number of missing values') +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+    geom_histogram(aes(key), stat="count", color="black", bins=2) +
+    labs(x='variable', y="number of missing values", title='Number of missing values')
 ```
 
 ![](figures/check_works_with_simple_frame-1.png)<!-- -->
