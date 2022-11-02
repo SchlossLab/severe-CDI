@@ -1,7 +1,7 @@
 with open(f"data/SRR_Acc_List.txt", 'r') as file:
     sra_list = [line.strip() for line in file]
 
-rule download_silva:
+'''rule download_silva:
     output:
         fasta='data/references/silva.seed_v132.align',
         tax='data/references/silva.seed_v132.tax'
@@ -61,7 +61,7 @@ rule get_zymo:
         "log/mothur/get_zymo.log"
     threads: 12
     shell:
-        '''
+        """
         source /etc/profile.d/http_proxy.sh
         wget -N https://s3.amazonaws.com/zymo-files/BioPool/ZymoBIOMICS.STD.refseq.v2.zip
         unzip ZymoBIOMICS.STD.refseq.v2.zip
@@ -72,7 +72,7 @@ rule get_zymo:
         align.seqs(fasta=zymo.fasta, reference={input.silva_v4}, processors={threads})"
         mv zymo.align {output.align}
         rm -rf zymo* ZymoBIOMICS.STD.refseq.v2* zymo_temp.fasta
-        '''
+        """
 
 rule download_sra:
     input:
@@ -191,11 +191,11 @@ rule alpha_beta:
         dist.shared();
         "
         """
-
+'''
 rule get_genus_level:
     input:
-        shared=rules.alpha_beta.output.shared,
-        taxonomy=rules.alpha_beta.output.taxonomy
+        shared="data/mothur/cdi.opti_mcc.shared",
+        taxonomy="data/mothur/cdi.taxonomy"
     output:
         shared="data/mothur/cdi.opti_mcc.genus.shared",
         taxonomy="data/mothur/cdi.genus.taxonomy"
@@ -206,7 +206,7 @@ rule get_genus_level:
     script:
         "../scripts/get_genus_level.R"
 
-
+'''
 rule get_oturep:
     input:
         list="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.list",
@@ -284,3 +284,4 @@ rule lefse_analysis:
         lefse_results="data/process/idsa_lefse_results.csv"
     script:
         "../scripts/lefse_analysis.R"
+'''
