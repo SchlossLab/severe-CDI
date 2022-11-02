@@ -16,7 +16,7 @@ datasets = ['full', 'int']
 
 result_types = ['performance', 'feature-importance']
 
-#include: 'rules/mothur.smk'
+include: 'rules/mothur.smk'
 include: 'rules/machine-learning.smk'
 include: 'rules/plot.smk'
 

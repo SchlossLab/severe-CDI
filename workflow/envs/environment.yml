@@ -5,7 +5,7 @@ channels:
   - defaults
   - r
 dependencies:
-  - mothur>=1.46
+  - mothur=1.46
   - r-base=4
   - r-cowplot
   - r-doFuture
