@@ -5,6 +5,7 @@ with open(f"data/SRR_Acc_List.txt", 'r') as file:
     output:
         fasta='data/references/silva.seed_v132.align',
         tax='data/references/silva.seed_v132.tax'
+    conda: "../envs/mothur.yml"
     shell:
         """
         source /etc/profile.d/http_proxy.sh
@@ -23,6 +24,7 @@ rule get_silva:
     log:
         "log/mothur/get_silva.log"
     threads: 8
+    conda: "../envs/mothur.yml"
     shell:
         """
         mothur "#set.logfile(name={log});
@@ -42,6 +44,7 @@ rule get_rdp:
     output:
         reference='data/references/trainset16_022016.pds.fasta',
 	    taxonomy='data/references/trainset16_022016.pds.tax'
+    conda: "../envs/mothur.yml"
     shell:
         """
         source /etc/profile.d/http_proxy.sh
@@ -60,6 +63,7 @@ rule get_zymo:
     log:
         "log/mothur/get_zymo.log"
     threads: 12
+    conda: "../envs/mothur.yml"
     shell:
         """
         source /etc/profile.d/http_proxy.sh
@@ -82,6 +86,7 @@ rule download_sra:
     params:
         sra="{SRA}",
         outdir="data/raw/"
+    conda: "../envs/mothur.yml"
     shell:
         """
         source /etc/profile.d/http_proxy.sh  # required for internet on the Great Lakes cluster
@@ -113,6 +118,7 @@ rule process_samples:
     threads: 10
     resources:
         mem_mb=8000
+    conda: "../envs/mothur.yml"
     shell:
         """
         mothur "#
@@ -154,6 +160,7 @@ rule cluster_otus:
         outputdir='data/mothur'
     resources:
         mem_mb=MEM_PER_GB*16
+    conda: "../envs/mothur.yml"
     shell:
         """
         mothur "#
@@ -201,6 +208,7 @@ rule get_genus_level:
         taxonomy="data/mothur/cdi.genus.taxonomy"
     log:
         "log/mothur/get_genus_level.log"
+    conda: "../envs/mikropml.yml"
     script:
         "../scripts/get_genus_level.R"
 
@@ -213,6 +221,7 @@ rule get_oturep:
         count_table="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.pick.count_table"
     log:
         "log/mothur/get_oturep.log"
+    conda: "../envs/mothur.yml"
     shell:
         """
         mothur: "#set.logfile(name={log});
@@ -241,6 +250,7 @@ rule blast_otus:
         top3_7="exploratory/notebook/top3-7_c_diff_seqs.png",
         top2_sample="exploratory/notebook/top_2_otu41_seqs_sample.png",
         top3_7_sample="exploratory/notebook/top3-7_c_diff_seqs_sample.png",
+    conda: "../envs/mikropml.yml"
     script:
         "../scripts/blast_otus.R"
 
@@ -253,6 +263,7 @@ rule lefse_prep_files:
     output:
         shared="data/process/idsa.shared",
         design="data/process/idsa.design"
+    conda: "../envs/mikropml.yml"
     script:
         "../scripts/lefse_prep_files.R"
 
@@ -263,6 +274,7 @@ rule lefse:
         lefse_summary="data/process/idsa.0.03.lefse_summary"
     log:
         "log/mothur/lefse.log"
+    conda: "../envs/mothur.yml"
     shell:
         """
         mothur: "#set.logfile(name={log});
@@ -280,6 +292,7 @@ rule lefse_analysis:
     output:
         lefse_plot="results/figures/idsa_lefse_plot.png",
         lefse_results="data/process/idsa_lefse_results.csv"
+    conda: "../envs/mikropml.yml"
     script:
         "../scripts/lefse_analysis.R"
 '''

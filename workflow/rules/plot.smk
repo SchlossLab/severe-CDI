@@ -16,6 +16,7 @@ rule plot_diversity:
         meta="data/process/cases_int_metadata.csv"
     output:
         alpha="figures/alpha_div.png"
+    conda: "../envs/mikropml.yml"
     script:
         '../scripts/plot_diversity.R'
 
@@ -29,6 +30,7 @@ rule plot_taxa:
     output:
         otus="results/figures/otus_peptostreptococcaceae.png",
         severe_otus="results/figures/feat_imp_idsa_severe_otus_abund.png"
+    conda: "../envs/mikropml.yml"
     script:
         "../scripts/taxa.R"
 
@@ -39,6 +41,7 @@ rule plot_perf:
     output:
         png="figures/plot_perf.png"
     log: "log/plot_perf.txt"
+    conda: "../envs/mikropml.yml"
     script:
         "../scripts/plot_perf.R"
 
@@ -49,6 +52,7 @@ rule plot_feat_imp:
     output:
         png="figures/plot_feat_imp.png"
     log: "log/plot_feat_imp.txt"
+    conda: "../envs/mikropml.yml"
     script:
         "../scripts/plot_feat_imp.R"
 
