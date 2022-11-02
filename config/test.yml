@@ -7,9 +7,9 @@ outcomes:
   - attrib
 tax_levels:
   - OTU
+  - genus
 metrics:
   - AUC
   - F1
 train_frac:
   - 0.8
-
