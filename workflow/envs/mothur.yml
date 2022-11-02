@@ -3,5 +3,4 @@ channels:
   - bioconda
   - defaults
 dependencies:
-  - mothur>=1.47
-
+  - mothur=1.46
