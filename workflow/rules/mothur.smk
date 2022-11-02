@@ -201,8 +201,6 @@ rule get_genus_level:
         taxonomy="data/mothur/cdi.genus.taxonomy"
     log:
         "log/mothur/get_genus_level.log"
-    conda:
-        "../envs/environment.yml"
     script:
         "../scripts/get_genus_level.R"
 
