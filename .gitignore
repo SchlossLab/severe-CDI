@@ -13,6 +13,7 @@ results/CvNDC/*
 results/DCvNDC/*
 !README.md
 results/predict_*/
+*.icloud
 
 log/
 mothur*logfile
