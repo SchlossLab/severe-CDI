@@ -37,6 +37,7 @@ rule classify_idsa_severity:
     output:
         csv="data/process/case_idsa_severity.csv",
         png="results/figures/idsa_severe_n.png"
+    conda: "envs/mikropml.yml"
     script:
         'scripts/severity_analysis.R'
 
@@ -60,6 +61,7 @@ rule prep_severity_data_for_ml:
                      dataset = datasets)
     resources:
         mem_mb=MEM_PER_GB*8
+    conda: "envs/mikropml.yml"
     script:
         'scripts/prep_severity_data_for_ml.R'
 
@@ -74,6 +76,7 @@ rule prep_genus_data_for_ml:
                     dataset = datasets,
                     taxlevel = ['genus']
                     )
+    conda: "envs/mikropml.yml"
     script:
         'scripts/prep_genus_data_for_ml.R'
 
@@ -82,5 +85,6 @@ rule test_R_code:
         R='tests/testthat.R',
         scripts=[os.path.join('workflow/rules/scripts',
                  file.strip('test-')) for file in os.listdir('tests/testthat')]
+    conda: "envs/mikropml.yml"
     script:
         '../tests/testthat.R'
