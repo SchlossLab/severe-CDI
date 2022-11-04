@@ -12,6 +12,7 @@ rule preprocess_data:
     threads: ncores
     resources:
         mem_mb=MEM_PER_GB*2
+    conda: "../envs/mikropml.yml"
     script:
         "../scripts/preproc.R"
 
@@ -34,6 +35,7 @@ rule run_ml:
     threads: ncores
     resources:
         mem_mb=MEM_PER_GB*4
+    conda: "../envs/mikropml.yml"
     script:
         "../scripts/ml.R"
 
@@ -46,5 +48,6 @@ rule combine_results:
                     method = ml_methods, seed = seeds)
     output: csv='results/{type}_results_aggregated.csv'
     log: "log/combine_results_{type}.txt"
+    conda: "../envs/mikropml.yml"
     script:
         "../scripts/combine_results.R"
