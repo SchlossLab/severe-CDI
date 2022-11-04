@@ -10,6 +10,5 @@ tax_levels:
   - genus
 metrics:
   - AUC
-  - F1
 train_frac:
   - 0.8

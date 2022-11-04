@@ -209,6 +209,8 @@ rule get_genus_level:
     log:
         "log/mothur/get_genus_level.log"
     conda: "../envs/mikropml.yml"
+    resources:
+        mem_mb=MEM_PER_GB*8
     script:
         "../scripts/get_genus_level.R"
 
