@@ -5,6 +5,7 @@ channels:
 dependencies:
   - r-base=4
   - r-cowplot
+  - r-devtools
   - r-doFuture
   - r-foreach
   - r-future
