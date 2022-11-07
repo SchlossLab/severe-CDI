@@ -1,6 +1,6 @@
 ML parameters
 ================
-2022-11-06
+2022-11-07
 
 ``` r
 library(data.table)
@@ -56,4 +56,26 @@ results_dat %>%
 
 ## ML method - rf vs l2 logit
 
+``` r
+results_dat %>% 
+  filter(trainfrac == 0.8, metric == 'AUROC', dataset == 'full') %>% 
+  ggplot(aes(perf_metric_value, perf_metric_name, color = outcome)) +
+  geom_boxplot() +
+  theme_bw() +
+  facet_wrap('method')
+```
+
+![](figures/plot_method-1.png)<!-- -->
+
 ## metric - AUROC vs F1 score
+
+``` r
+results_dat %>% 
+  filter(trainfrac == 0.8, method == 'glmnet', dataset == 'full') %>% 
+  ggplot(aes(perf_metric_value, perf_metric_name, color = outcome)) +
+  geom_boxplot() +
+  theme_bw() +
+  facet_wrap('metric')
+```
+
+![](figures/plot_metric-1.png)<!-- -->
