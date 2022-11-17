@@ -14,7 +14,7 @@ tax_levels:
 metrics:
   - AUC
   - F1
-  - MCC
+  #- MCC
 train_frac:
   - 0.8
   - 0.65
