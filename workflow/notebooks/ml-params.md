@@ -60,7 +60,8 @@ results_dat %>%
   ggplot(aes(perf_metric_value, dataset, color = outcome)) +
   geom_boxplot() +
   theme_bw() +
-  facet_wrap('perf_metric_name')
+  facet_wrap('perf_metric_name') +
+  labs(y="dataset optimized during model training", x="performance on held out test data")
 ```
 
 ![](figures/plot_dataset-2.png)<!-- -->
@@ -84,7 +85,8 @@ results_dat %>%
   ggplot(aes(perf_metric_value, method, color = outcome)) +
   geom_boxplot() +
   theme_bw() +
-  facet_wrap('perf_metric_name')
+  facet_wrap('perf_metric_name') +
+  labs(y="method optimized during model training", x="performance on held out test data")
 ```
 
 ![](figures/plot_method-2.png)<!-- -->
@@ -108,7 +110,8 @@ results_dat %>%
   ggplot(aes(perf_metric_value, metric, color = outcome)) +
   geom_boxplot() +
   theme_bw() +
-  facet_wrap('perf_metric_name')
+  facet_wrap('perf_metric_name') +
+  labs(y="metric optimized during model training", x="performance on held out test data")
 ```
 
 ![](figures/plot_metric-2.png)<!-- -->
