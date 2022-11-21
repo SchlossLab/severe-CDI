@@ -58,6 +58,13 @@ results_dat %>%
   geom_boxplot() +
   theme_bw() +
   facet_wrap('dataset')
+
+results_dat %>% 
+  filter(trainfrac == 0.8, method == 'glmnet', metric == 'AUROC') %>% 
+  ggplot(aes(perf_metric_value, dataset, color = outcome)) +
+  geom_boxplot() +
+  theme_bw() +
+  facet_wrap('perf_metric_name')
 ```
 
 ## ML method - rf vs l2 logit
@@ -68,6 +75,13 @@ results_dat %>%
   geom_boxplot() +
   theme_bw() +
   facet_wrap('method')
+
+results_dat %>% 
+  filter(trainfrac == 0.8, metric == 'AUROC', dataset == 'full') %>% 
+  ggplot(aes(perf_metric_value, method, color = outcome)) +
+  geom_boxplot() +
+  theme_bw() +
+  facet_wrap('perf_metric_name')
 ```
 
 
@@ -79,5 +93,12 @@ results_dat %>%
   geom_boxplot() +
   theme_bw() +
   facet_wrap('metric')
+
+results_dat %>% 
+  filter(trainfrac == 0.8, method == 'glmnet', dataset == 'full') %>% 
+  ggplot(aes(perf_metric_value, metric, color = outcome)) +
+  geom_boxplot() +
+  theme_bw() +
+  facet_wrap('perf_metric_name')
 ```
 
