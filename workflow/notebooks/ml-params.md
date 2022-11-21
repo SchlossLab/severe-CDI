@@ -1,6 +1,6 @@
 ML parameters
 ================
-2022-11-07
+2022-11-21
 
 ``` r
 library(data.table)
@@ -54,6 +54,17 @@ results_dat %>%
 
 ![](figures/plot_dataset-1.png)<!-- -->
 
+``` r
+results_dat %>% 
+  filter(trainfrac == 0.8, method == 'glmnet', metric == 'AUROC') %>% 
+  ggplot(aes(perf_metric_value, dataset, color = outcome)) +
+  geom_boxplot() +
+  theme_bw() +
+  facet_wrap('perf_metric_name')
+```
+
+![](figures/plot_dataset-2.png)<!-- -->
+
 ## ML method - rf vs l2 logit
 
 ``` r
@@ -67,6 +78,17 @@ results_dat %>%
 
 ![](figures/plot_method-1.png)<!-- -->
 
+``` r
+results_dat %>% 
+  filter(trainfrac == 0.8, metric == 'AUROC', dataset == 'full') %>% 
+  ggplot(aes(perf_metric_value, method, color = outcome)) +
+  geom_boxplot() +
+  theme_bw() +
+  facet_wrap('perf_metric_name')
+```
+
+![](figures/plot_method-2.png)<!-- -->
+
 ## metric - AUROC vs F1 score
 
 ``` r
@@ -79,3 +101,14 @@ results_dat %>%
 ```
 
 ![](figures/plot_metric-1.png)<!-- -->
+
+``` r
+results_dat %>% 
+  filter(trainfrac == 0.8, method == 'glmnet', dataset == 'full') %>% 
+  ggplot(aes(perf_metric_value, metric, color = outcome)) +
+  geom_boxplot() +
+  theme_bw() +
+  facet_wrap('perf_metric_name')
+```
+
+![](figures/plot_metric-2.png)<!-- -->
