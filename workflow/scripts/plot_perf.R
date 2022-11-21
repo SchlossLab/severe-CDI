@@ -19,7 +19,7 @@ perf_plot <- dat %>%
     #geom_vline(xintercept = 0.5, linetype = "dashed") +
     geom_boxplot() +
     scale_color_brewer(palette = 'Paired') +
-    facet_wrap(vars(metric)) +
+    facet_wrap("metric") +
     labs(x = "performance") +
     theme_bw() +
     theme(
@@ -32,12 +32,12 @@ perf_plot <- dat %>%
 sensspec_plot <- dat %>% 
   ggplot(aes(Specificity, Sensitivity, color = outcome)) +
   geom_jitter(alpha = 0.7) +
-  facet_wrap(vars(metric)) +
+  facet_wrap("metric") +
   theme_bw()
 precrec_plot <- dat %>% 
   ggplot(aes(Recall, Precision, color = outcome)) +
   geom_jitter(alpha = 0.7) +
-  facet_wrap(vars(metric)) +
+  facet_wrap("metric") +
   theme_bw()
 
 ggsave("figures/plot_perf.png", plot = perf_plot, device = "png", 
