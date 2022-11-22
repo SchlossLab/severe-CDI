@@ -1,6 +1,6 @@
 ML parameters
 ================
-2022-11-21
+2022-11-22
 
 ``` r
 library(data.table)
@@ -61,7 +61,7 @@ results_dat %>%
   geom_boxplot() +
   theme_bw() +
   facet_wrap('perf_metric_name') +
-  labs(y="dataset optimized during model training", x="performance on held out test data")
+  labs(x="performance on held out test data")
 ```
 
 ![](figures/plot_dataset-2.png)<!-- -->
@@ -86,7 +86,7 @@ results_dat %>%
   geom_boxplot() +
   theme_bw() +
   facet_wrap('perf_metric_name') +
-  labs(y="method optimized during model training", x="performance on held out test data")
+  labs(x="performance on held out test data")
 ```
 
 ![](figures/plot_method-2.png)<!-- -->
