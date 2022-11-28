@@ -1,37 +1,9 @@
 [
   {
-    "objectID": "paper/paper.html#results-and-discussion",
-    "href": "paper/paper.html#results-and-discussion",
+    "objectID": "paper/paper.html",
+    "href": "paper/paper.html",
     "title": "Severe CDI manuscript",
-    "section": "Results and Discussion",
-    "text": "Results and Discussion"
-  },
-  {
-    "objectID": "paper/paper.html#conclusions",
-    "href": "paper/paper.html#conclusions",
-    "title": "Severe CDI manuscript",
-    "section": "Conclusions",
-    "text": "Conclusions"
-  },
-  {
-    "objectID": "paper/paper.html#materials-and-methods",
-    "href": "paper/paper.html#materials-and-methods",
-    "title": "Severe CDI manuscript",
-    "section": "Materials and Methods",
-    "text": "Materials and Methods"
-  },
-  {
-    "objectID": "paper/paper.html#references",
-    "href": "paper/paper.html#references",
-    "title": "Severe CDI manuscript",
-    "section": "References",
-    "text": "References"
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "",
     "section": "",
-    "text": "manuscript source: https://github.com/SchlossLab/severe-CDI/blob/main/paper/paper.qmd\nmanuscript PDF | HTML"
+    "text": "Introduction\n\n\nResults\n\n\nDiscussion\n\n\nMaterials and Methods\n\n\nAcknowledgements"
   }
 ]
