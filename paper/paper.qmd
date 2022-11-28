@@ -1,19 +1,21 @@
 ---
 title: "Severe CDI manuscript"
 bibliography: references.bib
-csl: mbio.csl
-fontsize: 12pt
+fontsize: 11pt
 date: last-modified
 date-format: medium
-toc: true
-lof: true
-number-sections: false
 format: 
   manuscript-pdf:
     keep-tex: true
     include-in-header: header.tex
+    linenumbers: true
+    doublespacing: true
+    lof: false
   #gfm: default
   html: default
+runningtitle: Predicting Severe _C. difficile_ infections
+runningauthor: Sovacool
+papertype: Preprint
 author:
   - name: Kelly L. Sovacool
     orcid: 0000-0003-3283-829X
@@ -56,16 +58,13 @@ keywords: _C. difficile_ infection, supervised machine learning
 ---
 
 
-## Introduction
+# Introduction
 
 
-## Results and Discussion
+# Results 
 
+# Discussion
 
-## Conclusions
+# Materials and Methods
 
-
-## Materials and Methods
-
-
-## References
+# Acknowledgements
