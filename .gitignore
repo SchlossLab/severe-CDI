@@ -27,3 +27,9 @@ mothur*logfile
 *_KLS*
 *_MLC*
 *_mlc*
+
+/.quarto/
+paper/*.ldf
+paper/*.sty
+paper/*.bst
+paper/*.cls
