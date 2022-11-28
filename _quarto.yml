@@ -1,0 +1,17 @@
+project:
+  type: website
+  output-dir: docs
+  render:
+    - paper/paper.qmd
+    - index.qmd
+
+website:
+  repo-url: https://github.com/SchlossLab/severe-CDI
+  repo-actions: [edit, issue]
+
+execute:
+  freeze: auto
+
+format:
+  html:
+    embed-resources: true

@@ -1,0 +1,3 @@
+
+- manuscript source: [[< fa brands github >]](https://github.com/SchlossLab/severe-CDI/blob/main/paper/paper.qmd)
+- manuscript [PDF](paper/paper.pdf) | [HTML](paper/paper.html)
