@@ -9,13 +9,11 @@ toc: true
 lof: true
 number-sections: false
 format: 
-  pdf:
-    geometry:
-      - margin=1in
+  manuscript-pdf:
     keep-tex: true
     include-in-header: header.tex
+  #gfm: default
   html: default
-  gfm: default
 author:
   - name: Kelly L. Sovacool
     orcid: 0000-0003-3283-829X
@@ -52,12 +50,11 @@ affiliations:
     name: Division of Infectious Diseases, Department of Internal Medicine, University of Michigan
   - id: ccmb
     name: Center for Computational Medicine and Bioinformatics, University of Michigan
+abstract: TODO
+importance: TODO
+keywords: _C. difficile_ infection, supervised machine learning
 ---
 
-## Abstract
-
-
-\newpage
 
 ## Introduction
 
