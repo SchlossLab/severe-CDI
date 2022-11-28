@@ -15,3 +15,4 @@ execute:
 format:
   html:
     embed-resources: true
+    theme: spacelab

@@ -1,3 +1,6 @@
+---
+title: "Severe CDI manuscript"
+title-block-banner: true
+--- 
 
-- manuscript source: [[< fa brands github >]](https://github.com/SchlossLab/severe-CDI/blob/main/paper/paper.qmd)
-- manuscript [PDF](paper/paper.pdf) | [HTML](paper/paper.html)
+[{{< fa brands github size=2x >}}](https://github.com/SchlossLab/severe-CDI/blob/main/paper/paper.qmd) [{{< fa regular file-pdf  size=2x >}}](paper/paper.pdf) [{{< fa globe  size=2x >}}](paper/paper.html)
