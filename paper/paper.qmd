@@ -35,9 +35,9 @@ author:
     affiliations:
       - ref: intmed
   - name: Patrick D. Schloss
+    orcid: 0000-0002-6935-4275
     email: pschloss@umich.edu
     corresponding: true
-    orcid: 0000-0002-6935-4275
     affiliations:
       - ref: micro
       - ref: ccmb
@@ -60,11 +60,20 @@ keywords: _C. difficile_ infection, supervised machine learning
 
 # Introduction
 
+TODO
 
 # Results 
 
+TODO
+
 # Discussion
+
+TODO
 
 # Materials and Methods
 
+TODO [@schloss_introducing_2009;@topcuoglu_mikropml_2021;@sovacool_schtools_2022]
+
 # Acknowledgements
+
+TODO
