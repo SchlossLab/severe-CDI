@@ -110,6 +110,8 @@ rule install_fontawesome:
 rule render_paper:
     input:
         qmd='paper/paper.qmd',
+        bib='paper/references.bib',
+        tex='paper/header.tex',
         ext=rules.install_quarto_ms.output
     output:
         'docs/paper/paper.pdf'
