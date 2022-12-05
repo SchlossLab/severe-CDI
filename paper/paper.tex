@@ -4,10 +4,8 @@
 \PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
 %
 \documentclass[
-  12pt,
-  letterpaper,
-  DIV=11,
-  numbers=noendperiod]{scrartcl}
+  11pt,
+  lineno]{manuscript}
 
 \usepackage{amsmath,amssymb}
 \usepackage{lmodern}
@@ -27,18 +25,7 @@
   \usepackage[]{microtype}
   \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
 }{}
-\makeatletter
-\@ifundefined{KOMAClassName}{% if non-KOMA class
-  \IfFileExists{parskip.sty}{%
-    \usepackage{parskip}
-  }{% else
-    \setlength{\parindent}{0pt}
-    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
-}{% if KOMA class
-  \KOMAoptions{parskip=half}}
-\makeatother
 \usepackage{xcolor}
-\usepackage[margin=1in]{geometry}
 \setlength{\emergencystretch}{3em} % prevent overfull lines
 \setcounter{secnumdepth}{-\maxdimen} % remove section numbering
 % Make \paragraph and \subparagraph free-standing
@@ -63,34 +50,29 @@
 % Allow footnotes in longtable head/foot
 \IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
 \makesavenoteenv{longtable}
-\usepackage{graphicx}
-\makeatletter
-\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
-\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
-\makeatother
-% Scale images if necessary, so that they will not overflow the page
-% margins by default, and it is still possible to overwrite the defaults
-% using explicit options in \includegraphics[width, height, ...]{}
-\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
-% Set default figure placement to htbp
-\makeatletter
-\def\fps@figure{htbp}
-\makeatother
+\renewcommand{\figurename}{FIG}
+\usepackage{blindtext}
+\usepackage{chemformula}
+\usepackage{lineno}
+\usepackage{lipsum}
+\usepackage{orcidlink}
+\usepackage{setspace}
+\usepackage{siunitx}
 
+\definecolor{maize}{HTML}{FFCB05}
+\definecolor{goblue}{HTML}{00274C}
 \usepackage{helvet} % Helvetica font
 \renewcommand*\familydefault{\sfdefault} % Use the sans serif version of the font
-\usepackage[T1]{fontenc}
+%\usepackage[T1]{fontenc}
 
-\usepackage[none]{hyphenat}
+%\usepackage[none]{hyphenat}
 
-\usepackage{setspace}
-\doublespacing
-\setlength{\parskip}{1em}
+%\usepackage{setspace}
+%\doublespacing
+%\setlength{\parskip}{1em}
 
-\usepackage{lineno}
-
-\usepackage{pdfpages}
-\KOMAoption{captions}{tableheading}
+%\usepackage{lineno}
+%\usepackage{pdfpages}
 \makeatletter
 \makeatother
 \makeatletter
@@ -151,49 +133,109 @@
 \hypersetup{
   pdftitle={Severe CDI manuscript},
   pdfauthor={Kelly L. Sovacool; Sarah E. Tomkovich; Megan L. Coden; Vincent B. Young; Krishna Rao; Patrick D. Schloss},
+  pdfkeywords={\emph{C. difficile} infection, supervised machine
+learning},
   colorlinks=true,
   linkcolor={blue},
   filecolor={Maroon},
   citecolor={Blue},
-  urlcolor={Blue},
+  urlcolor={blue},
   pdfcreator={LaTeX via pandoc}}
 
+
 \title{Severe CDI manuscript}
-\author{Kelly L. Sovacool \and Sarah E. Tomkovich \and Megan L.
-Coden \and Vincent B. Young \and Krishna Rao \and Patrick D. Schloss}
-\date{Sep 29, 2022}
+
+% authors
+  \author[1]
+  {Kelly L. Sovacool\orcidlink{0000-0003-3283-829X}}
+  \author[2]
+  {Sarah E. Tomkovich}
+  \author[3]
+  {Megan L. Coden}
+  \author[2,4]
+  {Vincent B. Young}
+  \author[4]
+  {Krishna Rao}
+  \author[2,5,\textdagger]
+  {Patrick D. Schloss\orcidlink{0000-0002-6935-4275}}
+
+\affil[1]{Department of Computational Medicine \& Bioinformatics,
+University of Michigan}
+\affil[2]{Department of Microbiology \& Immunology, University of
+Michigan}
+\affil[3]{Department of Molecular, Cellular, and Developmental Biology,
+University of Michigan}
+\affil[4]{Division of Infectious Diseases, Department of Internal
+Medicine, University of Michigan}
+\affil[5]{Center for Computational Medicine and Bioinformatics,
+University of Michigan}
+
+
+
+
+
+
+ % TODO: why can't use correspondence=true?
+  %\corrauthor[*]{pschloss@umich.edu}
+  \corraddress{pschloss@umich.edu}
+
+
+% paper meta
+\papertype{Preprint}
+\runningtitle{Predicting Severe \emph{C. difficile} infections}
+\runningauthor{Sovacool \textit{et al.}}
 
 \begin{document}
-\maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[interior hidden, frame hidden, breakable, sharp corners, boxrule=0pt, borderline west={3pt}{0pt}{shadecolor}, enhanced]}{\end{tcolorbox}}\fi
 
-\renewcommand*\contentsname{Table of contents}
-{
-\hypersetup{linkcolor=}
-\setcounter{tocdepth}{3}
-\tableofcontents
-}
-\listoffigures
-\hypertarget{abstract}{%
-\subsection{Abstract}\label{abstract}}
+\maketitle
+
+\infobox
+
+\linenumbers
+
+\doublespacing
+
+\begin{abstract}
+TODO
+\begin{importance}
+TODO
+\end{importance}
+\end{abstract}
+
+\keywords{\emph{C. difficile} infection, supervised machine learning}
 
 \newpage
+\renewcommand{\figurename}{FIG}
+\renewcommand{\tablename}{TABLE}\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[boxrule=0pt, enhanced, borderline west={3pt}{0pt}{shadecolor}, breakable, interior hidden, sharp corners, frame hidden]}{\end{tcolorbox}}\fi
 
 \hypertarget{introduction}{%
-\subsection{Introduction}\label{introduction}}
+\section{Introduction}\label{introduction}}
 
-\hypertarget{results-and-discussion}{%
-\subsection{Results and Discussion}\label{results-and-discussion}}
+TODO
 
-\hypertarget{conclusions}{%
-\subsection{Conclusions}\label{conclusions}}
+\hypertarget{results}{%
+\section{Results}\label{results}}
+
+TODO
+
+\hypertarget{discussion}{%
+\section{Discussion}\label{discussion}}
+
+TODO
 
 \hypertarget{materials-and-methods}{%
-\subsection{Materials and Methods}\label{materials-and-methods}}
+\section{Materials and Methods}\label{materials-and-methods}}
 
-\hypertarget{references}{%
-\subsection{References}\label{references}}
+TODO
+\citep{schloss_introducing_2009, topcuoglu_mikropml_2021, sovacool_schtools_2022}
 
+\hypertarget{acknowledgements}{%
+\section{Acknowledgements}\label{acknowledgements}}
+
+TODO
+
+
+  \bibliography{references.bib}
 
 
 \end{document}

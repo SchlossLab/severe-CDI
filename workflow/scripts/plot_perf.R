@@ -2,8 +2,8 @@ source("workflow/scripts/log_smk.R")
 library(tidyverse)
 dat <- read_csv("results/performance_results_aggregated.csv") %>%
     rename(AUROC = AUC,
-           AUPRC = prAUC) %>% 
-  filter(method == 'rf', dataset == 'int', trainfrac == 0.65) 
+           AUPRC = prAUC) #%>% 
+  #filter(method == 'rf', dataset == 'int', trainfrac == 0.65) 
 perf_plot <- dat %>% 
     pivot_longer(c(AUROC, AUPRC, F1),
                  names_to = "perf_metric"

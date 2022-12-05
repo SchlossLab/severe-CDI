@@ -1,0 +1,39 @@
+$-- Implements the frontmatter, title page, and abstract.
+$--
+$-- %%%% TODO %%%%%
+$-- Customize is needed, otherwise remove this partials to use Quarto default one
+$-- %%%%%%%%%%%%%%%%
+$if(has-frontmatter)$
+\frontmatter
+$endif$
+
+$if(title)$
+\maketitle
+$endif$
+
+\infobox
+
+$if(linenumbers)$
+\linenumbers
+$endif$
+
+$if(doublespacing)$
+\doublespacing
+$endif$
+
+$if(abstract)$
+\begin{abstract}
+$abstract$
+$if(importance)$
+\begin{importance}
+$importance$
+\end{importance}
+$endif$
+\end{abstract}
+$endif$
+
+\keywords{$keywords$}
+
+\newpage
+\renewcommand{\figurename}{FIG}
+\renewcommand{\tablename}{TABLE}
