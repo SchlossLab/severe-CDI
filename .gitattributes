@@ -1,2 +1,4 @@
 _extensions/ linguist-vendored=true
 *.Rmd linguist-language=R
+paper.tex linguist-vendored=true
+references.bib linguist-vendored=true
