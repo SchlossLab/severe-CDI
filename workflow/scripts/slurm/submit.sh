@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=adverseCDI
+#SBATCH --job-name=severe-CDI
 
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
