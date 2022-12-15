@@ -1,21 +1,21 @@
 ---
 title: "Severe CDI manuscript"
 bibliography: references.bib
-csl: mbio.csl
-fontsize: 12pt
+fontsize: 11pt
 date: last-modified
 date-format: medium
-toc: true
-lof: true
-number-sections: false
 format: 
-  pdf:
-    geometry:
-      - margin=1in
+  manuscript-pdf:
     keep-tex: true
     include-in-header: header.tex
+    linenumbers: true
+    doublespacing: true
+    lof: false
+  #gfm: default
   html: default
-  gfm: default
+runningtitle: Predicting Severe _C. difficile_ infections
+runningauthor: Sovacool
+papertype: Preprint
 author:
   - name: Kelly L. Sovacool
     orcid: 0000-0003-3283-829X
@@ -35,9 +35,9 @@ author:
     affiliations:
       - ref: intmed
   - name: Patrick D. Schloss
+    orcid: 0000-0002-6935-4275
     email: pschloss@umich.edu
     corresponding: true
-    orcid: 0000-0002-6935-4275
     affiliations:
       - ref: micro
       - ref: ccmb
@@ -52,23 +52,28 @@ affiliations:
     name: Division of Infectious Diseases, Department of Internal Medicine, University of Michigan
   - id: ccmb
     name: Center for Computational Medicine and Bioinformatics, University of Michigan
+abstract: TODO
+importance: TODO
+keywords: _C. difficile_ infection, supervised machine learning
 ---
 
-## Abstract
 
+# Introduction
 
-\newpage
+TODO
 
-## Introduction
+# Results 
 
+TODO
 
-## Results and Discussion
+# Discussion
 
+TODO
 
-## Conclusions
+# Materials and Methods
 
+TODO [@schloss_introducing_2009;@topcuoglu_mikropml_2021;@sovacool_schtools_2022]
 
-## Materials and Methods
+# Acknowledgements
 
-
-## References
+TODO
