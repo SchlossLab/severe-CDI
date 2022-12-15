@@ -3,7 +3,7 @@ ml_methods:
  - rf
 kfold: 5
 ncores: 36
-nseeds: 50
+nseeds: 10
 outcomes:
   - idsa
   - allcause

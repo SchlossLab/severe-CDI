@@ -88,3 +88,43 @@ rule test_R_code:
     conda: "envs/mikropml.yml"
     script:
         '../tests/testthat.R'
+
+rule install_quarto_ms:
+    output:
+        directory("_extensions/kelly-sovacool/manuscript")
+    params:
+        ext="kelly-sovacool/quarto-manuscript"
+    shell:
+        """
+        quarto add {params.ext} --no-prompt
+        """
+
+rule install_fontawesome:
+    output:
+        directory("_extensions/quarto-ext/fontawesome")
+    shell:
+        """
+        quarto install extension quarto-ext/fontawesome --no-prompt
+        """
+
+rule render_paper:
+    input:
+        qmd='paper/paper.qmd',
+        bib='paper/references.bib',
+        tex='paper/header.tex',
+        ext=rules.install_quarto_ms.output
+    output:
+        'docs/paper/paper.pdf'
+    shell:
+        """
+        quarto render {input.qmd}
+        """
+
+rule render_site:
+    input:
+        qmd="index.qmd",
+        ext=rules.install_fontawesome.output
+    output:
+        'docs/index.html'
+    shell:
+        "quarto render {input.qmd}"
