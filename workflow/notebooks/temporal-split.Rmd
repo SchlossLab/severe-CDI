@@ -1,0 +1,24 @@
+---
+title: "Temporal Split"
+date: "`r Sys.Date()`"
+output: 
+  github_document:
+    html_preview: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = FALSE,
+                      warning = FALSE,
+                      fig.path = 'figures/')
+```
+```{r deps}
+library(data.table)
+library(here)
+library(mikropml)
+library(tidyverse)
+```
+
+Investigate feasibility of doing a temporal split to train/test models on older data
+and then validate on newer data.
+
+Do we even have enough samples for this?
