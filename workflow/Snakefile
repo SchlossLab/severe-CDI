@@ -16,6 +16,16 @@ datasets = ['full', 'int']
 
 result_types = ['performance', 'feature-importance']
 
+module mikropml:
+    snakefile: 
+        github("SchlossLab/mikropml-snakemake-workflow", 
+               path="workflow/Snakefile", 
+               branch="main", # TODO switch to tag once it's released
+               #tag="1.2.0"
+               )
+    config:
+        config
+
 include: 'rules/mothur.smk'
 include: 'rules/machine-learning.smk'
 include: 'rules/plot.smk'
