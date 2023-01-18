@@ -45,7 +45,7 @@ hold train frac, method, & metric constant
 
 ``` r
 results_dat %>% 
-  filter(trainfrac == 0.8, method == 'glmnet', metric == 'AUROC') %>% 
+  filter(trainfrac == 0.8, method == 'glmnet', metric == 'AUROC', taxlevel == "OTU") %>% 
   ggplot(aes(perf_metric_value, perf_metric_name, color = outcome)) +
   geom_boxplot() +
   theme_bw() +
@@ -56,7 +56,7 @@ results_dat %>%
 
 ``` r
 results_dat %>% 
-  filter(trainfrac == 0.8, method == 'glmnet', metric == 'AUROC') %>% 
+  filter(trainfrac == 0.8, method == 'glmnet', metric == 'AUROC', taxlevel == "OTU") %>% 
   ggplot(aes(perf_metric_value, dataset, color = outcome)) +
   geom_boxplot() +
   theme_bw() +
@@ -70,7 +70,7 @@ results_dat %>%
 
 ``` r
 results_dat %>% 
-  filter(trainfrac == 0.8, metric == 'AUROC', dataset == 'full') %>% 
+  filter(trainfrac == 0.8, metric == 'AUROC', dataset == 'full', taxlevel == "OTU") %>% 
   ggplot(aes(perf_metric_value, perf_metric_name, color = outcome)) +
   geom_boxplot() +
   theme_bw() +
@@ -81,7 +81,7 @@ results_dat %>%
 
 ``` r
 results_dat %>% 
-  filter(trainfrac == 0.8, metric == 'AUROC', dataset == 'full') %>% 
+  filter(trainfrac == 0.8, metric == 'AUROC', dataset == 'full', taxlevel == "OTU") %>% 
   ggplot(aes(perf_metric_value, method, color = outcome)) +
   geom_boxplot() +
   theme_bw() +
@@ -95,7 +95,7 @@ results_dat %>%
 
 ``` r
 results_dat %>% 
-  filter(trainfrac == 0.8, method == 'glmnet', dataset == 'full') %>% 
+  filter(trainfrac == 0.8, method == 'glmnet', dataset == 'full', taxlevel == "OTU") %>% 
   ggplot(aes(perf_metric_value, perf_metric_name, color = outcome)) +
   geom_boxplot() +
   theme_bw() +
@@ -106,7 +106,7 @@ results_dat %>%
 
 ``` r
 results_dat %>% 
-  filter(trainfrac == 0.8, method == 'glmnet', dataset == 'full') %>% 
+  filter(trainfrac == 0.8, method == 'glmnet', dataset == 'full', taxlevel == "OTU") %>% 
   ggplot(aes(perf_metric_value, metric, color = outcome)) +
   geom_boxplot() +
   theme_bw() +
@@ -115,3 +115,28 @@ results_dat %>%
 ```
 
 ![](figures/plot_metric-2.png)<!-- -->
+
+## taxlevel - OTU vs genus
+
+``` r
+results_dat %>% 
+  filter(trainfrac == 0.8, method == 'glmnet', dataset == 'full', metric == 'AUROC') %>% 
+  ggplot(aes(perf_metric_value, perf_metric_name, color = outcome)) +
+  geom_boxplot() +
+  theme_bw() +
+  facet_wrap('taxlevel')
+```
+
+![](figures/plot_taxlevel-1.png)<!-- -->
+
+``` r
+results_dat %>% 
+  filter(trainfrac == 0.8, method == 'glmnet', dataset == 'full', metric == 'AUROC') %>% 
+  ggplot(aes(perf_metric_value, taxlevel, color = outcome)) +
+  geom_boxplot() +
+  theme_bw() +
+  facet_wrap('perf_metric_name') +
+  labs(x="performance on held out test data")
+```
+
+![](figures/plot_taxlevel-2.png)<!-- -->
