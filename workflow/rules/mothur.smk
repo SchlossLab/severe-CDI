@@ -172,7 +172,7 @@ rule cluster_otus:
             classify.otu(list=current, count=current, taxonomy=current, label=0.03)
             "
         """
-
+''''
 rule alpha_beta:
     input:
         taxonomy=rules.cluster_otus.output.taxonomy,
@@ -195,10 +195,12 @@ rule alpha_beta:
         sub.sample(shared=cdi.opti_mcc.shared, size=5000);
         rarefaction.single(shared=cdi.opti_mcc.shared, calc=sobs, freq=100);
         summary.single(shared=cdi.opti_mcc.shared, calc=nseqs-coverage-invsimpson-shannon-sobs, subsample=5000);
-        dist.shared();
+        dist.shared(shared=cdi.opti_mcc.shared, calc=braycurtis, subsample=5000, processors=10);
+        nmds(phylip=cdi.opti_mcc.braycurtis.0.03.lt.ave.dist);
+        pcoa(phylip=cdi.opti_mcc.braycurtis.0.03.lt.ave.dist);
         "
         """
-'''
+
 rule get_genus_level:
     input:
         shared="data/mothur/cdi.opti_mcc.shared",
