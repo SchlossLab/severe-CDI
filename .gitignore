@@ -21,6 +21,11 @@ mothur*logfile
 *.docx
 *.out
 
+paper/*.sty
+paper/*.ldf
+paper/*.cls
+paper/*.bst
+.quarto/
 .snakemake/
 
 # user-specific files
