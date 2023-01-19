@@ -1,0 +1,15 @@
+ml_methods:
+ - glmnet
+kfold: 5
+ncores: 36
+nseeds: 1
+outcomes:
+  - idsa
+  - allcause
+  - attrib
+tax_levels:
+  - OTU
+metrics:
+  - AUC
+train_frac:
+  - 0.8
