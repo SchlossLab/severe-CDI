@@ -1,7 +1,7 @@
 with open(f"data/SRR_Acc_List.txt", 'r') as file:
     sra_list = [line.strip() for line in file]
 
-'''rule download_silva:
+rule download_silva:
     output:
         fasta='data/references/silva.seed_v132.align',
         tax='data/references/silva.seed_v132.tax'
@@ -172,7 +172,7 @@ rule cluster_otus:
             classify.otu(list=current, count=current, taxonomy=current, label=0.03)
             "
         """
-'''
+
 rule alpha_beta:
     input:
         taxonomy=rules.cluster_otus.output.taxonomy,
@@ -182,7 +182,10 @@ rule alpha_beta:
         taxonomy="data/mothur/cdi.taxonomy",
         summary="data/mothur/cdi.opti_mcc.groups.ave-std.summary",
         rarefaction="data/mothur/cdi.opti_mcc.groups.rarefaction",
-        subsample_shared="data/mothur/cdi.opti_mcc.0.03.subsample.shared"
+        subsample_shared="data/mothur/cdi.opti_mcc.0.03.subsample.shared",
+        dist_shared = "cdi.opti_mcc.braycurtis.0.03.lt.ave.dist",
+        nmds = "cdi.opti_mcc.braycurtis.0.03.lt.ave.dist.nmds",
+        pcoa = "cdi.opti_mcc.braycurtis.0.03.lt.ave.dist.pcoa"
     log:
         "log/mothur/alpha_beta.log"
     conda:
@@ -216,7 +219,6 @@ rule get_genus_level:
     script:
         "../scripts/get_genus_level.R"
 
-''''
 rule get_oturep:
     input:
         list="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.list",
@@ -299,4 +301,4 @@ rule lefse_analysis:
     conda: "../envs/mikropml.yml"
     script:
         "../scripts/lefse_analysis.R"
-'''
+
