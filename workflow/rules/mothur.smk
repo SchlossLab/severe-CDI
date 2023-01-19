@@ -183,9 +183,9 @@ rule alpha_beta:
         summary="data/mothur/cdi.opti_mcc.groups.ave-std.summary",
         rarefaction="data/mothur/cdi.opti_mcc.groups.rarefaction",
         subsample_shared="data/mothur/cdi.opti_mcc.0.03.subsample.shared",
-        dist_shared = "cdi.opti_mcc.braycurtis.0.03.lt.ave.dist",
-        nmds = "cdi.opti_mcc.braycurtis.0.03.lt.ave.dist.nmds",
-        pcoa = "cdi.opti_mcc.braycurtis.0.03.lt.ave.dist.pcoa"
+        dist_shared = "data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.dist",
+        nmds = "data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.dist.nmds",
+        pcoa = "data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.dist.pcoa"
     log:
         "log/mothur/alpha_beta.log"
     conda:
