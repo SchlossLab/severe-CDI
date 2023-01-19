@@ -4,6 +4,8 @@ date: "`r Sys.Date()`"
 output: 
   github_document:
     html_preview: false
+  gfm:
+    html_preview: false
 ---
 
 ```{r setup, include=FALSE}
@@ -53,16 +55,73 @@ hold train frac, method, & metric constant
 
 ```{r plot_dataset}
 results_dat %>% 
-  filter(trainfrac == 0.8, method == 'glmnet', metric == 'AUROC') %>% 
+  filter(trainfrac == 0.8, method == 'glmnet', metric == 'AUROC', taxlevel == "OTU") %>% 
   ggplot(aes(perf_metric_value, perf_metric_name, color = outcome)) +
   geom_boxplot() +
   theme_bw() +
   facet_wrap('dataset')
+
+results_dat %>% 
+  filter(trainfrac == 0.8, method == 'glmnet', metric == 'AUROC', taxlevel == "OTU") %>% 
+  ggplot(aes(perf_metric_value, dataset, color = outcome)) +
+  geom_boxplot() +
+  theme_bw() +
+  facet_wrap('perf_metric_name') +
+  labs(x="performance on held out test data")
 ```
 
 ## ML method - rf vs l2 logit
+```{r plot_method}
+results_dat %>% 
+  filter(trainfrac == 0.8, metric == 'AUROC', dataset == 'full', taxlevel == "OTU") %>% 
+  ggplot(aes(perf_metric_value, perf_metric_name, color = outcome)) +
+  geom_boxplot() +
+  theme_bw() +
+  facet_wrap('method')
+
+results_dat %>% 
+  filter(trainfrac == 0.8, metric == 'AUROC', dataset == 'full', taxlevel == "OTU") %>% 
+  ggplot(aes(perf_metric_value, method, color = outcome)) +
+  geom_boxplot() +
+  theme_bw() +
+  facet_wrap('perf_metric_name') +
+  labs(x="performance on held out test data")
+```
 
 
 ## metric - AUROC vs F1 score
+```{r plot_metric}
+results_dat %>% 
+  filter(trainfrac == 0.8, method == 'glmnet', dataset == 'full', taxlevel == "OTU") %>% 
+  ggplot(aes(perf_metric_value, perf_metric_name, color = outcome)) +
+  geom_boxplot() +
+  theme_bw() +
+  facet_wrap('metric')
 
+results_dat %>% 
+  filter(trainfrac == 0.8, method == 'glmnet', dataset == 'full', taxlevel == "OTU") %>% 
+  ggplot(aes(perf_metric_value, metric, color = outcome)) +
+  geom_boxplot() +
+  theme_bw() +
+  facet_wrap('perf_metric_name') +
+  labs(y="metric optimized during model training", x="performance on held out test data")
+```
 
+## taxlevel - OTU vs genus
+```{r plot_taxlevel}
+results_dat %>% 
+  filter(trainfrac == 0.8, method == 'glmnet', dataset == 'full', metric == 'AUROC') %>% 
+  ggplot(aes(perf_metric_value, perf_metric_name, color = outcome)) +
+  geom_boxplot() +
+  theme_bw() +
+  facet_wrap('taxlevel')
+
+results_dat %>% 
+  filter(trainfrac == 0.8, method == 'glmnet', dataset == 'full', metric == 'AUROC') %>% 
+  ggplot(aes(perf_metric_value, taxlevel, color = outcome)) +
+  geom_boxplot() +
+  theme_bw() +
+  facet_wrap('perf_metric_name') +
+  labs(x="performance on held out test data")
+
+```
