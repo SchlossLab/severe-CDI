@@ -172,7 +172,7 @@ rule cluster_otus:
             classify.otu(list=current, count=current, taxonomy=current, label=0.03)
             "
         """
-''''
+'''
 rule alpha_beta:
     input:
         taxonomy=rules.cluster_otus.output.taxonomy,
