@@ -188,6 +188,7 @@ rule alpha_beta:
         pcoa = "data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.dist.pcoa"
     log:
         "log/mothur/alpha_beta.log"
+    threads: 10
     conda:
         "../envs/mothur.yml"
     shell:
@@ -198,7 +199,7 @@ rule alpha_beta:
         sub.sample(shared=cdi.opti_mcc.shared, size=5000);
         rarefaction.single(shared=cdi.opti_mcc.shared, calc=sobs, freq=100);
         summary.single(shared=cdi.opti_mcc.shared, calc=nseqs-coverage-invsimpson-shannon-sobs, subsample=5000);
-        dist.shared(shared=cdi.opti_mcc.shared, calc=braycurtis, subsample=5000, processors=10);
+        dist.shared(shared=cdi.opti_mcc.shared, calc=braycurtis, subsample=5000, processors={threads});
         nmds(phylip=cdi.opti_mcc.braycurtis.0.03.lt.ave.dist);
         pcoa(phylip=cdi.opti_mcc.braycurtis.0.03.lt.ave.dist);
         "
