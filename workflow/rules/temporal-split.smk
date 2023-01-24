@@ -31,14 +31,22 @@ rule run_ml_temporal_split:
     script:
         "../scripts/train_ml_temporal_split.R"
 
-rule bootstrap:
+rule combine_results_temporal:
+    input:
+        R="workflow/scripts/combine_results.R",
+        csv=expand("results/predict_{outcome}/taxlevel_{taxlevel}/metric_{metric}/dataset_{dataset}/trainfrac_{trainfrac}/temporal-split/{method}_{seed}_{{type}}.csv",
+                    outcome = outcomes, taxlevel = tax_levels, metric = metrics,
+                    dataset = datasets, trainfrac = train_fracs,
+                    method = ml_methods, seed = seeds)
+    output: csv='results/temporal-split/{type}_results.csv'
+    log: "log/combine_results_{type}.txt"
+    conda: "../envs/mikropml.yml"
     script:
-        "../scripts/bootstrap_temporal_split.R"
+        "../scripts/combine_results.R"
 
 rule targets_temporal_split:
     input:
-        expand(rules.run_ml_temporal_split.output.perf,
-                outcome = outcomes, taxlevel = tax_levels, metric = metrics,
-                dataset = ['int'], trainfrac = train_fracs,
-                method = ml_methods, seed = seeds
-        )
+        expand('results/temporal-split/{type}_results.csv',
+                type = ['performance', 'feature-importance'])
+
+# TODO plot performance & feature importance
