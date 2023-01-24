@@ -13,6 +13,7 @@ method <- snakemake@params[["method"]]
 seed <- as.numeric(snakemake@params[["seed"]])
 metric <- snakemake@wildcards[['metric']]
 
+set.seed(seed)
 ml_results <- run_ml(
   dataset = data_processed,
   method = method,
@@ -26,16 +27,17 @@ ml_results <- run_ml(
 
 calc_perf <- function(split) {
   get_performance_tbl(
-    ml_results$trained_model,
-    split$data,
-    outcome_colname = outcome_colname,
+    model,
+    analysis(split),
+    outcome_colname = 'idsa',
     perf_metric_function = caret::multiClassSummary,
-    perf_metric_name = metric,
+    perf_metric_name = 'AUC',
     class_probs = TRUE,
-    method = method,
-    seed = seed
+    method = 'glmnet',
+    seed = 100
   ) %>% 
     select(-c(method, seed)) %>% 
+    mutate(across(everything(), as.numeric)) %>% 
     pivot_longer(everything(), names_to = 'term', values_to = 'estimate')
 }
 
