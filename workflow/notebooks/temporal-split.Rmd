@@ -67,3 +67,35 @@ partitions_int <- bind_rows(
 kable(partitions_int)
 ```
 
+## try bootstrapping with rsample
+
+```{r boot}
+library(furrr)
+library(mikropml)
+library(rsample)
+
+model <- readRDS(here('results/predict_idsa/taxlevel_OTU/metric_AUC/dataset_int/trainfrac_0.8/temporal-split/glmnet_100_model.Rds'))
+
+test_dat <- read_csv(here('results/predict_idsa/taxlevel_OTU/metric_AUC/dataset_int/trainfrac_0.8/temporal-split/glmnet_100_test-data.csv'))
+
+calc_perf <- function(split) {
+   get_performance_tbl(
+        model,
+        split$data,
+        outcome_colname = 'idsa',
+        perf_metric_function = caret::twoClassSummary,
+        perf_metric_name = 'AUC',
+        class_probs = TRUE,
+        method = 'glmnet',
+        seed = 100
+      ) %>% 
+    select(-c(method, seed)) %>% 
+    pivot_longer(everything(), names_to = 'term', values_to = 'estimate')
+}
+
+boots <- bootstraps(test_dat, times = 10) %>% 
+  mutate(perf = future_map(splits, ~ calc_perf(.x)))
+
+int_pctl(boots, perf)
+```
+
