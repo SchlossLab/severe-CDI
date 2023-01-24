@@ -29,6 +29,7 @@ module mikropml:
 include: 'rules/mothur.smk'
 include: 'rules/machine-learning.smk'
 include: 'rules/plot.smk'
+include: 'rules/temporal-split.smk'
 
 rule targets:
     input:
