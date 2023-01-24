@@ -34,19 +34,14 @@ rule run_ml_temporal_split:
 rule combine_results_temporal:
     input:
         R="workflow/scripts/combine_results.R",
-        csv=expand("results/predict_{outcome}/taxlevel_{taxlevel}/metric_{metric}/dataset_{dataset}/trainfrac_{trainfrac}/temporal-split/{method}_{seed}_{{type}}.csv",
-                    outcome = outcomes, taxlevel = tax_levels, metric = metrics,
-                    dataset = datasets, trainfrac = train_fracs,
-                    method = ml_methods, seed = seeds)
-    output: csv='results/temporal-split/{type}_results.csv'
-    log: "log/combine_results_{type}.txt"
+        csv=expand("results/predict_{outcome}/taxlevel_{taxlevel}/metric_{metric}/dataset_{dataset}/trainfrac_{trainfrac}/temporal-split/{method}_{seed}_{{rtype}}.csv", outcome = outcomes, taxlevel = tax_levels, metric = metrics, dataset = datasets, trainfrac = train_fracs, method = ml_methods, seed = seeds)
+    output: csv='results/temporal-split/{rtype}_results.csv'
+    log: "log/combine_results_{rtype}.txt"
     conda: "../envs/mikropml.yml"
     script:
         "../scripts/combine_results.R"
 
 rule targets_temporal_split:
-    input:
-        expand('results/temporal-split/{type}_results.csv',
-                type = ['performance', 'feature-importance'])
+    input: expand('results/temporal-split/{rtype}_results.csv', rtype = result_types)
 
 # TODO plot performance & feature importance
