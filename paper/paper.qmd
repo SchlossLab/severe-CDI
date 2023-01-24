@@ -72,6 +72,9 @@ TODO
 
 # Materials and Methods
 
+CDC definiton of severe CDI [@mcdonald_recommendations_2007].
+
+
 TODO [@schloss_introducing_2009;@topcuoglu_mikropml_2021;@sovacool_schtools_2022]
 
 # Acknowledgements
