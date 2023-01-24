@@ -4,6 +4,7 @@ rule prep_temporal_split:
         metadat='data/process/cases_int_metadata.csv'
     output:
         rds="data/process/temporal-split/predict_{outcome}/taxlevel_{taxlevel}/dataset_{dataset}/trainfrac_{trainfrac}/train-idx.Rds"
+    log: 'log/temporal-split/predict_{outcome}/taxlevel_{taxlevel}/dataset_{dataset}/trainfrac_{trainfrac}/prep_temporal_split.txt'
     script:
         "../scripts/prep_temporal_split.R"
 
@@ -30,9 +31,13 @@ rule run_ml_temporal_split:
     script:
         "../scripts/train_ml_temporal_split.R"
 
+rule bootstrap:
+    script:
+        "../scripts/bootstrap_temporal_split.R"
+
 rule targets_temporal_split:
     input:
-        expand(rules.run_ml_temporal_split.output.test,
+        expand(rules.run_ml_temporal_split.output.perf,
                 outcome = outcomes, taxlevel = tax_levels, metric = metrics,
                 dataset = ['int'], trainfrac = train_fracs,
                 method = ml_methods, seed = seeds

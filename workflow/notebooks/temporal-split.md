@@ -44,7 +44,6 @@ compare_props <- function(test_dat, train_dat, colname) {
 
 ``` r
 test_dat_int <- metadat_int %>% 
-  arrange(desc(collection_date)) %>% 
   slice_max(order_by = collection_date, prop = 0.2)
 
 train_dat_int <- metadat_int %>% 
@@ -85,3 +84,43 @@ kable(partitions_int)
 | attrib_yes   | 0.060 | 0.044 |
 | allcause_no  | 0.907 | 0.890 |
 | allcause_yes | 0.093 | 0.110 |
+
+## try bootstrapping with rsample
+
+``` r
+library(furrr)
+library(mikropml)
+library(rsample)
+
+model <- readRDS(here('results/predict_idsa/taxlevel_OTU/metric_AUC/dataset_int/trainfrac_0.8/temporal-split/glmnet_100_model.Rds'))
+
+test_dat <- read_csv(here('results/predict_idsa/taxlevel_OTU/metric_AUC/dataset_int/trainfrac_0.8/temporal-split/glmnet_100_test-data.csv'))
+
+calc_perf <- function(split) {
+   get_performance_tbl(
+        model,
+        split$data,
+        outcome_colname = 'idsa',
+        perf_metric_function = caret::twoClassSummary,
+        perf_metric_name = 'AUC',
+        class_probs = TRUE,
+        method = 'glmnet',
+        seed = 100
+      ) %>% 
+    select(-c(method, seed)) %>% 
+    pivot_longer(everything(), names_to = 'term', values_to = 'estimate')
+}
+
+boots <- bootstraps(test_dat, times = 10) %>% 
+  mutate(perf = future_map(splits, ~ calc_perf(.x)))
+
+int_pctl(boots, perf)
+```
+
+    ## # A tibble: 4 × 6
+    ##   term          .lower .estimate .upper .alpha .method   
+    ##   <chr>          <dbl>     <dbl>  <dbl>  <dbl> <chr>     
+    ## 1 cv_metric_AUC  0.529     0.529  0.529   0.05 percentile
+    ## 2 ROC            0.532     0.532  0.532   0.05 percentile
+    ## 3 Sens           1         1      1       0.05 percentile
+    ## 4 Spec           0         0      0       0.05 percentile
