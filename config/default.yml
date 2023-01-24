@@ -18,3 +18,6 @@ metrics:
 train_frac:
   - 0.8
   - 0.65
+dataset_subsets:
+  - full
+  - int
