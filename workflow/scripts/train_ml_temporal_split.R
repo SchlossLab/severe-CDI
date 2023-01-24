@@ -4,6 +4,8 @@ doFuture::registerDoFuture()
 future::plan(future::multicore, workers = snakemake@threads)
 
 data_processed <- readRDS(snakemake@input[["rds"]])$dat_transformed
+train_indices <- readRDS(snakemake@input[['train']])
+
 ml_results <- mikropml::run_ml(
   dataset = data_processed,
   method = snakemake@params[["method"]],
@@ -11,7 +13,7 @@ ml_results <- mikropml::run_ml(
   find_feature_importance = TRUE,
   kfold = as.numeric(snakemake@params[['kfold']]),
   seed = as.numeric(snakemake@params[["seed"]]),
-  training_frac = as.numeric(snakemake@wildcards[['trainfrac']]),
+  training_frac = train_indices,
   perf_metric_name = snakemake@wildcards[['metric']]
 )
 wildcards <- schtools::get_wildcards_tbl()
