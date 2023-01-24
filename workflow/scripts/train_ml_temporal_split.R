@@ -29,7 +29,7 @@ calc_perf <- function(split) {
     ml_results$trained_model,
     split$data,
     outcome_colname = outcome_colname,
-    perf_metric_function = caret::twoClassSummary,
+    perf_metric_function = caret::multiClassSummary,
     perf_metric_name = metric,
     class_probs = TRUE,
     method = method,
