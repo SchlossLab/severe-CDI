@@ -37,6 +37,7 @@ rule mutate_benchmark:
         csv="results/predict_{outcome}/taxlevel_{taxlevel}/metric_{metric}/dataset_{dataset}/trainfrac_{trainfrac}/temporal-split/{method}_{seed}_benchmarks.csv"
     log:
         "log/predict_{outcome}/taxlevel_{taxlevel}/metric_{metric}/dataset_{dataset}/trainfrac_{trainfrac}/temporal-split/mutate_benchmark.{method}_{seed}.txt"
+    conda: "../envs/mikropml.yml"
     script:
         '../scripts/mutate_benchmark.R'
 
