@@ -29,22 +29,30 @@ as the other 80% of the patients?
     ## # A tibble: 15 × 6
     ##    term              .lower .estimate .upper .alpha .method   
     ##    <chr>              <dbl>     <dbl>  <dbl>  <dbl> <chr>     
-    ##  1 Accuracy           0.565     0.625  0.727   0.05 percentile
-    ##  2 AUC                0.483     0.532  0.602   0.05 percentile
+    ##  1 Accuracy           0.582     0.643  0.720   0.05 percentile
+    ##  2 AUC                0.396     0.533  0.625   0.05 percentile
     ##  3 Balanced_Accuracy  0.5       0.5    0.5     0.05 percentile
     ##  4 cv_metric_AUC      0.529     0.529  0.529   0.05 percentile
-    ##  5 Detection_Rate     0         0.377  0.725   0.05 percentile
-    ##  6 F1                 0.721     0.770  0.847   0.05 percentile
+    ##  5 Detection_Rate     0         0.520  0.720   0.05 percentile
+    ##  6 F1                 0.738     0.787  0.838   0.05 percentile
     ##  7 Kappa              0         0      0       0.05 percentile
-    ##  8 logLoss            0.596     0.672  0.719   0.05 percentile
-    ##  9 Neg_Pred_Value     0.594     0.621  0.657   0.05 percentile
-    ## 10 Pos_Pred_Value     0.563     0.628  0.735   0.05 percentile
-    ## 11 prAUC              0.470     0.507  0.566   0.05 percentile
-    ## 12 Precision          0.563     0.628  0.735   0.05 percentile
-    ## 13 Recall             0         0.6    1       0.05 percentile
-    ## 14 Sensitivity        0         0.6    1       0.05 percentile
-    ## 15 Specificity        0         0.4    1       0.05 percentile
+    ##  8 logLoss            0.602     0.658  0.700   0.05 percentile
+    ##  9 Neg_Pred_Value     0.584     0.615  0.647   0.05 percentile
+    ## 10 Pos_Pred_Value     0.584     0.650  0.721   0.05 percentile
+    ## 11 prAUC              0.431     0.504  0.563   0.05 percentile
+    ## 12 Precision          0.584     0.650  0.721   0.05 percentile
+    ## 13 Recall             0         0.8    1       0.05 percentile
+    ## 14 Sensitivity        0         0.8    1       0.05 percentile
+    ## 15 Specificity        0         0.2    1       0.05 percentile
 
 ## Plot performance
 
-![](figures/perf-95-ci-1.png)<!-- -->
+![](figures/temporal-split_perf-95-ci-1.png)<!-- -->
+
+## Computational resources
+
+![](figures/temporal-split_bench-1.png)<!-- -->
+
+## Feature importance
+
+![](figures/temporal-split_feat-imp-1.png)<!-- -->
