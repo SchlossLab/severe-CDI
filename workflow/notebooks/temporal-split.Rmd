@@ -10,6 +10,7 @@ output:
 schtools::set_knitr_opts()
 knitr::opts_chunk$set(message = FALSE,
                       warning = FALSE,
+                      echo = TRUE,
                       fig.path = 'figures/')
 ```
 
@@ -106,7 +107,7 @@ calc_perf <- function(split) {
 boots <- bootstraps(test_dat, times = 10) %>% 
   mutate(perf = future_map(splits, ~ calc_perf(.x)))
 
-int_pctl(boots, perf)
+int_pctl(boots, perf) %>% kable()
 ```
 
 ## Plot performance
@@ -114,7 +115,7 @@ int_pctl(boots, perf)
 ```{r temporal-split_perf-95-ci}
 perf_dat <- read_csv(here('results','temporal-split','performance_results.csv'))
 perf_dat %>% 
-  filter(term %in% c('cv_metric_AUC', "AUC")) %>% #, 'prAUC')) %>% 
+  filter(term %in% c('cv_metric_AUC', "AUC")) %>%
   mutate(term = case_when(term == 'cv_metric_AUC' ~ 'train AUROC',
                           term == 'AUC' ~ 'test AUROC',
                           TRUE ~ term)
