@@ -25,7 +25,7 @@ rule run_ml_temporal_split:
         kfold=kfold
     threads: ncores
     resources:
-        mem_mb=MEM_PER_GB*8
+        mem_mb=MEM_PER_GB*1
     conda: "../envs/mikropml.yml"
     script:
         "../scripts/train_ml_temporal_split.R"
