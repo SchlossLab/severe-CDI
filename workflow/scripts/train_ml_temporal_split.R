@@ -24,17 +24,17 @@ ml_results <- run_ml(
   training_frac = train_indices,
   perf_metric_name = metric
 )
-
+trained_model <- ml_results$trained_model
 calc_perf <- function(split) {
   get_performance_tbl(
-    model,
+    trained_model,
     analysis(split),
-    outcome_colname = 'idsa',
+    outcome_colname = outcome_colname,
     perf_metric_function = caret::multiClassSummary,
-    perf_metric_name = 'AUC',
+    perf_metric_name = metric,
     class_probs = TRUE,
-    method = 'glmnet',
-    seed = 100
+    method = method,
+    seed = seed
   ) %>% 
     select(-c(method, seed)) %>% 
     mutate(across(everything(), as.numeric)) %>% 
@@ -55,4 +55,4 @@ ml_results$feature_importance %>%
   readr::write_csv(snakemake@output[["feat"]])
 test_dat %>%
   readr::write_csv(snakemake@output[['test']])
-saveRDS(ml_results$trained_model, file = snakemake@output[["model"]])
+trained_model %>% saveRDS(file = snakemake@output[["model"]])
