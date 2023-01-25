@@ -15,8 +15,10 @@ knitr::opts_chunk$set(message = FALSE,
 
 ```{r deps}
 library(here)
+library(knitr)
 library(mikropml)
 library(rlang)
+library(schtools)
 library(tidyverse)
 ```
 
@@ -109,10 +111,10 @@ int_pctl(boots, perf)
 
 ## Plot performance
 
-```{r perf-95-ci}
+```{r temporal-split_perf-95-ci}
 perf_dat <- read_csv(here('results','temporal-split','performance_results.csv'))
 perf_dat %>% 
-  filter(term %in% c('cv_metric_AUC', "AUC")) %>% 
+  filter(term %in% c('cv_metric_AUC', "AUC")) %>% #, 'prAUC')) %>% 
   mutate(term = case_when(term == 'cv_metric_AUC' ~ 'train AUROC',
                           term == 'AUC' ~ 'test AUROC',
                           TRUE ~ term)
@@ -122,6 +124,37 @@ perf_dat %>%
          upper = .upper) %>% 
   ggplot(aes(x = estimate, xmin = lower, xmax = upper, y = outcome, color = term)) +
   geom_pointrange(position = position_dodge(width = 0.1)) +
-  schtools::theme_sovacool()
+  facet_wrap('dataset') +
+  theme_sovacool()
 ```
+
+## Computational resources
+
+```{r temporal-split_bench}
+bench_dat <- read_csv(here('results','temporal-split','benchmarks_results.csv'))
+bench_dat %>% 
+  ggplot(aes(x = s, y = outcome, color = dataset)) +
+  geom_point() +
+  scale_x_time() +
+  theme_sovacool()
+```
+
+## Feature importance
+
+```{r temporal-split_feat-imp}
+feat_dat <- read_csv(here('results','temporal-split','feature-importance_results.csv'))
+tax_dat <- read_tax(here('data','mothur','cdi.taxonomy'))
+important_feats <- feat_dat %>% 
+  rename(otu = names) %>% 
+  left_join(tax_dat, by = 'otu') %>% 
+  filter(pvalue < 0.05, perf_metric_diff > 0) %>% 
+  arrange(perf_metric_diff)
+important_feats %>% 
+  mutate(otu = factor(otu, levels = important_feats %>% pull(otu) %>% unique())) %>% 
+  ggplot(aes(x = perf_metric_diff, y = label_html, color = outcome, shape = dataset)) +
+  geom_point() +
+  theme_sovacool() +
+  theme(axis.text.y = ggtext::element_markdown())
+```
+
 

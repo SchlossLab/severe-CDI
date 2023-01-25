@@ -1,3 +1,6 @@
+import os
+import pathlib
+
 configfile: 'config/default.yml'
 
 MEM_PER_GB = 1024
@@ -15,6 +18,11 @@ train_fracs = config['train_frac']
 datasets = config['dataset_subsets']
 
 result_types = ['performance', 'feature-importance']
+
+notebooks_dir = pathlib.Path('workflow', 'notebooks')
+md_notebooks = [pathlib.Path(notebooks_dir, nb) 
+                for nb in os.listdir(notebooks_dir)
+                if nb.endswith('.md')]
 
 module mikropml:
     snakefile: 
@@ -139,3 +147,23 @@ rule render_site:
         'docs/index.html'
     shell:
         "quarto render {input.qmd}"
+
+rule render_notebook:
+    input:
+        rmd=f'{notebooks_dir}/{{file}}.Rmd'
+    output:
+        md=f'{notebooks_dir}/{{file}}.md'
+    params:
+        workdir=notebooks_dir
+    conda:
+        'envs/mikropml.yml'
+    shell:
+        """
+        cd {params.workdir}
+        fn="{wildcards.file}.Rmd"
+        R -e "rmarkdown::render('$fn')"
+        """
+
+rule render_notebooks:
+    input:
+        md_notebooks
