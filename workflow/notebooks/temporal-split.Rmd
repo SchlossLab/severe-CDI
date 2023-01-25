@@ -6,6 +6,13 @@ output:
     html_preview: false
 ---
 
+```{r setup, include=FALSE}
+schtools::set_knitr_opts()
+knitr::opts_chunk$set(message = FALSE,
+                      warning = FALSE,
+                      fig.path = 'figures/')
+```
+
 ```{r deps}
 library(here)
 library(mikropml)
@@ -81,15 +88,16 @@ test_dat <- read_csv(here('results/predict_idsa/taxlevel_OTU/metric_AUC/dataset_
 calc_perf <- function(split) {
    get_performance_tbl(
         model,
-        split$data,
+        analysis(split),
         outcome_colname = 'idsa',
-        perf_metric_function = caret::twoClassSummary,
+        perf_metric_function = caret::multiClassSummary,
         perf_metric_name = 'AUC',
         class_probs = TRUE,
         method = 'glmnet',
         seed = 100
       ) %>% 
     select(-c(method, seed)) %>% 
+    mutate(across(everything(), as.numeric)) %>% 
     pivot_longer(everything(), names_to = 'term', values_to = 'estimate')
 }
 
@@ -97,5 +105,23 @@ boots <- bootstraps(test_dat, times = 10) %>%
   mutate(perf = future_map(splits, ~ calc_perf(.x)))
 
 int_pctl(boots, perf)
+```
+
+## Plot performance
+
+```{r perf-95-ci}
+perf_dat <- read_csv(here('results','temporal-split','performance_results.csv'))
+perf_dat %>% 
+  filter(term %in% c('cv_metric_AUC', "AUC")) %>% 
+  mutate(term = case_when(term == 'cv_metric_AUC' ~ 'train AUROC',
+                          term == 'AUC' ~ 'test AUROC',
+                          TRUE ~ term)
+  ) %>% 
+  rename(estimate = .estimate,
+         lower = .lower,
+         upper = .upper) %>% 
+  ggplot(aes(x = estimate, xmin = lower, xmax = upper, y = outcome, color = term)) +
+  geom_pointrange(position = position_dodge(width = 0.1)) +
+  schtools::theme_sovacool()
 ```
 

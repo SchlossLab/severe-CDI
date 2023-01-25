@@ -2,13 +2,6 @@ Temporal Split
 ================
 2022-01-19
 
-``` r
-library(here)
-library(mikropml)
-library(rlang)
-library(tidyverse)
-```
-
 Investigate feasibility of doing a temporal split to train/test models
 on older data and then validate on newer data. Bootstrap the test data
 to get empirical 95% CI.
@@ -16,65 +9,11 @@ to get empirical 95% CI.
 Do the 20% most recent patients have the same proportion of severe cases
 as the other 80% of the patients?
 
-``` r
-metadat_full <- read_csv(here('data','process','cases_full_metadata.csv'))
-metadat_int <- read_csv(here('data','process','cases_int_metadata.csv'))
-```
-
-``` r
-count_prop <- function(dat, colname, part) {
-  dat %>% 
-    count({{ colname }}) %>% 
-    mutate(p = round(n / sum(n), 3)) %>% 
-    mutate(partition = part) %>% 
-    select(partition, p, {{ colname }}) %>% 
-    pivot_wider(names_from = partition, values_from = p)
-}
-compare_props <- function(test_dat, train_dat, colname) {
-  test <- test_dat %>% 
-    count_prop({{ colname }}, 'test')
-  train <- train_dat %>% 
-    count_prop({{ colname }}, 'train')
-  full_join(test, train) %>% 
-    mutate(severity = paste(quo_name(enquo(colname)), {{ colname }}, sep = "_")
-    ) %>% 
-    select(severity, train, test)
-}
-```
-
-``` r
-test_dat_int <- metadat_int %>% 
-  slice_max(order_by = collection_date, prop = 0.2)
-
-train_dat_int <- metadat_int %>% 
-  anti_join(test_dat_int)
-
-nrow(test_dat_int)
-```
-
     ## [1] 91
-
-``` r
-nrow(train_dat_int)
-```
 
     ## [1] 365
 
-``` r
-nrow(metadat_int)
-```
-
     ## [1] 456
-
-``` r
-partitions_int <- bind_rows(
-  compare_props(test_dat_int, train_dat_int, idsa),
-  compare_props(test_dat_int, train_dat_int, attrib),
-  compare_props(test_dat_int, train_dat_int, allcause)
-) 
-
-kable(partitions_int)
-```
 
 | severity     | train |  test |
 |:-------------|------:|------:|
@@ -87,40 +26,25 @@ kable(partitions_int)
 
 ## try bootstrapping with rsample
 
-``` r
-library(furrr)
-library(mikropml)
-library(rsample)
+    ## # A tibble: 15 × 6
+    ##    term              .lower .estimate .upper .alpha .method   
+    ##    <chr>              <dbl>     <dbl>  <dbl>  <dbl> <chr>     
+    ##  1 Accuracy           0.565     0.625  0.727   0.05 percentile
+    ##  2 AUC                0.483     0.532  0.602   0.05 percentile
+    ##  3 Balanced_Accuracy  0.5       0.5    0.5     0.05 percentile
+    ##  4 cv_metric_AUC      0.529     0.529  0.529   0.05 percentile
+    ##  5 Detection_Rate     0         0.377  0.725   0.05 percentile
+    ##  6 F1                 0.721     0.770  0.847   0.05 percentile
+    ##  7 Kappa              0         0      0       0.05 percentile
+    ##  8 logLoss            0.596     0.672  0.719   0.05 percentile
+    ##  9 Neg_Pred_Value     0.594     0.621  0.657   0.05 percentile
+    ## 10 Pos_Pred_Value     0.563     0.628  0.735   0.05 percentile
+    ## 11 prAUC              0.470     0.507  0.566   0.05 percentile
+    ## 12 Precision          0.563     0.628  0.735   0.05 percentile
+    ## 13 Recall             0         0.6    1       0.05 percentile
+    ## 14 Sensitivity        0         0.6    1       0.05 percentile
+    ## 15 Specificity        0         0.4    1       0.05 percentile
 
-model <- readRDS(here('results/predict_idsa/taxlevel_OTU/metric_AUC/dataset_int/trainfrac_0.8/temporal-split/glmnet_100_model.Rds'))
+## Plot performance
 
-test_dat <- read_csv(here('results/predict_idsa/taxlevel_OTU/metric_AUC/dataset_int/trainfrac_0.8/temporal-split/glmnet_100_test-data.csv'))
-
-calc_perf <- function(split) {
-   get_performance_tbl(
-        model,
-        split$data,
-        outcome_colname = 'idsa',
-        perf_metric_function = caret::twoClassSummary,
-        perf_metric_name = 'AUC',
-        class_probs = TRUE,
-        method = 'glmnet',
-        seed = 100
-      ) %>% 
-    select(-c(method, seed)) %>% 
-    pivot_longer(everything(), names_to = 'term', values_to = 'estimate')
-}
-
-boots <- bootstraps(test_dat, times = 10) %>% 
-  mutate(perf = future_map(splits, ~ calc_perf(.x)))
-
-int_pctl(boots, perf)
-```
-
-    ## # A tibble: 4 × 6
-    ##   term          .lower .estimate .upper .alpha .method   
-    ##   <chr>          <dbl>     <dbl>  <dbl>  <dbl> <chr>     
-    ## 1 cv_metric_AUC  0.529     0.529  0.529   0.05 percentile
-    ## 2 ROC            0.532     0.532  0.532   0.05 percentile
-    ## 3 Sens           1         1      1       0.05 percentile
-    ## 4 Spec           0         0      0       0.05 percentile
+![](figures/perf-95-ci-1.png)<!-- -->
