@@ -1,7 +1,7 @@
 ml_methods:
  - glmnet
 kfold: 5
-ncores: 36
+ncores: 16
 nseeds: 1
 outcomes:
   - idsa
@@ -15,3 +15,4 @@ train_frac:
   - 0.8
 dataset_subsets:
   - int
+
