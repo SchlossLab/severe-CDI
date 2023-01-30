@@ -146,20 +146,32 @@ perf_temp_plot
 perf_dat_100 <- data.table::fread(here('results', 
                                       'performance_results_aggregated.csv')
                                  ) %>% 
+  filter(trainfrac == 0.8, taxlevel == 'OTU') %>% 
   pivot_longer(c('cv_metric_AUC', "AUC"), 
-               names_to = 'term', values_to = 'estimate') %>% 
-  mutate(term = case_when(term == 'cv_metric_AUC' ~ 'train AUROC',
-                          term == 'AUC' ~ 'test AUROC',
-                          TRUE ~ term)
-         ) 
-perf_100_plot <- perf_dat_100 %>% 
-  ggplot(aes(x = estimate, y = outcome, color = term)) +
+               names_to = '.term', values_to = '.estimate') %>% 
+  mutate(.term = case_when(.term == 'cv_metric_AUC' ~ 'train_AUROC',
+                          .term == 'AUC' ~ 'test_AUROC',
+                          TRUE ~ .term)
+         ) %>% 
+  select(method, seed, outcome, taxlevel, metric, dataset, trainfrac, .term, .estimate) %>% 
+  filter(!is.na(.estimate))
+
+perf_dat_100 %>% 
+  group_by(dataset, outcome, .term) %>% 
+  summarize(median_est = round(median(.estimate),3)) %>% 
+  pivot_wider(names_from = dataset, values_from = median_est, names_prefix = 'median_perf_') %>% 
+  kable()
+  
+```
+```{r perf_100_glmnet}
+perf_100_glmnet_plot <- perf_dat_100 %>% 
+  ggplot(aes(x = .estimate, y = outcome, color = .term)) +
   geom_vline(xintercept = 0.5, linetype = 'dashed') +
   geom_boxplot() +
   xlim(0,1) +
   facet_wrap('dataset', ncol = 1) +
   coord_flip() +
-  labs(title = '100x train/test splits',
+  labs(title = '100x train/test splits - glmnet',
        caption = 'Box: interquartile range. Whisker: min & max') +
   theme_sovacool() +
   theme(legend.position = 'top',
@@ -167,10 +179,28 @@ perf_100_plot <- perf_dat_100 %>%
         axis.title.y = element_blank(),
         plot.caption = element_text(hjust = 0)
   )
-perf_100_plot
+perf_100_glmnet_plot
+```
+```{r, perf_100_rf}
+perf_100_rf_plot <- perf_dat_100 %>% 
+  filter(method == 'rf') %>% 
+  ggplot(aes(x = .estimate, y = outcome, color = .term)) +
+  geom_vline(xintercept = 0.5, linetype = 'dashed') +
+  geom_boxplot() +
+  xlim(0,1) +
+  facet_wrap('dataset', ncol = 2) +
+  labs(title = '100x train/test splits - rf',
+       caption = 'Box: interquartile range. Whisker: min & max') +
+  theme_sovacool() +
+  theme(legend.position = 'top',
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        plot.caption = element_text(hjust = 0)
+  )
+perf_100_rf_plot
 ```
 ```{r perf_temporal_vs_100, fig.width=10, fig.height=5}
-cowplot::plot_grid(perf_temp_plot, perf_100_plot, nrow = 1)
+cowplot::plot_grid(perf_temp_plot, perf_100_glmnet_plot, nrow = 1)
 ```
 
 
