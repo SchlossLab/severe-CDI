@@ -131,18 +131,18 @@ int_pctl(boots, perf) %>%
 
 | term              |    .lower | .estimate |    .upper | .alpha | .method    |
 |:------------------|----------:|----------:|----------:|-------:|:-----------|
-| Accuracy          | 0.5288462 | 0.6241758 | 0.6788462 |   0.05 | percentile |
-| AUC               | 0.4338608 | 0.5161223 | 0.5724632 |   0.05 | percentile |
+| Accuracy          | 0.5324176 | 0.6494505 | 0.7142857 |   0.05 | percentile |
+| AUC               | 0.4454062 | 0.5273813 | 0.6231094 |   0.05 | percentile |
 | Balanced_Accuracy | 0.5000000 | 0.5000000 | 0.5000000 |   0.05 | percentile |
 | cv_metric_AUC     | 0.5290527 | 0.5290527 | 0.5290527 |   0.05 | percentile |
-| Detection_Rate    | 0.0000000 | 0.3670330 | 0.6739011 |   0.05 | percentile |
-| F1                | 0.6880284 | 0.7577616 | 0.8074837 |   0.05 | percentile |
+| Detection_Rate    | 0.0000000 | 0.3780220 | 0.7008242 |   0.05 | percentile |
+| F1                | 0.6929690 | 0.7708351 | 0.8248534 |   0.05 | percentile |
 | Kappa             | 0.0000000 | 0.0000000 | 0.0000000 |   0.05 | percentile |
-| logLoss           | 0.6310862 | 0.6715483 | 0.7405178 |   0.05 | percentile |
-| Neg_Pred_Value    | 0.5780220 | 0.6428571 | 0.6703297 |   0.05 | percentile |
-| Pos_Pred_Value    | 0.5247253 | 0.6117216 | 0.6771978 |   0.05 | percentile |
-| prAUC             | 0.4573865 | 0.4967072 | 0.5315906 |   0.05 | percentile |
-| Precision         | 0.5247253 | 0.6117216 | 0.6771978 |   0.05 | percentile |
+| logLoss           | 0.6057080 | 0.6542805 | 0.7406752 |   0.05 | percentile |
+| Neg_Pred_Value    | 0.6288462 | 0.6785714 | 0.7142857 |   0.05 | percentile |
+| Pos_Pred_Value    | 0.5302198 | 0.6300366 | 0.7019231 |   0.05 | percentile |
+| prAUC             | 0.4542197 | 0.5003130 | 0.5643794 |   0.05 | percentile |
+| Precision         | 0.5302198 | 0.6300366 | 0.7019231 |   0.05 | percentile |
 | Recall            | 0.0000000 | 0.6000000 | 1.0000000 |   0.05 | percentile |
 | Sensitivity       | 0.0000000 | 0.6000000 | 1.0000000 |   0.05 | percentile |
 | Specificity       | 0.0000000 | 0.4000000 | 1.0000000 |   0.05 | percentile |
@@ -176,22 +176,45 @@ perf_dat_100 <- data.table::fread(here("results", "performance_results_aggregate
         "test_AUROC", TRUE ~ .term)) %>%
     select(method, seed, outcome, taxlevel, metric, dataset, trainfrac, .term, .estimate) %>%
     filter(!is.na(.estimate))
+```
 
+``` r
 perf_dat_100 %>%
+    filter(method == "rf") %>%
     group_by(dataset, outcome, .term) %>%
     summarize(median_est = round(median(.estimate), 3)) %>%
     pivot_wider(names_from = dataset, values_from = median_est, names_prefix = "median_perf_") %>%
+    arrange(desc(outcome), desc(.term)) %>%
     kable()
 ```
 
 | outcome  | .term       | median_perf_full | median_perf_int |
 |:---------|:------------|-----------------:|----------------:|
-| allcause | test_AUROC  |            0.644 |           0.574 |
-| allcause | train_AUROC |            0.638 |           0.575 |
-| attrib   | test_AUROC  |            0.634 |           0.615 |
-| attrib   | train_AUROC |            0.639 |           0.608 |
-| idsa     | test_AUROC  |            0.587 |           0.544 |
-| idsa     | train_AUROC |            0.587 |           0.531 |
+| idsa     | train_AUROC |            0.584 |           0.520 |
+| idsa     | test_AUROC  |            0.584 |           0.554 |
+| attrib   | train_AUROC |            0.643 |           0.615 |
+| attrib   | test_AUROC  |            0.643 |           0.641 |
+| allcause | train_AUROC |            0.638 |           0.547 |
+| allcause | test_AUROC  |            0.638 |           0.553 |
+
+``` r
+perf_dat_100 %>%
+    filter(method == "glmnet") %>%
+    group_by(dataset, outcome, .term) %>%
+    summarize(median_est = round(median(.estimate), 3)) %>%
+    pivot_wider(names_from = dataset, values_from = median_est, names_prefix = "median_perf_") %>%
+    arrange(desc(outcome), desc(.term)) %>%
+    kable()
+```
+
+| outcome  | .term       | median_perf_full | median_perf_int |
+|:---------|:------------|-----------------:|----------------:|
+| idsa     | train_AUROC |            0.590 |           0.539 |
+| idsa     | test_AUROC  |            0.588 |           0.544 |
+| attrib   | train_AUROC |            0.634 |           0.602 |
+| attrib   | test_AUROC  |            0.629 |           0.601 |
+| allcause | train_AUROC |            0.641 |           0.603 |
+| allcause | test_AUROC  |            0.652 |           0.583 |
 
 ``` r
 perf_100_glmnet_plot <- perf_dat_100 %>%

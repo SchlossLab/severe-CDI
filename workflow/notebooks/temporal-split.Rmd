@@ -155,14 +155,24 @@ perf_dat_100 <- data.table::fread(here('results',
          ) %>% 
   select(method, seed, outcome, taxlevel, metric, dataset, trainfrac, .term, .estimate) %>% 
   filter(!is.na(.estimate))
-
+```
+```{r perf_100_tbl}
 perf_dat_100 %>% 
+  filter(method == 'rf') %>% 
   group_by(dataset, outcome, .term) %>% 
   summarize(median_est = round(median(.estimate),3)) %>% 
   pivot_wider(names_from = dataset, values_from = median_est, names_prefix = 'median_perf_') %>% 
+  arrange(desc(outcome), desc(.term)) %>% 
   kable()
-  
+perf_dat_100 %>% 
+  filter(method == 'glmnet') %>% 
+  group_by(dataset, outcome, .term) %>% 
+  summarize(median_est = round(median(.estimate),3)) %>% 
+  pivot_wider(names_from = dataset, values_from = median_est, names_prefix = 'median_perf_') %>% 
+  arrange(desc(outcome), desc(.term)) %>% 
+  kable()
 ```
+
 ```{r perf_100_glmnet}
 perf_100_glmnet_plot <- perf_dat_100 %>% 
   ggplot(aes(x = .estimate, y = outcome, color = .term)) +
