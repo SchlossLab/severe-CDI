@@ -113,6 +113,8 @@ int_pctl(boots, perf) %>% kable()
 
 ## Plot performance
 
+### temporal split
+
 ```{r temporal-split_perf-95-ci}
 perf_dat <- read_csv(here('results','temporal-split','performance_results.csv'))
 perf_temp_plot <- perf_dat %>% 
@@ -140,13 +142,12 @@ perf_temp_plot <- perf_dat %>%
 perf_temp_plot 
 ```
 
-### vs 100x train/test splits
 
+### 100x train/test splits
 ```{r perf_100x}
 perf_dat_100 <- data.table::fread(here('results', 
                                       'performance_results_aggregated.csv')
                                  ) %>% 
-  filter(trainfrac == 0.8, taxlevel == 'OTU') %>% 
   pivot_longer(c('cv_metric_AUC', "AUC"), 
                names_to = '.term', values_to = '.estimate') %>% 
   mutate(.term = case_when(.term == 'cv_metric_AUC' ~ 'train_AUROC',
@@ -158,14 +159,14 @@ perf_dat_100 <- data.table::fread(here('results',
 ```
 ```{r perf_100_tbl}
 perf_dat_100 %>% 
-  filter(method == 'rf') %>% 
+  filter(method == 'rf', trainfrac == 0.8, taxlevel == 'OTU') %>% 
   group_by(dataset, outcome, .term) %>% 
   summarize(median_est = round(median(.estimate),3)) %>% 
   pivot_wider(names_from = dataset, values_from = median_est, names_prefix = 'median_perf_') %>% 
   arrange(desc(outcome), desc(.term)) %>% 
   kable()
 perf_dat_100 %>% 
-  filter(method == 'glmnet') %>% 
+  filter(method == 'glmnet', trainfrac == 0.8, taxlevel == 'OTU') %>% 
   group_by(dataset, outcome, .term) %>% 
   summarize(median_est = round(median(.estimate),3)) %>% 
   pivot_wider(names_from = dataset, values_from = median_est, names_prefix = 'median_perf_') %>% 
@@ -175,6 +176,7 @@ perf_dat_100 %>%
 
 ```{r perf_100_glmnet}
 perf_100_glmnet_plot <- perf_dat_100 %>% 
+  filter(method == 'glmnet', trainfrac == 0.8, taxlevel == 'OTU') %>% 
   ggplot(aes(x = .estimate, y = outcome, color = .term)) +
   geom_vline(xintercept = 0.5, linetype = 'dashed') +
   geom_boxplot() +
@@ -193,7 +195,7 @@ perf_100_glmnet_plot
 ```
 ```{r, perf_100_rf}
 perf_100_rf_plot <- perf_dat_100 %>% 
-  filter(method == 'rf') %>% 
+  filter(method == 'rf', trainfrac == 0.8, taxlevel == 'OTU') %>% 
   ggplot(aes(x = .estimate, y = outcome, color = .term)) +
   geom_vline(xintercept = 0.5, linetype = 'dashed') +
   geom_boxplot() +
@@ -209,6 +211,30 @@ perf_100_rf_plot <- perf_dat_100 %>%
   )
 perf_100_rf_plot
 ```
+
+#### 100 splits - OTU vs genus
+
+```{r perf_100_otu_vs_genus}
+perf_dat_100 %>% 
+  filter(method == 'glmnet', trainfrac == 0.8) %>% 
+  ggplot(aes(x = .estimate, y = outcome, color = .term)) +
+  geom_vline(xintercept = 0.5, linetype = 'dashed') +
+  geom_boxplot() +
+  xlim(0,1) +
+  facet_wrap(c('dataset', 'taxlevel')) +
+  coord_flip() +
+  labs(title = '100x train/test splits - glmnet',
+       caption = 'Box: interquartile range. Whisker: min & max') +
+  theme_sovacool() +
+  theme(legend.position = 'top',
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        plot.caption = element_text(hjust = 0)
+  )
+```
+
+### temporal split vs 100x train/test splits
+
 ```{r perf_temporal_vs_100, fig.width=10, fig.height=5}
 cowplot::plot_grid(perf_temp_plot, perf_100_glmnet_plot, nrow = 1)
 ```

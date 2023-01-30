@@ -131,23 +131,25 @@ int_pctl(boots, perf) %>%
 
 | term              |    .lower | .estimate |    .upper | .alpha | .method    |
 |:------------------|----------:|----------:|----------:|-------:|:-----------|
-| Accuracy          | 0.5324176 | 0.6494505 | 0.7142857 |   0.05 | percentile |
-| AUC               | 0.4454062 | 0.5273813 | 0.6231094 |   0.05 | percentile |
+| Accuracy          | 0.6288462 | 0.6736264 | 0.7263736 |   0.05 | percentile |
+| AUC               | 0.4580924 | 0.5419496 | 0.6284420 |   0.05 | percentile |
 | Balanced_Accuracy | 0.5000000 | 0.5000000 | 0.5000000 |   0.05 | percentile |
 | cv_metric_AUC     | 0.5290527 | 0.5290527 | 0.5290527 |   0.05 | percentile |
-| Detection_Rate    | 0.0000000 | 0.3780220 | 0.7008242 |   0.05 | percentile |
-| F1                | 0.6929690 | 0.7708351 | 0.8248534 |   0.05 | percentile |
+| Detection_Rate    | 0.1409341 | 0.6098901 | 0.7263736 |   0.05 | percentile |
+| F1                | 0.7719209 | 0.8074163 | 0.8421174 |   0.05 | percentile |
 | Kappa             | 0.0000000 | 0.0000000 | 0.0000000 |   0.05 | percentile |
-| logLoss           | 0.6057080 | 0.6542805 | 0.7406752 |   0.05 | percentile |
-| Neg_Pred_Value    | 0.6288462 | 0.6785714 | 0.7142857 |   0.05 | percentile |
-| Pos_Pred_Value    | 0.5302198 | 0.6300366 | 0.7019231 |   0.05 | percentile |
-| prAUC             | 0.4542197 | 0.5003130 | 0.5643794 |   0.05 | percentile |
-| Precision         | 0.5302198 | 0.6300366 | 0.7019231 |   0.05 | percentile |
-| Recall            | 0.0000000 | 0.6000000 | 1.0000000 |   0.05 | percentile |
-| Sensitivity       | 0.0000000 | 0.6000000 | 1.0000000 |   0.05 | percentile |
-| Specificity       | 0.0000000 | 0.4000000 | 1.0000000 |   0.05 | percentile |
+| logLoss           | 0.5928571 | 0.6364488 | 0.6719680 |   0.05 | percentile |
+| Neg_Pred_Value    | 0.6373626 | 0.6373626 | 0.6373626 |   0.05 | percentile |
+| Pos_Pred_Value    | 0.6285714 | 0.6776557 | 0.7274725 |   0.05 | percentile |
+| prAUC             | 0.4589573 | 0.5073620 | 0.5632115 |   0.05 | percentile |
+| Precision         | 0.6285714 | 0.6776557 | 0.7274725 |   0.05 | percentile |
+| Recall            | 0.2250000 | 0.9000000 | 1.0000000 |   0.05 | percentile |
+| Sensitivity       | 0.2250000 | 0.9000000 | 1.0000000 |   0.05 | percentile |
+| Specificity       | 0.0000000 | 0.1000000 | 0.7750000 |   0.05 | percentile |
 
 ## Plot performance
+
+### temporal split
 
 ``` r
 perf_dat <- read_csv(here("results", "temporal-split", "performance_results.csv"))
@@ -166,11 +168,10 @@ perf_temp_plot
 
 ![](figures/temporal-split_perf-95-ci-1.png)<!-- -->
 
-### vs 100x train/test splits
+### 100x train/test splits
 
 ``` r
 perf_dat_100 <- data.table::fread(here("results", "performance_results_aggregated.csv")) %>%
-    filter(trainfrac == 0.8, taxlevel == "OTU") %>%
     pivot_longer(c("cv_metric_AUC", "AUC"), names_to = ".term", values_to = ".estimate") %>%
     mutate(.term = case_when(.term == "cv_metric_AUC" ~ "train_AUROC", .term == "AUC" ~
         "test_AUROC", TRUE ~ .term)) %>%
@@ -180,7 +181,7 @@ perf_dat_100 <- data.table::fread(here("results", "performance_results_aggregate
 
 ``` r
 perf_dat_100 %>%
-    filter(method == "rf") %>%
+    filter(method == "rf", trainfrac == 0.8, taxlevel == "OTU") %>%
     group_by(dataset, outcome, .term) %>%
     summarize(median_est = round(median(.estimate), 3)) %>%
     pivot_wider(names_from = dataset, values_from = median_est, names_prefix = "median_perf_") %>%
@@ -199,7 +200,7 @@ perf_dat_100 %>%
 
 ``` r
 perf_dat_100 %>%
-    filter(method == "glmnet") %>%
+    filter(method == "glmnet", trainfrac == 0.8, taxlevel == "OTU") %>%
     group_by(dataset, outcome, .term) %>%
     summarize(median_est = round(median(.estimate), 3)) %>%
     pivot_wider(names_from = dataset, values_from = median_est, names_prefix = "median_perf_") %>%
@@ -218,6 +219,7 @@ perf_dat_100 %>%
 
 ``` r
 perf_100_glmnet_plot <- perf_dat_100 %>%
+    filter(method == "glmnet", trainfrac == 0.8, taxlevel == "OTU") %>%
     ggplot(aes(x = .estimate, y = outcome, color = .term)) + geom_vline(xintercept = 0.5,
     linetype = "dashed") + geom_boxplot() + xlim(0, 1) + facet_wrap("dataset", ncol = 1) +
     coord_flip() + labs(title = "100x train/test splits - glmnet", caption = "Box: interquartile range. Whisker: min & max") +
@@ -230,7 +232,7 @@ perf_100_glmnet_plot
 
 ``` r
 perf_100_rf_plot <- perf_dat_100 %>%
-    filter(method == "rf") %>%
+    filter(method == "rf", trainfrac == 0.8, taxlevel == "OTU") %>%
     ggplot(aes(x = .estimate, y = outcome, color = .term)) + geom_vline(xintercept = 0.5,
     linetype = "dashed") + geom_boxplot() + xlim(0, 1) + facet_wrap("dataset", ncol = 2) +
     labs(title = "100x train/test splits - rf", caption = "Box: interquartile range. Whisker: min & max") +
@@ -240,6 +242,23 @@ perf_100_rf_plot
 ```
 
 ![](figures/perf_100_rf-1.png)<!-- -->
+
+#### 100 splits - OTU vs genus
+
+``` r
+perf_dat_100 %>%
+    filter(method == "glmnet", trainfrac == 0.8) %>%
+    ggplot(aes(x = .estimate, y = outcome, color = .term)) + geom_vline(xintercept = 0.5,
+    linetype = "dashed") + geom_boxplot() + xlim(0, 1) + facet_wrap(c("dataset",
+    "taxlevel")) + coord_flip() + labs(title = "100x train/test splits - glmnet",
+    caption = "Box: interquartile range. Whisker: min & max") + theme_sovacool() +
+    theme(legend.position = "top", axis.title.x = element_blank(), axis.title.y = element_blank(),
+        plot.caption = element_text(hjust = 0))
+```
+
+![](figures/perf_100_otu_vs_genus-1.png)<!-- -->
+
+### temporal split vs 100x train/test splits
 
 ``` r
 cowplot::plot_grid(perf_temp_plot, perf_100_glmnet_plot, nrow = 1)
