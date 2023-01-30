@@ -189,6 +189,8 @@ rule alpha_beta:
     log:
         "log/mothur/alpha_beta.log"
     threads: 10
+    resources:
+        time="48:00:00"
     conda:
         "../envs/mothur.yml"
     shell:
