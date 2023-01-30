@@ -6,7 +6,7 @@ on:
       - 'main'
     paths:
       - Dockerfile
-      - .github/actions/docker.yml
+      - .github/workflows/docker.yml
 
 jobs:
   docker:
