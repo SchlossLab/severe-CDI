@@ -88,8 +88,8 @@ nrow(metadat_int)
     ## [1] 456
 
 ``` r
-partitions_int <- bind_rows(compare_props(test_dat_int, train_dat_int, idsa), compare_props(test_dat_int, train_dat_int,
-    attrib), compare_props(test_dat_int, train_dat_int, allcause))
+partitions_int <- bind_rows(compare_props(test_dat_int, train_dat_int, idsa), compare_props(test_dat_int,
+    train_dat_int, attrib), compare_props(test_dat_int, train_dat_int, allcause))
 
 kable(partitions_int)
 ```
@@ -131,21 +131,21 @@ int_pctl(boots, perf) %>%
 
 | term              |    .lower | .estimate |    .upper | .alpha | .method    |
 |:------------------|----------:|----------:|----------:|-------:|:-----------|
-| Accuracy          | 0.5653846 | 0.6395604 | 0.7178571 |   0.05 | percentile |
-| AUC               | 0.4636811 | 0.5453071 | 0.6339229 |   0.05 | percentile |
+| Accuracy          | 0.6263736 | 0.6527473 | 0.7118132 |   0.05 | percentile |
+| AUC               | 0.3858542 | 0.5482830 | 0.7074321 |   0.05 | percentile |
 | Balanced_Accuracy | 0.5000000 | 0.5000000 | 0.5000000 |   0.05 | percentile |
 | cv_metric_AUC     | 0.5290527 | 0.5290527 | 0.5290527 |   0.05 | percentile |
-| Detection_Rate    | 0.1260989 | 0.5670330 | 0.6873626 |   0.05 | percentile |
-| F1                | 0.7218701 | 0.7722369 | 0.8150718 |   0.05 | percentile |
+| Detection_Rate    | 0.0000000 | 0.4615385 | 0.7118132 |   0.05 | percentile |
+| F1                | 0.7702703 | 0.7941331 | 0.8322043 |   0.05 | percentile |
 | Kappa             | 0.0000000 | 0.0000000 | 0.0000000 |   0.05 | percentile |
-| logLoss           | 0.6086511 | 0.6605414 | 0.7159512 |   0.05 | percentile |
-| Neg_Pred_Value    | 0.7252747 | 0.7252747 | 0.7252747 |   0.05 | percentile |
-| Pos_Pred_Value    | 0.5648352 | 0.6300366 | 0.6879121 |   0.05 | percentile |
-| prAUC             | 0.4600284 | 0.5085829 | 0.5651605 |   0.05 | percentile |
-| Precision         | 0.5648352 | 0.6300366 | 0.6879121 |   0.05 | percentile |
-| Recall            | 0.2250000 | 0.9000000 | 1.0000000 |   0.05 | percentile |
-| Sensitivity       | 0.2250000 | 0.9000000 | 1.0000000 |   0.05 | percentile |
-| Specificity       | 0.0000000 | 0.1000000 | 0.7750000 |   0.05 | percentile |
+| logLoss           | 0.6044091 | 0.6510782 | 0.6734921 |   0.05 | percentile |
+| Neg_Pred_Value    | 0.6373626 | 0.6373626 | 0.6373626 |   0.05 | percentile |
+| Pos_Pred_Value    | 0.6263736 | 0.6593407 | 0.7126374 |   0.05 | percentile |
+| prAUC             | 0.4294569 | 0.5200346 | 0.6441402 |   0.05 | percentile |
+| Precision         | 0.6263736 | 0.6593407 | 0.7126374 |   0.05 | percentile |
+| Recall            | 0.0000000 | 0.7000000 | 1.0000000 |   0.05 | percentile |
+| Sensitivity       | 0.0000000 | 0.7000000 | 1.0000000 |   0.05 | percentile |
+| Specificity       | 0.0000000 | 0.3000000 | 1.0000000 |   0.05 | percentile |
 
 ## Plot performance
 
@@ -153,11 +153,13 @@ int_pctl(boots, perf) %>%
 perf_dat <- read_csv(here("results", "temporal-split", "performance_results.csv"))
 perf_temp_plot <- perf_dat %>%
     filter(term %in% c("cv_metric_AUC", "AUC")) %>%
-    mutate(term = case_when(term == "cv_metric_AUC" ~ "train AUROC", term == "AUC" ~ "test AUROC", TRUE ~ term)) %>%
+    mutate(term = case_when(term == "cv_metric_AUC" ~ "train AUROC", term == "AUC" ~
+        "test AUROC", TRUE ~ term)) %>%
     rename(estimate = .estimate, lower = .lower, upper = .upper) %>%
-    ggplot(aes(x = estimate, xmin = lower, xmax = upper, y = outcome, color = term)) + geom_vline(xintercept = 0.5, linetype = "dashed") +
-    geom_pointrange(position = position_dodge(width = 0.1)) + xlim(0, 1) + facet_wrap("dataset", ncol = 1) + coord_flip() +
-    theme_sovacool() + theme(legend.position = "top")
+    ggplot(aes(x = estimate, xmin = lower, xmax = upper, y = outcome, color = term)) +
+    geom_vline(xintercept = 0.5, linetype = "dashed") + geom_pointrange(position = position_dodge(width = 0.1)) +
+    xlim(0, 1) + facet_wrap("dataset", ncol = 1) + coord_flip() + theme_sovacool() +
+    theme(legend.position = "top")
 perf_temp_plot
 ```
 
@@ -168,21 +170,30 @@ perf_temp_plot
 ``` r
 perf_dat_100 <- data.table::fread(here("results", "performance_results_aggregated.csv")) %>%
     pivot_longer(c("cv_metric_AUC", "AUC"), names_to = "term", values_to = "estimate") %>%
-    mutate(term = case_when(term == "cv_metric_AUC" ~ "train AUROC", term == "AUC" ~ "test AUROC", TRUE ~ term))
+    mutate(term = case_when(term == "cv_metric_AUC" ~ "train AUROC", term == "AUC" ~
+        "test AUROC", TRUE ~ term))
 perf_100_plot <- perf_dat_100 %>%
-    ggplot(aes(x = estimate, y = outcome, color = term)) + geom_vline(xintercept = 0.5, linetype = "dashed") + geom_boxplot() +
-    xlim(0, 1) + facet_wrap("dataset", ncol = 1) + coord_flip() + theme_sovacool() + theme(legend.position = "top")
+    ggplot(aes(x = estimate, y = outcome, color = term)) + geom_vline(xintercept = 0.5,
+    linetype = "dashed") + geom_boxplot() + xlim(0, 1) + facet_wrap("dataset", ncol = 1) +
+    coord_flip() + theme_sovacool() + theme(legend.position = "top")
 perf_100_plot
 ```
 
 ![](figures/perf_100x-1.png)<!-- -->
+
+``` r
+cowplot::plot_grid(perf_temp_plot, perf_100_plot, nrow = 1)
+```
+
+![](figures/perf_temporal_vs_100-1.png)<!-- -->
 
 ## Computational resources
 
 ``` r
 bench_dat <- read_csv(here("results", "temporal-split", "benchmarks_results.csv"))
 bench_dat %>%
-    ggplot(aes(x = s, y = outcome, color = dataset)) + geom_point() + scale_x_time() + theme_sovacool()
+    ggplot(aes(x = s, y = outcome, color = dataset)) + geom_point() + scale_x_time() +
+    theme_sovacool()
 ```
 
 ![](figures/temporal-split_bench-1.png)<!-- -->
@@ -201,8 +212,8 @@ important_feats %>%
     mutate(otu = factor(otu, levels = important_feats %>%
         pull(otu) %>%
         unique())) %>%
-    ggplot(aes(x = perf_metric_diff, y = label_html, color = outcome, shape = dataset)) + geom_point() + theme_sovacool() +
-    theme(axis.text.y = ggtext::element_markdown())
+    ggplot(aes(x = perf_metric_diff, y = label_html, color = outcome, shape = dataset)) +
+    geom_point() + theme_sovacool() + theme(axis.text.y = ggtext::element_markdown())
 ```
 
 ![](figures/temporal-split_feat-imp-1.png)<!-- -->
