@@ -11,7 +11,8 @@ schtools::set_knitr_opts()
 knitr::opts_chunk$set(message = FALSE,
                       warning = FALSE,
                       echo = TRUE,
-                      fig.path = 'figures/')
+                      fig.path = 'figures/',
+                      dpi = 200)
 ```
 
 ```{r deps}
@@ -129,8 +130,13 @@ perf_temp_plot <- perf_dat %>%
   xlim(0,1) +
   facet_wrap('dataset', ncol = 1) +
   coord_flip() +
+  labs(title = "Temporal split", 
+       caption = 'Error bars: 95% CI from 10,000 bootstraps of the test set') +
   theme_sovacool() +
-  theme(legend.position = 'top')
+  theme(legend.position = 'top',
+        axis.title.x = element_blank(),
+        plot.caption = element_text(hjust = 0)
+  )
 perf_temp_plot 
 ```
 
@@ -153,11 +159,17 @@ perf_100_plot <- perf_dat_100 %>%
   xlim(0,1) +
   facet_wrap('dataset', ncol = 1) +
   coord_flip() +
+  labs(title = '100x train/test splits',
+       caption = 'Box: interquartile range. Whisker: min & max') +
   theme_sovacool() +
-  theme(legend.position = 'top')
+  theme(legend.position = 'top',
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        plot.caption = element_text(hjust = 0)
+  )
 perf_100_plot
 ```
-```{r perf_temporal_vs_100}
+```{r perf_temporal_vs_100, fig.width=10, fig.height=5}
 cowplot::plot_grid(perf_temp_plot, perf_100_plot, nrow = 1)
 ```
 

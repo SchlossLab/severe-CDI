@@ -131,21 +131,21 @@ int_pctl(boots, perf) %>%
 
 | term              |    .lower | .estimate |    .upper | .alpha | .method    |
 |:------------------|----------:|----------:|----------:|-------:|:-----------|
-| Accuracy          | 0.6263736 | 0.6527473 | 0.7118132 |   0.05 | percentile |
-| AUC               | 0.3858542 | 0.5482830 | 0.7074321 |   0.05 | percentile |
+| Accuracy          | 0.6068681 | 0.6505495 | 0.7093407 |   0.05 | percentile |
+| AUC               | 0.4379423 | 0.5509932 | 0.6409095 |   0.05 | percentile |
 | Balanced_Accuracy | 0.5000000 | 0.5000000 | 0.5000000 |   0.05 | percentile |
 | cv_metric_AUC     | 0.5290527 | 0.5290527 | 0.5290527 |   0.05 | percentile |
-| Detection_Rate    | 0.0000000 | 0.4615385 | 0.7118132 |   0.05 | percentile |
-| F1                | 0.7702703 | 0.7941331 | 0.8322043 |   0.05 | percentile |
+| Detection_Rate    | 0.0000000 | 0.5230769 | 0.7093407 |   0.05 | percentile |
+| F1                | 0.7633687 | 0.7902767 | 0.8306818 |   0.05 | percentile |
 | Kappa             | 0.0000000 | 0.0000000 | 0.0000000 |   0.05 | percentile |
-| logLoss           | 0.6044091 | 0.6510782 | 0.6734921 |   0.05 | percentile |
-| Neg_Pred_Value    | 0.6373626 | 0.6373626 | 0.6373626 |   0.05 | percentile |
-| Pos_Pred_Value    | 0.6263736 | 0.6593407 | 0.7126374 |   0.05 | percentile |
-| prAUC             | 0.4294569 | 0.5200346 | 0.6441402 |   0.05 | percentile |
-| Precision         | 0.6263736 | 0.6593407 | 0.7126374 |   0.05 | percentile |
-| Recall            | 0.0000000 | 0.7000000 | 1.0000000 |   0.05 | percentile |
-| Sensitivity       | 0.0000000 | 0.7000000 | 1.0000000 |   0.05 | percentile |
-| Specificity       | 0.0000000 | 0.3000000 | 1.0000000 |   0.05 | percentile |
+| logLoss           | 0.6083392 | 0.6499141 | 0.6790278 |   0.05 | percentile |
+| Neg_Pred_Value    | 0.6060440 | 0.6373626 | 0.6686813 |   0.05 | percentile |
+| Pos_Pred_Value    | 0.6173077 | 0.6538462 | 0.7104396 |   0.05 | percentile |
+| prAUC             | 0.4455217 | 0.5163332 | 0.5829405 |   0.05 | percentile |
+| Precision         | 0.6173077 | 0.6538462 | 0.7104396 |   0.05 | percentile |
+| Recall            | 0.0000000 | 0.8000000 | 1.0000000 |   0.05 | percentile |
+| Sensitivity       | 0.0000000 | 0.8000000 | 1.0000000 |   0.05 | percentile |
+| Specificity       | 0.0000000 | 0.2000000 | 1.0000000 |   0.05 | percentile |
 
 ## Plot performance
 
@@ -158,8 +158,9 @@ perf_temp_plot <- perf_dat %>%
     rename(estimate = .estimate, lower = .lower, upper = .upper) %>%
     ggplot(aes(x = estimate, xmin = lower, xmax = upper, y = outcome, color = term)) +
     geom_vline(xintercept = 0.5, linetype = "dashed") + geom_pointrange(position = position_dodge(width = 0.1)) +
-    xlim(0, 1) + facet_wrap("dataset", ncol = 1) + coord_flip() + theme_sovacool() +
-    theme(legend.position = "top")
+    xlim(0, 1) + facet_wrap("dataset", ncol = 1) + coord_flip() + labs(title = "Temporal split",
+    caption = "Error bars: 95% CI from 10,000 bootstraps of the test set") + theme_sovacool() +
+    theme(legend.position = "top", axis.title.x = element_blank(), plot.caption = element_text(hjust = 0))
 perf_temp_plot
 ```
 
@@ -175,7 +176,9 @@ perf_dat_100 <- data.table::fread(here("results", "performance_results_aggregate
 perf_100_plot <- perf_dat_100 %>%
     ggplot(aes(x = estimate, y = outcome, color = term)) + geom_vline(xintercept = 0.5,
     linetype = "dashed") + geom_boxplot() + xlim(0, 1) + facet_wrap("dataset", ncol = 1) +
-    coord_flip() + theme_sovacool() + theme(legend.position = "top")
+    coord_flip() + labs(title = "100x train/test splits", caption = "Box: interquartile range. Whisker: min & max") +
+    theme_sovacool() + theme(legend.position = "top", axis.title.x = element_blank(),
+    axis.title.y = element_blank(), plot.caption = element_text(hjust = 0))
 perf_100_plot
 ```
 
