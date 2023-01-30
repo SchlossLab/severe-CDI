@@ -1,6 +1,6 @@
 ---
 title: "Temporal Split"
-date: 2022-01-19
+date: "`r Sys.Date()`"
 output: 
   github_document:
     html_preview: false
@@ -114,7 +114,7 @@ int_pctl(boots, perf) %>% kable()
 
 ```{r temporal-split_perf-95-ci}
 perf_dat <- read_csv(here('results','temporal-split','performance_results.csv'))
-perf_dat %>% 
+perf_temp_plot <- perf_dat %>% 
   filter(term %in% c('cv_metric_AUC', "AUC")) %>%
   mutate(term = case_when(term == 'cv_metric_AUC' ~ 'train AUROC',
                           term == 'AUC' ~ 'test AUROC',
@@ -124,10 +124,40 @@ perf_dat %>%
          lower = .lower,
          upper = .upper) %>% 
   ggplot(aes(x = estimate, xmin = lower, xmax = upper, y = outcome, color = term)) +
+  geom_vline(xintercept = 0.5, linetype = 'dashed') +
   geom_pointrange(position = position_dodge(width = 0.1)) +
-  facet_wrap('dataset') +
-  theme_sovacool()
+  xlim(0,1) +
+  facet_wrap('dataset', ncol = 1) +
+  coord_flip() +
+  theme_sovacool() +
+  theme(legend.position = 'top')
+perf_temp_plot 
 ```
+
+### vs 100x train/test splits
+
+```{r perf_100x}
+perf_dat_100 <- data.table::fread(here('results', 
+                                      'performance_results_aggregated.csv')
+                                 ) %>% 
+  pivot_longer(c('cv_metric_AUC', "AUC"), 
+               names_to = 'term', values_to = 'estimate') %>% 
+  mutate(term = case_when(term == 'cv_metric_AUC' ~ 'train AUROC',
+                          term == 'AUC' ~ 'test AUROC',
+                          TRUE ~ term)
+         ) 
+perf_100_plot <- perf_dat_100 %>% 
+  ggplot(aes(x = estimate, y = outcome, color = term)) +
+  geom_vline(xintercept = 0.5, linetype = 'dashed') +
+  geom_boxplot() +
+  xlim(0,1) +
+  facet_wrap('dataset', ncol = 1) +
+  coord_flip() +
+  theme_sovacool() +
+  theme(legend.position = 'top')
+perf_100_plot
+```
+
 
 ## Computational resources
 
@@ -157,5 +187,4 @@ important_feats %>%
   theme_sovacool() +
   theme(axis.text.y = ggtext::element_markdown())
 ```
-
 
