@@ -110,14 +110,14 @@ results_dat %>%
 ## taxlevel - OTU vs genus
 ```{r plot_taxlevel}
 results_dat %>% 
-  filter(trainfrac == 0.8, method == 'glmnet', dataset == 'full', metric == 'AUROC') %>% 
+  filter(trainfrac == 0.8, method == 'glmnet', dataset == 'int', metric == 'AUROC') %>% 
   ggplot(aes(perf_metric_value, perf_metric_name, color = outcome)) +
   geom_boxplot() +
   theme_bw() +
   facet_wrap('taxlevel')
 
 results_dat %>% 
-  filter(trainfrac == 0.8, method == 'glmnet', dataset == 'full', metric == 'AUROC') %>% 
+  filter(trainfrac == 0.8, method == 'glmnet', dataset == 'int', metric == 'AUROC') %>% 
   ggplot(aes(perf_metric_value, taxlevel, color = outcome)) +
   geom_boxplot() +
   theme_bw() +
