@@ -63,4 +63,5 @@ rule make_plots:
         rules.plot_diversity.output,
         rules.plot_taxa.output,
         rules.plot_perf.output,
-        rules.plot_feat_imp.output
+        rules.plot_feat_imp.output,
+        "data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.dist.nmds" # TODO: plot NMDS

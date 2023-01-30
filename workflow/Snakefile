@@ -23,7 +23,8 @@ include: 'rules/plot.smk'
 rule targets:
     input:
         expand('results/{type}_results_aggregated.csv', type = result_types),
-        "figures/plot_perf.png"
+        rules.make_plots.input
+        
 
 rule classify_idsa_severity:
     input:
