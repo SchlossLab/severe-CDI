@@ -157,6 +157,9 @@ perf_100_plot <- perf_dat_100 %>%
   theme(legend.position = 'top')
 perf_100_plot
 ```
+```{r perf_temporal_vs_100}
+cowplot::plot_grid(perf_temp_plot, perf_100_plot, nrow = 1)
+```
 
 
 ## Computational resources
