@@ -131,21 +131,21 @@ int_pctl(boots, perf) %>%
 
 | term              |    .lower | .estimate |    .upper | .alpha | .method    |
 |:------------------|----------:|----------:|----------:|-------:|:-----------|
-| Accuracy          | 0.6288462 | 0.6736264 | 0.7263736 |   0.05 | percentile |
-| AUC               | 0.4580924 | 0.5419496 | 0.6284420 |   0.05 | percentile |
+| Accuracy          | 0.6178571 | 0.6758242 | 0.7348901 |   0.05 | percentile |
+| AUC               | 0.4802296 | 0.5651821 | 0.6571169 |   0.05 | percentile |
 | Balanced_Accuracy | 0.5000000 | 0.5000000 | 0.5000000 |   0.05 | percentile |
 | cv_metric_AUC     | 0.5290527 | 0.5290527 | 0.5290527 |   0.05 | percentile |
-| Detection_Rate    | 0.1409341 | 0.6098901 | 0.7263736 |   0.05 | percentile |
-| F1                | 0.7719209 | 0.8074163 | 0.8421174 |   0.05 | percentile |
+| Detection_Rate    | 0.0000000 | 0.5384615 | 0.6923077 |   0.05 | percentile |
+| F1                | 0.7676443 | 0.8043117 | 0.8181818 |   0.05 | percentile |
 | Kappa             | 0.0000000 | 0.0000000 | 0.0000000 |   0.05 | percentile |
-| logLoss           | 0.5928571 | 0.6364488 | 0.6719680 |   0.05 | percentile |
-| Neg_Pred_Value    | 0.6373626 | 0.6373626 | 0.6373626 |   0.05 | percentile |
-| Pos_Pred_Value    | 0.6285714 | 0.6776557 | 0.7274725 |   0.05 | percentile |
-| prAUC             | 0.4589573 | 0.5073620 | 0.5632115 |   0.05 | percentile |
-| Precision         | 0.6285714 | 0.6776557 | 0.7274725 |   0.05 | percentile |
-| Recall            | 0.2250000 | 0.9000000 | 1.0000000 |   0.05 | percentile |
-| Sensitivity       | 0.2250000 | 0.9000000 | 1.0000000 |   0.05 | percentile |
-| Specificity       | 0.0000000 | 0.1000000 | 0.7750000 |   0.05 | percentile |
+| logLoss           | 0.5867127 | 0.6315368 | 0.6826946 |   0.05 | percentile |
+| Neg_Pred_Value    | 0.6293956 | 0.6868132 | 0.7442308 |   0.05 | percentile |
+| Pos_Pred_Value    | 0.6230769 | 0.6730769 | 0.6923077 |   0.05 | percentile |
+| prAUC             | 0.4833345 | 0.5254498 | 0.5846788 |   0.05 | percentile |
+| Precision         | 0.6230769 | 0.6730769 | 0.6923077 |   0.05 | percentile |
+| Recall            | 0.0000000 | 0.8000000 | 1.0000000 |   0.05 | percentile |
+| Sensitivity       | 0.0000000 | 0.8000000 | 1.0000000 |   0.05 | percentile |
+| Specificity       | 0.0000000 | 0.2000000 | 1.0000000 |   0.05 | percentile |
 
 ## Plot performance
 

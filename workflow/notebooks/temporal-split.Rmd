@@ -214,7 +214,7 @@ perf_100_rf_plot
 
 #### 100 splits - OTU vs genus
 
-```{r perf_100_otu_vs_genus}
+```{r perf_100_otu_vs_genus, fig.width=10, fig.height=5}
 perf_dat_100 %>% 
   filter(method == 'glmnet', trainfrac == 0.8) %>% 
   ggplot(aes(x = .estimate, y = outcome, color = .term)) +
