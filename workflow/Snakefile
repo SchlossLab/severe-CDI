@@ -1,3 +1,5 @@
+containerized: "docker://kellysovacool/severe-cdi:latest"
+
 configfile: 'config/default.yml'
 
 MEM_PER_GB = 1024
