@@ -17,4 +17,4 @@
 #SBATCH --mail-type=BEGIN,END
 
 mkdir -p log/hpc/
-time snakemake --profile config/slurm --use-conda
+snakemake --profile config/slurm --use-conda --conda-frontend mamba
