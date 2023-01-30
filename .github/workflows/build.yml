@@ -3,52 +3,63 @@ name: build
 on:
   pull_request:
     branches:
-    - main
+      - main
 
 jobs:
-  render:
+  build:
     name: build
-    runs-on: macOS-latest
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.9]
+        python-version: ["3.11"]
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: r-lib/actions/setup-r@v1
-      - uses: r-lib/actions/setup-pandoc@v1
-      - uses: actions/setup-python@v1
+      - uses: actions/checkout@v3
         with:
-          python-version: ${{ matrix.python-version }}
-      - name: Configure git
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          python-version: 3.11
+          miniforge-variant: Mambaforge
+          miniforge-version: latest
+          activate-environment: github-actions
+          environment-file: workflow/envs/github-actions.yml
+      - name: git config
         run: |
-          git config --local user.email "noreply@github.com"
-          git config --local user.name "GitHub"
-      - name: Install build dependencies
-        run: |
-          Rscript -e "install.packages(c('styler','usethis'),
-                                       repos = 'https://cloud.r-project.org')"
-          python -m pip install --upgrade pip
-          pip install black snakefmt
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
       - name: Style R code
+        shell: bash -el {0}
         run: |
-          Rscript -e 'usethis::use_tidy_style()'
-          git add .
+          R -e 'usethis::use_tidy_style()'
+          git add workflow/scripts
           git diff-index --quiet HEAD \
-          || git commit \
-          --author="github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>" \
-          -m '🎨  Style R code'
+            || git commit \
+            -m '🎨  Style R code'
       - name: Style Python code
+        shell: bash -el {0}
         run: |
-          black .
-          snakefmt .
-          git add .
+          black workflow/
+          snakefmt workflow/
+          git add workflow/scripts workflow/rules workflow/Snakefile
           git diff-index --quiet HEAD \
-          || git commit \
-          --author="github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>" \
-          -m '🎨  Style Python code 🐍'
+            || git commit \
+            -m '🎨  Style Python & Snakemake code 🐍'
+      - name: Update container file
+        uses: snakemake/snakemake-github-action@v1
+        with:
+          directory: .
+          snakefile: 'workflow/Snakefile'
+          task: 'containerize'
+      - name: Commit Dockerfile
+        run: |
+          git add Dockerfile
+          git commit -m "🐳 Update Dockerfile" \
+            || echo "No changes in Dockerfile to commit"
+
       - name: Push
-        uses: ad-m/github-push-action@v0.6.0
+        uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.head_ref }}
