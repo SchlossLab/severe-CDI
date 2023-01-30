@@ -1,6 +1,6 @@
 Temporal Split
 ================
-2022-01-19
+2023-01-30
 
 ``` r
 library(here)
@@ -88,8 +88,8 @@ nrow(metadat_int)
     ## [1] 456
 
 ``` r
-partitions_int <- bind_rows(compare_props(test_dat_int, train_dat_int, idsa), compare_props(test_dat_int,
-    train_dat_int, attrib), compare_props(test_dat_int, train_dat_int, allcause))
+partitions_int <- bind_rows(compare_props(test_dat_int, train_dat_int, idsa), compare_props(test_dat_int, train_dat_int,
+    attrib), compare_props(test_dat_int, train_dat_int, allcause))
 
 kable(partitions_int)
 ```
@@ -131,45 +131,58 @@ int_pctl(boots, perf) %>%
 
 | term              |    .lower | .estimate |    .upper | .alpha | .method    |
 |:------------------|----------:|----------:|----------:|-------:|:-----------|
-| Accuracy          | 0.5604396 | 0.6296703 | 0.6678571 |   0.05 | percentile |
-| AUC               | 0.4322505 | 0.5437002 | 0.6202419 |   0.05 | percentile |
+| Accuracy          | 0.5653846 | 0.6395604 | 0.7178571 |   0.05 | percentile |
+| AUC               | 0.4636811 | 0.5453071 | 0.6339229 |   0.05 | percentile |
 | Balanced_Accuracy | 0.5000000 | 0.5000000 | 0.5000000 |   0.05 | percentile |
 | cv_metric_AUC     | 0.5290527 | 0.5290527 | 0.5290527 |   0.05 | percentile |
-| Detection_Rate    | 0.0000000 | 0.3901099 | 0.6678571 |   0.05 | percentile |
-| F1                | 0.7713019 | 0.7879160 | 0.8016404 |   0.05 | percentile |
+| Detection_Rate    | 0.1260989 | 0.5670330 | 0.6873626 |   0.05 | percentile |
+| F1                | 0.7218701 | 0.7722369 | 0.8150718 |   0.05 | percentile |
 | Kappa             | 0.0000000 | 0.0000000 | 0.0000000 |   0.05 | percentile |
-| logLoss           | 0.6390430 | 0.6666555 | 0.7179882 |   0.05 | percentile |
-| Neg_Pred_Value    | 0.5604396 | 0.5989011 | 0.6373626 |   0.05 | percentile |
-| Pos_Pred_Value    | 0.6277473 | 0.6501832 | 0.6689560 |   0.05 | percentile |
-| prAUC             | 0.4452304 | 0.5097012 | 0.5564353 |   0.05 | percentile |
-| Precision         | 0.6277473 | 0.6501832 | 0.6689560 |   0.05 | percentile |
-| Recall            | 0.0000000 | 0.6000000 | 1.0000000 |   0.05 | percentile |
-| Sensitivity       | 0.0000000 | 0.6000000 | 1.0000000 |   0.05 | percentile |
-| Specificity       | 0.0000000 | 0.4000000 | 1.0000000 |   0.05 | percentile |
+| logLoss           | 0.6086511 | 0.6605414 | 0.7159512 |   0.05 | percentile |
+| Neg_Pred_Value    | 0.7252747 | 0.7252747 | 0.7252747 |   0.05 | percentile |
+| Pos_Pred_Value    | 0.5648352 | 0.6300366 | 0.6879121 |   0.05 | percentile |
+| prAUC             | 0.4600284 | 0.5085829 | 0.5651605 |   0.05 | percentile |
+| Precision         | 0.5648352 | 0.6300366 | 0.6879121 |   0.05 | percentile |
+| Recall            | 0.2250000 | 0.9000000 | 1.0000000 |   0.05 | percentile |
+| Sensitivity       | 0.2250000 | 0.9000000 | 1.0000000 |   0.05 | percentile |
+| Specificity       | 0.0000000 | 0.1000000 | 0.7750000 |   0.05 | percentile |
 
 ## Plot performance
 
 ``` r
 perf_dat <- read_csv(here("results", "temporal-split", "performance_results.csv"))
-perf_dat %>%
+perf_temp_plot <- perf_dat %>%
     filter(term %in% c("cv_metric_AUC", "AUC")) %>%
-    mutate(term = case_when(term == "cv_metric_AUC" ~ "train AUROC", term == "AUC" ~
-        "test AUROC", TRUE ~ term)) %>%
+    mutate(term = case_when(term == "cv_metric_AUC" ~ "train AUROC", term == "AUC" ~ "test AUROC", TRUE ~ term)) %>%
     rename(estimate = .estimate, lower = .lower, upper = .upper) %>%
-    ggplot(aes(x = estimate, xmin = lower, xmax = upper, y = outcome, color = term)) +
-    geom_pointrange(position = position_dodge(width = 0.1)) + facet_wrap("dataset") +
-    theme_sovacool()
+    ggplot(aes(x = estimate, xmin = lower, xmax = upper, y = outcome, color = term)) + geom_vline(xintercept = 0.5, linetype = "dashed") +
+    geom_pointrange(position = position_dodge(width = 0.1)) + xlim(0, 1) + facet_wrap("dataset", ncol = 1) + coord_flip() +
+    theme_sovacool() + theme(legend.position = "top")
+perf_temp_plot
 ```
 
 ![](figures/temporal-split_perf-95-ci-1.png)<!-- -->
+
+### vs 100x train/test splits
+
+``` r
+perf_dat_100 <- data.table::fread(here("results", "performance_results_aggregated.csv")) %>%
+    pivot_longer(c("cv_metric_AUC", "AUC"), names_to = "term", values_to = "estimate") %>%
+    mutate(term = case_when(term == "cv_metric_AUC" ~ "train AUROC", term == "AUC" ~ "test AUROC", TRUE ~ term))
+perf_100_plot <- perf_dat_100 %>%
+    ggplot(aes(x = estimate, y = outcome, color = term)) + geom_vline(xintercept = 0.5, linetype = "dashed") + geom_boxplot() +
+    xlim(0, 1) + facet_wrap("dataset", ncol = 1) + coord_flip() + theme_sovacool() + theme(legend.position = "top")
+perf_100_plot
+```
+
+![](figures/perf_100x-1.png)<!-- -->
 
 ## Computational resources
 
 ``` r
 bench_dat <- read_csv(here("results", "temporal-split", "benchmarks_results.csv"))
 bench_dat %>%
-    ggplot(aes(x = s, y = outcome, color = dataset)) + geom_point() + scale_x_time() +
-    theme_sovacool()
+    ggplot(aes(x = s, y = outcome, color = dataset)) + geom_point() + scale_x_time() + theme_sovacool()
 ```
 
 ![](figures/temporal-split_bench-1.png)<!-- -->
@@ -188,8 +201,8 @@ important_feats %>%
     mutate(otu = factor(otu, levels = important_feats %>%
         pull(otu) %>%
         unique())) %>%
-    ggplot(aes(x = perf_metric_diff, y = label_html, color = outcome, shape = dataset)) +
-    geom_point() + theme_sovacool() + theme(axis.text.y = ggtext::element_markdown())
+    ggplot(aes(x = perf_metric_diff, y = label_html, color = outcome, shape = dataset)) + geom_point() + theme_sovacool() +
+    theme(axis.text.y = ggtext::element_markdown())
 ```
 
 ![](figures/temporal-split_feat-imp-1.png)<!-- -->
