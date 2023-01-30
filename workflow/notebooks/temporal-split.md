@@ -131,21 +131,21 @@ int_pctl(boots, perf) %>%
 
 | term              |    .lower | .estimate |    .upper | .alpha | .method    |
 |:------------------|----------:|----------:|----------:|-------:|:-----------|
-| Accuracy          | 0.6068681 | 0.6505495 | 0.7093407 |   0.05 | percentile |
-| AUC               | 0.4379423 | 0.5509932 | 0.6409095 |   0.05 | percentile |
+| Accuracy          | 0.5288462 | 0.6241758 | 0.6788462 |   0.05 | percentile |
+| AUC               | 0.4338608 | 0.5161223 | 0.5724632 |   0.05 | percentile |
 | Balanced_Accuracy | 0.5000000 | 0.5000000 | 0.5000000 |   0.05 | percentile |
 | cv_metric_AUC     | 0.5290527 | 0.5290527 | 0.5290527 |   0.05 | percentile |
-| Detection_Rate    | 0.0000000 | 0.5230769 | 0.7093407 |   0.05 | percentile |
-| F1                | 0.7633687 | 0.7902767 | 0.8306818 |   0.05 | percentile |
+| Detection_Rate    | 0.0000000 | 0.3670330 | 0.6739011 |   0.05 | percentile |
+| F1                | 0.6880284 | 0.7577616 | 0.8074837 |   0.05 | percentile |
 | Kappa             | 0.0000000 | 0.0000000 | 0.0000000 |   0.05 | percentile |
-| logLoss           | 0.6083392 | 0.6499141 | 0.6790278 |   0.05 | percentile |
-| Neg_Pred_Value    | 0.6060440 | 0.6373626 | 0.6686813 |   0.05 | percentile |
-| Pos_Pred_Value    | 0.6173077 | 0.6538462 | 0.7104396 |   0.05 | percentile |
-| prAUC             | 0.4455217 | 0.5163332 | 0.5829405 |   0.05 | percentile |
-| Precision         | 0.6173077 | 0.6538462 | 0.7104396 |   0.05 | percentile |
-| Recall            | 0.0000000 | 0.8000000 | 1.0000000 |   0.05 | percentile |
-| Sensitivity       | 0.0000000 | 0.8000000 | 1.0000000 |   0.05 | percentile |
-| Specificity       | 0.0000000 | 0.2000000 | 1.0000000 |   0.05 | percentile |
+| logLoss           | 0.6310862 | 0.6715483 | 0.7405178 |   0.05 | percentile |
+| Neg_Pred_Value    | 0.5780220 | 0.6428571 | 0.6703297 |   0.05 | percentile |
+| Pos_Pred_Value    | 0.5247253 | 0.6117216 | 0.6771978 |   0.05 | percentile |
+| prAUC             | 0.4573865 | 0.4967072 | 0.5315906 |   0.05 | percentile |
+| Precision         | 0.5247253 | 0.6117216 | 0.6771978 |   0.05 | percentile |
+| Recall            | 0.0000000 | 0.6000000 | 1.0000000 |   0.05 | percentile |
+| Sensitivity       | 0.0000000 | 0.6000000 | 1.0000000 |   0.05 | percentile |
+| Specificity       | 0.0000000 | 0.4000000 | 1.0000000 |   0.05 | percentile |
 
 ## Plot performance
 
@@ -170,22 +170,56 @@ perf_temp_plot
 
 ``` r
 perf_dat_100 <- data.table::fread(here("results", "performance_results_aggregated.csv")) %>%
-    pivot_longer(c("cv_metric_AUC", "AUC"), names_to = "term", values_to = "estimate") %>%
-    mutate(term = case_when(term == "cv_metric_AUC" ~ "train AUROC", term == "AUC" ~
-        "test AUROC", TRUE ~ term))
-perf_100_plot <- perf_dat_100 %>%
-    ggplot(aes(x = estimate, y = outcome, color = term)) + geom_vline(xintercept = 0.5,
-    linetype = "dashed") + geom_boxplot() + xlim(0, 1) + facet_wrap("dataset", ncol = 1) +
-    coord_flip() + labs(title = "100x train/test splits", caption = "Box: interquartile range. Whisker: min & max") +
-    theme_sovacool() + theme(legend.position = "top", axis.title.x = element_blank(),
-    axis.title.y = element_blank(), plot.caption = element_text(hjust = 0))
-perf_100_plot
+    filter(trainfrac == 0.8, taxlevel == "OTU") %>%
+    pivot_longer(c("cv_metric_AUC", "AUC"), names_to = ".term", values_to = ".estimate") %>%
+    mutate(.term = case_when(.term == "cv_metric_AUC" ~ "train_AUROC", .term == "AUC" ~
+        "test_AUROC", TRUE ~ .term)) %>%
+    select(method, seed, outcome, taxlevel, metric, dataset, trainfrac, .term, .estimate) %>%
+    filter(!is.na(.estimate))
+
+perf_dat_100 %>%
+    group_by(dataset, outcome, .term) %>%
+    summarize(median_est = round(median(.estimate), 3)) %>%
+    pivot_wider(names_from = dataset, values_from = median_est, names_prefix = "median_perf_") %>%
+    kable()
 ```
 
-![](figures/perf_100x-1.png)<!-- -->
+| outcome  | .term       | median_perf_full | median_perf_int |
+|:---------|:------------|-----------------:|----------------:|
+| allcause | test_AUROC  |            0.644 |           0.574 |
+| allcause | train_AUROC |            0.638 |           0.575 |
+| attrib   | test_AUROC  |            0.634 |           0.615 |
+| attrib   | train_AUROC |            0.639 |           0.608 |
+| idsa     | test_AUROC  |            0.587 |           0.544 |
+| idsa     | train_AUROC |            0.587 |           0.531 |
 
 ``` r
-cowplot::plot_grid(perf_temp_plot, perf_100_plot, nrow = 1)
+perf_100_glmnet_plot <- perf_dat_100 %>%
+    ggplot(aes(x = .estimate, y = outcome, color = .term)) + geom_vline(xintercept = 0.5,
+    linetype = "dashed") + geom_boxplot() + xlim(0, 1) + facet_wrap("dataset", ncol = 1) +
+    coord_flip() + labs(title = "100x train/test splits - glmnet", caption = "Box: interquartile range. Whisker: min & max") +
+    theme_sovacool() + theme(legend.position = "top", axis.title.x = element_blank(),
+    axis.title.y = element_blank(), plot.caption = element_text(hjust = 0))
+perf_100_glmnet_plot
+```
+
+![](figures/perf_100_glmnet-1.png)<!-- -->
+
+``` r
+perf_100_rf_plot <- perf_dat_100 %>%
+    filter(method == "rf") %>%
+    ggplot(aes(x = .estimate, y = outcome, color = .term)) + geom_vline(xintercept = 0.5,
+    linetype = "dashed") + geom_boxplot() + xlim(0, 1) + facet_wrap("dataset", ncol = 2) +
+    labs(title = "100x train/test splits - rf", caption = "Box: interquartile range. Whisker: min & max") +
+    theme_sovacool() + theme(legend.position = "top", axis.title.x = element_blank(),
+    axis.title.y = element_blank(), plot.caption = element_text(hjust = 0))
+perf_100_rf_plot
+```
+
+![](figures/perf_100_rf-1.png)<!-- -->
+
+``` r
+cowplot::plot_grid(perf_temp_plot, perf_100_glmnet_plot, nrow = 1)
 ```
 
 ![](figures/perf_temporal_vs_100-1.png)<!-- -->
