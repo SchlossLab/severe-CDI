@@ -1,6 +1,6 @@
 ML parameters
 ================
-2023-01-18
+2023-01-31
 
 ``` r
 library(data.table)
@@ -120,7 +120,7 @@ results_dat %>%
 
 ``` r
 results_dat %>% 
-  filter(trainfrac == 0.8, method == 'glmnet', dataset == 'full', metric == 'AUROC') %>% 
+  filter(trainfrac == 0.8, method == 'glmnet', dataset == 'int', metric == 'AUROC') %>% 
   ggplot(aes(perf_metric_value, perf_metric_name, color = outcome)) +
   geom_boxplot() +
   theme_bw() +
@@ -131,7 +131,7 @@ results_dat %>%
 
 ``` r
 results_dat %>% 
-  filter(trainfrac == 0.8, method == 'glmnet', dataset == 'full', metric == 'AUROC') %>% 
+  filter(trainfrac == 0.8, method == 'glmnet', dataset == 'int', metric == 'AUROC') %>% 
   ggplot(aes(perf_metric_value, taxlevel, color = outcome)) +
   geom_boxplot() +
   theme_bw() +

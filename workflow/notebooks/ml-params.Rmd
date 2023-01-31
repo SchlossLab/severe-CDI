@@ -5,7 +5,8 @@ output:
   github_document:
     html_preview: false
   gfm:
-    html_preview: false
+    html-preview: false
+    embed-resources: true
 ---
 
 ```{r setup, include=FALSE}
