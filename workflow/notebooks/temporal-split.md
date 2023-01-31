@@ -1,6 +1,6 @@
 Temporal Split
 ================
-2023-01-30
+2023-01-31
 
 ``` r
 library(here)
@@ -131,21 +131,21 @@ int_pctl(boots, perf) %>%
 
 | term              |    .lower | .estimate |    .upper | .alpha | .method    |
 |:------------------|----------:|----------:|----------:|-------:|:-----------|
-| Accuracy          | 0.6178571 | 0.6758242 | 0.7348901 |   0.05 | percentile |
-| AUC               | 0.4802296 | 0.5651821 | 0.6571169 |   0.05 | percentile |
+| Accuracy          | 0.6153846 | 0.6692308 | 0.7568681 |   0.05 | percentile |
+| AUC               | 0.4736512 | 0.5220780 | 0.5816237 |   0.05 | percentile |
 | Balanced_Accuracy | 0.5000000 | 0.5000000 | 0.5000000 |   0.05 | percentile |
 | cv_metric_AUC     | 0.5290527 | 0.5290527 | 0.5290527 |   0.05 | percentile |
-| Detection_Rate    | 0.0000000 | 0.5384615 | 0.6923077 |   0.05 | percentile |
-| F1                | 0.7676443 | 0.8043117 | 0.8181818 |   0.05 | percentile |
+| Detection_Rate    | 0.0000000 | 0.3956044 | 0.7469780 |   0.05 | percentile |
+| F1                | 0.7619048 | 0.7935327 | 0.8611985 |   0.05 | percentile |
 | Kappa             | 0.0000000 | 0.0000000 | 0.0000000 |   0.05 | percentile |
-| logLoss           | 0.5867127 | 0.6315368 | 0.6826946 |   0.05 | percentile |
-| Neg_Pred_Value    | 0.6293956 | 0.6868132 | 0.7442308 |   0.05 | percentile |
-| Pos_Pred_Value    | 0.6230769 | 0.6730769 | 0.6923077 |   0.05 | percentile |
-| prAUC             | 0.4833345 | 0.5254498 | 0.5846788 |   0.05 | percentile |
-| Precision         | 0.6230769 | 0.6730769 | 0.6923077 |   0.05 | percentile |
-| Recall            | 0.0000000 | 0.8000000 | 1.0000000 |   0.05 | percentile |
-| Sensitivity       | 0.0000000 | 0.8000000 | 1.0000000 |   0.05 | percentile |
-| Specificity       | 0.0000000 | 0.2000000 | 1.0000000 |   0.05 | percentile |
+| logLoss           | 0.5715850 | 0.6405144 | 0.6823033 |   0.05 | percentile |
+| Neg_Pred_Value    | 0.6703297 | 0.6840659 | 0.7118132 |   0.05 | percentile |
+| Pos_Pred_Value    | 0.6153846 | 0.6593407 | 0.7568681 |   0.05 | percentile |
+| prAUC             | 0.4643378 | 0.4938545 | 0.5299658 |   0.05 | percentile |
+| Precision         | 0.6153846 | 0.6593407 | 0.7568681 |   0.05 | percentile |
+| Recall            | 0.0000000 | 0.6000000 | 1.0000000 |   0.05 | percentile |
+| Sensitivity       | 0.0000000 | 0.6000000 | 1.0000000 |   0.05 | percentile |
+| Specificity       | 0.0000000 | 0.4000000 | 1.0000000 |   0.05 | percentile |
 
 ## Plot performance
 
