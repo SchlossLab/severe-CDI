@@ -17,7 +17,6 @@ results/predict_*/
 
 log/
 mothur*logfile
-*temp*
 *.docx
 *.out
 
