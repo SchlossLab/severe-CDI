@@ -197,6 +197,7 @@ rule alpha_beta:
         """
         mothur "#set.logfile(name={log});
         set.dir(input=data/mothur, output=data/mothur, seed=19760620);
+        set.current(processors={threads});
         rename.file(taxonomy={input.taxonomy}, shared={input.shared});
         sub.sample(shared=cdi.opti_mcc.shared, size=5000);
         rarefaction.single(shared=cdi.opti_mcc.shared, calc=sobs, freq=100);
