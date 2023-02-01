@@ -1,4 +1,4 @@
-cluster: 
+cluster:
     mkdir -p log/hpc/jobs/{rule}/ &&
     sbatch
         --job-name={rule}-{wildcards}
@@ -11,11 +11,11 @@ cluster:
         --cpus-per-task={threads}
         --mem-per-cpu={resources.mem_mb}MB
         --time={resources.time}
-        --output=log/hpc/jobs/{rule}/{wildcards}.out
+        --output=log/hpc/jobs/{rule}/{rule}.{wildcards}.out
 default-resources:
-  - account=YOUR_ACCOUNT # enter your slurm account here
+  - account=YOUR_ACCOUNT_HERE
   - partition=standard
-  - email=YOUR_EMAIL # enter your email here
+  - email=YOUR_EMAIL_HERE
   - mail_on=FAIL
   - mem_mb=512
   - time="24:00:00"
