@@ -8,12 +8,14 @@ dependencies:
   - r-devtools
   - r-doFuture
   - r-foreach
+  - r-furrr
   - r-future
   - r-future.apply
   - r-here
-  - r-mikropml=1.4.0
+  - r-mikropml=1.5.0
   - r-rmarkdown
   - r-rpart
-  - r-schtools>=0.3
+  - r-rsample
+  - r-schtools>=0.4
   - r-testthat
   - r-tidyverse>=1.3
