@@ -32,6 +32,5 @@ ml_results$feature_importance %>%
   add_cols() %>%
   readr::write_csv(snakemake@output[["feat"]])
 ml_results$test_data %>%
-  add_cols() %>%
   readr::write_csv(snakemake@output[['test']])
 saveRDS(ml_results$trained_model, file = snakemake@output[["model"]])

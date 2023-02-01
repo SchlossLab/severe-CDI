@@ -1,23 +1,19 @@
 ml_methods:
  - glmnet
- - rf
 kfold: 5
-ncores: 36
-nseeds: 50
+ncores: 16
+nseeds: 1
 outcomes:
   - idsa
   - allcause
   - attrib
 tax_levels:
   - OTU
-  - genus
 metrics:
   - AUC
-  - F1
-  #- MCC
 train_frac:
   - 0.8
-  - 0.65
 dataset_subsets:
-  - full
   - int
+  - full
+
