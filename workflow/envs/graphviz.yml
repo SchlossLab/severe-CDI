@@ -1,6 +1,5 @@
-name: smk
+name: graphviz
 channels:
   - conda-forge
-  - bioconda
 dependencies:
-  - snakemake=7
+  - graphviz

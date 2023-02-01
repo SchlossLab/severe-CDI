@@ -1,3 +1,6 @@
+import os
+import pathlib
+
 containerized: "docker://kellysovacool/severe-cdi:latest"
 
 configfile: 'config/default.yml'
@@ -14,13 +17,29 @@ outcomes = config['outcomes']
 tax_levels = config['tax_levels']
 metrics = config['metrics']
 train_fracs = config['train_frac']
-datasets = ['full', 'int']
+datasets = config['dataset_subsets']
 
 result_types = ['performance', 'feature-importance']
+
+notebooks_dir = pathlib.Path('workflow', 'notebooks')
+md_notebooks = [pathlib.Path(notebooks_dir, nb) 
+                for nb in os.listdir(notebooks_dir)
+                if nb.endswith('.md')]
+
+module mikropml:
+    snakefile: 
+        github("SchlossLab/mikropml-snakemake-workflow", 
+               path="workflow/Snakefile", 
+               branch="main", # TODO switch to tag once it's released
+               #tag="1.2.0"
+               )
+    config:
+        config
 
 include: 'rules/mothur.smk'
 include: 'rules/machine-learning.smk'
 include: 'rules/plot.smk'
+include: 'rules/temporal-split.smk'
 
 rule targets:
     input:
@@ -131,3 +150,23 @@ rule render_site:
         'docs/index.html'
     shell:
         "quarto render {input.qmd}"
+
+rule render_notebook:
+    input:
+        rmd=f'{notebooks_dir}/{{file}}.Rmd'
+    output:
+        md=f'{notebooks_dir}/{{file}}.md'
+    params:
+        workdir=notebooks_dir
+    conda:
+        'envs/mikropml.yml'
+    shell:
+        """
+        cd {params.workdir}
+        fn="{wildcards.file}.Rmd"
+        R -e "rmarkdown::render('$fn')"
+        """
+
+rule render_notebooks:
+    input:
+        md_notebooks
