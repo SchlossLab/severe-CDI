@@ -197,7 +197,7 @@ rule alpha_diversity:
         rename.file(taxonomy={input.taxonomy}, shared={input.shared});
         sub.sample(shared=cdi.opti_mcc.shared, size=5000);
         rarefaction.single(shared=cdi.opti_mcc.shared, calc=sobs, freq=100);
-        summary.single(shared=cdi.opti_mcc.shared, calc=nseqs-coverage-invsimpson-shannon-sobs, subsample=5000);
+        summary.single(shared=cdi.opti_mcc.shared, calc=nseqs-coverage-invsimpson-shannon-sobs, subsample=5000)
         "
         """
 
@@ -220,7 +220,7 @@ rule beta_diversity:
         """
         dist.shared(shared=cdi.opti_mcc.shared, calc=braycurtis, subsample=5000, processors={threads});
         nmds(phylip=cdi.opti_mcc.braycurtis.0.03.lt.ave.dist);
-        pcoa(phylip=cdi.opti_mcc.braycurtis.0.03.lt.ave.dist);
+        pcoa(phylip=cdi.opti_mcc.braycurtis.0.03.lt.ave.dist)
         "
         """
 
