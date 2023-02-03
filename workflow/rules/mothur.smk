@@ -173,7 +173,7 @@ with open(f"data/SRR_Acc_List.txt", 'r') as file:
 #             "
 #         """
 
-rule alpha_beta:
+rule alpha_diversity:
     input:
         taxonomy="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.0.03.cons.taxonomy",
         shared="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.shared"
@@ -182,12 +182,9 @@ rule alpha_beta:
         taxonomy="data/mothur/cdi.taxonomy",
         summary="data/mothur/cdi.opti_mcc.groups.ave-std.summary",
         rarefaction="data/mothur/cdi.opti_mcc.groups.rarefaction",
-        subsample_shared="data/mothur/cdi.opti_mcc.0.03.subsample.shared",
-        dist_shared = "data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.dist",
-        nmds = "data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.dist.nmds",
-        pcoa = "data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.dist.pcoa"
+        subsample_shared="data/mothur/cdi.opti_mcc.0.03.subsample.shared"
     log:
-        "log/mothur/alpha_beta.log"
+        "log/mothur/alpha_diversity.log"
     threads: 10
     resources:
         time="48:00:00"
@@ -201,6 +198,26 @@ rule alpha_beta:
         sub.sample(shared=cdi.opti_mcc.shared, size=5000);
         rarefaction.single(shared=cdi.opti_mcc.shared, calc=sobs, freq=100);
         summary.single(shared=cdi.opti_mcc.shared, calc=nseqs-coverage-invsimpson-shannon-sobs, subsample=5000);
+        "
+        """
+
+rule beta_diversity:
+    input:
+        taxonomy="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.0.03.cons.taxonomy",
+        shared="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.shared"
+    output:
+        dist_shared = "data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.dist",
+        nmds = "data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.dist.nmds",
+        pcoa = "data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.dist.pcoa"
+    log:
+        "log/mothur/beta_diversity.log"
+    threads: 10
+    resources:
+        time="48:00:00"
+    conda:
+        "../envs/mothur.yml"
+    shell:
+        """
         dist.shared(shared=cdi.opti_mcc.shared, calc=braycurtis, subsample=5000, processors={threads});
         nmds(phylip=cdi.opti_mcc.braycurtis.0.03.lt.ave.dist);
         pcoa(phylip=cdi.opti_mcc.braycurtis.0.03.lt.ave.dist);
