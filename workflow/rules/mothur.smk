@@ -222,14 +222,14 @@ rule beta_diversity:
         "
         """
 
-rule beta_plots:
+rule nmds_pcoa:
     input:
         dist_shared="data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.dist"
     output:
         nmds = "data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.dist.nmds",
         pcoa = "data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.dist.pcoa"
     log:
-        "log/mothur/beta_plots.log"
+        "log/mothur/nmds_pcoa.log"
     threads: 10
     resources:
         time="48:00:00"
