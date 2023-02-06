@@ -217,7 +217,9 @@ rule beta_diversity:
         "../envs/mothur.yml"
     shell:
         """
-        dist.shared(shared=cdi.opti_mcc.shared, calc=braycurtis, subsample=5000, processors={threads});
+        mothur "#set.logfile(name={log});
+        set.dir(input=data/mothur, output=data/mothur, seed=19760620);
+        dist.shared(shared={input.shared}, calc=braycurtis, subsample=5000, processors={threads});
         nmds(phylip=cdi.opti_mcc.braycurtis.0.03.lt.ave.dist);
         pcoa(phylip=cdi.opti_mcc.braycurtis.0.03.lt.ave.dist)
         "
