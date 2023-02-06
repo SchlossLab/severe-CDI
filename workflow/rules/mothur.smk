@@ -203,8 +203,7 @@ rule alpha_diversity:
 
 rule beta_diversity:
     input:
-        taxonomy="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.0.03.cons.taxonomy",
-        shared="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.shared"
+        shared="data/mothur/cdi.opti_mcc.shared"
     output:
         dist_shared = "data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.dist",
         nmds = "data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.dist.nmds",
