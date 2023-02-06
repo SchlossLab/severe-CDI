@@ -205,9 +205,7 @@ rule beta_diversity:
     input:
         shared="data/mothur/cdi.opti_mcc.shared"
     output:
-        dist_shared = "data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.dist",
-        nmds = "data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.dist.nmds",
-        pcoa = "data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.dist.pcoa"
+        dist_shared = "data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.dist"
     log:
         "log/mothur/beta_diversity.log"
     threads: 10
@@ -221,6 +219,28 @@ rule beta_diversity:
         mothur "#set.logfile(name={log});
         set.dir(input=data/mothur, output=data/mothur, seed=19760620);
         dist.shared(shared={input.shared}, calc=braycurtis, subsample=5000, processors={threads})
+        "
+        """
+
+rule beta_plots:
+    input:
+        dist_shared="data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.dist"
+    output:
+        nmds = "data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.dist.nmds",
+        pcoa = "data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.dist.pcoa"
+    log:
+        "log/mothur/beta_plots.log"
+    threads: 10
+    resources:
+        time="48:00:00"
+    conda:
+        "../envs/mothur.yml"
+    shell:
+        """
+        mothur "#set.logfile(name={log});
+        set.dir(input=data/mothur, output=data/mothur, seed=19760620);
+        nmds(phylip=cdi.opti_mcc.braycurtis.0.03.lt.ave.dist);
+        pcoa(phylip=cdi.opti_mcc.braycurtis.0.03.lt.ave.dist)
         "
         """
 
