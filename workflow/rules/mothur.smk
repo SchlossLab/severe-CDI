@@ -227,7 +227,7 @@ rule nmds_pcoa:
         dist_shared="data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.dist"
     output:
         nmds_iters="data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.nmds.iters",
-        nmds_stress="data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.nmds.stress"
+        nmds_stress="data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.nmds.stress",
         nmds_axes="data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.nmds.axes",
         pcoa_axes="data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.pcoa.axes",
         pcoa_loadings="data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.pcoa.loadings"
