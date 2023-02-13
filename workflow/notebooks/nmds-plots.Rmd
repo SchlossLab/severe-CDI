@@ -1,0 +1,55 @@
+---
+title: "nmds-plots"
+author: "Megan Coden"
+date: "2023-02-09"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# install.packages("vegan")
+# install.packages("readr")
+```
+
+```{r prepdata, include=FALSE}
+library(vegan)
+library(readr)
+# source(here::here("code","plot","config-plots.R"))
+# pc = read_tsv(here("data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.nmds.axes")
+pc = read_tsv("/Users/megan/Desktop/schloss-lab/adverseCDI/data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.nmds.axes")
+ #make community matrix - extract columns with abundance information
+com = pc[,2:ncol(pc)] 
+  #turn abundance data frame into a matrix
+m_com = as.matrix(com)
+set.seed(123)
+minShift <- function(x) {x + abs(min(x))}
+m_com <- apply(m_com, 2, minShift)
+nmds = metaMDS(m_com, distance = "bray")
+```
+
+
+
+```{r plotnmds, echo=FALSE}
+#extract NMDS scores (x and y coordinates)
+data.scores = as.data.frame(scores(nmds))
+#extract NMDS scores (x and y coordinates) for sites from newer versions of vegan package
+data.scores = as.data.frame(scores(nmds)$sites)
+#add columns to data frame 
+data.scores$Sample = pc$Sample
+data.scores$Time = pc$Time
+data.scores$Type = pc$Type
+ 
+head(data.scores)
+
+library(ggplot2)
+
+
+xx = ggplot(data.scores, aes(x = NMDS1, y = NMDS2)) + 
+    geom_point(data=data.scores)
+    
+ xx
+    
+ggsave("NMDS.svg")
+
+```
+
