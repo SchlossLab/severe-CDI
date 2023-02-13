@@ -14,60 +14,48 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r prepdata, include=FALSE}
 library(vegan)
 library(readr)
+library(tidyverse)
+library(ggplot2)
 # source(here::here("code","plot","config-plots.R"))
-# pc = read_tsv(here("data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.nmds.axes")
+# pc = read_tsv(here("data", "mothur", "cdi.opti_mcc.braycurtis.0.03.lt.ave.nmds.axes")
 pc = read_tsv("/Users/megan/Desktop/schloss-lab/adverseCDI/data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.nmds.axes")
+case_data <- read.csv("/Users/megan/Desktop/schloss-lab/adverseCDI/data/process/cases_full_metadata.csv")
  #make community matrix - extract columns with abundance information
-com = pc[,2:ncol(pc)] 
+# com = pc[,2:ncol(pc)] 
   #turn abundance data frame into a matrix
-m_com = as.matrix(com)
-set.seed(123)
-minShift <- function(x) {x + abs(min(x))}
-m_com <- apply(m_com, 2, minShift)
-nmds = metaMDS(m_com, distance = "bray")
+# m_com = as.matrix(com)
+# set.seed(123)
+# minShift <- function(x) {x + abs(min(x))}
+# m_com <- apply(m_com, 2, minShift)
+# nmds = metaMDS(m_com, distance = "bray")
 ```
+
+```{r split_by_outcomes, include=FALSE}
+# inner join w sample id column from data/process/cases_full_metadata.csv
+# plot will be one per definition, with severe as one color and not severe as other
+names(pc)[names(pc) == "group"] <- "sample_id"
+pc
+combined_df <- pc %>% inner_join( case_data, 
+           by=c('sample_id'))
+idsa <- combined_df %>% select("axis1", "axis2", "idsa") %>% drop_na(idsa)
+attrib <- combined_df %>% select("axis1", "axis2", "attrib") %>% drop_na(attrib)
+allcause <- combined_df %>% select("axis1", "axis2", "allcause") %>% drop_na(allcause)
+
+```
+
 
 
 
 ```{r plotnmds, echo=FALSE}
-#extract NMDS scores (x and y coordinates)
-data.scores = as.data.frame(scores(nmds))
-#extract NMDS scores (x and y coordinates) for sites from newer versions of vegan package
-data.scores = as.data.frame(scores(nmds)$sites)
-#add columns to data frame 
-data.scores$Sample = pc$Sample
-data.scores$Time = pc$Time
-data.scores$Type = pc$Type
- 
-head(data.scores)
+data.scores = as.data.frame(idsa)
+idsa_plot <- ggplot(data.scores, aes(x = axis1, y = axis2)) + geom_point(aes(color = idsa))
+data.scores = as.data.frame(attrib)
+attrib_plot <- ggplot(data.scores, aes(x = axis1, y = axis2)) + geom_point(aes(color = attrib))
+data.scores = as.data.frame(allcause)
+allcause_plot <- ggplot(data.scores, aes(x = axis1, y = axis2)) + geom_point(aes(color = allcause))
 
-library(ggplot2)
+idsa_plot
+attrib_plot
+allcause_plot
 
-
-xx = ggplot(data.scores, aes(x = NMDS1, y = NMDS2)) + 
-    geom_point(data=data.scores)+
-  theme(axis.text.y = element_text(colour = "black", size = 12, face = "bold"), 
-    axis.text.x = element_text(colour = "black", face = "bold", size = 12), 
-    legend.text = element_text(size = 12, face ="bold", colour ="black"), 
-    legend.position = "right", axis.title.y = element_text(face = "bold", size = 14), 
-    axis.title.x = element_text(face = "bold", size = 14, colour = "black"), 
-    legend.title = element_text(size = 14, colour = "black", face = "bold"), 
-    panel.background = element_blank(), panel.border = element_rect(colour = "black", fill = NA, size = 1.2),
-    legend.key=element_blank()) + 
-    labs(x = "NMDS1", colour = "Time", y = "NMDS2", shape = "Type")  + 
-    scale_colour_manual(values = c("#009E73", "#E69F00")) 
-    
- xx
-    
-ggsave("NMDS.svg")
-
-```
-
-
-
-```{r pcoa, include=FALSE}
-pcoa_data <- read_tsv("/Users/megan/Desktop/schloss-lab/adverseCDI/data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.pcoa.axes")
-modified <- pcoa_data[,2:ncol(pcoa_data)]
-ordiplot (modified)
-# pcoa.plot(pcoa_data, is.OTU=TRUE, meta, factors, rank,  stand.method = NULL, dist.method = "morisita",  sample.labels = TRUE, top = 20, ellipse = FALSE, main = NULL, file = NULL, ext = NULL, height = 8, width = 10, ggplot2 = TRUE, bw = FALSE)
 ```
