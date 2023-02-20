@@ -1,0 +1,59 @@
+---
+title: "nmds-plots"
+author: "Megan Coden"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# install.packages("vegan")
+# install.packages("readr")
+library(vegan)
+library(readr)
+library(tidyverse)
+library(ggplot2)
+library(data.table)
+library(here)
+```
+
+```{r prepdata, include=FALSE}
+# source(here::here("code","plot","config-plots.R"))
+# pc = read_tsv(here("data", "mothur", "cdi.opti_mcc.braycurtis.0.03.lt.ave.nmds.axes")
+# pc = read_tsv("/Users/megan/Desktop/schloss-lab/adverseCDI/data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.nmds.axes")
+pc <- data.table::fread(here('data', 'mothur',
+                                      'cdi.opti_mcc.braycurtis.0.03.lt.ave.nmds.axes'))
+#case_data <- read.csv("/Users/megan/Desktop/schloss-lab/adverseCDI/data/process/cases_full_metadata.csv")
+case_data <- data.table::fread(here('data', 'process',
+                                      'cases_full_metadata.csv'))
+```
+
+```{r split_by_outcomes, include=FALSE}
+# inner join w sample id column from data/process/cases_full_metadata.csv
+# plot will be one per definition, with severe as one color and not severe as other
+names(pc)[names(pc) == "group"] <- "sample_id"
+pc
+combined_df <- pc %>% inner_join( case_data, 
+           by=c('sample_id'))
+idsa <- combined_df %>% select("axis1", "axis2", "idsa") %>% drop_na(idsa)
+attrib <- combined_df %>% select("axis1", "axis2", "attrib") %>% drop_na(attrib)
+allcause <- combined_df %>% select("axis1", "axis2", "allcause") %>% drop_na(allcause)
+
+```
+
+
+
+
+```{r plotnmds, echo=FALSE}
+data.scores = as.data.frame(idsa)
+idsa_plot <- ggplot(data.scores, aes(x = axis1, y = axis2)) + geom_point(aes(color = idsa))
+data.scores = as.data.frame(attrib)
+attrib_plot <- ggplot(data.scores, aes(x = axis1, y = axis2)) + geom_point(aes(color = attrib))
+data.scores = as.data.frame(allcause)
+allcause_plot <- ggplot(data.scores, aes(x = axis1, y = axis2)) + geom_point(aes(color = allcause))
+
+idsa_plot
+attrib_plot
+allcause_plot
+
+```
