@@ -36,30 +36,19 @@ names(pc)[names(pc) == "group"] <- "sample_id"
 pc
 combined_df <- pc %>% inner_join( case_data, 
            by=c('sample_id'))
-idsa <- combined_df %>% select("axis1", "axis2", "idsa") %>% drop_na(idsa)
-attrib <- combined_df %>% select("axis1", "axis2", "attrib") %>% drop_na(attrib)
-allcause <- combined_df %>% select("axis1", "axis2", "allcause") %>% drop_na(allcause)
-
+idsa <- combined_df %>% select("axis1", "axis2", "idsa") %>% drop_na(idsa) %>% rename(is_severe=idsa) %>% mutate(outcome="IDSA")
+attrib <- combined_df %>% select("axis1", "axis2", "attrib") %>% drop_na(attrib) %>% rename(is_severe=attrib) %>% mutate(outcome="Attrib")
+allcause <- combined_df %>% select("axis1", "axis2", "allcause") %>% drop_na(allcause) %>% rename(is_severe=allcause) %>% mutate(outcome="Allcause")
+all_outcomes <- bind_rows(allcause, attrib, idsa)
 ```
 
 
 
 
 ```{r plotnmds, echo=FALSE}
-data.scores = as.data.frame(idsa)
-idsa_plot <- ggplot(data.scores, aes(x = axis1, y = axis2)) + geom_point(aes(color = idsa)) + ggtitle("idsa") + theme_bw() + theme(legend.position = "none", axis.title.x = element_blank(), axis.title.y = element_blank(), plot.title = element_text(hjust = 0.5, size = 10)) + scale_color_brewer(palette="Set1")
-data.scores = as.data.frame(attrib)
-attrib_plot <- ggplot(data.scores, aes(x = axis1, y = axis2)) + geom_point(aes(color = attrib)) + ggtitle("attrib") + theme_bw() + theme(legend.position = "none", axis.title.x = element_blank(), axis.title.y = element_blank(), plot.title = element_text(hjust = 0.5, size = 10)) + scale_color_brewer(palette="Set1")
-data.scores = as.data.frame(allcause)
-allcause_plot <- ggplot(data.scores, aes(x = axis1, y = axis2)) + geom_point(aes(color = allcause)) + ggtitle("allcause") + theme_bw() + scale_color_brewer(palette="Set1", name="is_severe")
 
-allcause_plot <- ggplot(data.scores, aes(x = axis1, y = axis2)) + 
-  geom_point(aes(color = allcause)) + 
-  ggtitle("allcause") + 
-  theme_bw() + 
-  theme(plot.title = element_text(hjust = 0.5, size = 10), axis.title.x = element_blank(), axis.title.y = element_blank()) +
-  scale_color_brewer(palette="Set1", name="is_severe")
+data.scores = as.data.frame(all_outcomes)
 
-ggarrange(idsa_plot, attrib_plot, allcause_plot, nrow = 1, widths = c(6, 6, 9))
-
+plot <- data.scores %>% ggplot(aes(x=axis1, y=axis2, color = is_severe)) + geom_point(alpha = 0.7) + facet_wrap("outcome", nrow = 1) + theme_bw() + scale_color_manual(values=c(yes="#E41A1C", no="#377EB8"), name="is_severe") + theme(axis.title.x = element_blank(), axis.title.y = element_blank())
+plot
 ```
