@@ -11,11 +11,11 @@ dat <- read_tsv("data/mothur/cdi.opti_mcc.groups.ave-std.summary") %>%
   select(group, sobs, shannon, invsimpson, coverage) %>%
   rename(sample_id = group) %>% 
   right_join(read_csv("data/process/cases_int_metadata.csv"), by = "sample_id") %>% 
-  rename(Shannon=shannon, `Inverse Simpson`=invsimpson, `Number of OTUs`=sobs)
+  rename(Shannon=shannon, `Inverse Simpson`=invsimpson, `Number of OTUs`=sobs, IDSA=idsa, Allcause=allcause, Attrib=attrib)
 
 alpha_plot <- dat %>% 
-  select(sample_id, `Number of OTUs`, Shannon, `Inverse Simpson`, idsa, attrib, allcause) %>%
-  pivot_longer(c(idsa, attrib, allcause), 
+  select(sample_id, `Number of OTUs`, Shannon, `Inverse Simpson`, IDSA, Attrib, Allcause) %>%
+  pivot_longer(c(IDSA, Attrib, Allcause), 
                names_to = "severity_metric", values_to = "is_severe") %>% 
   pivot_longer(c(`Number of OTUs`, Shannon, `Inverse Simpson`),
                names_to = "diversity_metric", values_to = "div_value") %>% 
