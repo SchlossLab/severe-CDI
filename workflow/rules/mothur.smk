@@ -212,7 +212,7 @@ rule beta_diversity:
     threads: 10
     resources:
         time="48:00:00",
-        mem_mb=MEM_PER_GB*1.5
+        mem_mb=int(MEM_PER_GB*1.5)
     conda:
         "../envs/mothur.yml"
     shell:
