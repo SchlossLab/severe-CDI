@@ -205,11 +205,34 @@ rule beta_diversity:
     input:
         shared="data/mothur/cdi.opti_mcc.shared"
     output:
-        dist_shared = "data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.dist",
-        nmds = "data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.dist.nmds",
-        pcoa = "data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.dist.pcoa"
+        dist_shared = "data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.dist"
     log:
         "log/mothur/beta_diversity.log"
+    threads: 10
+    resources:
+        time="48:00:00",
+        mem_mb=MEM_PER_GB*1.5
+    conda:
+        "../envs/mothur.yml"
+    shell:
+        """
+        mothur "#set.logfile(name={log});
+        set.dir(input=data/mothur, output=data/mothur, seed=19760620);
+        dist.shared(shared={input.shared}, calc=braycurtis, subsample=5000, processors={threads})
+        "
+        """
+
+rule nmds_pcoa:
+    input:
+        dist_shared="data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.dist"
+    output:
+        nmds_iters="data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.nmds.iters",
+        nmds_stress="data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.nmds.stress",
+        nmds_axes="data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.nmds.axes",
+        pcoa_axes="data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.pcoa.axes",
+        pcoa_loadings="data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.pcoa.loadings"
+    log:
+        "log/mothur/nmds_pcoa.log"
     threads: 10
     resources:
         time="48:00:00"
@@ -219,7 +242,6 @@ rule beta_diversity:
         """
         mothur "#set.logfile(name={log});
         set.dir(input=data/mothur, output=data/mothur, seed=19760620);
-        dist.shared(shared={input.shared}, calc=braycurtis, subsample=5000, processors={threads});
         nmds(phylip=cdi.opti_mcc.braycurtis.0.03.lt.ave.dist);
         pcoa(phylip=cdi.opti_mcc.braycurtis.0.03.lt.ave.dist)
         "
