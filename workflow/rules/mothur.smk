@@ -180,6 +180,8 @@ rule make_shared_asv:
         'log/make_shared_asv.log'
     params:
         workdir='data/mothur',
+    conda:
+        "../envs/mothur.yml"
     shell:
         """
         mothur "#
