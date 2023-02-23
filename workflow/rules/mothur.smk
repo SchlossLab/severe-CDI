@@ -148,9 +148,9 @@ with open(f"data/SRR_Acc_List.txt", 'r') as file:
 
 # rule cluster_otus:
 #     input:
-#         fasta=rules.process_samples.output.fasta,
-#         taxonomy=rules.process_samples.output.taxonomy,
-#         count_table=rules.process_samples.output.count_table
+#         fasta="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.fasta",
+#         taxonomy="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pds.wang.pick.taxonomy",
+#         count_table="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table"
 #     output:
 #         shared="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.shared",
 #         taxonomy="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.0.03.cons.taxonomy"
@@ -254,7 +254,7 @@ rule pool_tax_level:
         taxonomy="data/mothur/cdi.taxonomy"
     output:
         shared="data/mothur/cdi.opti_mcc.{taxlevel}.shared",
-        taxonomy="data/mothur/cdi.{taxlevel}.taxonomy"
+        taxonomy="data/mothur/cdi.{taxlevel}.tax"
     log:
         "log/mothur/pool_{taxlevel}_level.log"
     conda: "../envs/mikropml.yml"
