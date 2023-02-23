@@ -1,0 +1,54 @@
+---
+title: "nmds-plots"
+author: "Megan Coden"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# install.packages("vegan")
+# install.packages("readr")
+library(vegan)
+library(readr)
+library(tidyverse)
+library(ggplot2)
+library(ggpubr)
+library(data.table)
+library(here)
+```
+
+```{r prepdata, include=FALSE}
+# source(here::here("code","plot","config-plots.R"))
+# pc = read_tsv(here("data", "mothur", "cdi.opti_mcc.braycurtis.0.03.lt.ave.nmds.axes")
+# pc = read_tsv("/Users/megan/Desktop/schloss-lab/adverseCDI/data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.nmds.axes")
+pc <- data.table::fread(here('data', 'mothur',
+                                      'cdi.opti_mcc.braycurtis.0.03.lt.ave.nmds.axes'))
+#case_data <- read.csv("/Users/megan/Desktop/schloss-lab/adverseCDI/data/process/cases_full_metadata.csv")
+case_data <- data.table::fread(here('data', 'process',
+                                      'cases_full_metadata.csv'))
+```
+
+```{r split_by_outcomes, include=FALSE}
+# inner join w sample id column from data/process/cases_full_metadata.csv
+# plot will be one per definition, with severe as one color and not severe as other
+names(pc)[names(pc) == "group"] <- "sample_id"
+pc
+combined_df <- pc %>% inner_join( case_data, 
+           by=c('sample_id'))
+idsa <- combined_df %>% select("axis1", "axis2", "idsa") %>% drop_na(idsa) %>% rename(is_severe=idsa) %>% mutate(outcome="IDSA")
+attrib <- combined_df %>% select("axis1", "axis2", "attrib") %>% drop_na(attrib) %>% rename(is_severe=attrib) %>% mutate(outcome="Attrib")
+allcause <- combined_df %>% select("axis1", "axis2", "allcause") %>% drop_na(allcause) %>% rename(is_severe=allcause) %>% mutate(outcome="Allcause")
+all_outcomes <- bind_rows(allcause, attrib, idsa)
+```
+
+
+
+
+```{r plotnmds, echo=FALSE}
+
+data.scores = as.data.frame(all_outcomes)
+
+plot <- data.scores %>% ggplot(aes(x=axis1, y=axis2, color = is_severe)) + geom_point(alpha = 0.7) + facet_wrap("outcome", nrow = 1) + theme_bw() + scale_color_manual(values=c(yes="#E41A1C", no="#377EB8"), name="is_severe") + theme(axis.title.x = element_blank(), axis.title.y = element_blank())
+plot
+```

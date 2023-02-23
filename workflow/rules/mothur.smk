@@ -173,7 +173,7 @@ with open(f"data/SRR_Acc_List.txt", 'r') as file:
 #             "
 #         """
 
-rule alpha_beta:
+rule alpha_diversity:
     input:
         taxonomy="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.0.03.cons.taxonomy",
         shared="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.shared"
@@ -182,12 +182,9 @@ rule alpha_beta:
         taxonomy="data/mothur/cdi.taxonomy",
         summary="data/mothur/cdi.opti_mcc.groups.ave-std.summary",
         rarefaction="data/mothur/cdi.opti_mcc.groups.rarefaction",
-        subsample_shared="data/mothur/cdi.opti_mcc.0.03.subsample.shared",
-        dist_shared = "data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.dist",
-        nmds = "data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.dist.nmds",
-        pcoa = "data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.dist.pcoa"
+        subsample_shared="data/mothur/cdi.opti_mcc.0.03.subsample.shared"
     log:
-        "log/mothur/alpha_beta.log"
+        "log/mothur/alpha_diversity.log"
     threads: 10
     resources:
         time="48:00:00"
@@ -201,27 +198,70 @@ rule alpha_beta:
         rename.file(taxonomy={input.taxonomy}, shared={input.shared});
         sub.sample(shared=cdi.opti_mcc.shared, size=5000);
         rarefaction.single(shared=cdi.opti_mcc.shared, calc=sobs, freq=100);
-        summary.single(shared=cdi.opti_mcc.shared, calc=nseqs-coverage-invsimpson-shannon-sobs, subsample=5000);
-        dist.shared(shared=cdi.opti_mcc.shared, calc=braycurtis, subsample=5000, processors={threads});
-        nmds(phylip=cdi.opti_mcc.braycurtis.0.03.lt.ave.dist);
-        pcoa(phylip=cdi.opti_mcc.braycurtis.0.03.lt.ave.dist);
+        summary.single(shared=cdi.opti_mcc.shared, calc=nseqs-coverage-invsimpson-shannon-sobs, subsample=5000)
         "
         """
 
-rule get_genus_level:
+rule beta_diversity:
+    input:
+        shared="data/mothur/cdi.opti_mcc.shared"
+    output:
+        dist_shared = "data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.dist"
+    log:
+        "log/mothur/beta_diversity.log"
+    threads: 10
+    resources:
+        time="48:00:00",
+        mem_mb=MEM_PER_GB*1.5
+    conda:
+        "../envs/mothur.yml"
+    shell:
+        """
+        mothur "#set.logfile(name={log});
+        set.dir(input=data/mothur, output=data/mothur, seed=19760620);
+        dist.shared(shared={input.shared}, calc=braycurtis, subsample=5000, processors={threads})
+        "
+        """
+
+rule nmds_pcoa:
+    input:
+        dist_shared="data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.dist"
+    output:
+        nmds_iters="data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.nmds.iters",
+        nmds_stress="data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.nmds.stress",
+        nmds_axes="data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.nmds.axes",
+        pcoa_axes="data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.pcoa.axes",
+        pcoa_loadings="data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.pcoa.loadings"
+    log:
+        "log/mothur/nmds_pcoa.log"
+    threads: 10
+    resources:
+        time="48:00:00"
+    conda:
+        "../envs/mothur.yml"
+    shell:
+        """
+        mothur "#set.logfile(name={log});
+        set.dir(input=data/mothur, output=data/mothur, seed=19760620);
+        nmds(phylip=cdi.opti_mcc.braycurtis.0.03.lt.ave.dist);
+        pcoa(phylip=cdi.opti_mcc.braycurtis.0.03.lt.ave.dist)
+        "
+        """
+
+rule pool_tax_level:
     input:
         shared="data/mothur/cdi.opti_mcc.shared",
         taxonomy="data/mothur/cdi.taxonomy"
     output:
-        shared="data/mothur/cdi.opti_mcc.genus.shared",
-        taxonomy="data/mothur/cdi.genus.taxonomy"
+        shared="data/mothur/cdi.opti_mcc.{taxlevel}.shared",
+        taxonomy="data/mothur/cdi.{taxlevel}.taxonomy"
     log:
-        "log/mothur/get_genus_level.log"
+        "log/mothur/pool_{taxlevel}_level.log"
     conda: "../envs/mikropml.yml"
     resources:
         mem_mb=MEM_PER_GB*8
     script:
-        "../scripts/get_genus_level.R"
+        "../scripts/pool_tax_level.R"
 
 rule get_oturep:
     input:

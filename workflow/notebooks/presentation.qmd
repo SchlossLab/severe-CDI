@@ -1,0 +1,28 @@
+---
+title: "Predicting _C. difficile_ infection severity from the taxonomic composition of the gut microbiome"
+author: Kelly Sovacool
+format: revealjs
+title-slide-attributes:
+    data-background-image: images/bacteria-rods-purple.jpeg
+    data-background-size: contain
+    data-background-opacity: "0.5"
+embed-resources: true
+---
+
+::: {.notes}
+title slide image source: https://www.mskcc.org/news/microorganisms-gut-can-affect-cancer-outcomes
+:::
+
+## Background
+
+
+## _C. difficile_ infections (CDI) are on the rise
+
+::: aside
+https://www.cdc.gov/cdiff/clinicians/faq.html
+:::
+
+## Patient factors for predicting complicated CDI
+
+- Electronic health record data used as features to predict whether disease-related complications occurred.
+- Future application: inform clinicians on which CDI patients may be most at risk of severe CDI.
