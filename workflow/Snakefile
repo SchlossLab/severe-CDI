@@ -87,20 +87,18 @@ rule prep_severity_data_for_ml:
     script:
         'scripts/prep_severity_data_for_ml.R'
 
-rule prep_genus_data_for_ml:
+rule prep_pooled_data_for_ml:
     input:
-        full_metadata='data/process/cases_full_metadata.csv',
-        int_metadata='data/process/cases_int_metadata.csv',
-        shared="data/mothur/cdi.opti_mcc.genus.shared"
+        metadata='data/process/cases_{dataset}_metadata.csv',
+        shared="data/mothur/cdi.opti_mcc.{taxlevel}.shared"
     output:
-        csv=expand('data/process/{outcome}_{dataset}_{taxlevel}.csv',
-                    outcome = ['idsa', 'attrib', 'allcause'],
-                    dataset = datasets,
-                    taxlevel = ['genus']
-                    )
+        csv='data/process/{outcome}_{dataset}_{taxlevel}.csv'
+    log:
+        'log/prep_pooled_data_for_ml/{outcome}_{dataset}_{taxlevel}.log'
     conda: "envs/mikropml.yml"
     script:
-        'scripts/prep_genus_data_for_ml.R'
+        'scripts/prep_pooled_data_for_ml.R'
+
 
 rule test_R_code:
     input:

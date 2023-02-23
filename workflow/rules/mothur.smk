@@ -225,20 +225,20 @@ rule beta_diversity:
         "
         """
 
-rule get_genus_level:
+rule pool_tax_level:
     input:
         shared="data/mothur/cdi.opti_mcc.shared",
         taxonomy="data/mothur/cdi.taxonomy"
     output:
-        shared="data/mothur/cdi.opti_mcc.genus.shared",
-        taxonomy="data/mothur/cdi.genus.taxonomy"
+        shared="data/mothur/cdi.opti_mcc.{taxlevel}.shared",
+        taxonomy="data/mothur/cdi.{taxlevel}.taxonomy"
     log:
-        "log/mothur/get_genus_level.log"
+        "log/mothur/pool_{taxlevel}_level.log"
     conda: "../envs/mikropml.yml"
     resources:
         mem_mb=MEM_PER_GB*8
     script:
-        "../scripts/get_genus_level.R"
+        "../scripts/pool_tax_level.R"
 
 rule get_oturep:
     input:
