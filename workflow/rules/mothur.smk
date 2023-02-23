@@ -243,8 +243,8 @@ rule nmds_pcoa:
         """
         mothur "#set.logfile(name={log});
         set.dir(input=data/mothur, output=data/mothur, seed=19760620);
-        nmds(phylip=cdi.opti_mcc.braycurtis.0.03.lt.ave.dist);
-        pcoa(phylip=cdi.opti_mcc.braycurtis.0.03.lt.ave.dist)
+        nmds(phylip={input.dist_shared});
+        pcoa(phylip={input.dist_shared})
         "
         """
 
