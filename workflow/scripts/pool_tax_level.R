@@ -1,7 +1,6 @@
 schtools::log_snakemake(quiet = TRUE)
 library(tidyverse)
 library(here)
-devtools::install_github('SchlossLab/schtools', ref="pool-counts-refactor")
 library(schtools)
 
 
