@@ -60,6 +60,6 @@ rule make_plots:
     input:
         #expand('figures/complex-upset_plot_{dataset}.png', dataset = datasets),
         rules.plot_diversity.output,
-        rules.plot_taxa.output,
+        #rules.plot_taxa.output,
         rules.plot_perf.output,
         rules.plot_feat_imp.output,
