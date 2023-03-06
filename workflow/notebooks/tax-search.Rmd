@@ -1,0 +1,52 @@
+---
+title: "Taxonomic level search"
+date: "`r Sys.Date()`"
+output: 
+  github_document:
+    html_preview: false
+  gfm:
+    html-preview: false
+    embed-resources: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = FALSE,
+                      warning = FALSE,
+                      fig.path = 'figures/')
+```
+```{r deps}
+library(data.table)
+library(here)
+library(mikropml)
+library(schtools)
+library(tidyverse)
+library(yaml)
+```
+
+```{r load_data}
+results_dat <- data.table::fread(here('results', 
+                                      'performance_results_aggregated.csv')
+                                 ) %>% 
+  rename(train = cv_metric_AUC,
+         test = AUC,
+         AUPRC = prAUC) %>% 
+  pivot_longer(c(train, test), names_to = 'set', values_to = 'AUROC') %>% 
+  mutate(taxlevel = factor(taxlevel, levels = c("order", "family", "genus", "OTU")))
+```
+
+## config
+
+```{r config}
+read_yaml(here('config', 'tax-search.yml'))
+```
+
+## model performance
+
+```{r tax-search_perf}
+results_dat %>% 
+  ggplot(aes(x = taxlevel, y = AUROC, color = set)) +
+  geom_hline(yintercept = 0.5, linetype = 'dashed') +
+  geom_boxplot() +
+  facet_wrap(~outcome, nrow = 1) +
+  theme_sovacool()
+```
