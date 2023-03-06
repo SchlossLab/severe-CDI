@@ -13,9 +13,13 @@ rule plot_diversity:
     input:
         R="workflow/scripts/plot_diversity.R",
         div="data/mothur/cdi.opti_mcc.groups.ave-std.summary",
-        meta="data/process/cases_int_metadata.csv"
+        meta="data/process/cases_int_metadata.csv",
+        nmds='data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.nmds.axes',
+        metadata="data/process/cases_full_metadata.csv"
     output:
-        alpha="figures/alpha_div.png"
+        alpha="figures/alpha_div.png",
+        beta="figures/beta_div.png",
+        combined="figures/alpha_and_beta_div.png"
     conda: "../envs/mikropml.yml"
     script:
         '../scripts/plot_diversity.R'
