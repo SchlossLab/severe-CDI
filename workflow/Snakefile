@@ -22,9 +22,9 @@ datasets = config['dataset_subsets']
 result_types = ['performance', 'feature-importance']
 
 notebooks_dir = pathlib.Path('workflow', 'notebooks')
-md_notebooks = [pathlib.Path(notebooks_dir, nb) 
+md_notebooks = [pathlib.Path(notebooks_dir, nb.split('.')[0]+'.md') 
                 for nb in os.listdir(notebooks_dir)
-                if nb.endswith('.md')]
+                if nb.endswith('.Rmd')]
 
 module mikropml:
     snakefile: 
