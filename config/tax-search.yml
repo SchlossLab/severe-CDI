@@ -1,5 +1,5 @@
 ml_methods:
- - glmnet
+ - rf
 kfold: 5
 ncores: 36
 nseeds: 20
@@ -8,6 +8,7 @@ outcomes:
   - allcause
   - attrib
 tax_levels:
+  - asv
   - OTU
   - genus
   - family
