@@ -177,7 +177,7 @@ rule make_shared_asv:
     input:
         count_table="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table"
     output:
-        asvlist="data/mothur/cdi.asv.list"
+        asvlist="data/mothur/cdi.asv.list",
         shared="data/mothur/cdi.asv.shared"
     log:
         'log/make_shared_asv.log'
