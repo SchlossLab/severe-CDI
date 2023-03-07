@@ -1,3 +1,4 @@
+
 with open(f"data/SRR_Acc_List.txt", 'r') as file:
     sra_list = [line.strip() for line in file]
 
@@ -173,28 +174,6 @@ with open(f"data/SRR_Acc_List.txt", 'r') as file:
 #             "
 #         """
 
-rule make_shared_asv:
-    input:
-        count_table="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table"
-    output:
-        asvlist="data/mothur/cdi.asv.list",
-        shared="data/mothur/cdi.asv.shared"
-    log:
-        'log/make_shared_asv.log'
-    params:
-        workdir='data/mothur',
-    conda:
-        "../envs/mothur.yml"
-    shell:
-        """
-        mothur "#
-            set.logfile(name={log});
-            set.dir(input={params.workdir}, output={params.workdir});
-            make.shared(count={input.count_table}, label=asv);
-            rename.file(list=current, shared=current, prefix=cdi.asv)
-        "
-        """
-
 
 rule alpha_diversity:
     input:
@@ -269,6 +248,33 @@ rule nmds_pcoa:
         nmds(phylip={input.dist_shared});
         pcoa(phylip={input.dist_shared})
         "
+        """
+
+rule make_shared_asv:
+    input:
+        count_table="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table",
+        tax="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pds.wang.pick.taxonomy"
+    output:
+        asvlist="data/mothur/cdi.asv.list",
+        shared="data/mothur/cdi.opti_mcc.asv.shared",
+        tax="data/mothur/cdi.asv.tax"
+    log:
+        'log/make_shared_asv.log'
+    params:
+        workdir='data/mothur',
+    conda:
+        "../envs/mothur.yml"
+    shell:
+        """
+        mothur "#
+            set.logfile(name={log});
+            set.dir(input={params.workdir}, output={params.workdir});
+            make.shared(count={input.count_table}, label=asv);
+            classify.otu(list=current, count=current, taxonomy={input.tax}, label=0.03);
+            rename.file(list=current, taxonomy=current, prefix=cdi.asv);
+            rename.file(shared=current, prefix=cdi.opti_mcc.asv)
+        "
+        mv data/mothur/cdi.asv.taxonomy data/mothur/cdi.asv.tax
         """
 
 rule pool_tax_level:
