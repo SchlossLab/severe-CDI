@@ -176,6 +176,9 @@ with open(f"data/SRR_Acc_List.txt", 'r') as file:
 rule make_shared_asv:
     input:
         count_table="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table"
+    output:
+        asvlist="data/mothur/cdi.asv.list"
+        shared="data/mothur/cdi.asv.shared"
     log:
         'log/make_shared_asv.log'
     params:
@@ -187,7 +190,8 @@ rule make_shared_asv:
         mothur "#
             set.logfile(name={log});
             set.dir(input={params.workdir}, output={params.workdir});
-            make.shared(count={input.count_table}, label=asv)
+            make.shared(count={input.count_table}, label=asv);
+            rename.file(list=current, shared=current, prefix=cdi.asv)
         "
         """
 
