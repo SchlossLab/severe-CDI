@@ -114,6 +114,8 @@ rule install_quarto_ms:
         directory("_extensions/kelly-sovacool/manuscript")
     params:
         ext="kelly-sovacool/quarto-manuscript"
+    conda:
+        'envs/notebooks.yml'
     shell:
         """
         quarto add {params.ext} --no-prompt
@@ -122,6 +124,8 @@ rule install_quarto_ms:
 rule install_fontawesome:
     output:
         directory("_extensions/quarto-ext/fontawesome")
+    conda:
+        'envs/notebooks.yml'
     shell:
         """
         quarto install extension quarto-ext/fontawesome --no-prompt
@@ -135,6 +139,8 @@ rule render_paper:
         ext=rules.install_quarto_ms.output
     output:
         'docs/paper/paper.pdf'
+    conda:
+        'envs/notebooks.yml'
     shell:
         """
         quarto render {input.qmd}
@@ -146,10 +152,14 @@ rule render_site:
         ext=rules.install_fontawesome.output
     output:
         'docs/index.html'
+    conda:
+        'envs/notebooks.yml'
     shell:
-        "quarto render {input.qmd}"
+        """
+        quarto render {input.qmd}
+        """
 
-rule render_notebook:
+rule render_rmd_notebook:
     input:
         rmd=f'{notebooks_dir}/{{file}}.Rmd'
     output:
@@ -157,7 +167,7 @@ rule render_notebook:
     params:
         workdir=notebooks_dir
     conda:
-        'envs/mikropml.yml'
+        'envs/notebooks.yml'
     shell:
         """
         cd {params.workdir}
