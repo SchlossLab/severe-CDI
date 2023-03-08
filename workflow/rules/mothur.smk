@@ -262,6 +262,8 @@ rule make_shared_asv:
         'log/make_shared_asv.log'
     params:
         workdir='data/mothur',
+    resources:
+        mem_mb = 2 * MEM_PER_GB
     conda:
         "../envs/mothur.yml"
     shell:
