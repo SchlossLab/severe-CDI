@@ -95,6 +95,8 @@ rule prep_pooled_data_for_ml:
         csv='data/process/{outcome}_{dataset}_{taxlevel}.csv'
     log:
         'log/prep_pooled_data_for_ml/{outcome}_{dataset}_{taxlevel}.log'
+    resources:
+        mem_mb=MEM_PER_GB*8
     conda: "envs/mikropml.yml"
     script:
         'scripts/prep_pooled_data_for_ml.R'
