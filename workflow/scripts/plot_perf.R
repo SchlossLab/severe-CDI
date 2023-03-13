@@ -5,28 +5,30 @@ dat <- read_csv("results/performance_results_aggregated.csv") %>%
            AUPRC = prAUC) #%>% 
   #filter(method == 'rf', dataset == 'int', trainfrac == 0.65) 
 perf_plot <- dat %>% 
-    pivot_longer(c(AUROC, AUPRC, F1),
-                 names_to = "perf_metric"
+    filter(metric == 'AUC') %>% 
+    rename(trainset = cv_metric_AUC,
+           testset = AUROC) %>% 
+    pivot_longer(c(trainset, testset),
+                 names_to = "data_partition",
+                 values_to = 'AUROC'
                  ) %>%
-    mutate(data = case_when(stringr::str_detect(perf_metric, 'cv_metric_AUC') ~ 'train',
-                            TRUE ~ 'test'),
+    mutate(
            outcome = case_when(outcome == 'idsa' ~ 'IDSA\n severity',
                                outcome == 'attrib' ~ 'Attributable\n severity',
                                outcome == 'allcause' ~ 'All-cause\n severity',
                                TRUE ~ NA_character_)
            ) %>%
-    ggplot(aes(x = value, y = perf_metric, color = outcome)) +
-    #geom_vline(xintercept = 0.5, linetype = "dashed") +
+    ggplot(aes(x = AUROC, y = outcome, color = data_partition)) +
+    geom_vline(xintercept = 0.5, linetype = "dashed") +
     geom_boxplot() +
     scale_color_brewer(palette = 'Paired') +
-    facet_wrap("metric") +
-    labs(x = "performance") +
     theme_bw() +
     theme(
         plot.margin = unit(x = c(0, 0, 0, 0), units = "pt"),
         axis.title.y = element_blank(),
         legend.position = 'top',
-        legend.margin = margin(0, 0, 0, 0, unit = "pt")
+        legend.margin = margin(0, 0, 0, 0, unit = "pt"),
+        legend.title = element_blank()
     )
 
 sensspec_plot <- dat %>% 
