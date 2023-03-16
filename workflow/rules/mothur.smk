@@ -264,6 +264,7 @@ rule make_shared_asv:
         workdir='data/mothur',
     resources:
         mem_mb = 2 * MEM_PER_GB
+    threads: 8
     conda:
         "../envs/mothur.yml"
     shell:
@@ -271,6 +272,7 @@ rule make_shared_asv:
         mothur "#
             set.logfile(name={log});
             set.dir(input={params.workdir}, output={params.workdir});
+            set.current(processors={threads});
             make.shared(count={input.count_table}, label=asv);
             classify.otu(list=current, count=current, taxonomy={input.tax}, label=0.03);
             rename.file(list=current, taxonomy=current, prefix=cdi.asv);
