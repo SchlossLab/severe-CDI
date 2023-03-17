@@ -263,6 +263,7 @@ rule make_shared_asv:
         'log/make_shared_asv.log'
     params:
         workdir='data/mothur',
+        tax='data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.asv.asv.cons.taxonomy'
     resources:
         mem_mb = 2 * MEM_PER_GB
     threads: 8
@@ -275,8 +276,8 @@ rule make_shared_asv:
             set.dir(input={params.workdir}, output={params.workdir});
             set.current(processors={threads});
             make.shared(count={input.count_table}, label=asv);
-            classify.otu(list=current, count=current, taxonomy={input.tax}, label=0.03);
-            rename.file(list=current, taxonomy=current, prefix=cdi.asv);
+            classify.otu(list=current, count=current, taxonomy={input.tax}, label=asv);
+            rename.file(list=current, taxonomy={params.tax}, prefix=cdi.asv);
             rename.file(shared=current, prefix=cdi.opti_mcc.asv)
         "
         mv data/mothur/cdi.asv.taxonomy data/mothur/cdi.asv.tax
