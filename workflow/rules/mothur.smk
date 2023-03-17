@@ -292,6 +292,8 @@ rule pool_tax_level:
         taxonomy="data/mothur/cdi.{taxlevel}.tax"
     log:
         "log/mothur/pool_{taxlevel}_level.log"
+    wildcard_constraints:
+        taxlevel=".*(?!asv)"
     conda: "../envs/mikropml.yml"
     resources:
         mem_mb=MEM_PER_GB*8
