@@ -1,6 +1,6 @@
 ML parameters
 ================
-2023-01-31
+2023-03-17
 
 ``` r
 library(data.table)
@@ -38,6 +38,18 @@ parameter choices to investigate:
   features
 
 ## training fraction
+
+``` r
+results_dat %>% 
+  filter(method == 'glmnet', metric == 'AUROC', taxlevel == "OTU") %>% 
+  ggplot(aes(perf_metric_value, perf_metric_name, color = outcome)) +
+  geom_boxplot() +
+  theme_bw() +
+  facet_grid(trainfrac~dataset) +
+  labs(x="performance on held out test data")
+```
+
+![](figures/plot_trainfrac-1.png)<!-- -->
 
 ## dataset - full vs intersection
 
