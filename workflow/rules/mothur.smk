@@ -1,3 +1,4 @@
+ruleorder: make_shared_asv > pool_tax_level
 
 with open(f"data/SRR_Acc_List.txt", 'r') as file:
     sra_list = [line.strip() for line in file]
