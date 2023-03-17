@@ -1,6 +1,6 @@
 Taxonomic level search
 ================
-2023-03-06
+2023-03-17
 
 ``` r
 library(data.table)
@@ -19,7 +19,7 @@ results_dat <- data.table::fread(here('results',
          test = AUC,
          AUPRC = prAUC) %>% 
   pivot_longer(c(train, test), names_to = 'set', values_to = 'AUROC') %>% 
-  mutate(taxlevel = factor(taxlevel, levels = c("order", "family", "genus", "OTU")))
+  mutate(taxlevel = factor(taxlevel, levels = c("order", "family", "genus", "OTU", 'asv')))
 ```
 
 ## config
@@ -29,7 +29,7 @@ read_yaml(here('config', 'tax-search.yml'))
 ```
 
     ## $ml_methods
-    ## [1] "glmnet"
+    ## [1] "rf"
     ## 
     ## $kfold
     ## [1] 5
@@ -44,7 +44,7 @@ read_yaml(here('config', 'tax-search.yml'))
     ## [1] "idsa"     "allcause" "attrib"  
     ## 
     ## $tax_levels
-    ## [1] "OTU"    "genus"  "family" "order" 
+    ## [1] "asv"    "OTU"    "genus"  "family" "order" 
     ## 
     ## $metrics
     ## [1] "AUC"
@@ -62,7 +62,7 @@ results_dat %>%
   ggplot(aes(x = taxlevel, y = AUROC, color = set)) +
   geom_hline(yintercept = 0.5, linetype = 'dashed') +
   geom_boxplot() +
-  facet_wrap(~outcome, nrow = 1) +
+  facet_wrap(dataset~outcome)+#, nrow = 1) +
   theme_sovacool()
 ```
 

@@ -31,7 +31,7 @@ results_dat <- data.table::fread(here('results',
          test = AUC,
          AUPRC = prAUC) %>% 
   pivot_longer(c(train, test), names_to = 'set', values_to = 'AUROC') %>% 
-  mutate(taxlevel = factor(taxlevel, levels = c("order", "family", "genus", "OTU")))
+  mutate(taxlevel = factor(taxlevel, levels = c("order", "family", "genus", "OTU", 'asv')))
 ```
 
 ## config
@@ -47,6 +47,6 @@ results_dat %>%
   ggplot(aes(x = taxlevel, y = AUROC, color = set)) +
   geom_hline(yintercept = 0.5, linetype = 'dashed') +
   geom_boxplot() +
-  facet_wrap(~outcome, nrow = 1) +
+  facet_wrap(dataset~outcome)+#, nrow = 1) +
   theme_sovacool()
 ```
