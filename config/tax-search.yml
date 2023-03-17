@@ -2,7 +2,7 @@ ml_methods:
  - rf
 kfold: 5
 ncores: 36
-nseeds: 50
+nseeds: 20
 outcomes:
   - idsa
   - allcause
@@ -19,4 +19,3 @@ train_frac:
   - 0.65
 dataset_subsets:
   - int
-  - full
