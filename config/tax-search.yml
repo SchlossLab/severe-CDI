@@ -4,7 +4,6 @@ kfold: 5
 ncores: 36
 nseeds: 20
 outcomes:
-  - idsa
   - allcause
   - attrib
 tax_levels:
@@ -19,3 +18,4 @@ train_frac:
   - 0.65
 dataset_subsets:
   - int
+  - full
