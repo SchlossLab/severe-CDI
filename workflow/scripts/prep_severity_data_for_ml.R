@@ -1,3 +1,4 @@
+schtools::log_snakemake()
 library(tidyverse)
 library(here)
 library(data.table)
