@@ -1,6 +1,6 @@
 Taxonomic level search
 ================
-2023-03-17
+2023-03-19
 
 ``` r
 library(data.table)
@@ -50,7 +50,7 @@ read_yaml(here('config', 'tax-search.yml'))
     ## [1] "AUC"
     ## 
     ## $train_frac
-    ## [1] 0.8
+    ## [1] 0.65
     ## 
     ## $dataset_subsets
     ## [1] "int"
@@ -62,7 +62,7 @@ results_dat %>%
   ggplot(aes(x = taxlevel, y = AUROC, color = set)) +
   geom_hline(yintercept = 0.5, linetype = 'dashed') +
   geom_boxplot() +
-  facet_wrap(dataset~outcome)+#, nrow = 1) +
+  facet_wrap(dataset+method~outcome)+#, nrow = 1) +
   theme_sovacool()
 ```
 
