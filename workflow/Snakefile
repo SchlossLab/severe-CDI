@@ -82,7 +82,7 @@ rule prep_severity_data_for_ml:
         cases=expand('data/process/cases_{dataset}_metadata.csv',
                      dataset = datasets)
     log:
-        'log/prep_severity_data_for_ml/{outcome}_{dataset}_{taxlevel}.log'
+        'log/prep_severity_data_for_ml.log'
     resources:
         mem_mb=MEM_PER_GB*8
     conda: "envs/mikropml.yml"
