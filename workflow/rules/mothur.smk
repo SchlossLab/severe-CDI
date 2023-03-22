@@ -82,6 +82,8 @@ checkpoint get_srr_list:
     output:
         txt='data/SRR_Acc_List.txt'
     log: 'log/get_srr_list.log'
+    conda:
+        "../envs/mikropml.yml"
     script:
         '../scripts/get_srr_list.R'
 
