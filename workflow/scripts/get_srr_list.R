@@ -1,4 +1,5 @@
 schtools::log_snakemake()
+library(here)
 library(tidyverse)
 run_tab <- read_csv(here('data', 'SraRunTable.csv')) %>%
               rename(sample_id = sample_title) 
