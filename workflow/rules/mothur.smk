@@ -1,5 +1,3 @@
-with open(f"data/SRR_Acc_List.txt", 'r') as file:
-    sra_list = [line.strip() for line in file]
 
 rule download_silva:
     output:
@@ -78,9 +76,18 @@ rule get_zymo:
         rm -rf zymo* ZymoBIOMICS.STD.refseq.v2* zymo_temp.fasta
         """
 
+rule get_srr_list:
+    input:
+        csv='data/SraRunTable.csv'
+    output:
+        txt='data/SRR_Acc_List.txt'
+    log: 'log/get_srr_list.log'
+    script:
+        '../scripts/get_srr_list.R'
+
 rule download_sra:
     input:
-        list="data/SRR_Acc_List.txt"
+        txt=rules.get_srr_list.output.txt
     output:
         fastq=expand("data/raw/{{SRA}}_{i}.fastq.gz", i=(1,2))
     params:
@@ -99,13 +106,18 @@ rule download_sra:
         """
 
 
+def list_fastq(wildcards):
+    sra_file = rules.get_srr_list.output.txt
+    with open(sra_file, 'r') as file:
+        sra_list = [line.strip() for line in file]
+    return expand("data/raw/{sra}_{i}.fastq.gz", sra = sra_list, i = (1,2))
+
 rule process_samples:
     input:
-        fastq=[f"data/raw/{sra}_{i}.fastq.gz" for sra in sra_list for i in (1,2)],
+        fastq=list_fastq,
         silva=rules.get_silva.output.v4,
         reference=rules.get_rdp.output.reference,
-	    taxonomy=rules.get_rdp.output.taxonomy,
-        zymo=rules.get_zymo.output
+	    taxonomy=rules.get_rdp.output.taxonomy
     output:
         fasta="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.fasta",
         taxonomy="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pds.wang.pick.taxonomy",
@@ -166,7 +178,7 @@ rule cluster_otus:
         mothur "#
             set.dir(input=data/mothur, output=data/mothur, seed=19760620);
             set.current(processors={threads});
-            cluster.split(fasta={input.fasta}, count={input.count_table}, taxonomy={input.taxonomy}, cutoff=0.03, taxlevel=4, processors={threads});
+            cluster(fasta={input.fasta}, count={input.count_table}, taxonomy={input.taxonomy}, cutoff=0.03, processors={threads});
             count.groups(count=current);
             make.shared(list=current, count=current, label=0.03);
             classify.otu(list=current, count=current, taxonomy=current, label=0.03)
