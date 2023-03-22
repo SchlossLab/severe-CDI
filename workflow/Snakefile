@@ -45,7 +45,7 @@ rule targets:
     input:
         expand('results/{type}_results_aggregated.csv', type = result_types),
         rules.make_plots.input
-        
+
 
 rule classify_idsa_severity:
     input:
@@ -63,6 +63,7 @@ rule classify_idsa_severity:
     script:
         'scripts/severity_analysis.R'
 
+# TODO: some OTUs w/ 3 vs 5 digits. shared file seems fine.
 rule prep_severity_data_for_ml:
     input:
         R='workflow/scripts/prep_severity_data_for_ml.R',
