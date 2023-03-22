@@ -4,10 +4,12 @@ library(here)
 library(data.table)
 
 source(here('workflow', 'scripts', 'filter_first_samples.R'))
-otu_dat <- read_csv(here('data', 'SraRunTable.csv')) %>%
-              rename(sample_id = sample_title) %>%
-  left_join(fread(here('data', 'mothur', 'cdi.opti_mcc.shared')) %>%
-  rename(Run = Group), by = 'Run')
+shared_otu <- fread(here('data', 'mothur', 'cdi.opti_mcc.shared')) %>% 
+  rename(sample_id = Group)
+run_tab <- read_csv(here('data', 'SraRunTable.csv')) %>%
+              rename(sample_id = sample_title) 
+otu_dat <- left_join(run_tab, shared_otu)
+
 seq_metadat <- read_tsv(here('data', 'process', 'final_CDI_16S_metadata.tsv')) %>%
               rename(sample_id = `CDIS_Sample ID`,
                      subject_id = `CDIS_Study ID`,
@@ -25,6 +27,7 @@ unattrib_dat <- read_csv(here('data', 'raw', 'mishare',
                               'clinical_outcomes_pt2.csv'))  %>%
   select(-CDIFF_SAMPLE_DATE, -CDIFF_COLLECT_DTM) %>%
   mutate(chart_reviewed = FALSE)
+
 metadat <- bind_rows(attrib_dat, unattrib_dat) %>%
   rename(sample_id = SAMPLE_ID,
          idsa_chart = IDSA_severe,
