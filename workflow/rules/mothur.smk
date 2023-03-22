@@ -76,7 +76,7 @@ rule get_zymo:
         rm -rf zymo* ZymoBIOMICS.STD.refseq.v2* zymo_temp.fasta
         """
 
-rule get_srr_list:
+checkpoint get_srr_list:
     input:
         csv='data/SraRunTable.csv'
     output:
@@ -105,9 +105,8 @@ rule download_sra:
         gzip ${{outdir}}/${{sra}}_*.fastq
         """
 
-
 def list_fastq(wildcards):
-    sra_file = rules.get_srr_list.output.txt
+    sra_file = checkpoints.get_srr_list.get(**wildcards).output.txt
     with open(sra_file, 'r') as file:
         sra_list = [line.strip() for line in file]
     return expand("data/raw/{sra}_{i}.fastq.gz", sra = sra_list, i = (1,2))
@@ -115,6 +114,7 @@ def list_fastq(wildcards):
 rule process_samples:
     input:
         fastq=list_fastq,
+        srr=rules.get_srr_list.output.txt,
         silva=rules.get_silva.output.v4,
         reference=rules.get_rdp.output.reference,
 	    taxonomy=rules.get_rdp.output.taxonomy
