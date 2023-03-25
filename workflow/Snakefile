@@ -44,7 +44,6 @@ include: 'rules/temporal-split.smk'
 rule targets:
     input:
         expand('results/{type}_results_aggregated.csv', type = result_types),
-        rules.make_plots.input
 
 
 rule classify_idsa_severity:
