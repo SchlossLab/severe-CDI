@@ -4,18 +4,13 @@
 
 core.*
 .DS_Store
-
-benchmarks/
-data/*/*
-data/process/
-results/CvDC/*
-results/CvNDC/*
-results/DCvNDC/*
-!README.md
-results/predict_*/
 *.icloud
 
+benchmarks/
+data/
 log/
+results/predict_*/
+*.log
 mothur*logfile
 *.docx
 *.out
