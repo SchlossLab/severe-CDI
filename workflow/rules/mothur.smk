@@ -131,12 +131,13 @@ rule process_samples:
         outputdir='data/mothur'
     threads: 10
     resources:
-        mem_mb=8000
+        mem_mb=MEM_PER_GB*8
     conda: "../envs/mothur.yml"
     shell:
         """
         mothur "#
             set.logfile(name={log});
+            set.current(processors={threads});
             make.file(inputdir={params.inputdir}, type=gz, prefix=cdi);
             make.contigs(file=cdi.files, inputdir={params.inputdir}, outputdir={params.outputdir}, processors={threads});
             summary.seqs(fasta=cdi.trim.contigs.fasta, processors={threads});
@@ -159,15 +160,39 @@ rule process_samples:
         "
         """
 
+rule dist_seqs:
+    input:
+        fasta=rules.process_samples.output.fasta,
+    output:
+        dist="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.dist"
+    log: 'log/dist_seqs.log'
+    params:
+        inputdir='data/mothur',
+        outputdir='data/mothur'
+    threads: 16
+    resources:
+        mem_mb=MEM_PER_GB*8
+    conda: "../envs/mothur.yml"
+    shell:
+        """
+        mothur "#
+            set.logfile(name={log});
+            set.dir(input={params.inputdir}, output={params.outputdir});
+            set.current(processors={threads});
+            dist.seqs(fasta={input.fasta}, cutoff=0.03)
+        "
+        """
 
 rule cluster_otus:
     input:
-        fasta="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.fasta",
-        taxonomy="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pds.wang.pick.taxonomy",
-        count_table="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table"
+        fasta=rules.process_samples.output.fasta,
+        taxonomy=rules.process_samples.output.taxonomy,
+        count_table=rules.process_samples.output.count_table,
+        dist=rules.dist_seqs.output.dist
     output:
         shared="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.shared",
         taxonomy="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.0.03.cons.taxonomy"
+    log: 'log/cluster_otus.log'
     threads: 10
     params:
         inputdir='data/mothur',
@@ -178,12 +203,12 @@ rule cluster_otus:
     shell:
         """
         mothur "#
-            set.dir(input=data/mothur, output=data/mothur, seed=19760620);
-            set.current(processors={threads});
-            cluster(fasta={input.fasta}, count={input.count_table}, taxonomy={input.taxonomy}, cutoff=0.03, processors={threads});
+            set.logfile(name={log};)
+            set.dir(input={params.inputdir}, output={params.outputdir}, seed=19760620);
+            cluster(fasta={input.fasta}, count={input.count_table}, phylip={input.dist}, cutoff=0.03);
             count.groups(count=current);
             make.shared(list=current, count=current, label=0.03);
-            classify.otu(list=current, count=current, taxonomy=current, label=0.03)
+            classify.otu(list=current, count=current, taxonomy={input.taxonomy}, label=0.03)
             "
         """
 
