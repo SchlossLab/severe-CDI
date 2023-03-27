@@ -1,11 +1,12 @@
-source("workflow/scripts/log_smk.R")
+schtools::log_snakemake()
+library(mikropml)
 library(tidyverse)
 dat <- read_csv("results/performance_results_aggregated.csv") %>%
     rename(AUROC = AUC,
            AUPRC = prAUC) %>% 
-    filter(method == 'rf', dataset == 'int', trainfrac == 0.65) 
+    filter(metric == 'AUC', method == 'rf', trainfrac == 0.8) 
 perf_plot <- dat %>% 
-    filter(metric == 'AUC') %>% 
+    #filter(dataset == 'full') %>% 
     rename(trainset = cv_metric_AUC,
            testset = AUROC) %>% 
     pivot_longer(c(trainset, testset),
@@ -21,7 +22,12 @@ perf_plot <- dat %>%
     ggplot(aes(x = AUROC, y = outcome, color = data_partition)) +
     geom_vline(xintercept = 0.5, linetype = "dashed") +
     geom_boxplot() +
-    scale_color_brewer(palette = 'Paired') +
+    stat_summary(fun = median, 
+                 geom = "text", 
+                 mapping = aes(label = round(after_stat(x),2)),
+                 position = position_nudge(x = 0.2, y = c(-0.1, 0.1))) +
+    facet_wrap('dataset', ncol = 2) +
+    scale_color_grey() +
     theme_bw() +
     theme(
         plot.margin = unit(x = c(0, 0, 0, 0), units = "pt"),
@@ -31,19 +37,46 @@ perf_plot <- dat %>%
         legend.title = element_blank()
     )
 
+perf_plot_prc <- dat %>% 
+  filter(dataset == 'int') %>% 
+  mutate(
+    outcome = case_when(outcome == 'idsa' ~ 'IDSA\n severity',
+                        outcome == 'attrib' ~ 'Attributable\n severity',
+                        outcome == 'allcause' ~ 'All-cause\n severity',
+                        TRUE ~ NA_character_)
+  ) %>%
+  ggplot(aes(x = AUPRC, y = outcome)) +
+  geom_boxplot() +
+  stat_summary(fun = median, 
+               geom = "text", 
+               mapping = aes(label = round(after_stat(x),2)),
+               position = position_nudge(x = 0.2, y = c(-0.1, 0.1))) +
+  facet_wrap('dataset', ncol = 2) +
+  scale_color_grey() +
+  theme_bw() +
+  theme(
+    plot.margin = unit(x = c(0, 0, 0, 0), units = "pt"),
+    axis.title.y = element_blank(),
+    legend.position = 'top',
+    legend.margin = margin(0, 0, 0, 0, unit = "pt"),
+    legend.title = element_blank()
+  )
+
 sensspec_plot <- dat %>% 
+  filter(dataset=='full') %>% 
   ggplot(aes(Specificity, Sensitivity, color = outcome)) +
   geom_jitter(alpha = 0.7) +
   facet_wrap("metric") +
   theme_bw()
 precrec_plot <- dat %>% 
+  filter(dataset=='int') %>% 
   ggplot(aes(Recall, Precision, color = outcome)) +
   geom_jitter(alpha = 0.7) +
   facet_wrap("metric") +
   theme_bw()
 
 ggsave("figures/plot_perf.png", plot = perf_plot, device = "png", 
-       width = 5, height = 5)
+       width = 8, height = 5)
 ggsave("figures/plot_sensspec.png", plot = sensspec_plot, device = "png", 
        width = 5, height = 3)
 ggsave("figures/plot_precrec.png", plot = precrec_plot, device = "png", 
