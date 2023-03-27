@@ -24,6 +24,7 @@ perf_plot <- dat %>%
     geom_boxplot() +
     stat_summary(fun = median, 
                  geom = "text", 
+                 show.legend = FALSE,
                  mapping = aes(label = round(after_stat(x),2)),
                  position = position_nudge(x = 0.2, y = c(-0.1, 0.1))) +
     facet_wrap('dataset', ncol = 2) +
