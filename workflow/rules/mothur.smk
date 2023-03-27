@@ -205,7 +205,7 @@ rule cluster_otus:
         mothur "#
             set.logfile(name={log});
             set.dir(input={params.inputdir}, output={params.outputdir}, seed=19760620);
-            cluster(fasta={input.fasta}, count={input.count_table}, phylip={input.dist}, cutoff=0.03);
+            cluster(fasta={input.fasta}, count={input.count_table}, column={input.dist}, cutoff=0.03);
             count.groups(count=current);
             make.shared(list=current, count=current, label=0.03);
             classify.otu(list=current, count=current, taxonomy={input.taxonomy}, label=0.03)
