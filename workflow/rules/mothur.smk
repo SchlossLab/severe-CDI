@@ -232,8 +232,8 @@ rule make_shared_asv:
 
 rule alpha_diversity:
     input:
-        taxonomy="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.0.03.cons.taxonomy",
-        shared="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.shared"
+        shared=rules.cluster_otus.output.shared,
+        taxonomy=rules.cluster_otus.output.taxonomy,
     output:
         shared="data/mothur/cdi.opti_mcc.shared",
         taxonomy="data/mothur/cdi.taxonomy",
