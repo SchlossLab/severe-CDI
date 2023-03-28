@@ -342,7 +342,6 @@ rule get_oturep:
 
 rule blast_otus:
     input:
-        "workflow/scripts/blast_otus.R",
         "workflow/scripts/utilities.R",
         "data/mothur/cdi.taxonomy",
         "data/process/59OTus_vs_C.diff_ATCC9689-Alignment-HitTable.csv",
@@ -363,7 +362,6 @@ rule blast_otus:
 
 rule lefse_prep_files:
     input:
-        "workflow/scripts/lefse_prep_files.R",
         "workflow/scripts/utilities.R",
         "data/process/case_idsa_severity.csv",
         "data/mothur/cdi.opti_mcc.0.03.subsample.shared"
@@ -392,7 +390,6 @@ rule lefse:
 
 rule lefse_analysis:
     input:
-        "workflow/scripts/lefse_analysis.R",
         "workflow/scripts/utilities.R",
         rules.lefse.output,
         'data/mothur/cdi.taxonomy'

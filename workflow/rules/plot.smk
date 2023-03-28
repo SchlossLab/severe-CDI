@@ -11,7 +11,6 @@ rule plot_complex_upset:
 
 rule plot_diversity:
     input:
-        R="workflow/scripts/plot_diversity.R",
         div="data/mothur/cdi.opti_mcc.groups.ave-std.summary",
         meta="data/process/cases_int_metadata.csv",
         nmds='data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.nmds.axes',
@@ -26,7 +25,6 @@ rule plot_diversity:
 
 rule plot_taxa:
     input:
-        "workflow/scripts/plot_taxa.R",
         "workflow/scripts/utilities.R",
         "workflow/scripts/read_taxa_data.R",
         "data/process/case_idsa_severity.csv",
@@ -40,7 +38,6 @@ rule plot_taxa:
 
 rule plot_perf:
     input:
-        R="workflow/scripts/plot_perf.R",
         csv="results/performance_results_aggregated.csv"
     output:
         png="figures/plot_perf.png"
@@ -51,7 +48,6 @@ rule plot_perf:
 
 rule plot_feat_imp:
     input:
-        R="workflow/scripts/plot_feat_imp.R",
         csv="results/feature-importance_results_aggregated.csv"
     output:
         png="figures/plot_feat_imp.png"
