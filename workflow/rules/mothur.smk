@@ -185,7 +185,6 @@ rule dist_seqs:
 
 rule cluster_otus:
     input:
-        fasta=rules.process_samples.output.fasta,
         taxonomy=rules.process_samples.output.taxonomy,
         count_table=rules.process_samples.output.count_table,
         dist=rules.dist_seqs.output.dist
@@ -205,7 +204,7 @@ rule cluster_otus:
         mothur "#
             set.logfile(name={log});
             set.dir(input={params.inputdir}, output={params.outputdir}, seed=19760620);
-            cluster(fasta={input.fasta}, count={input.count_table}, column={input.dist}, cutoff=0.03);
+            cluster(count={input.count_table}, column={input.dist}, cutoff=0.03);
             count.groups(count=current);
             make.shared(list=current, count=current, label=0.03);
             classify.otu(list=current, count=current, taxonomy={input.taxonomy}, label=0.03)
