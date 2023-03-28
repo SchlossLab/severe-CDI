@@ -5,10 +5,12 @@ library(data.table)
 
 source(here('workflow', 'scripts', 'filter_first_samples.R'))
 shared_otu <- fread(here('data', 'mothur', 'cdi.opti_mcc.shared')) %>% 
-  rename(sample_id = Group)
+  rename(run_id = Group)
 run_tab <- read_csv(here('data', 'SraRunTable.csv')) %>%
-              rename(sample_id = sample_title) 
-otu_dat <- left_join(run_tab, shared_otu)
+  filter(description == 'case') %>% 
+  rename(run_id = Run,
+         sample_id = sample_title) 
+otu_dat <- right_join(run_tab, shared_otu)
 
 seq_metadat <- read_tsv(here('data', 'process', 'final_CDI_16S_metadata.tsv')) %>%
               rename(sample_id = `CDIS_Sample ID`,
@@ -17,7 +19,8 @@ seq_metadat <- read_tsv(here('data', 'process', 'final_CDI_16S_metadata.tsv')) %
   full_join(read_csv(here('data', 'process', 'case_idsa_severity.csv')) %>%
               rename(sample_id = sample,
                      idsa_lab = idsa_severity),
-            by = 'sample_id')
+            by = 'sample_id') %>% 
+  filter(group == 'case')
 
 attrib_dat <- read_csv(here('data', 'raw', 'mishare',
                             'clinical_outcomes.csv')) %>%
