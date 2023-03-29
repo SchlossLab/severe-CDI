@@ -42,8 +42,6 @@ module mikropml:
     config:
         extra_config
 
-use rule * from mikropml as mikropml_*
-
 include: 'rules/mothur.smk'
 include: 'rules/machine-learning.smk'
 include: 'rules/plot.smk'

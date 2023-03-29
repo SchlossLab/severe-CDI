@@ -1,5 +1,3 @@
-ruleorder: run_ml > mikropml_find_feature_importance
-
 rule preprocess_data:
     input:
         csv="data/process/{outcome}_{dataset}_{taxlevel}.csv",
@@ -38,13 +36,21 @@ rule run_ml:
     script:
         "../scripts/ml.R"
 
-use rule calc_model_sensspec from mikropml as mikropml_calc_model_sensspec with:
+rule calc_model_sensspec:
+    input:
+        rds=rules.preprocess_data.output.rds,
+        model=rules.run_ml.output.model,
+        test=rules.run_ml.output.test,
     output:
         csv="results/predict_{outcome}/taxlevel_{taxlevel}/metric_{metric}/dataset_{dataset}/trainfrac_{trainfrac}/runs/{method}_{seed}_sensspec.csv"
     log:
         "log/predict_{outcome}/taxlevel_{taxlevel}/metric_{metric}/dataset_{dataset}/trainfrac_{trainfrac}/runs/{method}_{seed}_sensspec.csv"
     params:
         outcome_colname="{outcome}"
+    conda:
+        "../envs/mikropml.yml"
+    script:
+        "../scripts/calc_model_sensspec.R"
 
 rule combine_results:
     input:

@@ -1,6 +1,6 @@
 source(snakemake@input[["logR"]])
 library(tidyverse)
-
+source(here('workflow','scripts','calc_balanced_precision.R'))
 add_cols <- function(dat) {
   dat %>%
     mutate(outcome = snakemake@wildcards[['outcome']],
@@ -25,7 +25,14 @@ ml_results <- mikropml::run_ml(
   perf_metric_name = snakemake@wildcards[['metric']]
 )
 
+prior <- data_processed %>% 
+  calc_baseline_precision(outcome_colname = snakemake@wildcards[['outcome']],
+                          pos_outcome = 'yes')
+
 ml_results$performance %>%
+  mutate(baseline_precision = prior,
+         balanced_precision = calc_balanced_precision(Precision, prior),
+         aubprc = calc_balanced_precision(prAUC, prior)) %>% 
   add_cols() %>%
   readr::write_csv(snakemake@output[["perf"]])
 ml_results$feature_importance %>%
