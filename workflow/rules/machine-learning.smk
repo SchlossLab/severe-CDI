@@ -37,6 +37,13 @@ rule run_ml:
     script:
         "../scripts/ml.R"
 
+use rule calc_model_sensspec from mikropml with:
+    output:
+        csv="results/predict_{outcome}/taxlevel_{taxlevel}/metric_{metric}/dataset_{dataset}/trainfrac_{trainfrac}/runs/{method}_{seed}_sensspec.csv"
+    log:
+        "log/predict_{outcome}/taxlevel_{taxlevel}/metric_{metric}/dataset_{dataset}/trainfrac_{trainfrac}/runs/{method}_{seed}_sensspec.csv"
+    params:
+        outcome_colname="{outcome}"
 
 rule combine_results:
     input:

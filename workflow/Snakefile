@@ -19,22 +19,30 @@ metrics = config['metrics']
 train_fracs = config['train_frac']
 datasets = config['dataset_subsets']
 
-result_types = ['performance', 'feature-importance']
+result_types = ['performance', 'feature-importance', 'sensspec']
 
 notebooks_dir = pathlib.Path('workflow', 'notebooks')
 md_notebooks = [pathlib.Path(notebooks_dir, nb) 
                 for nb in os.listdir(notebooks_dir)
                 if nb.endswith('.md')]
 
+# to appease `mikropml-snakemake-workflow`
+extra_config = config.copy()
+extra_config['dataset_name'] = 'cdi'
+extra_config['dataset_csv'] = 'cdi.csv'
+extra_config['outcome_colname'] = 'severe'
+extra_config['find_feature_importance'] = True
+
 module mikropml:
-    snakefile: 
-        github("SchlossLab/mikropml-snakemake-workflow", 
-               path="workflow/Snakefile", 
-               branch="main", # TODO switch to tag once it's released
-               #tag="1.2.0"
+    snakefile:
+        github("SchlossLab/mikropml-snakemake-workflow",
+               path="workflow/Snakefile",
+               tag="v1.3.0"
                )
     config:
-        config
+        extra_config
+
+use rule * from mikropml as mikropml_*
 
 include: 'rules/mothur.smk'
 include: 'rules/machine-learning.smk'
@@ -44,6 +52,7 @@ include: 'rules/temporal-split.smk'
 rule targets:
     input:
         expand('results/{type}_results_aggregated.csv', type = result_types),
+    default_target: True
 
 
 rule classify_idsa_severity:
