@@ -52,10 +52,14 @@ metadat <- bind_rows(attrib_dat, unattrib_dat) %>%
          allcause = case_when(attrib == 'yes' | unattrib == 'yes' ~ 'yes',
                               attrib == 'no' & unattrib == 'no' ~ 'no',
                               is.na(attrib) ~ unattrib,
-                              TRUE ~ NA_character_)
+                              TRUE ~ NA_character_),
+         pragmatic = case_when(attrib == 'yes' ~ 'yes',
+                                    attrib == 'no'  ~ 'no',
+                                    is.na(attrib) ~ unattrib,
+                                    TRUE ~ NA_character_)
          ) %>%
   select(sample_id, subject_id, collection_date, cdiff_case,
-         chart_reviewed, idsa, attrib, unattrib, allcause)
+         chart_reviewed, idsa, attrib, unattrib, allcause, pragmatic)
 multi_samples <- metadat %>%
   group_by(subject_id) %>%
   tally() %>%
@@ -77,6 +81,10 @@ shared_dat %>%
   filter(!is.na(allcause)) %>%
   select(allcause, starts_with("Otu")) %>%
   write_csv(here('data', 'process', 'allcause_full_OTU.csv'))
+shared_dat %>%
+  filter(!is.na(pragmatic)) %>%
+  select(pragmatic, starts_with("Otu")) %>%
+  write_csv(here('data', 'process', 'pragmatic_full_OTU.csv'))
 
 metadat_cases_intersect <- metadat_cases %>% 
   filter(!is.na(idsa) & !is.na(attrib) & !is.na(allcause)) 
@@ -95,3 +103,6 @@ shared_dat_intersect %>%
 shared_dat_intersect %>%
   select(allcause, starts_with("Otu")) %>%
   write_csv(here('data', 'process', 'allcause_int_OTU.csv'))
+shared_dat_intersect %>%
+  select(pragmatic, starts_with("Otu")) %>%
+  write_csv(here('data', 'process', 'pragmatic_int_OTU.csv'))

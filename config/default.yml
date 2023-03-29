@@ -5,8 +5,9 @@ ncores: 36
 nseeds: 100
 outcomes:
   - idsa
-  - allcause
   - attrib
+  - allcause
+  - pragmatic
 tax_levels:
   - OTU
 metrics:

@@ -73,8 +73,8 @@ rule prep_severity_data_for_ml:
         unattrib='data/raw/mishare/clinical_outcomes_pt2.csv'
     output:
         csv=expand('data/process/{outcome}_{dataset}_{taxlevel}.csv',
-                    outcome = ['idsa', 'attrib', 'allcause'],
-                    dataset = datasets,
+                    outcome = ['idsa', 'attrib', 'allcause', 'pragmatic'],
+                    dataset = ['full', 'int'],
                     taxlevel = ['OTU']
                     ),
         cases=expand('data/process/cases_{dataset}_metadata.csv',
