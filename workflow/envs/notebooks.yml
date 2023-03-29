@@ -1,0 +1,11 @@
+name: notebooks
+channels:
+  - conda-forge
+dependencies:
+  - quarto
+  - r-base=4
+  - r-cowplot
+  - r-here
+  - r-rmarkdown
+  - r-schtools>=0.4
+  - r-tidyverse>=1.3 

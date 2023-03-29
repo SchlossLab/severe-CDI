@@ -1,7 +1,6 @@
 
 rule preprocess_data:
     input:
-        R="workflow/scripts/preproc.R",
         csv="data/process/{outcome}_{dataset}_{taxlevel}.csv",
         logR="workflow/scripts/log_smk.R"
     output:
@@ -18,7 +17,6 @@ rule preprocess_data:
 
 rule run_ml:
     input:
-        R="workflow/scripts/ml.R",
         rds=rules.preprocess_data.output.rds,
         logR="workflow/scripts/log_smk.R"
     output:
@@ -42,7 +40,6 @@ rule run_ml:
 
 rule combine_results:
     input:
-        R="workflow/scripts/combine_results.R",
         csv=expand("results/predict_{outcome}/taxlevel_{taxlevel}/metric_{metric}/dataset_{dataset}/trainfrac_{trainfrac}/runs/{method}_{seed}_{{type}}.csv",
                     outcome = outcomes, taxlevel = tax_levels, metric = metrics,
                     dataset = datasets, trainfrac = train_fracs,

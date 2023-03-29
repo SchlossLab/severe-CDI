@@ -4,10 +4,14 @@ library(here)
 library(data.table)
 
 source(here('workflow', 'scripts', 'filter_first_samples.R'))
-otu_dat <- read_csv(here('data', 'SraRunTable.csv')) %>%
-              rename(sample_id = sample_title) %>%
-  left_join(fread(here('data', 'mothur', 'cdi.opti_mcc.shared')) %>%
-  rename(Run = Group), by = 'Run')
+shared_otu <- fread(here('data', 'mothur', 'cdi.opti_mcc.shared')) %>% 
+  rename(run_id = Group)
+run_tab <- read_csv(here('data', 'SraRunTable.csv')) %>%
+  filter(description == 'case') %>% 
+  rename(run_id = Run,
+         sample_id = sample_title) 
+otu_dat <- right_join(run_tab, shared_otu)
+
 seq_metadat <- read_tsv(here('data', 'process', 'final_CDI_16S_metadata.tsv')) %>%
               rename(sample_id = `CDIS_Sample ID`,
                      subject_id = `CDIS_Study ID`,
@@ -15,7 +19,8 @@ seq_metadat <- read_tsv(here('data', 'process', 'final_CDI_16S_metadata.tsv')) %
   full_join(read_csv(here('data', 'process', 'case_idsa_severity.csv')) %>%
               rename(sample_id = sample,
                      idsa_lab = idsa_severity),
-            by = 'sample_id')
+            by = 'sample_id') %>% 
+  filter(group == 'case')
 
 attrib_dat <- read_csv(here('data', 'raw', 'mishare',
                             'clinical_outcomes.csv')) %>%
@@ -25,6 +30,7 @@ unattrib_dat <- read_csv(here('data', 'raw', 'mishare',
                               'clinical_outcomes_pt2.csv'))  %>%
   select(-CDIFF_SAMPLE_DATE, -CDIFF_COLLECT_DTM) %>%
   mutate(chart_reviewed = FALSE)
+
 metadat <- bind_rows(attrib_dat, unattrib_dat) %>%
   rename(sample_id = SAMPLE_ID,
          idsa_chart = IDSA_severe,
@@ -46,10 +52,14 @@ metadat <- bind_rows(attrib_dat, unattrib_dat) %>%
          allcause = case_when(attrib == 'yes' | unattrib == 'yes' ~ 'yes',
                               attrib == 'no' & unattrib == 'no' ~ 'no',
                               is.na(attrib) ~ unattrib,
-                              TRUE ~ NA_character_)
+                              TRUE ~ NA_character_),
+         pragmatic = case_when(attrib == 'yes' ~ 'yes',
+                                    attrib == 'no'  ~ 'no',
+                                    is.na(attrib) ~ unattrib,
+                                    TRUE ~ NA_character_)
          ) %>%
   select(sample_id, subject_id, collection_date, cdiff_case,
-         chart_reviewed, idsa, attrib, unattrib, allcause)
+         chart_reviewed, idsa, attrib, unattrib, allcause, pragmatic)
 multi_samples <- metadat %>%
   group_by(subject_id) %>%
   tally() %>%
@@ -71,6 +81,10 @@ shared_dat %>%
   filter(!is.na(allcause)) %>%
   select(allcause, starts_with("Otu")) %>%
   write_csv(here('data', 'process', 'allcause_full_OTU.csv'))
+shared_dat %>%
+  filter(!is.na(pragmatic)) %>%
+  select(pragmatic, starts_with("Otu")) %>%
+  write_csv(here('data', 'process', 'pragmatic_full_OTU.csv'))
 
 metadat_cases_intersect <- metadat_cases %>% 
   filter(!is.na(idsa) & !is.na(attrib) & !is.na(allcause)) 
@@ -89,3 +103,6 @@ shared_dat_intersect %>%
 shared_dat_intersect %>%
   select(allcause, starts_with("Otu")) %>%
   write_csv(here('data', 'process', 'allcause_int_OTU.csv'))
+shared_dat_intersect %>%
+  select(pragmatic, starts_with("Otu")) %>%
+  write_csv(here('data', 'process', 'pragmatic_int_OTU.csv'))

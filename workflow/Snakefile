@@ -22,14 +22,14 @@ datasets = config['dataset_subsets']
 result_types = ['performance', 'feature-importance']
 
 notebooks_dir = pathlib.Path('workflow', 'notebooks')
-md_notebooks = [pathlib.Path(notebooks_dir, nb.split('.')[0]+'.md') 
+md_notebooks = [pathlib.Path(notebooks_dir, nb.split('.')[0]+'.md')
                 for nb in os.listdir(notebooks_dir)
                 if nb.endswith('.Rmd')]
 
 module mikropml:
-    snakefile: 
-        github("SchlossLab/mikropml-snakemake-workflow", 
-               path="workflow/Snakefile", 
+    snakefile:
+        github("SchlossLab/mikropml-snakemake-workflow",
+               path="workflow/Snakefile",
                branch="main", # TODO switch to tag once it's released
                #tag="1.2.0"
                )
@@ -44,12 +44,10 @@ include: 'rules/temporal-split.smk'
 rule targets:
     input:
         expand('results/{type}_results_aggregated.csv', type = result_types),
-        rules.make_plots.input
-        
+
 
 rule classify_idsa_severity:
     input:
-        'scripts/severity_analysis.R',
         "scripts/utilities.R",
         "data/process/final_CDI_16S_metadata.tsv",
         "data/raw/max_creat.csv",
@@ -63,9 +61,9 @@ rule classify_idsa_severity:
     script:
         'scripts/severity_analysis.R'
 
+# TODO: some OTUs w/ 3 vs 5 digits. shared file seems fine.
 rule prep_severity_data_for_ml:
     input:
-        R='workflow/scripts/prep_severity_data_for_ml.R',
         fcn='workflow/scripts/filter_first_samples.R',
         sra='data/SraRunTable.csv',
         otu='data/mothur/cdi.opti_mcc.shared',
@@ -75,14 +73,13 @@ rule prep_severity_data_for_ml:
         unattrib='data/raw/mishare/clinical_outcomes_pt2.csv'
     output:
         csv=expand('data/process/{outcome}_{dataset}_{taxlevel}.csv',
-                    outcome = ['idsa', 'attrib', 'allcause'],
-                    dataset = datasets,
+                    outcome = ['idsa', 'attrib', 'allcause', 'pragmatic'],
+                    dataset = ['full', 'int'],
                     taxlevel = ['OTU']
                     ),
         cases=expand('data/process/cases_{dataset}_metadata.csv',
                      dataset = datasets)
-    log:
-        'log/prep_severity_data_for_ml.log'
+    log: 'log/prep_severity_data_for_ml.log'
     resources:
         mem_mb=MEM_PER_GB*8
     conda: "envs/mikropml.yml"
@@ -106,7 +103,6 @@ rule prep_pooled_data_for_ml:
 
 rule test_R_code:
     input:
-        R='tests/testthat.R',
         scripts=[os.path.join('workflow/rules/scripts',
                  file.strip('test-')) for file in os.listdir('tests/testthat')]
     conda: "envs/mikropml.yml"
@@ -118,6 +114,8 @@ rule install_quarto_ms:
         directory("_extensions/kelly-sovacool/manuscript")
     params:
         ext="kelly-sovacool/quarto-manuscript"
+    conda:
+        'envs/notebooks.yml'
     shell:
         """
         quarto add {params.ext} --no-prompt
@@ -126,6 +124,8 @@ rule install_quarto_ms:
 rule install_fontawesome:
     output:
         directory("_extensions/quarto-ext/fontawesome")
+    conda:
+        'envs/notebooks.yml'
     shell:
         """
         quarto install extension quarto-ext/fontawesome --no-prompt
@@ -139,6 +139,8 @@ rule render_paper:
         ext=rules.install_quarto_ms.output
     output:
         'docs/paper/paper.pdf'
+    conda:
+        'envs/notebooks.yml'
     shell:
         """
         quarto render {input.qmd}
@@ -150,10 +152,14 @@ rule render_site:
         ext=rules.install_fontawesome.output
     output:
         'docs/index.html'
+    conda:
+        'envs/notebooks.yml'
     shell:
-        "quarto render {input.qmd}"
+        """
+        quarto render {input.qmd}
+        """
 
-rule render_notebook:
+rule render_rmd_notebook:
     input:
         rmd=f'{notebooks_dir}/{{file}}.Rmd'
     output:
@@ -161,7 +167,7 @@ rule render_notebook:
     params:
         workdir=notebooks_dir
     conda:
-        'envs/mikropml.yml'
+        'envs/notebooks.yml'
     shell:
         """
         cd {params.workdir}
