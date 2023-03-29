@@ -4,7 +4,17 @@ library(tidyverse)
 dat <- read_csv("results/performance_results_aggregated.csv") %>%
     rename(AUROC = AUC,
            AUPRC = prAUC) %>% 
-    filter(metric == 'AUC', method == 'rf', trainfrac == 0.8) 
+    filter(metric == 'AUC', method == 'rf', trainfrac == 0.8) %>%
+  mutate(
+    outcome = factor(case_when(outcome == 'idsa' ~ 'IDSA\n severity',
+                        outcome == 'attrib' ~ 'Attributable\n severity',
+                        outcome == 'allcause' ~ 'All-cause\n severity',
+                        outcome == 'pragmatic' ~ 'Pragmatic\n all-cause\n severity',
+                        TRUE ~ NA_character_), levels = c('IDSA\n severity',
+                           'Attributable\n severity',
+                           'All-cause\n severity',
+                           'Pragmatic\n all-cause\n severity'))
+  )
 perf_plot <- dat %>% 
     #filter(dataset == 'full') %>% 
     rename(trainset = cv_metric_AUC,
@@ -12,13 +22,7 @@ perf_plot <- dat %>%
     pivot_longer(c(trainset, testset),
                  names_to = "data_partition",
                  values_to = 'AUROC'
-                 ) %>%
-    mutate(
-           outcome = case_when(outcome == 'idsa' ~ 'IDSA\n severity',
-                               outcome == 'attrib' ~ 'Attributable\n severity',
-                               outcome == 'allcause' ~ 'All-cause\n severity',
-                               TRUE ~ NA_character_)
-           ) %>%
+                 )  %>%
     ggplot(aes(x = AUROC, y = outcome, color = data_partition)) +
     geom_vline(xintercept = 0.5, linetype = "dashed") +
     geom_boxplot() +
