@@ -4,7 +4,7 @@ library(here)
 library(data.table)
 
 source(here('workflow', 'scripts', 'filter_first_samples.R'))
-shared_otu <- fread(here('data', 'mothur', 'cdi.opti_mcc.shared')) %>% 
+shared_otu <- fread(snakemake@input[['otu']]) %>% 
   rename(run_id = Group)
 run_tab <- read_csv(here('data', 'SraRunTable.csv')) %>%
   filter(description == 'case') %>% 
@@ -31,7 +31,7 @@ unattrib_dat <- read_csv(here('data', 'raw', 'mishare',
   select(-CDIFF_SAMPLE_DATE, -CDIFF_COLLECT_DTM) %>%
   mutate(chart_reviewed = FALSE)
 
-metadat <- bind_rows(attrib_dat, unattrib_dat) %>%
+metadat_cases <- bind_rows(attrib_dat, unattrib_dat) %>%
   rename(sample_id = SAMPLE_ID,
          idsa_chart = IDSA_severe,
          attrib = ATTRIB_SEVERECDI,
@@ -59,13 +59,12 @@ metadat <- bind_rows(attrib_dat, unattrib_dat) %>%
                                     TRUE ~ NA_character_)
          ) %>%
   select(sample_id, subject_id, collection_date, cdiff_case,
-         chart_reviewed, idsa, attrib, unattrib, allcause, pragmatic)
-multi_samples <- metadat %>%
+         chart_reviewed, idsa, attrib, unattrib, allcause, pragmatic) %>% 
+  filter_first_samples()
+multi_samples <- metadat_cases %>%
   group_by(subject_id) %>%
   tally() %>%
   filter(n > 1)
-metadat_1s <- filter_first_samples(metadat)
-metadat_cases <- metadat_1s %>% filter(cdiff_case == 'Case')
 metadat_cases %>% write_csv(here('data', 'process', 'cases_full_metadata.csv'))
 shared_dat <- left_join(metadat_cases, otu_dat, by = 'sample_id')
 
