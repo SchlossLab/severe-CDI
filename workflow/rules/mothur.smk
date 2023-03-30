@@ -197,7 +197,7 @@ rule cluster_otus:
         inputdir='data/mothur',
         outputdir='data/mothur'
     resources:
-        mem_mb=MEM_PER_GB*16
+        mem_mb=MEM_PER_GB*1
     conda: "../envs/mothur.yml"
     shell:
         """
@@ -243,9 +243,10 @@ rule alpha_diversity:
         subsample_shared="data/mothur/cdi.opti_mcc.0.03.subsample.shared"
     log:
         "log/mothur/alpha_diversity.log"
-    threads: 10
+    threads: 8
     resources:
-        time="48:00:00"
+        time="48:00:00",
+        mem_mb=MEM_PER_GB*1
     conda:
         "../envs/mothur.yml"
     shell:
