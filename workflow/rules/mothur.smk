@@ -209,6 +209,7 @@ rule cluster_otus:
         mothur "#
             set.logfile(name={log});
             set.dir(input={params.inputdir}, output={params.outputdir}, seed=19760620);
+            set.current(processors={threads});
             cluster(count={input.count_table}, column={input.dist}, cutoff=0.03);
             count.groups(count=current);
             make.shared(list=current, count=current, label=0.03);
