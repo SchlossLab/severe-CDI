@@ -211,25 +211,6 @@ rule cluster_otus:
             "
         """
 
-rule make_shared_asv:
-    input:
-        count_table="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table"
-    log:
-        'log/make_shared_asv.log'
-    params:
-        workdir='data/mothur',
-    conda:
-        "../envs/mothur.yml"
-    shell:
-        """
-        mothur "#
-            set.logfile(name={log});
-            set.dir(input={params.workdir}, output={params.workdir});
-            make.shared(count={input.count_table}, label=asv)
-        "
-        """
-
-
 rule alpha_diversity:
     input:
         shared=rules.cluster_otus.output.shared,
