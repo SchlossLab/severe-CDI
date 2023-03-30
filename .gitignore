@@ -6,12 +6,14 @@ core.*
 .DS_Store
 *.icloud
 
+.snakemake/
 benchmarks/
 data/
 log/
 results/predict_*/
-*.log
 mothur*logfile
+current_files.summary
+*.log
 *.docx
 *.out
 
@@ -20,15 +22,9 @@ paper/*.ldf
 paper/*.cls
 paper/*.bst
 .quarto/
-.snakemake/
 
 # user-specific files
 *_KLS*
 *_MLC*
 *_mlc*
 
-/.quarto/
-paper/*.ldf
-paper/*.sty
-paper/*.bst
-paper/*.cls
