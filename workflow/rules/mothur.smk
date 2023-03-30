@@ -189,13 +189,13 @@ rule cluster_otus:
         count_table=rules.process_samples.output.count_table,
         dist=rules.dist_seqs.output.dist
     output:
-        shared="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.shared",
-        taxonomy="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.0.03.cons.taxonomy"
+        shared="data/mothur/cluster/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.shared",
+        taxonomy="data/mothur/cluster/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.0.03.cons.taxonomy"
     log: 'log/cluster_otus.log'
-    threads: 10
     params:
-        inputdir='data/mothur',
-        outputdir='data/mothur'
+        inputdir='data/mothur/',
+        outputdir='data/mothur/cluster/'
+    threads: 10
     resources:
         mem_mb=MEM_PER_GB*1
     conda: "../envs/mothur.yml"
@@ -217,13 +217,16 @@ rule alpha_diversity:
         shared=rules.cluster_otus.output.shared,
         taxonomy=rules.cluster_otus.output.taxonomy,
     output:
-        shared="data/mothur/cdi.opti_mcc.shared",
-        taxonomy="data/mothur/cdi.taxonomy",
-        summary="data/mothur/cdi.opti_mcc.groups.ave-std.summary",
-        rarefaction="data/mothur/cdi.opti_mcc.groups.rarefaction",
-        subsample_shared="data/mothur/cdi.opti_mcc.0.03.subsample.shared"
+        shared="data/mothur/alpha/cdi.opti_mcc.shared",
+        taxonomy="data/mothur/alpha/cdi.taxonomy",
+        summary="data/mothur/alpha/cdi.opti_mcc.groups.ave-std.summary",
+        rarefaction="data/mothur/alpha/cdi.opti_mcc.groups.rarefaction",
+        subsample_shared="data/mothur/alpha/cdi.opti_mcc.0.03.subsample.shared"
     log:
         "log/mothur/alpha_diversity.log"
+    params:
+        inputdir='data/mothur/cluster',
+        outputdir='data/mothur/alpha'
     threads: 8
     resources:
         time="48:00:00",
@@ -233,7 +236,7 @@ rule alpha_diversity:
     shell:
         """
         mothur "#set.logfile(name={log});
-        set.dir(input=data/mothur, output=data/mothur, seed=19760620);
+        set.dir(input={params.inputdir}, output={params.outputdir}, seed=19760620);
         set.current(processors={threads});
         rename.file(taxonomy={input.taxonomy}, shared={input.shared});
         sub.sample(shared=cdi.opti_mcc.shared, size=5000);
@@ -244,11 +247,14 @@ rule alpha_diversity:
 
 rule beta_diversity:
     input:
-        shared="data/mothur/cdi.opti_mcc.shared"
+        shared=rules.alpha_diversity.output.shared
     output:
-        dist_shared = "data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.dist"
+        dist_shared = "data/mothur/beta/cdi.opti_mcc.braycurtis.0.03.lt.ave.dist"
     log:
         "log/mothur/beta_diversity.log"
+    params:
+        inputdir='data/mothur/alpha/',
+        outputdir='data/mothur/beta/'
     threads: 10
     resources:
         time="48:00:00",
@@ -258,22 +264,24 @@ rule beta_diversity:
     shell:
         """
         mothur "#set.logfile(name={log});
-        set.dir(input=data/mothur, output=data/mothur, seed=19760620);
+        set.dir(input={params.inputdir}, output={params.output_dir}, seed=19760620);
         dist.shared(shared={input.shared}, calc=braycurtis, subsample=5000, processors={threads})
         "
         """
 
 rule nmds_pcoa:
     input:
-        dist_shared="data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.dist"
+        dist_shared=rules.beta_diversity.output.dist_shared
     output:
-        nmds_iters="data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.nmds.iters",
-        nmds_stress="data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.nmds.stress",
-        nmds_axes="data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.nmds.axes",
-        pcoa_axes="data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.pcoa.axes",
-        pcoa_loadings="data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.pcoa.loadings"
+        nmds_iters="data/mothur/beta/cdi.opti_mcc.braycurtis.0.03.lt.ave.nmds.iters",
+        nmds_stress="data/mothur/beta/cdi.opti_mcc.braycurtis.0.03.lt.ave.nmds.stress",
+        nmds_axes="data/mothur/beta/cdi.opti_mcc.braycurtis.0.03.lt.ave.nmds.axes",
+        pcoa_axes="data/mothur/beta/cdi.opti_mcc.braycurtis.0.03.lt.ave.pcoa.axes",
+        pcoa_loadings="data/mothur/beta/cdi.opti_mcc.braycurtis.0.03.lt.ave.pcoa.loadings"
     log:
         "log/mothur/nmds_pcoa.log"
+    params:
+        workdir='data/mothur/beta/'
     threads: 10
     resources:
         time="48:00:00"
@@ -282,104 +290,8 @@ rule nmds_pcoa:
     shell:
         """
         mothur "#set.logfile(name={log});
-        set.dir(input=data/mothur, output=data/mothur, seed=19760620);
+        set.dir(input={params.workdir}, output={params.workdir}, seed=19760620);
         nmds(phylip={input.dist_shared});
         pcoa(phylip={input.dist_shared})
         "
         """
-
-rule pool_tax_level:
-    input:
-        shared="data/mothur/cdi.opti_mcc.shared",
-        taxonomy="data/mothur/cdi.taxonomy"
-    output:
-        shared="data/mothur/cdi.opti_mcc.{taxlevel}.shared",
-        taxonomy="data/mothur/cdi.{taxlevel}.tax"
-    log:
-        "log/mothur/pool_{taxlevel}_level.log"
-    conda: "../envs/mikropml.yml"
-    resources:
-        mem_mb=MEM_PER_GB*8
-    script:
-        "../scripts/pool_tax_level.R"
-
-rule get_oturep:
-    input:
-        list="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.list",
-        fasta="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.fasta",
-        phylip="data/mothur/cdi.opti_mcc.braycurtis.0.03.lt.ave.dist",
-        count_table="data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.pick.count_table"
-    log:
-        "log/mothur/get_oturep.log"
-    conda: "../envs/mothur.yml"
-    shell:
-        """
-        mothur: "#set.logfile(name={log});
-        set.dir(input=data/mothur, output=data/mothur, seed=19760620);
-        get.otulist( list={input.list}, label=0.03);
-        bin.seqs(list ={input.list}, fasta={input.fasta});
-        get.oturep(phylip={input.phylip}, count={input.count_table},  list={input.list}, fasta=cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.0.03.fasta)
-        "
-        """
-
-
-rule blast_otus:
-    input:
-        "workflow/scripts/utilities.R",
-        "data/mothur/cdi.taxonomy",
-        "data/process/59OTus_vs_C.diff_ATCC9689-Alignment-HitTable.csv",
-        "data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.list",
-        'data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.fasta',
-        "data/process/c_diff_seqs_vs_C.diff_ATCC9689-Alignment-HitTable.csv",
-        "data/mothur/cdi.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.pick.count_table"
-    output:
-        blast="results/figures/otus_peptostreptococcaceae_blast_results.png",
-        unique_seqs="data/mothur/c_diff_unique_seqs.fasta",
-        top2="exploratory/notebook/top_2_otu41_seqs.png",
-        top3_7="exploratory/notebook/top3-7_c_diff_seqs.png",
-        top2_sample="exploratory/notebook/top_2_otu41_seqs_sample.png",
-        top3_7_sample="exploratory/notebook/top3-7_c_diff_seqs_sample.png",
-    conda: "../envs/mikropml.yml"
-    script:
-        "../scripts/blast_otus.R"
-
-rule lefse_prep_files:
-    input:
-        "workflow/scripts/utilities.R",
-        "data/process/case_idsa_severity.csv",
-        "data/mothur/cdi.opti_mcc.0.03.subsample.shared"
-    output:
-        shared="data/process/idsa.shared",
-        design="data/process/idsa.design"
-    conda: "../envs/mikropml.yml"
-    script:
-        "../scripts/lefse_prep_files.R"
-
-rule lefse:
-    input:
-        rules.lefse_prep_files.output
-    output:
-        lefse_summary="data/process/idsa.0.03.lefse_summary"
-    log:
-        "log/mothur/lefse.log"
-    conda: "../envs/mothur.yml"
-    shell:
-        """
-        mothur: "#set.logfile(name={log});
-        set.dir(input=data/process, output=data/process, seed=19760620);
-        lefse(shared = {input.shared}, design={input.design})
-        "
-        """
-
-rule lefse_analysis:
-    input:
-        "workflow/scripts/utilities.R",
-        rules.lefse.output,
-        'data/mothur/cdi.taxonomy'
-    output:
-        lefse_plot="results/figures/idsa_lefse_plot.png",
-        lefse_results="data/process/idsa_lefse_results.csv"
-    conda: "../envs/mikropml.yml"
-    script:
-        "../scripts/lefse_analysis.R"
-
