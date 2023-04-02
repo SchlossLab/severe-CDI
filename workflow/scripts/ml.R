@@ -1,4 +1,6 @@
-source(snakemake@input[["logR"]])
+schtools::log_snakemake()
+library(here)
+library(mikropml)
 library(tidyverse)
 source(here('workflow','scripts','calc_balanced_precision.R'))
 add_cols <- function(dat) {
@@ -14,7 +16,11 @@ doFuture::registerDoFuture()
 future::plan(future::multicore, workers = snakemake@threads)
 
 data_processed <- readRDS(snakemake@input[["rds"]])$dat_transformed
-ml_results <- mikropml::run_ml(
+prior <- data_processed %>% 
+  calc_baseline_precision(outcome_colname = snakemake@wildcards[['outcome']],
+                          pos_outcome = 'yes')
+
+ml_results <- run_ml(
   dataset = data_processed,
   method = snakemake@params[["method"]],
   outcome_colname = snakemake@wildcards[['outcome']],
@@ -24,20 +30,15 @@ ml_results <- mikropml::run_ml(
   training_frac = as.numeric(snakemake@wildcards[['trainfrac']]),
   perf_metric_name = snakemake@wildcards[['metric']]
 )
-
-prior <- data_processed %>% 
-  calc_baseline_precision(outcome_colname = snakemake@wildcards[['outcome']],
-                          pos_outcome = 'yes')
-
 ml_results$performance %>%
   mutate(baseline_precision = prior,
          balanced_precision = calc_balanced_precision(Precision, prior),
          aubprc = calc_balanced_precision(prAUC, prior)) %>% 
   add_cols() %>%
-  readr::write_csv(snakemake@output[["perf"]])
+  write_csv(snakemake@output[["perf"]])
 ml_results$feature_importance %>%
   add_cols() %>%
-  readr::write_csv(snakemake@output[["feat"]])
+  write_csv(snakemake@output[["feat"]])
 ml_results$test_data %>%
-  readr::write_csv(snakemake@output[['test']])
+  write_csv(snakemake@output[['test']])
 saveRDS(ml_results$trained_model, file = snakemake@output[["model"]])
