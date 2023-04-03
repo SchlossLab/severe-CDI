@@ -19,6 +19,7 @@ data_processed <- readRDS(snakemake@input[["rds"]])$dat_transformed
 prior <- data_processed %>% 
   calc_baseline_precision(outcome_colname = snakemake@wildcards[['outcome']],
                           pos_outcome = 'yes')
+message(paste('prior:', prior))
 
 ml_results <- run_ml(
   dataset = data_processed,
@@ -32,8 +33,8 @@ ml_results <- run_ml(
 )
 ml_results$performance %>%
   mutate(baseline_precision = prior,
-         balanced_precision = calc_balanced_precision(Precision, prior),
-         aubprc = calc_balanced_precision(prAUC, prior)) %>% 
+         balanced_precision = if_else(!is.na(Precision), calc_balanced_precision(Precision, prior), NA),
+         aubprc = if_else(!is.na(prAUC), calc_balanced_precision(prAUC, prior), NA)) %>% 
   add_cols() %>%
   write_csv(snakemake@output[["perf"]])
 ml_results$feature_importance %>%
