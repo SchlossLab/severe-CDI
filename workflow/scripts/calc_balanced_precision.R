@@ -86,9 +86,12 @@ calc_baseline_precision <- function(dataset,
 #'   plot_mean_prc(ycol = mean_balanced_precision)
 calc_balanced_precision <-
   function(precision, prior) {
-    return(
-      precision * (1 - prior) / (
+    if (is.na(precision) | is.na(prior)) {
+            bprec <- NA
+    } else {
+      bprec <- precision * (1 - prior) / (
         precision * (1 - prior) + (1 - precision) * prior
       )
-    )
+    }
+    return(bprec)
   }

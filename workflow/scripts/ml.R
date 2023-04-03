@@ -31,6 +31,7 @@ ml_results <- run_ml(
   training_frac = as.numeric(snakemake@wildcards[['trainfrac']]),
   perf_metric_name = snakemake@wildcards[['metric']]
 )
+message(paste('precision:', ml_results$performance %>% pull(Precision)))
 ml_results$performance %>%
   mutate(baseline_precision = prior,
          balanced_precision = if_else(!is.na(Precision), calc_balanced_precision(Precision, prior), NA),
