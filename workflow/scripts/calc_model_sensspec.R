@@ -1,5 +1,7 @@
 schtools::log_snakemake()
+library(here)
 library(tidyverse)
+source(here('workflow','scripts','calc_balanced_precision.R'))
 
 model <- read_rds(snakemake@input[["model"]])
 test_dat <- read_csv(snakemake@input[["test"]])

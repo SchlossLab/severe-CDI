@@ -33,7 +33,6 @@
 calc_baseline_precision <- function(dataset,
                                     outcome_colname = NULL,
                                     pos_outcome = NULL) {
-  outcome_colname <- check_outcome_column(dataset, outcome_colname)
   npos <- dataset %>%
     dplyr::filter(!!rlang::sym(outcome_colname) == pos_outcome) %>%
     nrow()
