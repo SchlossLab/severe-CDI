@@ -1,6 +1,6 @@
 Cost-Benefit Analysis
 ================
-2023-04-14
+2023-04-25
 
 - use values from confusion matrix for one representative model on a
   test set.
@@ -14,6 +14,18 @@ Cost-Benefit Analysis
   - cost of possible treatments:
     - abx: metronizadole, vancomycin, fidaxomycin
     - fmt, monoclonal antibodies
+
+## evaluating ml models
+
+[number needed to
+benefit](https://academic.oup.com/jamia/article-abstract/26/12/1655/5516459)
+
+> In the simplest terms, prediction can be distilled into an NNS and
+> action into a number needed to treat. When contextualized within this
+> framework, the product of NNS and number needed to treat results in a
+> number needed to benefit. The table outlines key variables in this
+> framework that will alter the estimated number needed to benefit
+> across different modeling and implementation scenarios.
 
 ## lit review
 
@@ -50,11 +62,17 @@ significant difference in recurrence.
 
 ### [severe CDI treatment options](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3088840/)
 
+**from 2008, now out of date**
+
 see table for different treatment recommendations for mild-moderate CDI,
 IDSA severe CDI, and complicated CDI.
 
 could compare cost-benefit analysis with IDSA severity.
 
-## [mich med treatment guidelines](https://www.med.umich.edu/1info/FHP/practiceguides/InptCDiff/C-Diff.pdf)
+### [idsa treatment guidelines comparison](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9780550/)
+
+i may need to also consider “fulminant” cdi criteria
+
+### [mich med treatment guidelines](https://www.med.umich.edu/1info/FHP/practiceguides/InptCDiff/C-Diff.pdf)
 
 from 2019, has this been updated?
