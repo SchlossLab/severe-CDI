@@ -9,6 +9,7 @@ core.*
 .snakemake/
 benchmarks/
 data/
+data/raw/mishare
 log/
 results/predict_*/
 mothur*logfile
