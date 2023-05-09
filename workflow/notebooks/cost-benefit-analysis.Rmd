@@ -26,6 +26,10 @@ knitr::opts_chunk$set(echo = TRUE)
 
 [number needed to benefit](https://academic.oup.com/jamia/article-abstract/26/12/1655/5516459)
 
+- Number needed to screen (NNS) - the number of alerted patients the models must flag to identify 1 true positive. 
+- Number needed to treat (NNT) - the number of true positive patients one must treat for 1 patient to benefit from the treatment.
+- Number needed to benefit (NNB = NNS x NNT) - how many patients must be screened for 1 patient to benefit.
+
 > In the simplest terms, prediction can be distilled into an NNS and action into a number needed to treat. When contextualized within this framework, the product of NNS and number needed to treat results in a number needed to benefit. The table outlines key variables in this framework that will alter the estimated number needed to benefit across different modeling and implementation scenarios.
   
 ## lit review
