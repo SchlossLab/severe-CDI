@@ -45,6 +45,7 @@ metadat_cases <- bind_rows(attrib_dat, unattrib_dat) %>%
                           TRUE ~ idsa_lab),
          attrib = case_when(attrib == 1 ~ 'yes',
                             attrib == 0 ~ 'no',
+                            unattrib == 0 ~ 'no', # all unattrib "no's" will also be "no" for attrib when chart review is complete
                             TRUE ~ NA_character_),
          unattrib = case_when(unattrib == 1 ~ 'yes',
                               unattrib == 0 ~ 'no',
