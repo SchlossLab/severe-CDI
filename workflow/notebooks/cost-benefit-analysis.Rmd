@@ -11,16 +11,16 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 - use values from confusion matrix for one representative model on a test set.
-  - number needed to screen
-  - number needed to treat
-  - number needed to benefit
+  - Number needed to screen (NNS) - the number of alerted patients the models must flag to identify 1 true positive. 
+  - Number needed to treat (NNT) - the number of true positive patients one must treat for 1 patient to benefit from the treatment.
+  - Number needed to benefit (NNB = NNS x NNT) - how many patients must be screened for 1 patient to benefit.
 - assumptions
   - cost of a non-severe case
   - cost of a severe case
     - days in icu, colectomy
   - cost of possible treatments:
     - abx: metronizadole, vancomycin, fidaxomycin
-    - fmt, monoclonal antibodies
+    - fmt, bezlotoxumab (monoclonal antibodies) 
   
 ## evaluating ml models
 
@@ -32,7 +32,10 @@ knitr::opts_chunk$set(echo = TRUE)
 
 > In the simplest terms, prediction can be distilled into an NNS and action into a number needed to treat. When contextualized within this framework, the product of NNS and number needed to treat results in a number needed to benefit. The table outlines key variables in this framework that will alter the estimated number needed to benefit across different modeling and implementation scenarios.
   
-## lit review
+## treatment options & costs
+
+- Vince: consider bezlotoxumab since it targets the toxin, mouse models show it reduces organ damage.
+- Krishna: bezlotoxumab clinical trials didn't find signal for limiting severity.
 
 ### [Gupta _et al.](https://journals.sagepub.com/doi/10.1177/17562848211018654)
 

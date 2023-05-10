@@ -1,24 +1,34 @@
 Cost-Benefit Analysis
 ================
-2023-04-25
+2023-05-10
 
 - use values from confusion matrix for one representative model on a
   test set.
-  - number needed to screen
-  - number needed to treat
-  - number needed to benefit
+  - Number needed to screen (NNS) - the number of alerted patients the
+    models must flag to identify 1 true positive.
+  - Number needed to treat (NNT) - the number of true positive patients
+    one must treat for 1 patient to benefit from the treatment.
+  - Number needed to benefit (NNB = NNS x NNT) - how many patients must
+    be screened for 1 patient to benefit.
 - assumptions
   - cost of a non-severe case
   - cost of a severe case
     - days in icu, colectomy
   - cost of possible treatments:
     - abx: metronizadole, vancomycin, fidaxomycin
-    - fmt, monoclonal antibodies
+    - fmt, bezlotoxumab (monoclonal antibodies)
 
 ## evaluating ml models
 
 [number needed to
 benefit](https://academic.oup.com/jamia/article-abstract/26/12/1655/5516459)
+
+- Number needed to screen (NNS) - the number of alerted patients the
+  models must flag to identify 1 true positive.
+- Number needed to treat (NNT) - the number of true positive patients
+  one must treat for 1 patient to benefit from the treatment.
+- Number needed to benefit (NNB = NNS x NNT) - how many patients must be
+  screened for 1 patient to benefit.
 
 > In the simplest terms, prediction can be distilled into an NNS and
 > action into a number needed to treat. When contextualized within this
@@ -27,7 +37,12 @@ benefit](https://academic.oup.com/jamia/article-abstract/26/12/1655/5516459)
 > framework that will alter the estimated number needed to benefit
 > across different modeling and implementation scenarios.
 
-## lit review
+## treatment options & costs
+
+- Vince: consider bezlotoxumab since it targets the toxin, mouse models
+  show it reduces organ damage.
+- Krishna: bezlotoxumab clinical trials didn’t find signal for limiting
+  severity.
 
 ### [Gupta \_et al.](https://journals.sagepub.com/doi/10.1177/17562848211018654)
 
