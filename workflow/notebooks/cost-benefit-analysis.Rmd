@@ -10,7 +10,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-- use values from confusion matrix for one representative model on a test set.
+- use values from confusion matrix for one representative model on a test set. or get average precision?
   - Number needed to screen (NNS) - the number of alerted patients the models must flag to identify 1 true positive. 
   - Number needed to treat (NNT) - the number of true positive patients one must treat for 1 patient to benefit from the treatment.
   - Number needed to benefit (NNB = NNS x NNT) - how many patients must be screened for 1 patient to benefit.
@@ -35,9 +35,9 @@ knitr::opts_chunk$set(echo = TRUE)
 ## treatment options & costs
 
 - Vince: consider bezlotoxumab since it targets the toxin, mouse models show it reduces organ damage.
-- Krishna: bezlotoxumab clinical trials didn't find signal for limiting severity. but fidaxomicin is superior to vancomicin for cure and time to resolution of diarrhea.
+- Krishna: bezlotoxumab clinical trials didn't find signal for limiting severity. however fidaxomicin is superior to vancomycin for cure and time to resolution of diarrhea ([IDSA 2021 update](https://doi.org/10.1093/cid/ciab549)).
 
-### [Gupta _et al.](https://journals.sagepub.com/doi/10.1177/17562848211018654)
+### [Gupta _et al._ 2021 - Economic Burden of CDI](https://journals.sagepub.com/doi/10.1177/17562848211018654)
 
 - average cost of CDI case in the US: 
   - \$8k to \$30k (Nanwa _et al_)
@@ -62,24 +62,4 @@ knitr::opts_chunk$set(echo = TRUE)
 > source of stool and route of administration. In general, one course of FMT is
 > estimated to cost between US$500 and US$2000.
 
-### [fidaxomycin clinical trial](https://www.nejm.org/doi/full/10.1056/nejmoa0910812)
 
-no significant difference in whether CDI was cured, but did have significant
-difference in recurrence.
-
-### [severe CDI treatment options](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3088840/)
-
-**from 2008, now out of date**
-
-see table for different treatment recommendations for mild-moderate CDI, 
-IDSA severe CDI, and complicated CDI.
-
-could compare cost-benefit analysis with IDSA severity.
-
-### [idsa treatment guidelines comparison](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9780550/)
-
-i may need to also consider "fulminant" cdi criteria
-
-### [mich med treatment guidelines](https://www.med.umich.edu/1info/FHP/practiceguides/InptCDiff/C-Diff.pdf)
-
-from 2019, has this been updated?
