@@ -16,22 +16,27 @@ rule mermaid_flowchart:
             --configFile {input.cfg}
         """
 
-rule svg_to_png:
+rule svg2tiff:
     input:
         svg='figures/severity_flowchart.svg'
     output:
-        png='figures/severity_flowchart.png'
+        tiff='figures/severity_flowchart.tiff'
     conda: '../envs/graphviz.yml'
     shell:
         """
-        convert {input.svg} -density 500 {output.png}
+        convert {input.svg} -density 500 -resize 1600x1200 {output.tiff}
         """
 
 rule plot_flowchart_sankey:
     input:
-        mmd='workflow/scripts/severity_flowchart.mmd',
+        flowchart='figures/severity_flowchart.tiff',
+        metadat='data/process/cases_full_metadata.csv'
     output:
         png='figures/flowchart_sankey.png'
+    conda:
+        "../envs/mikropml.yml"
+    script:
+        '../scripts/plot_flowchart_sankey.R'
 
 rule plot_complex_upset:
     input:
@@ -97,5 +102,4 @@ rule make_plots:
         rules.plot_taxa.output,
         rules.plot_perf.output,
         rules.plot_feat_imp.output,
-
-rule copy_figures:
+        rules.plot_flowchart_sankey.output
