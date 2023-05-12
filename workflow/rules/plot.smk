@@ -30,9 +30,9 @@ rule svg2tiff:
 rule plot_flowchart_sankey:
     input:
         flowchart='figures/severity_flowchart.tiff',
-        metadat='data/process/cases_full_metadata.csv'
+        #metadat='data/process/cases_full_metadata.csv'
     output:
-        png='figures/flowchart_sankey.png'
+        tiff='figures/flowchart_sankey.tiff'
     conda:
         "../envs/mikropml.yml"
     script:

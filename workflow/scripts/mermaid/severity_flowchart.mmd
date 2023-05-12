@@ -1,40 +1,42 @@
 flowchart TB
-    classDef outcome fill:#F7FBFF
+    classDef outcome_yes fill:#F7FBFF,stroke:#860967
+    classDef outcome_no fill:#F7FBFF,stroke:#0F2A4B
+    classDef decision fill:#FFFFFF,stroke:#000000
     subgraph invis1
         direction TB
 
-        cases[(CDI cases)]
+        cases[(CDI cases)]:::decision
 
-        idsa_lab{{"Serum creatinine ≥ 1.5 mg/dL \n & WBC count ≥ 15 k/μL"}}
+        idsa_lab{{"Serum creatinine ≥ 1.5 mg/dL \n & WBC count ≥ 15 k/μL"}}:::decision
         idsa_lab --> yes_idsa
         idsa_lab --> no_idsa
         subgraph IDSA
-            yes_idsa[Yes]:::outcome
-            no_idsa[No]:::outcome
+            yes_idsa[Yes]:::outcome_yes
+            no_idsa[No]:::outcome_no
         end
 
-        unattrib{{One of 3 adverse outcomes occurs within 30 days:\nICU admission, colectomy, or death}}
+        unattrib{{One of 3 adverse outcomes occurs within 30 days:\nICU admission, colectomy, or death}}:::decision
         unattrib --> yes_un
         unattrib --> no_un
         subgraph All-cause
-            yes_un[Yes]:::outcome
-            no_un[No]:::outcome
+            yes_un[Yes]:::outcome_yes
+            no_un[No]:::outcome_no
         end
         All-cause --> chart
 
-        chart{{physician chart review:\nthe adverse outcome was attributable to the CDI}}
+        chart{{physician chart review:\nthe adverse outcome was attributable to the CDI}}:::decision
         chart --> yes_at
         chart --> no_at
         subgraph attrib[Attrib]
             direction TB
-            yes_at[Yes]:::outcome
-            no_at[No]:::outcome
+            yes_at[Yes]:::outcome_yes
+            no_at[No]:::outcome_no
         end
 
         cases --> unattrib
         cases --> idsa_lab
     end
-    style IDSA fill:#bacbc6
-    style attrib fill:#bacbc6
-    style All-cause fill:#bacbc6
     style invis1 fill:#FFFFFF,stroke:#FFFFFF,color:#FFFFFF
+    style IDSA fill:#CCCCCC,stroke:#FFFFFF
+    style attrib fill:#CCCCCC,stroke:#FFFFFF
+    style All-cause fill:#CCCCCC,stroke:#FFFFFF
