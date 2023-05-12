@@ -35,7 +35,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ## treatment options & costs
 
 - Vince: consider bezlotoxumab since it targets the toxin, mouse models show it reduces organ damage.
-- Krishna: bezlotoxumab clinical trials didn't find signal for limiting severity.
+- Krishna: bezlotoxumab clinical trials didn't find signal for limiting severity. but fidaxomicin is superior to vancomicin for cure and time to resolution of diarrhea.
 
 ### [Gupta _et al.](https://journals.sagepub.com/doi/10.1177/17562848211018654)
 

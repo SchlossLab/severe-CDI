@@ -1,6 +1,6 @@
 Cost-Benefit Analysis
 ================
-2023-05-10
+2023-05-11
 
 - use values from confusion matrix for one representative model on a
   test set.
@@ -42,7 +42,8 @@ benefit](https://academic.oup.com/jamia/article-abstract/26/12/1655/5516459)
 - Vince: consider bezlotoxumab since it targets the toxin, mouse models
   show it reduces organ damage.
 - Krishna: bezlotoxumab clinical trials didn’t find signal for limiting
-  severity.
+  severity. but fidaxomicin is superior to vancomicin for cure and time
+  to resolution of diarrhea.
 
 ### [Gupta \_et al.](https://journals.sagepub.com/doi/10.1177/17562848211018654)
 
