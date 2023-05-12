@@ -8,4 +8,5 @@ dependencies:
   - r-here
   - r-rmarkdown
   - r-schtools>=0.4
-  - r-tidyverse>=1.3 
+  - r-tidyverse>=1.3
+  - r-usethis

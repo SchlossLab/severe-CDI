@@ -1,4 +1,38 @@
 
+rule mermaid_flowchart:
+    input:
+        mmd='workflow/scripts/mermaid/severity_flowchart.mmd',
+        css='workflow/scripts/mermaid/mermaid.css', # https://github.com/mermaidjs/mermaid.cli/issues/3
+        cfg='workflow/scripts/mermaid/config.json' # https://github.com/madskristensen/MarkdownEditor/issues/92
+    output:
+        img='figures/severity_flowchart.svg'
+    shell:
+        """
+        # npm install -g @mermaid-js/mermaid-cli
+        mmdc \
+            -i {input.mmd} \
+            -o {output.img} \
+            -cssFile {input.css} \
+            --configFile {input.cfg}
+        """
+
+rule svg_to_png:
+    input:
+        svg='figures/severity_flowchart.svg'
+    output:
+        png='figures/severity_flowchart.png'
+    conda: '../envs/graphviz.yml'
+    shell:
+        """
+        convert {input.svg} -density 500 {output.png}
+        """
+
+rule plot_flowchart_sankey:
+    input:
+        mmd='workflow/scripts/severity_flowchart.mmd',
+    output:
+        png='figures/flowchart_sankey.png'
+
 rule plot_complex_upset:
     input:
         csv='data/process/cases_{dataset}_metadata.csv'
@@ -63,3 +97,5 @@ rule make_plots:
         rules.plot_taxa.output,
         rules.plot_perf.output,
         rules.plot_feat_imp.output,
+
+rule copy_figures:
