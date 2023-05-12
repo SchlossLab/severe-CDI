@@ -22,7 +22,7 @@ datasets = config['dataset_subsets']
 result_types = ['performance', 'feature-importance', 'sensspec']
 
 notebooks_dir = pathlib.Path('workflow', 'notebooks')
-md_notebooks = [pathlib.Path(notebooks_dir, nb) 
+md_notebooks = [pathlib.Path(notebooks_dir, nb)
                 for nb in os.listdir(notebooks_dir)
                 if nb.endswith('.md')]
 
@@ -165,6 +165,20 @@ rule render_rmd_notebook:
         cd {params.workdir}
         fn="{wildcards.file}.Rmd"
         R -e "rmarkdown::render('$fn')"
+        """
+
+rule render_quarto_notebook:
+    input:
+        qmd=f'{notebooks_dir}/{{file}}.qmd'
+    output:
+        md=f'{notebooks_dir}/{{file}}.md'
+    params:
+        workdir=notebooks_dir
+    conda:
+        'envs/notebooks.yml'
+    shell:
+        """
+        quarto render {input.qmd} --to gfm
         """
 
 rule render_notebooks:
