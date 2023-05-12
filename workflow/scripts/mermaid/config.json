@@ -2,5 +2,9 @@
     "flowchart": {
         "useMaxWidth": true,
         "htmlLabels": false
+    },
+    "theme": "default",
+    "themeVariables": {
+        "fontFamily": "Helvetica"
     }
-  }
+}

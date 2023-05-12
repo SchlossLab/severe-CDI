@@ -41,16 +41,16 @@ plot_sankey <- function(dat_long) {
     )) +
     geom_sankey(flow.alpha = .6) +
     geom_sankey_label(color = 'white', show.legend = FALSE) +
-    scale_fill_manual(values = c(yes="#860967", no="#0f2a4b", 
+    scale_fill_manual(values = c(yes="#860967", no="#0F2A4B", 
                                  'missing_data'="#BDBDBD")) +
     labs(x = 'Severity Definition') +
     theme_sankey() +
-    theme(text = element_text(size = 14))
+    theme(text = element_text(size = 10, family = "Helvetica"))
 }
 sankey <- metadat_cases_sankey %>%
   make_long(c(IDSA, `All-cause`, Attrib, Pragmatic)) %>%
   plot_sankey()
-flowchart <- ggdraw() + image_read('figures/severity_flowchart.tiff')
+flowchart <- ggdraw() + draw_image('figures/severity_flowchart.tiff')
 fig <- plot_grid(flowchart, sankey, 
           nrow = 2, rel_heights = c(1, 0.5),
           labels = 'AUTO')
