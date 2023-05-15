@@ -23,6 +23,7 @@ paper/*.ldf
 paper/*.cls
 paper/*.bst
 paper/*.aux
+paper/paper.tex
 
 *_KLS*
 *_MLC*
