@@ -52,6 +52,7 @@ figures_dict = {1: 'flowchart_sankey'}
 rule targets:
     input:
         expand('results/{type}_results_aggregated.csv', type = result_types),
+        'paper/paper.md', 'paper/paper.pdf'
     default_target: True
 
 rule classify_idsa_severity:
@@ -103,14 +104,15 @@ rule test_R_code:
 
 rule install_quarto_ms:
     output:
-        directory("_extensions/kelly-sovacool/manuscript")
+        directory("paper/_extensions/kelly-sovacool/manuscript")
     params:
         ext="kelly-sovacool/quarto-manuscript"
     conda:
         'envs/notebooks.yml'
     shell:
         """
-        quarto add {params.ext} --no-prompt
+        cd paper/
+        quarto install extension {params.ext} --no-prompt
         """
 
 rule install_fontawesome:
@@ -150,33 +152,21 @@ rule render_paper:
         tex='paper/header.tex',
         ext=rules.install_quarto_ms.output
     output:
-        'docs/paper/paper.pdf',
-        'docs/paper/paper.html'
+        'paper/paper.pdf',
+        'paper/paper.md',
     conda:
         'envs/notebooks.yml'
     shell:
         """
-        quarto render {input.qmd}
-        """
-
-rule render_paper_md:
-    input:
-        qmd='paper/paper.qmd',
-        bib='paper/references.bib',
-        tex='paper/header.tex',
-        ext=rules.install_quarto_ms.output
-    output:
-        'docs/paper/paper.md'
-    conda:
-        'envs/notebooks.yml'
-    shell:
-        """
-        quarto render {input.qmd} --to gfm
+        cd paper
+        quarto render --to manuscript-pdf
+        quarto render --to gfm
         """
 
 rule render_site:
     input:
         qmd="index.qmd",
+        paper='paper/paper.qmd',
         ext=rules.install_fontawesome.output
     output:
         'docs/index.html'
@@ -184,7 +174,7 @@ rule render_site:
         'envs/notebooks.yml'
     shell:
         """
-        quarto render {input.qmd}
+        quarto render
         """
 
 rule render_rmd_notebook:

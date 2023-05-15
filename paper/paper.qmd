@@ -83,8 +83,6 @@ TODO [@schloss_introducing_2009;@topcuoglu_mikropml_2021;@sovacool_schtools_2022
 
 TODO
 
-# References
-
 # Figures
 
 ::: {#fig-flowchart fig-cap="**CDI severity definitions**. A) B)"}
