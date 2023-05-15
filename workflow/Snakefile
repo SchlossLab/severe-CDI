@@ -47,11 +47,12 @@ include: 'rules/machine-learning.smk'
 include: 'rules/plot.smk'
 include: 'rules/temporal-split.smk'
 
+figures_dict = {1: 'flowchart_sankey'}
+
 rule targets:
     input:
         expand('results/{type}_results_aggregated.csv', type = result_types),
     default_target: True
-
 
 rule classify_idsa_severity:
     input:
@@ -68,7 +69,6 @@ rule classify_idsa_severity:
     script:
         'scripts/severity_analysis.R'
 
-# TODO: some OTUs w/ 4 vs 5 digits. shared file seems fine.
 rule prep_severity_data_for_ml:
     input:
         fcn='workflow/scripts/filter_first_samples.R',
@@ -123,6 +123,26 @@ rule install_fontawesome:
         quarto install extension quarto-ext/fontawesome --no-prompt
         """
 
+rule copy_figures:
+    input:
+        tiff=lambda wildcards: f"figures/{figures_dict[wildcards.fig_num]}.tiff"
+    output:
+        tiff="paper/figures/figure_{fig_num}.tiff"
+    shell:
+        """
+        cp {input.tiff} {output.tiff}
+        """
+
+rule convert_figures:
+    input:
+        tiff="figures/{figname}.tiff"
+    output:
+        png="paper/figures/{figname}.png"
+    shell:
+        """
+        convert {input.tiff} {output.png}
+        """
+
 rule render_paper:
     input:
         qmd='paper/paper.qmd',
@@ -130,12 +150,28 @@ rule render_paper:
         tex='paper/header.tex',
         ext=rules.install_quarto_ms.output
     output:
-        'docs/paper/paper.pdf'
+        'docs/paper/paper.pdf',
+        'docs/paper/paper.html'
     conda:
         'envs/notebooks.yml'
     shell:
         """
         quarto render {input.qmd}
+        """
+
+rule render_paper_md:
+    input:
+        qmd='paper/paper.qmd',
+        bib='paper/references.bib',
+        tex='paper/header.tex',
+        ext=rules.install_quarto_ms.output
+    output:
+        'docs/paper/paper.md'
+    conda:
+        'envs/notebooks.yml'
+    shell:
+        """
+        quarto render {input.qmd} --to gfm
         """
 
 rule render_site:

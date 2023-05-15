@@ -57,3 +57,4 @@ fig <- plot_grid(flowchart, sankey,
 ggsave('figures/flowchart_sankey.tiff', plot = fig,
        device = 'tiff', bg = 'white',
        width = 6.8, height = 7.5)
+

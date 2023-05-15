@@ -24,7 +24,7 @@ rule svg2tiff:
     conda: '../envs/graphviz.yml'
     shell:
         """
-        convert {input.svg} -density 500 -resize 1600x1200 {output.tiff}
+        convert {input.svg} -density 600 -resize 1600x1200 {output.tiff}
         """
 
 rule plot_flowchart_sankey:

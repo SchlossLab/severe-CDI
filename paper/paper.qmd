@@ -4,15 +4,15 @@ bibliography: references.bib
 fontsize: 11pt
 date: last-modified
 date-format: medium
-format: 
+format:
   manuscript-pdf:
     keep-tex: true
     include-in-header: header.tex
     linenumbers: true
     doublespacing: true
     lof: false
-  #gfm: default
-  html: default
+  html:
+    embed-resources: true
 runningtitle: Predicting Severe _C. difficile_ infections
 runningauthor: Sovacool
 papertype: Preprint
@@ -62,6 +62,8 @@ keywords: _C. difficile_ infection, supervised machine learning
 
 TODO
 
+A few ways to define CDI severity (@fig-flowchart)
+
 # Results 
 
 TODO
@@ -80,3 +82,11 @@ TODO [@schloss_introducing_2009;@topcuoglu_mikropml_2021;@sovacool_schtools_2022
 # Acknowledgements
 
 TODO
+
+# References
+
+# Figures
+
+::: {#fig-flowchart fig-cap="**CDI severity definitions**. A) B)"}
+![](figures/flowchart_sankey.png)
+:::
