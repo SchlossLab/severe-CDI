@@ -22,10 +22,10 @@ paper/*.sty
 paper/*.ldf
 paper/*.cls
 paper/*.bst
-.quarto/
+paper/*.aux
 
-# user-specific files
 *_KLS*
 *_MLC*
 *_mlc*
 
+/.quarto/
