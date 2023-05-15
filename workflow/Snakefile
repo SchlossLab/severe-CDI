@@ -52,7 +52,7 @@ figures_dict = {1: 'flowchart_sankey'}
 rule targets:
     input:
         expand('results/{type}_results_aggregated.csv', type = result_types),
-        'paper/paper.md', 'paper/paper.pdf'
+        'paper/paper.md', 'paper/paper.pdf', 'docs/index.html'
     default_target: True
 
 rule classify_idsa_severity:
