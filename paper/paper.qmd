@@ -1,13 +1,13 @@
 ---
-title: "Severe CDI manuscript"
+title: "Predicting _C. difficile_ Infection Severity from the Taxonomic Composition of the Gut Microbiome"
 bibliography: references.bib
 fontsize: 11pt
 date: last-modified
 date-format: medium
 format:
   manuscript-pdf:
+    mainfont: Helvetica
     keep-tex: true
-    include-in-header: header.tex
     linenumbers: true
     doublespacing: true
     lof: false
@@ -57,16 +57,21 @@ importance: TODO
 keywords: _C. difficile_ infection, supervised machine learning
 ---
 
-
 # Introduction
-
-TODO
 
 A few ways to define CDI severity (@fig-flowchart)
 
-# Results 
+# Results
 
-TODO
+## Model performance
+
+Report median AUROC for trainset and testset, and median AUBPRC for testset (@fig-performance).
+
+## Feature importance
+
+(@fig-features)
+
+## Clinical value of severity prediction models
 
 # Discussion
 
@@ -74,10 +79,25 @@ TODO
 
 # Materials and Methods
 
-CDC definiton of severe CDI [@mcdonald_recommendations_2007].
+## Sample collection and 16S rRNA gene amplicon sequencing
 
+[@schloss_introducing_2009]
 
-TODO [@schloss_introducing_2009;@topcuoglu_mikropml_2021;@sovacool_schtools_2022]
+## Defining CDI severity
+
+IDSA definition of severe CDI based on lab values.
+CDC definiton of severe CDI based on disease-related complications [@mcdonald_recommendations_2007].
+
+## Model training and evaluation
+
+[@topcuoglu_mikropml_2021]
+
+### Balanced precision
+
+## Code and data availability
+
+[@sovacool_schtools_2022]
+
 
 # Acknowledgements
 
@@ -90,6 +110,26 @@ TODO
 
 # Figures
 
-::: {#fig-flowchart fig-cap="**CDI severity definitions**. A) B)"}
+::: {#fig-flowchart fig-cap="**CDI severity definitions.**
+A) Decision flow chart to define CDI cases as severe according to the Infectious Diseases Society of America (IDSA) based on lab values,
+the occurence of complications due to any cause (All-cause),
+and the occurence of disease-related complications confirmed as attributable to CDI with chart review (Attrib).
+B) The proportion of severe CDI cases labelled according to each definition.
+An additional 'Pragmatic' severity definition uses the Attributable definition when possible,
+and falls back to the All-cause definition when chart review is not available.
+"}
 ![](figures/flowchart_sankey.png)
+:::
+
+::: {#fig-performance fig-cap="**Performance of ML models.**
+Area Under the Receiver-Operator Characteristic Curve (AUROC) for the cross-validation trainsets and testsets,
+and the Area Under the Balanced Precision-Recall Curve (AUPRC) for the testsets.
+Left: models were trained on the full dataset, with different numbers of samples available for each severity definition.
+Right: models were trained on the intersection of samples with all labels available for each definition.
+"}
+![](figures/ml-performance.png)
+:::
+
+::: {#fig-features fig-cap="**Feature importance.**"}
+TODO insert figure here
 :::

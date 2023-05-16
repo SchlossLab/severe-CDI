@@ -153,7 +153,6 @@ rule render_paper:
     input:
         qmd='paper/paper.qmd',
         bib='paper/references.bib',
-        tex='paper/header.tex',
         ext=rules.install_quarto_ms.output,
         figs=expand("paper/figures/{figname}.png", figname = figures_dict.values())
     output:
