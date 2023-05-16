@@ -1,30 +1,32 @@
 
-rule mermaid_flowchart:
-    input:
-        mmd='workflow/scripts/mermaid/severity_flowchart.mmd',
-        css='workflow/scripts/mermaid/mermaid.css', # https://github.com/mermaidjs/mermaid.cli/issues/3
-        cfg='workflow/scripts/mermaid/config.json' # https://github.com/madskristensen/MarkdownEditor/issues/92
-    output:
-        img='figures/severity_flowchart.svg'
-    shell:
-        """
-        # npm install -g @mermaid-js/mermaid-cli
-        mmdc \
-            -i {input.mmd} \
-            -o {output.img} \
-            -cssFile {input.css} \
-            --configFile {input.cfg}
-        """
+# rule mermaid_flowchart:
+#     input:
+#         mmd='workflow/scripts/mermaid/severity_flowchart.mmd',
+#         css='workflow/scripts/mermaid/mermaid.css', # https://github.com/mermaidjs/mermaid.cli/issues/3
+#         cfg='workflow/scripts/mermaid/config.json' # https://github.com/madskristensen/MarkdownEditor/issues/92
+#     output:
+#         img='figures/severity_flowchart.svg'
+#     shell:
+#         """
+#         # npm install @mermaid-js/mermaid-cli
+#         mmdc \
+#             -i {input.mmd} \
+#             -o {output.img} \
+#             --configFile {input.cfg} \
+#             --cssFile {input.css} \
+#             --width 1600 \
+#             --height 1277
+#         """
 
-rule svg2tiff:
+rule convert_svg:
     input:
-        svg='figures/severity_flowchart.svg'
+        svg='{figname}.svg'
     output:
-        tiff='figures/severity_flowchart.tiff'
+        img='{figname}.{format}'
     conda: '../envs/graphviz.yml'
     shell:
         """
-        convert {input.svg} -density 600 -resize 1600x1200 {output.tiff}
+        convert {input.svg} -density 1200 -trim {output.img}
         """
 
 rule plot_flowchart_sankey:
