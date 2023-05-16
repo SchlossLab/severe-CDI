@@ -133,27 +133,30 @@ CDC definiton of severe CDI based on disease-related complications [@mcdonald_re
 
 mikropml R package [@topcuoglu_mikropml_2021]
 
-### Balanced precision
+Balanced precision
 
 ## Code availability
 
 The complete workflow, code, and supporting files required to reproduce this
 manuscript with accompanying figures is available at
-https://github.com/SchlossLab/severe-CDI.
+<https://github.com/SchlossLab/severe-CDI>.
 <!-- TODO update GitHub URL once accepted to journal -->
 
-The steps for machine learning, making figures, and rendering the manuscript
-were defined with Snakemake [@koster_snakemake_2012] using a custom version of the
-mikropml Snakemake workflow [@sovacool_mikropml_2023].
+The workflow was defined with Snakemake [@koster_snakemake_2012] using a custom
+version of the mikropml Snakemake workflow [@sovacool_mikropml_2023].
 Dependencies were managed with conda environments.
+Scripts were written in R [@r_core_team_r_2020],
+Python [@van_rossum_python_2009],
+and GNU bash.
 In addition to the software already cited above, other packages used in the
 creation of this manuscript include
-schtools [@sovacool_schtools_2022],
-Quarto,
+cowplot [@wilke_cowplot_2020],
 ggtext [@wilke_ggtext_2020],
 ggsankey [@sjoberg_ggsankey_2022],
-cowplot [@wilke_cowplot_2020], and
-vegan [@oksanen_vegan_2022].
+schtools [@sovacool_schtools_2022],
+the tidyverse metapackage [@wickham_welcome_2019],
+Quarto, and
+vegan [@oksanen_vegan_2023].
 
 ## Data availability
 

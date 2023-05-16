@@ -80,23 +80,24 @@ severe CDI based on disease-related complications (McDonald et al.
 
 mikropml R package (Topçuoğlu et al. 2021)
 
-### Balanced precision
+Balanced precision
 
 ## Code availability
 
 The complete workflow, code, and supporting files required to reproduce
 this manuscript with accompanying figures is available at
-https://github.com/SchlossLab/severe-CDI.
+<https://github.com/SchlossLab/severe-CDI>.
 <!-- TODO update GitHub URL once accepted to journal -->
 
-The steps for machine learning, making figures, and rendering the
-manuscript were defined with Snakemake (Köster and Rahmann 2012) using a
-custom version of the mikropml Snakemake workflow (Sovacool et al.
-2023). Dependencies were managed with conda environments. In addition to
-the software already cited above, other packages used in the creation of
-this manuscript include schtools (Sovacool, Lesniak, and Schloss 2022),
-Quarto, ggtext (Wilke 2020b), ggsankey (Sjoberg 2022), cowplot (Wilke
-2020a), and vegan (**oksanen_vegan_2022?**).
+The workflow was defined with Snakemake (Köster and Rahmann 2012) using
+a custom version of the mikropml Snakemake workflow (Sovacool et al.
+2023). Dependencies were managed with conda environments. Scripts were
+written in R (R Core Team 2020), Python (Van Rossum and Drake 2009), and
+GNU bash. In addition to the software already cited above, other
+packages used in the creation of this manuscript include cowplot (Wilke
+2020a), ggtext (Wilke 2020b), ggsankey (Sjoberg 2022), schtools
+(Sovacool, Lesniak, and Schloss 2022), the tidyverse metapackage
+(Wickham et al. 2019), Quarto, and vegan (Oksanen et al. 2023).
 
 ## Data availability
 
@@ -151,6 +152,14 @@ Hospital Epidemiology* 28 (2): 140–45. <https://doi.org/10.1086/511798>.
 
 </div>
 
+<div id="ref-oksanen_vegan_2023" class="csl-entry">
+
+Oksanen, Jari, Gavin L. Simpson, F. Guillaume Blanchet, Roeland Kindt,
+Pierre Legendre, Peter R. Minchin, R. B. O’Hara, et al. 2023. *Vegan:
+Community Ecology Package*.
+
+</div>
+
 <div id="ref-quast_silva_2013" class="csl-entry">
 
 Quast, Christian, Elmar Pruesse, Pelin Yilmaz, Jan Gerken, Timmy
@@ -158,6 +167,14 @@ Schweer, Pablo Yarza, Jörg Peplies, and Frank Oliver Glöckner. 2013.
 “The SILVA Ribosomal RNA Gene Database Project: Improved Data Processing
 and Web-Based Tools.” *Nucleic Acids Research* 41 (D1): D590–96.
 <https://doi.org/10.1093/nar/gks1219>.
+
+</div>
+
+<div id="ref-r_core_team_r_2020" class="csl-entry">
+
+R Core Team. 2020. *R: A Language and Environment for Statistical
+Computing*. Manual. Vienna, Austria: R Foundation for Statistical
+Computing.
 
 </div>
 
@@ -201,6 +218,22 @@ Topçuoğlu, Begüm D., Zena Lapp, Kelly L. Sovacool, Evan Snitkin, Jenna
 Wiens, and Patrick D. Schloss. 2021. “Mikropml: User-Friendly R Package
 for Supervised Machine Learning Pipelines.” *JOSS* 6 (61): 3073.
 <https://doi.org/10.21105/joss.03073>.
+
+</div>
+
+<div id="ref-van_rossum_python_2009" class="csl-entry">
+
+Van Rossum, Guido, and Fred L. Drake. 2009. “Python 3 Reference Manual
+\| Guide Books.”
+
+</div>
+
+<div id="ref-wickham_welcome_2019" class="csl-entry">
+
+Wickham, Hadley, Mara Averick, Jennifer Bryan, Winston Chang, Lucy
+D’Agostino McGowan, Romain François, Garrett Grolemund, et al. 2019.
+“Welcome to the Tidyverse.” *Journal of Open Source Software* 4 (43):
+1686. <https://doi.org/10.21105/joss.01686>.
 
 </div>
 
