@@ -79,9 +79,9 @@ rule plot_taxa:
 
 rule plot_perf:
     input:
-        csv="results/performance_results_aggregated.csv"
+        #csv="results/performance_results_aggregated.csv"
     output:
-        png="figures/plot_perf.png"
+        tiff="figures/ml-performance.tiff"
     log: "log/plot_perf.txt"
     conda: "../envs/mikropml.yml"
     script:
