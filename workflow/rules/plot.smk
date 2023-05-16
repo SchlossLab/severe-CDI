@@ -20,9 +20,9 @@
 
 rule convert_svg:
     input:
-        svg='{figname}.svg'
+        svg='figures/{fig}.svg'
     output:
-        img='{figname}.{format}'
+        img='figures/{fig}.tiff'
     conda: '../envs/graphviz.yml'
     shell:
         """

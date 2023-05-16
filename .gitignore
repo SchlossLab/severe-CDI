@@ -24,6 +24,7 @@ paper/*.cls
 paper/*.bst
 paper/*.aux
 paper/paper.tex
+paper/*.zip
 
 *_KLS*
 *_MLC*

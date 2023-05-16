@@ -47,13 +47,16 @@ include: 'rules/machine-learning.smk'
 include: 'rules/plot.smk'
 include: 'rules/temporal-split.smk'
 
-figures_dict = {1: 'flowchart_sankey'}
+figures_dict = {'1': 'flowchart_sankey'}
+
+rule paper_targets:
+    input:
+        'paper/paper.md', 'paper/paper.pdf', 'paper/submission.zip'
 
 rule targets:
     input:
-        expand('results/{type}_results_aggregated.csv', type = result_types),
-        'paper/paper.md', 'paper/paper.pdf'
-    default_target: True
+        expand('results/{type}_results_aggregated.csv', type = result_types)
+    #default_target: True
 
 rule classify_idsa_severity:
     input:
@@ -150,7 +153,8 @@ rule render_paper:
         qmd='paper/paper.qmd',
         bib='paper/references.bib',
         tex='paper/header.tex',
-        ext=rules.install_quarto_ms.output
+        ext=rules.install_quarto_ms.output,
+        figs=expand("paper/figures/{figname}.png", figname = figures_dict.values())
     output:
         'paper/paper.pdf',
         'paper/paper.md',
@@ -161,6 +165,17 @@ rule render_paper:
         cd paper
         quarto render --to manuscript-pdf
         quarto render --to gfm
+        """
+
+rule zip_submission:
+    input:
+        'paper/paper.pdf',
+        expand("paper/figures/figure_{num}.tiff", num = figures_dict.keys())
+    output:
+        'paper/submission.zip'
+    shell:
+        """
+        zip -j {output} {input}
         """
 
 rule render_site:
