@@ -89,9 +89,10 @@ rule plot_perf:
 
 rule plot_feat_imp:
     input:
-        csv="results/feature-importance_results_aggregated.csv"
+        #csv="results/feature-importance_results_aggregated.csv",
+        #tax="data/mothur/alpha/cdi.taxonomy"
     output:
-        png="figures/plot_feat_imp.png"
+        tiff="figures/feature-importance.tiff"
     log: "log/plot_feat_imp.txt"
     conda: "../envs/mikropml.yml"
     script:

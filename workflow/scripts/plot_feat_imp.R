@@ -4,12 +4,12 @@ library(ggtext)
 library(glue)
 library(here)
 library(tidyverse)
-model_colors <- RColorBrewer::brewer.pal(3, 'Dark2')
-names(model_colors) <- c("idsa", 'attrib', 'allcause')
+model_colors <- RColorBrewer::brewer.pal(4, 'Dark2')
+names(model_colors) <- c("idsa", 'attrib', 'allcause', 'pragmatic')
 
 feat_dat <- read_csv("results/feature-importance_results_aggregated.csv") %>% 
-  rename(otu = names)
-tax_dat <- schtools::read_tax("data/mothur/cdi.taxonomy")
+  rename(otu = feat)
+tax_dat <- schtools::read_tax("data/mothur/alpha/cdi.taxonomy")
 alpha_level <- 0.05
 
 dat <- full_join(feat_dat, tax_dat, by = 'otu')
@@ -30,9 +30,10 @@ top_otus_order <- top_otus_dat %>%
 otu_sets <- data.frame(label_html = top_otus_order) %>% 
   mutate(idsa = label_html %in% (top_otus_dat %>% filter(outcome == 'idsa') %>% pull(label_html)),
          attrib = label_html %in% (top_otus_dat %>% filter(outcome == 'attrib') %>% pull(label_html)),
-         allcause = label_html %in% (top_otus_dat %>% filter(outcome == 'allcause') %>% pull(label_html))
+         allcause = label_html %in% (top_otus_dat %>% filter(outcome == 'allcause') %>% pull(label_html)),
+         pragmatic = label_html %in% (top_otus_dat %>% filter(outcome == 'pragmatic') %>% pull(label_html))
          ) %>% 
-  pivot_longer(c(idsa, attrib, allcause), names_to = "group", values_to = 'bool') %>% 
+  pivot_longer(c(idsa, attrib, allcause, pragmatic), names_to = "group", values_to = 'bool') %>% 
   mutate(label_html = factor(label_html, levels = top_otus_order),
          group_html = glue("<span style = 'color:{model_colors[group]};'>{group}</span>"),
          color_hex = case_when(bool == TRUE ~ model_colors[group],
@@ -41,7 +42,8 @@ otu_sets <- data.frame(label_html = top_otus_order) %>%
   mutate(group_html = fct_relevel(factor(group_html),
                                 "<span style = 'color:#1B9E77;'>idsa</span>", 
                                 "<span style = 'color:#D95F02;'>attrib</span>", 
-                                "<span style = 'color:#7570B3;'>allcause</span>"))
+                                "<span style = 'color:#7570B3;'>allcause</span>", 
+                                "<span style = 'color:#E7298A;'>pragmatic</span>"))
 dotplot_colors <- otu_sets %>% pull(color_hex) %>% unique()
 names(dotplot_colors) <- dotplot_colors
 
@@ -91,8 +93,8 @@ feat_imp_plot <- dat %>%
 combined_plot <- plot_grid(otu_sets_plot, feat_imp_plot, 
                            align = 'h', nrow = 1, rel_widths = c(0.52, 0.48))
 ggsave(
-    filename = here('figures', 'plot_feat_imp.png'), 
+    filename = here('figures', 'feature-importance.tiff'), 
     plot = combined_plot,
-    device = "png", dpi = 300, 
+    device = "tiff", dpi = 600, 
     units = "in", width = 5, height = 4
     )

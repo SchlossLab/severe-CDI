@@ -287,7 +287,7 @@ labels available for each definition.
 
 <div id="fig-features">
 
-TODO insert figure here
+![](figures/feature-importance.png)
 
 Figure 3: **Feature importance.**
 

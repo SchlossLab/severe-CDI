@@ -48,7 +48,8 @@ include: 'rules/plot.smk'
 include: 'rules/temporal-split.smk'
 
 figures_dict = {'1': 'flowchart_sankey',
-                '2': 'ml-performance'}
+                '2': 'ml-performance',
+                '3': 'feature-importance'}
 
 rule paper_targets:
     input:

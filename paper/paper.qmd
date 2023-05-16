@@ -196,5 +196,5 @@ Right: models were trained on the intersection of samples with all labels availa
 :::
 
 ::: {#fig-features fig-cap="**Feature importance.**"}
-TODO insert figure here
+![](figures/feature-importance.png)
 :::
