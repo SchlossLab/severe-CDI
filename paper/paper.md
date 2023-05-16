@@ -28,15 +28,7 @@ Schloss 2022)
 
 TODO
 
-# Figures
-
-<div id="fig-flowchart">
-
-![](figures/flowchart_sankey.png)
-
-Figure 1: **CDI severity definitions**. A) B)
-
-</div>
+# References
 
 <div id="refs" class="references csl-bib-body hanging-indent">
 
@@ -76,5 +68,15 @@ for Supervised Machine Learning Pipelines.” *JOSS* 6 (61): 3073.
 <https://doi.org/10.21105/joss.03073>.
 
 </div>
+
+</div>
+
+# Figures
+
+<div id="fig-flowchart">
+
+![](figures/flowchart_sankey.png)
+
+Figure 1: **CDI severity definitions**. A) B)
 
 </div>
