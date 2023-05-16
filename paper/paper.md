@@ -1,7 +1,7 @@
 # Severe CDI manuscript
 Kelly L. SovacoolSarah E. TomkovichMegan L. CodenVincent B. YoungKrishna
 RaoPatrick D. Schloss
-May 15, 2023
+May 16, 2023
 
 # Introduction
 
