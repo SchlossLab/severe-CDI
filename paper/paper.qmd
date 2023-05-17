@@ -54,7 +54,7 @@ affiliations:
     name: Center for Computational Medicine and Bioinformatics, University of Michigan
 abstract: TODO
 importance: TODO
-keywords: _C. difficile_ infection, supervised machine learning
+keywords: _C. difficile_ infection, supervised machine learning, gut microbiome, amplicion sequencing
 ---
 
 # Introduction
@@ -187,7 +187,8 @@ and falls back to the All-cause definition when chart review is not available.
 :::
 
 ::: {#fig-performance fig-cap="**Performance of ML models.**
-Area Under the Receiver-Operator Characteristic Curve (AUROC) for the cross-validation trainsets and testsets,
+Area Under the Receiver-Operator Characteristic Curve (AUROC) for the testsets
+and cross-validation folds of the trainsets,
 and the Area Under the Balanced Precision-Recall Curve (AUPRC) for the testsets.
 Left: models were trained on the full dataset, with different numbers of samples available for each severity definition.
 Right: models were trained on the intersection of samples with all labels available for each definition.
@@ -195,6 +196,16 @@ Right: models were trained on the intersection of samples with all labels availa
 ![](figures/ml-performance.png)
 :::
 
-::: {#fig-features fig-cap="**Feature importance.**"}
+::: {#fig-features fig-cap="**Feature importance.**
+Feature importance via permutation test.
+For each OTU, the order of samples was randomized in the test set 100 times and
+the performance was re-calculated to estimate the permutation performance.
+An OTU was considered important if the performance decreased when the OTU was
+permuted in at least 80% of the models.
+OTUs with a greater difference in AUROC (actual performance minus permutation performance)
+are more important.
+Left: models were trained on the full dataset, with different numbers of samples available for each severity definition.
+Right: models were trained on the intersection of samples with all labels available for each definition.
+"}
 ![](figures/feature-importance.png)
 :::

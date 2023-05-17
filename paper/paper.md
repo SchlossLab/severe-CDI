@@ -2,7 +2,7 @@
 Composition of the Gut Microbiome
 Kelly L. SovacoolSarah E. TomkovichMegan L. CodenVincent B. YoungKrishna
 RaoPatrick D. Schloss
-May 16, 2023
+May 17, 2023
 
 # Introduction
 
@@ -276,12 +276,12 @@ definition when chart review is not available.
 ![](figures/ml-performance.png)
 
 Figure 2: **Performance of ML models.** Area Under the Receiver-Operator
-Characteristic Curve (AUROC) for the cross-validation trainsets and
-testsets, and the Area Under the Balanced Precision-Recall Curve (AUPRC)
-for the testsets. Left: models were trained on the full dataset, with
-different numbers of samples available for each severity definition.
-Right: models were trained on the intersection of samples with all
-labels available for each definition.
+Characteristic Curve (AUROC) for the testsets and cross-validation folds
+of the trainsets, and the Area Under the Balanced Precision-Recall Curve
+(AUPRC) for the testsets. Left: models were trained on the full dataset,
+with different numbers of samples available for each severity
+definition. Right: models were trained on the intersection of samples
+with all labels available for each definition.
 
 </div>
 
@@ -289,6 +289,15 @@ labels available for each definition.
 
 ![](figures/feature-importance.png)
 
-Figure 3: **Feature importance.**
+Figure 3: **Feature importance.** Feature importance via permutation
+test. For each OTU, the order of samples was randomized in the test set
+100 times and the performance was re-calculated to estimate the
+permutation performance. An OTU was considered important if the
+performance decreased when the OTU was permuted in at least 80% of the
+models. OTUs with a greater difference in AUROC (actual performance
+minus permutation performance) are more important. Left: models were
+trained on the full dataset, with different numbers of samples available
+for each severity definition. Right: models were trained on the
+intersection of samples with all labels available for each definition.
 
 </div>

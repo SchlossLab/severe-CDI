@@ -1,5 +1,6 @@
 schtools::log_snakemake()
 library(mikropml)
+library(schtools)
 library(tidyverse)
 
 dat <- read_csv("results/performance_results_aggregated.csv") %>%
@@ -16,8 +17,8 @@ dat <- read_csv("results/performance_results_aggregated.csv") %>%
                         outcome == 'allcause' ~ 'All-cause\n severity',
                         outcome == 'pragmatic' ~ 'Pragmatic\n severity',
                         TRUE ~ NA_character_), levels = c('IDSA\n severity',
-                           'Attributable\n severity',
                            'All-cause\n severity',
+                           'Attributable\n severity',
                            'Pragmatic\n severity'))
   )
 perf_plot <- dat %>% 
@@ -38,14 +39,15 @@ perf_plot <- dat %>%
     scale_color_manual(values = c("trainset AUROC" = "#BDBDBD", 
                                   "testset AUROC" = "#252525",
                                   "testset AUBPRC" = "#4292C6")) +
+    guides(color = guide_legend(label.position = "bottom"))  +
     labs(x = 'Performance') +
-    theme_bw() +
+    theme_sovacool() +
     theme(
-        plot.margin = unit(x = c(0, 0, 0, 0), units = "pt"),
+        text = element_text(size = 10, family = 'Helvetica'),
         axis.title.y = element_blank(),
         legend.position = 'top',
-        legend.margin = margin(0, 0, 0, 0, unit = "pt"),
-        legend.title = element_blank()
+        legend.title = element_blank(),
+        strip.background = element_blank()
     )
 
 
