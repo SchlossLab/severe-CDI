@@ -398,19 +398,21 @@ the intersection set. <!-- TODO add plots of AUROC and AUBPRC curves -->
 
 ![](figures/feature-importance.png)
 
-Figure 3: **Feature importance.** Feature importance via permutation
-test. For each OTU, the order of samples was randomized in the test set
-100 times and the performance was re-calculated to estimate the
-permutation performance. An OTU was considered important if the
+Figure 3: **Feature importance.** **A)** Feature importance via
+permutation test. For each OTU, the order of samples was randomized in
+the test set 100 times and the performance was re-calculated to estimate
+the permutation performance. An OTU was considered important if the
 performance decreased when the OTU was permuted in at least 75% of the
 models. OTUs with a greater difference in AUROC (actual performance
 minus permutation performance) are more important. Left: models were
-trained on the full dataset, with different numbers of samples available
-for each severity definition. Right: models were trained on the
-intersection of samples with all labels available for each definition.
-Note that Attributable and Pragmatic severity are exactly the same for
-the intersection set. OTU 120 (*Pseudomonas*) is not shown for the full
-data set with IDSA severity on the full dataset because it was removed
-during pre-processing due to having near-zero variance.
+trained on the full datasets, with different numbers of samples
+available for each severity definition. Right: models were trained on
+the intersection of samples with all labels available for each
+definition. Note that Attributable and Pragmatic severity are exactly
+the same for the intersection set. OTU 120 (*Pseudomonas*) is not shown
+for the full data set with IDSA severity on the full dataset because it
+was removed during pre-processing due to having near-zero variance.
+**B)** Log<sub>10</sub> transformed median relative abundances of the
+most important OTUs on the full datasets, grouped by severity (shape).
 
 </div>

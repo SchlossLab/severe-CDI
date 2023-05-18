@@ -78,7 +78,8 @@ rule plot_perf:
 rule plot_feat_imp:
     input:
         #csv="results/feature-importance_results_aggregated.csv",
-        #tax="data/mothur/alpha/cdi.taxonomy"
+        #tax="data/mothur/alpha/cdi.taxonomy",
+        #otu="data/mothur/alpha/cdi.opti_mcc.shared"
     output:
         tiff="figures/feature-importance.tiff"
     log: "log/plot_feat_imp.txt"
