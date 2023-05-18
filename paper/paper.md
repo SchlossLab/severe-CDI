@@ -2,7 +2,7 @@
 Composition of the Gut Microbiome
 Kelly L. SovacoolSarah E. TomkovichMegan L. CodenVincent B. YoungKrishna
 RaoPatrick D. Schloss
-May 17, 2023
+May 18, 2023
 
 # Introduction
 
@@ -12,8 +12,8 @@ A few ways to define CDI severity ([Figure 1](#fig-flowchart))
 
 ## Model performance
 
-Report median AUROC for trainset and testset, and median AUBPRC for
-testset ([Figure 2](#fig-performance)).
+Report median AUROC for training set and test set, and median AUBPRC for
+test set ([Figure 2](#fig-performance)).
 
 ## Feature importance
 
@@ -62,13 +62,16 @@ Thermo Fisher Scientific), pooled and quantified (KAPA library
 quantification kit from KAPA Biosystems), and sequenced with the MiSeq
 system (Illumina).
 
-All sequences were processed with mothur (v1.43) using the MiSeq SOP
+All sequences were processed with mothur (v1.46) using the MiSeq SOP
 protocol (Schloss et al. 2009; Kozich et al. 2013). Paired sequencing
 reads were combined and aligned with the SILVA (v132) reference database
 (Quast et al. 2013) and taxonomy was assigned with a modified version of
 the Ribosomal Database Project reference sequences (v16) (Cole et al.
-2014). Samples were rarefied to 5,000 sequences per sample, repeated
-1,000 times for alpha and beta diversity analysis.
+2014). Sequences were clustered into *de novo* OTUs with the OptiClust
+algorithm in mothur (Westcott and Schloss 2017). Samples were rarefied
+to 5,000 sequences per sample, repeated 1,000 times for alpha and beta
+diversity analysis.
+<!-- TODO supplementary figure with alpha and beta diversity & significance -->
 
 ## Defining CDI severity
 
@@ -78,9 +81,24 @@ severe CDI based on disease-related complications (McDonald et al.
 
 ## Model training and evaluation
 
-mikropml R package (Topçuoğlu et al. 2021)
+Random forest models were used to examine whether OTU data collected on
+the day of diagnosis could classify CDI cases as severe according to
+four different definitons of severity. We used the mikropml R package
+v1.5.0 (Topçuoğlu et al. 2021) for all steps of the machine learning
+analysis. We randomly split the data into an 80% training and 20% test
+set and repeated this 100 times, followed by training models with 5-fold
+cross-validation. Model performance was calculated on the test set using
+the area under the receiver-operator characteristic curve (AUROC) and
+the Area under the balanced precision-recall curve (AUBPRC). Permutation
+feature importance was then performed to determine which OTUs
+contributed most to model performance. We reported OTUs with a
+significant permutation test in at least 80 of the 100 models.
 
-Balanced precision
+Since the severity labels are imbalanced with different frequencies of
+severity for each definition, we calculated balanced precision, the
+precision expected if the labels were balanced. The balanced precision
+and Area under the balanced precision-recall curve (AUBPRC) were
+calculated with Equations 1 and 7 from Wu et al. (2021).
 
 ## Code availability
 
@@ -93,11 +111,11 @@ The workflow was defined with Snakemake (Köster and Rahmann 2012) using
 a custom version of the mikropml Snakemake workflow (Sovacool et al.
 2023). Dependencies were managed with conda environments. Scripts were
 written in R (R Core Team 2020), Python (Van Rossum and Drake 2009), and
-GNU bash. In addition to the software already cited above, other
-packages used in the creation of this manuscript include cowplot (Wilke
-2020a), ggtext (Wilke 2020b), ggsankey (Sjoberg 2022), schtools
-(Sovacool, Lesniak, and Schloss 2022), the tidyverse metapackage
-(Wickham et al. 2019), Quarto, and vegan (Oksanen et al. 2023).
+GNU bash. Additional software and packages used in the creation of this
+manuscript include cowplot (Wilke 2020a), ggtext (Wilke 2020b), ggsankey
+(Sjoberg 2022), schtools (Sovacool, Lesniak, and Schloss 2022), the
+tidyverse metapackage (Wickham et al. 2019), Quarto, and vegan (Oksanen
+et al. 2023).
 
 ## Data availability
 
@@ -228,6 +246,15 @@ Van Rossum, Guido, and Fred L. Drake. 2009. “Python 3 Reference Manual
 
 </div>
 
+<div id="ref-westcott_opticlust_2017" class="csl-entry">
+
+Westcott, Sarah L., and Patrick D. Schloss. 2017. “OptiClust, an
+Improved Method for Assigning Amplicon-Based Sequence Data to
+Operational Taxonomic Units.” Edited by Katherine McMahon. *mSphere* 2
+(2): e00073–17. <https://doi.org/10.1128/mSphereDirect.00073-17>.
+
+</div>
+
 <div id="ref-wickham_welcome_2019" class="csl-entry">
 
 Wickham, Hadley, Mara Averick, Jennifer Bryan, Winston Chang, Lucy
@@ -251,6 +278,15 @@ Manual.
 
 </div>
 
+<div id="ref-wu_improved_2021" class="csl-entry">
+
+Wu, Yingzhou, Hanqing Liu, Roujia Li, Song Sun, Jochen Weile, and
+Frederick P. Roth. 2021. “Improved Pathogenicity Prediction for Rare
+Human Missense Variants.” *The American Journal of Human Genetics* 108
+(10): 1891–1906. <https://doi.org/10.1016/j.ajhg.2021.08.012>.
+
+</div>
+
 </div>
 
 # Figures
@@ -268,6 +304,7 @@ complications confirmed as attributable to CDI with chart review
 each definition. An additional ‘Pragmatic’ severity definition uses the
 Attributable definition when possible, and falls back to the All-cause
 definition when chart review is not available.
+<!-- TODO table (supplementary?) showing counts & frequency of positives-->
 
 </div>
 
@@ -275,13 +312,14 @@ definition when chart review is not available.
 
 ![](figures/ml-performance.png)
 
-Figure 2: **Performance of ML models.** Area Under the Receiver-Operator
-Characteristic Curve (AUROC) for the testsets and cross-validation folds
-of the trainsets, and the Area Under the Balanced Precision-Recall Curve
-(AUPRC) for the testsets. Left: models were trained on the full dataset,
-with different numbers of samples available for each severity
-definition. Right: models were trained on the intersection of samples
-with all labels available for each definition.
+Figure 2: **Performance of ML models.** Area under the receiver-operator
+characteristic curve (AUROC) for the test sets and cross-validation
+folds of the training sets, and the Area under the balanced
+precision-recall curve (AUBPRC) for the test sets. Left: models were
+trained on the full dataset, with different numbers of samples available
+for each severity definition. Right: models were trained on the
+intersection of samples with all labels available for each definition.
+<!-- TODO add plots of AUROC and AUBPRC curves -->
 
 </div>
 
