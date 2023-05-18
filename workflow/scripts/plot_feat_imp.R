@@ -163,6 +163,6 @@ fig <- plot_grid(feat_imp_plot, relabun_plot,
 ggsave(
     filename = here('figures', 'feature-importance.tiff'), 
     plot = fig,
-    device = "tiff", dpi = 600, 
+    device = "tiff", compression = "lzw", dpi = 600, 
     units = "in", width = 6.875, height = 7.5 # https://journals.asm.org/figures-tables
     )
