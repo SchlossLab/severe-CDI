@@ -34,60 +34,64 @@ alpha_level <- 0.05
 
 dat <- left_join(feat_dat, tax_dat, by = 'otu')
 dat_top_otus <- dat %>% 
-  filter_top_feats(frac_important_threshold = 0.80)
+  filter_top_feats(frac_important_threshold = 0.75) %>% 
+  mutate(is_signif = TRUE)
 
-top_otus_order <- dat_top_otus %>%
-  arrange(median_perf_diff) %>% 
-  pull(label_html) %>% 
-  unique() 
-
-plot_feat_imp <- function(dat) {
-  dat %>% 
-  ggplot(aes(x = perf_metric_diff, 
-             y = label_html, 
-             color = outcome))+
-    stat_summary(fun = 'median', 
-                 fun.max = function(x) quantile(x, 0.75), 
-                 fun.min = function(x) quantile(x, 0.25),
-                 position = position_dodge(width = 0.4)) +
-  geom_hline(yintercept = seq(1.5, length(unique(dat$label_html))-0.5, 1), 
-             lwd = 0.5, colour = "whitesmoke") +
-  facet_wrap('dataset') +
-    scale_color_manual(values = model_colors,
-                       labels = c(idsa='IDSA', attrib='Attrib', allcause='All-cause', pragmatic='Pragmatic'),
-                       guide = guide_legend(label.position = "bottom")) +
-    labs(title=NULL, 
-         y=NULL,
-         x="Difference in AUROC") +
-    theme_sovacool() +
-    theme(text = element_text(size = 10, family = 'Helvetica'),
-          axis.text.y = element_markdown(size = 10),
-          axis.text.x = element_text(size = 10),
-          strip.background = element_blank(),
-          legend.position = "top",
-          panel.grid.major.y = element_blank(),
-          legend.title = element_blank()) 
-}
+top_otus_order <- dat_top_otus %>% 
+  group_by(label_html) %>% 
+  summarize(max_med = max(median_perf_diff)) %>% 
+  filter(max_med >= 0.005) %>% 
+  arrange(max_med) %>% 
+  pull(label_html)
+dat_top_otus <- dat_top_otus %>% filter(label_html %in% top_otus_order)
 
 feat_imp_plot <- dat %>% 
-  inner_join(dat_top_otus %>% filter(label_html %in% top_otus_order), 
+  filter(label_html %in% top_otus_order) %>% 
+  left_join(dat_top_otus, 
              by = c('label_html', 'outcome', 'dataset')) %>% 
   mutate(label_html = factor(label_html, levels = top_otus_order),
          dataset = case_when(dataset == 'full' ~ 'Full dataset',
                              TRUE ~ 'Intersection of samples with all labels'),
-         outcome = factor(outcome, levels = c('idsa', 'allcause', 'attrib', 'pragmatic'))) %>% 
-  plot_feat_imp()
+         outcome = factor(outcome, levels = c('idsa', 'allcause', 'attrib', 'pragmatic')),
+         is_signif = factor(case_when(is.na(is_signif) ~ 'No',
+                               TRUE ~ 'Yes'),
+                            levels = c('Yes', 'No')
+                            )
+         ) %>% 
+  ggplot(aes(x = perf_metric_diff, 
+             y = label_html, 
+             color = outcome,
+             shape = is_signif))+
+  stat_summary(fun = 'median', 
+               fun.max = function(x) quantile(x, 0.75), 
+               fun.min = function(x) quantile(x, 0.25),
+               position = position_dodge(width = 0.7)) +
+  geom_hline(yintercept = seq(1.5, length(unique(dat$label_html))-0.5, 1), 
+             lwd = 0.5, colour = "whitesmoke") +
+  facet_wrap('dataset') +
+  scale_color_manual(values = model_colors,
+                     labels = c(idsa='IDSA', attrib='Attrib', allcause='All-cause', pragmatic='Pragmatic'),
+                     guide = guide_legend(label.position = "bottom")) +
+  scale_shape_manual(values = c(Yes=8, No=20),
+                     guide = guide_legend(label.position = 'bottom',
+                                          title = 'Significant\n(75% CI)')) +
+  labs(title=NULL, 
+       y=NULL,
+       x="Difference in AUROC") +
+  theme_sovacool() +
+  theme(text = element_text(size = 10, family = 'Helvetica'),
+        axis.text.y = element_markdown(size = 10),
+        axis.text.x = element_text(size = 10),
+        strip.background = element_blank(),
+        legend.position = "top",
+        panel.grid.major.y = element_blank()) 
 
-top_5_plot <- dat %>% # keeping even insignificant OTU x outcome combinations
-  filter(label_html %in% c("<i>Lactobacillus</i> (OTU 71)", "<i>Enterococcus</i> (OTU 12)", 
-  "<i>Lachnospiraceae</i> (OTU 149)", "<i>Parabacteroides</i> (OTU 9)", 
-  "<i>Staphylococcus</i> (OTU 119)")) %>% 
-  plot_feat_imp()
 
+# TODO does Pseudomonas OTU 120 not exist in IDSA samples??
 # TODO add difference in relative abundance (severe minus not severe?)
 ggsave(
     filename = here('figures', 'feature-importance.tiff'), 
     plot = feat_imp_plot,
     device = "tiff", dpi = 600, 
-    units = "in", width = 6.5, height = 6.5
+    units = "in", width = 6.5, height = 8
     )
