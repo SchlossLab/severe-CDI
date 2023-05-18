@@ -61,7 +61,8 @@ feat_imp_plot <- dat %>%
   ggplot(aes(x = perf_metric_diff, 
              y = label_html, 
              color = outcome,
-             shape = is_signif))+
+             shape = is_signif,
+             size = is_signif))+
   stat_summary(fun = 'median', 
                fun.max = function(x) quantile(x, 0.75), 
                fun.min = function(x) quantile(x, 0.25),
@@ -80,6 +81,12 @@ feat_imp_plot <- dat %>%
                                           title = 'Significant\n(75% CI)',
                                           title.position = 'top',
                                           order = 1)) +
+  scale_size_manual(values = c(Yes=0.4, No=0.2),
+                    guide = guide_legend(label.position = 'bottom',
+                                         title = 'Significant\n(75% CI)',
+                                         title.position = 'top',
+                                         order = 1)
+                    ) +
   labs(title=NULL, 
        y=NULL,
        x="Difference in AUROC") +
@@ -129,10 +136,10 @@ relabun_plot <- relabun_medians %>%
          ) %>% 
   ggplot(aes(x = med_rel_abun, y = label_html,
              color = outcome, shape = is_severe, group = outcome)) +
-  geom_vline(xintercept = tiny_constant, linetype = 'dashed') +
   geom_point(position = position_dodge(width = 0.7)) +
   geom_hline(yintercept = seq(1.5, length(unique(top_otus_order))-0.5, 1), 
              lwd = 0.5, colour = "whitesmoke") +
+  geom_vline(xintercept = tiny_constant, linetype = 'dashed') +
   facet_wrap('dataset') +
   scale_color_manual(values = model_colors,
                      labels = c(idsa='IDSA', attrib='Attrib', 
