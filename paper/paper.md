@@ -4,6 +4,32 @@ Kelly L. SovacoolSarah E. TomkovichMegan L. CodenVincent B. YoungKrishna
 RaoPatrick D. Schloss
 May 18, 2023
 
+``` r
+library(here)
+```
+
+    here() starts at /Users/sovacool/projects/schloss-lab/severe-CDI
+
+``` r
+library(tidyverse)
+```
+
+    ── Attaching packages
+    ───────────────────────────────────────
+    tidyverse 1.3.2 ──
+
+    ✔ ggplot2 3.4.2     ✔ purrr   1.0.1
+    ✔ tibble  3.2.1     ✔ dplyr   1.1.2
+    ✔ tidyr   1.3.0     ✔ stringr 1.5.0
+    ✔ readr   2.1.3     ✔ forcats 0.5.2
+    ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+    ✖ dplyr::filter() masks stats::filter()
+    ✖ dplyr::lag()    masks stats::lag()
+
+``` r
+load(here("results", "stats.RData"))
+```
+
 # Introduction
 
 A few ways to define CDI severity ([Figure 1](#fig-flowchart))
@@ -47,7 +73,7 @@ different aliquots. For 16S sequencing, the aliquot of stool was
 resuspended in DNA genotek stabilization buffer and then stored in the
 -80°C freezer. Only the first CDI sample per patient was used for
 subsequent ML analyses such that no patient is represented more than
-once, resulting in a dataset of 1,191 samples.
+once, resulting in a dataset of 1277 samples.
 
 ## 16S rRNA gene amplicon sequencing
 
@@ -71,9 +97,9 @@ reads were combined and aligned with the SILVA (v132) reference database
 (Quast et al. 2013) and taxonomy was assigned with a modified version of
 the Ribosomal Database Project reference sequences (v16) (Cole et al.
 2014). Sequences were clustered into *de novo* OTUs with the OptiClust
-algorithm in mothur (Westcott and Schloss 2017). Samples were rarefied
-to 5,000 sequences per sample, repeated 1,000 times for alpha and beta
-diversity analysis.
+algorithm in mothur (Westcott and Schloss 2017), resulting in Samples
+were rarefied to 5,000 sequences per sample, repeated 1,000 times for
+alpha and beta diversity analysis.
 <!-- TODO supplementary figure with alpha and beta diversity & significance -->
 
 ## Defining CDI severity
@@ -103,15 +129,29 @@ into account where possible.
 Random forest models were used to examine whether OTU data collected on
 the day of diagnosis could classify CDI cases as severe according to
 four different definitions of severity. We used the mikropml R package
-v1.5.0 (Topçuoğlu et al. 2021) for all steps of the machine learning
-analysis. We randomly split the data into an 80% training and 20% test
-set and repeated this 100 times, followed by training models with 5-fold
-cross-validation. Model performance was calculated on the test set using
-the area under the receiver-operator characteristic curve (AUROC) and
-the area under the balanced precision-recall curve (AUBPRC). Permutation
-feature importance was then performed to determine which OTUs
-contributed most to model performance. We reported OTUs with a
-significant permutation test in at least 80 of the 100 models.
+v1.5.0 (Topçuoğlu et al. 2021) implemented in a custom version of the
+mikropml Snakemake workflow (Sovacool et al. 2023) for all steps of the
+machine learning analysis. We have a full dataset which uses all samples
+available for each severity definition, and an intersection dataset
+which consists of only the samples that have all four definitions
+labelled. The intersection dataset is the most fair for comparing model
+performance across definitions, while the full dataset allows us to use
+as much data as possible for model training and evaluation. Datasets
+were preprocessed with the default options in mikropml to remove
+features with near-zero variance and scale continuous features from -1
+to 1.
+<!-- No features had missing values and no features were perfectly correlated -->
+During preprocessing, 9757 to 9760 features were removed due to having
+near-zero variance, resulting in datasets ranging from 179 to 182
+depending on the severity definition. We randomly split the data into an
+80% training and 20% test set and repeated this 100 times, followed by
+training models with 5-fold cross-validation. Model performance was
+calculated on the test set using the area under the receiver-operator
+characteristic curve (AUROC) and the area under the balanced
+precision-recall curve (AUBPRC). Permutation feature importance was then
+performed to determine which OTUs contributed most to model performance.
+We reported OTUs with a significant permutation test in at least 80 of
+the 100 models.
 
 Since the severity labels are imbalanced with different frequencies of
 severity for each definition, we calculated balanced precision, the
@@ -126,11 +166,10 @@ this manuscript with accompanying figures is available at
 <https://github.com/SchlossLab/severe-CDI>.
 <!-- TODO update GitHub URL once accepted to journal -->
 
-The workflow was defined with Snakemake (Köster and Rahmann 2012) using
-a custom version of the mikropml Snakemake workflow (Sovacool et al.
-2023). Dependencies were managed with conda environments. Scripts were
-written in R (R Core Team 2020), Python (Van Rossum and Drake 2009), and
-GNU bash. Additional software and packages used in the creation of this
+The workflow was defined with Snakemake (Köster and Rahmann 2012) and
+dependencies were managed with conda environments. Scripts were written
+in R (R Core Team 2020), Python (Van Rossum and Drake 2009), and GNU
+bash. Additional software and packages used in the creation of this
 manuscript include cowplot (Wilke 2020a), ggtext (Wilke 2020b), ggsankey
 (Sjoberg 2022), schtools (Sovacool, Lesniak, and Schloss 2022), the
 tidyverse metapackage (Wickham et al. 2019), Quarto, and vegan (Oksanen
@@ -327,13 +366,14 @@ Human Missense Variants.” *The American Journal of Human Genetics* 108
 
 Figure 1: **CDI severity definitions.** **A)** Decision flow chart to
 define CDI cases as severe according to the Infectious Diseases Society
-of America (IDSA) based on lab values, the occurence of complications
-due to any cause (All-cause), and the occurence of disease-related
-complications confirmed as attributable to CDI with chart review
-(Attrib). **B)** The proportion of severe CDI cases labelled according
-to each definition. An additional ‘Pragmatic’ severity definition uses
-the Attributable definition when possible, and falls back to the
-All-cause definition when chart review is not available.
+of America (IDSA) based on lab values, the occurence of an adverse
+outcome due to any cause (All-cause), and the occurence of
+disease-related complications confirmed as attributable to CDI with
+chart review (Attrib). **B)** The proportion of severe CDI cases
+labelled according to each definition. An additional ‘Pragmatic’
+severity definition uses the Attributable definition when possible, and
+falls back to the All-cause definition when chart review is not
+available.
 <!-- TODO table (supplementary?) showing counts & frequency of positives-->
 
 </div>
@@ -362,13 +402,15 @@ Figure 3: **Feature importance.** Feature importance via permutation
 test. For each OTU, the order of samples was randomized in the test set
 100 times and the performance was re-calculated to estimate the
 permutation performance. An OTU was considered important if the
-performance decreased when the OTU was permuted in at least 80% of the
+performance decreased when the OTU was permuted in at least 75% of the
 models. OTUs with a greater difference in AUROC (actual performance
 minus permutation performance) are more important. Left: models were
 trained on the full dataset, with different numbers of samples available
 for each severity definition. Right: models were trained on the
 intersection of samples with all labels available for each definition.
 Note that Attributable and Pragmatic severity are exactly the same for
-the intersection set.
+the intersection set. OTU 120 (*Pseudomonas*) is not shown for the full
+data set with IDSA severity on the full dataset because it was removed
+during pre-processing due to having near-zero variance.
 
 </div>

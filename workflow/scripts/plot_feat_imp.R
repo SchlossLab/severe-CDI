@@ -71,7 +71,8 @@ feat_imp_plot <- dat %>%
   facet_wrap('dataset') +
   scale_color_manual(values = model_colors,
                      labels = c(idsa='IDSA', attrib='Attrib', allcause='All-cause', pragmatic='Pragmatic'),
-                     guide = guide_legend(label.position = "bottom")) +
+                     guide = guide_legend(label.position = "bottom",
+                                          title = "Severity\nDefinition")) +
   scale_shape_manual(values = c(Yes=8, No=20),
                      guide = guide_legend(label.position = 'bottom',
                                           title = 'Significant\n(75% CI)')) +
@@ -88,6 +89,19 @@ feat_imp_plot <- dat %>%
 
 
 # TODO does Pseudomonas OTU 120 not exist in IDSA samples??
+otu_dat <- read_csv(here('data', 'process', 'cases_full_metadata.csv')) %>% 
+  left_join(data.table::fread(here('data', 'SraRunTable.csv')) %>% 
+              select(-Group) %>% 
+              rename(sample_id = sample_title,
+                     Group = Run) %>% 
+              select(sample_id, Group), by = 'sample_id') %>% 
+  left_join(data.table::fread(here('data', 'mothur', 'alpha', 'cdi.opti_mcc.shared')),
+            by = 'Group')
+
+relabun_dat <- otu_dat %>% calc_relabun() %>% 
+  left_join(otu_dat %>% select(-starts_with('Otu')) %>% rename(sample = Group),
+            by = 'sample')
+
 # TODO add difference in relative abundance (severe minus not severe?)
 ggsave(
     filename = here('figures', 'feature-importance.tiff'), 

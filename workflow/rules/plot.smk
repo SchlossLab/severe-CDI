@@ -66,8 +66,8 @@ rule plot_diversity:
 
 rule plot_perf:
     input:
-        csv="results/performance_results_aggregated.csv",
-        pvals=rules.compare_models.output.csv
+        #csv="results/performance_results_aggregated.csv",
+        #pvals=rules.compare_models.output.csv
     output:
         tiff="figures/ml-performance.tiff"
     log: "log/plot_perf.txt"
