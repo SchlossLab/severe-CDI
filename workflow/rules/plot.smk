@@ -64,22 +64,10 @@ rule plot_diversity:
     script:
         '../scripts/plot_diversity.R'
 
-rule plot_taxa:
-    input:
-        "workflow/scripts/utilities.R",
-        "workflow/scripts/read_taxa_data.R",
-        "data/process/case_idsa_severity.csv",
-        "results/idsa_severity/combined_feature-importance_rf.csv"
-    output:
-        otus="results/figures/otus_peptostreptococcaceae.png",
-        severe_otus="results/figures/feat_imp_idsa_severe_otus_abund.png"
-    conda: "../envs/mikropml.yml"
-    script:
-        "../scripts/taxa.R"
-
 rule plot_perf:
     input:
-        #csv="results/performance_results_aggregated.csv"
+        csv="results/performance_results_aggregated.csv",
+        pvals=rules.compare_models.output.csv
     output:
         tiff="figures/ml-performance.tiff"
     log: "log/plot_perf.txt"
@@ -102,7 +90,6 @@ rule make_plots:
     input:
         expand('figures/complex-upset_plot_{dataset}.png', dataset = datasets),
         rules.plot_diversity.output,
-        rules.plot_taxa.output,
         rules.plot_perf.output,
         rules.plot_feat_imp.output,
         rules.plot_flowchart_sankey.output

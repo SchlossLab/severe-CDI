@@ -50,6 +50,7 @@ perf_plot <- dat %>%
         strip.background = element_blank()
     )
 
+# TODO AUROC and AUBPRC curves
 
 ggsave("figures/ml-performance.tiff", plot = perf_plot, device = "tiff", 
        width = 6.5, height = 5)

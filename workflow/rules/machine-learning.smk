@@ -63,3 +63,12 @@ rule combine_results:
     conda: "../envs/mikropml.yml"
     script:
         "../scripts/combine_results.R"
+
+rule compare_models:
+    input: csv='results/performance_results_aggregated.csv'
+    output: csv='results/model_comparisons.csv'
+    log: "log/compare_models.txt"
+    threads: ncores
+    conda: "../envs/mikropml.yml"
+    script:
+        "../scripts/compare_models.R"
