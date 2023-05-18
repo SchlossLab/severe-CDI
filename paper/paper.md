@@ -8,6 +8,9 @@ May 18, 2023
 
 A few ways to define CDI severity ([Figure 1](#fig-flowchart))
 
+The IDSA definition is known to be a poor predictor of adverse outcomes
+(Stevens et al. 2020), however, it is easy to collect.
+
 # Results
 
 ## Model performance
@@ -75,21 +78,37 @@ diversity analysis.
 
 ## Defining CDI severity
 
-IDSA definition of severe CDI based on lab values. CDC definiton of
-severe CDI based on disease-related complications (McDonald et al.
-2007).
+We explore four different ways to define CDI cases as severe or not. The
+IDSA definition of severe CDI is based on lab values collected on the
+day of diagnosis, with a case being severe if serum creatinine level is
+greater than or equal to $1.5 mg/dL$ and the white blood cell count is
+greater than or equal to $15 k/\mu L$ (**mcdonald_clinical_2018?**). The
+remaining definitions focus on the occurrence of adverse outcomes, which
+may be more clinically relevant. The all-cause severity definition
+defines a case as severe if ICU admission, colectomy, or death occurs
+within 30 days of CDI diagnosis, regardless of the cause of the adverse
+event. The attributable severity definition is based on disease-related
+complications defined by the CDC, where an adverse event of ICU
+admission, colectomy, or death occurs within 30 days of CDI diagnosis,
+and the adverse event is determined to be attributable to the CDI by
+physician chart review (McDonald et al. 2007). Finally, we defined a
+pragmatic severity definition that makes use of the attributable
+definition when available and falls back to the all-cause definition
+when chart review has not been completed, allowing us to use as many
+samples as we have available while taking physicians’ expert opinions
+into account where possible.
 
 ## Model training and evaluation
 
 Random forest models were used to examine whether OTU data collected on
 the day of diagnosis could classify CDI cases as severe according to
-four different definitons of severity. We used the mikropml R package
+four different definitions of severity. We used the mikropml R package
 v1.5.0 (Topçuoğlu et al. 2021) for all steps of the machine learning
 analysis. We randomly split the data into an 80% training and 20% test
 set and repeated this 100 times, followed by training models with 5-fold
 cross-validation. Model performance was calculated on the test set using
 the area under the receiver-operator characteristic curve (AUROC) and
-the Area under the balanced precision-recall curve (AUBPRC). Permutation
+the area under the balanced precision-recall curve (AUBPRC). Permutation
 feature importance was then performed to determine which OTUs
 contributed most to model performance. We reported OTUs with a
 significant permutation test in at least 80 of the 100 models.
@@ -97,7 +116,7 @@ significant permutation test in at least 80 of the 100 models.
 Since the severity labels are imbalanced with different frequencies of
 severity for each definition, we calculated balanced precision, the
 precision expected if the labels were balanced. The balanced precision
-and Area under the balanced precision-recall curve (AUBPRC) were
+and the area under the balanced precision-recall curve (AUBPRC) were
 calculated with Equations 1 and 7 from Wu et al. (2021).
 
 ## Code availability
@@ -230,6 +249,17 @@ Schloss Lab Tools for Reproducible Microbiome Research.”
 
 </div>
 
+<div id="ref-stevens_validation_2020" class="csl-entry">
+
+Stevens, Vanessa W., Holly E. Shoemaker, Makoto M. Jones, Barbara E.
+Jones, Richard E. Nelson, Karim Khader, Matthew H. Samore, and Michael
+A. Rubin. 2020. “Validation of the SHEA/IDSA Severity Criteria to
+Predict Poor Outcomes Among Inpatients and Outpatients with
+Clostridioides Difficile Infection.” *Infection Control & Hospital
+Epidemiology* 41 (5): 510–16. <https://doi.org/10.1017/ice.2020.8>.
+
+</div>
+
 <div id="ref-topcuoglu_mikropml_2021" class="csl-entry">
 
 Topçuoğlu, Begüm D., Zena Lapp, Kelly L. Sovacool, Evan Snitkin, Jenna
@@ -295,15 +325,15 @@ Human Missense Variants.” *The American Journal of Human Genetics* 108
 
 ![](figures/flowchart_sankey.png)
 
-Figure 1: **CDI severity definitions.** A) Decision flow chart to define
-CDI cases as severe according to the Infectious Diseases Society of
-America (IDSA) based on lab values, the occurence of complications due
-to any cause (All-cause), and the occurence of disease-related
+Figure 1: **CDI severity definitions.** **A)** Decision flow chart to
+define CDI cases as severe according to the Infectious Diseases Society
+of America (IDSA) based on lab values, the occurence of complications
+due to any cause (All-cause), and the occurence of disease-related
 complications confirmed as attributable to CDI with chart review
-(Attrib). B) The proportion of severe CDI cases labelled according to
-each definition. An additional ‘Pragmatic’ severity definition uses the
-Attributable definition when possible, and falls back to the All-cause
-definition when chart review is not available.
+(Attrib). **B)** The proportion of severe CDI cases labelled according
+to each definition. An additional ‘Pragmatic’ severity definition uses
+the Attributable definition when possible, and falls back to the
+All-cause definition when chart review is not available.
 <!-- TODO table (supplementary?) showing counts & frequency of positives-->
 
 </div>
@@ -314,12 +344,13 @@ definition when chart review is not available.
 
 Figure 2: **Performance of ML models.** Area under the receiver-operator
 characteristic curve (AUROC) for the test sets and cross-validation
-folds of the training sets, and the Area under the balanced
+folds of the training sets, and the area under the balanced
 precision-recall curve (AUBPRC) for the test sets. Left: models were
 trained on the full dataset, with different numbers of samples available
 for each severity definition. Right: models were trained on the
 intersection of samples with all labels available for each definition.
-<!-- TODO add plots of AUROC and AUBPRC curves -->
+Note that Attributable and Pragmatic severity are exactly the same for
+the intersection set. <!-- TODO add plots of AUROC and AUBPRC curves -->
 
 </div>
 
@@ -337,5 +368,7 @@ minus permutation performance) are more important. Left: models were
 trained on the full dataset, with different numbers of samples available
 for each severity definition. Right: models were trained on the
 intersection of samples with all labels available for each definition.
+Note that Attributable and Pragmatic severity are exactly the same for
+the intersection set.
 
 </div>
