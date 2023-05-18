@@ -4,10 +4,10 @@ library(schtools)
 library(tidyverse)
 
 dat <- read_csv("results/performance_results_aggregated.csv") %>%
-    rename(`testset AUROC` = AUC,
-           `trainset AUROC` = cv_metric_AUC,
-           `testset AUPRC` = prAUC,
-           `testset AUBPRC` = aubprc) %>% 
+    rename(`test set AUROC` = AUC,
+           `training set AUROC` = cv_metric_AUC,
+           `test set AUPRC` = prAUC,
+           `test set AUBPRC` = aubprc) %>% 
     filter(metric == 'AUC', method == 'rf', trainfrac == 0.8) %>%
   mutate(dataset = case_when(dataset == 'full' ~ 'Full dataset',
                              TRUE ~ 'Intersection of samples with all labels available')) %>% 
@@ -22,7 +22,7 @@ dat <- read_csv("results/performance_results_aggregated.csv") %>%
                            'Pragmatic\n severity'))
   )
 perf_plot <- dat %>% 
-    pivot_longer(c(`trainset AUROC`, `testset AUROC`, `testset AUBPRC`
+    pivot_longer(c(`training set AUROC`, `test set AUROC`, `test set AUBPRC`
                    ),
                  names_to = "data_partition",
                  values_to = 'performance'
@@ -36,9 +36,9 @@ perf_plot <- dat %>%
                  mapping = aes(label = round(after_stat(x),2)),
                  position = position_nudge(x = 0, y = c(-0.45, -0.2, 0.45))) +
     facet_wrap('dataset', ncol = 2) +
-    scale_color_manual(values = c("trainset AUROC" = "#BDBDBD", 
-                                  "testset AUROC" = "#252525",
-                                  "testset AUBPRC" = "#4292C6")) +
+    scale_color_manual(values = c("training set AUROC" = "#BDBDBD", 
+                                  "test set AUROC" = "#252525",
+                                  "test set AUBPRC" = "#4292C6")) +
     guides(color = guide_legend(label.position = "bottom"))  +
     labs(x = 'Performance') +
     theme_sovacool() +
