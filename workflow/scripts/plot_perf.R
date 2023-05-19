@@ -52,5 +52,6 @@ perf_plot <- dat %>%
 
 # TODO AUROC and AUBPRC curves
 
-ggsave("figures/ml-performance.tiff", plot = perf_plot, device = "tiff", 
+ggsave("figures/ml-performance.tiff", plot = perf_plot, 
+       device = "tiff", compression = "lzw", dpi = 600,
        width = 6.5, height = 5)

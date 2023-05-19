@@ -57,6 +57,13 @@ importance: TODO
 keywords: _C. difficile_ infection, supervised machine learning, gut microbiome, amplicion sequencing
 ---
 
+```{r load_data}
+library(here)
+library(tidyverse)
+
+load(here("results", "stats.RData"))
+```
+
 # Introduction
 
 A few ways to define CDI severity (@fig-flowchart)
@@ -97,8 +104,8 @@ collected and split into different aliquots.
 For 16S sequencing, the aliquot of stool was resuspended in
 DNA genotek stabilization buffer and then stored in the -80&deg;C freezer.
 Only the first CDI sample per patient was used for subsequent ML analyses such
-that no patient is represented more than once, resulting in a dataset of 1,191
-samples.
+that no patient is represented more than once, resulting in a dataset of
+`r n_cases_first` samples.
 
 ## 16S rRNA gene amplicon sequencing
 
@@ -125,7 +132,7 @@ aligned with the SILVA (v132) reference database [@quast_silva_2013] and taxonom
 assigned with a modified version of the Ribosomal Database Project reference
 sequences (v16) [@cole_ribosomal_2014].
 Sequences were clustered into _de novo_ OTUs with the OptiClust algorithm in
-mothur [@westcott_opticlust_2017].
+mothur [@westcott_opticlust_2017], resulting in 
 Samples were rarefied to 5,000 sequences per sample, repeated 1,000
 times for alpha and beta diversity analysis.
 <!-- TODO supplementary figure with alpha and beta diversity & significance -->
@@ -157,8 +164,21 @@ possible.
 Random forest models were used to examine whether OTU data collected on the day
 of diagnosis could classify CDI cases as severe according to four different
 definitions of severity.
-We used the mikropml R package v1.5.0 [@topcuoglu_mikropml_2021]
+We used the mikropml R package v1.5.0 [@topcuoglu_mikropml_2021] implemented in
+a custom version of the mikropml Snakemake workflow [@sovacool_mikropml_2023]
 for all steps of the machine learning analysis.
+We have a full dataset which uses all samples available for each severity
+definition, and an intersection dataset which consists of only the samples that
+have all four definitions labelled.
+The intersection dataset is the most fair for comparing model performance across
+definitions, while the full dataset allows us to use as much data as possible
+for model training and evaluation.
+Datasets were preprocessed with the default options in mikropml to remove
+features with near-zero variance and scale continuous features from -1 to 1. <!-- No features had missing values and no features were perfectly correlated -->
+During preprocessing, `r preproc_ranges$min_removed` to `r preproc_ranges$max_removed`
+features were removed due to having near-zero variance, resulting in datasets
+ranging from `r preproc_ranges$min_feats` to `r preproc_ranges$max_feats`
+depending on the severity definition.
 We randomly split the data into an 80% training and 20% test set and repeated
 this 100 times, followed by training models with 5-fold cross-validation.
 Model performance was calculated on the test set using the area under the
@@ -182,9 +202,8 @@ manuscript with accompanying figures is available at
 <https://github.com/SchlossLab/severe-CDI>.
 <!-- TODO update GitHub URL once accepted to journal -->
 
-The workflow was defined with Snakemake [@koster_snakemake_2012] using a custom
-version of the mikropml Snakemake workflow [@sovacool_mikropml_2023].
-Dependencies were managed with conda environments.
+The workflow was defined with Snakemake [@koster_snakemake_2012] and
+dependencies were managed with conda environments.
 Scripts were written in R [@r_core_team_r_2020],
 Python [@van_rossum_python_2009],
 and GNU bash.
@@ -217,7 +236,7 @@ TODO
 ::: {#fig-flowchart fig-cap="**CDI severity definitions.**
 **A)** Decision flow chart to define CDI cases as severe according to the Infectious
 Diseases Society of America (IDSA) based on lab values,
-the occurence of complications due to any cause (All-cause),
+the occurence of an adverse outcome due to any cause (All-cause),
 and the occurence of disease-related complications confirmed as attributable to
 CDI with chart review (Attrib).
 **B)** The proportion of severe CDI cases labelled according to each definition.
@@ -244,18 +263,23 @@ exactly the same for the intersection set.
 :::
 
 ::: {#fig-features fig-cap="**Feature importance.**
-Feature importance via permutation test.
+**A)** Feature importance via permutation test.
 For each OTU, the order of samples was randomized in the test set 100 times and
 the performance was re-calculated to estimate the permutation performance.
 An OTU was considered important if the performance decreased when the OTU was
-permuted in at least 80% of the models.
+permuted in at least 75% of the models.
 OTUs with a greater difference in AUROC (actual performance minus permutation
 performance) are more important.
-Left: models were trained on the full dataset, with different numbers of samples
-available for each severity definition.
+Left: models were trained on the full datasets, with different numbers of
+samples available for each severity definition.
 Right: models were trained on the intersection of samples with all labels
 available for each definition. Note that Attributable and Pragmatic severity are
 exactly the same for the intersection set.
+OTU 120 (*Pseudomonas*) is not shown for the full data set with IDSA severity 
+on the full dataset because it was removed during pre-processing due to having
+near-zero variance.
+**B)** Log~10~ transformed median relative abundances of the most important OTUs
+on the full datasets, grouped by severity (shape).
 "}
 ![](figures/feature-importance.png)
 :::

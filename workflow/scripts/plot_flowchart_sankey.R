@@ -73,6 +73,7 @@ fig <- plot_grid(
   labels = c('', 'B')
 )
 ggsave('figures/flowchart_sankey.tiff', plot = fig,
-       device = 'tiff', dpi = 600, bg = 'white',
+       device = 'tiff', compression = "lzw", dpi = 600, 
+       bg = 'white',
        width = 6, height = 6.5)
 
