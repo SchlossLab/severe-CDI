@@ -1,9 +1,10 @@
 schtools::log_snakemake()
+library(here)
 library(mikropml)
 library(schtools)
 library(tidyverse)
 
-dat <- read_csv("results/performance_results_aggregated.csv") %>%
+dat <- read_csv(here("results","performance_results_aggregated.csv")) %>%
     rename(`test set AUROC` = AUC,
            `training set AUROC` = cv_metric_AUC,
            `test set AUPRC` = prAUC,
@@ -49,6 +50,9 @@ perf_plot <- dat %>%
         legend.title = element_blank(),
         strip.background = element_blank()
     )
+
+model_comps <- read_csv(here('results', 'model_comparisons.csv')) %>% 
+  mutate(is_signif = p_value < 0.05)
 
 # TODO AUROC and AUBPRC curves
 

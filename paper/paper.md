@@ -32,7 +32,11 @@ load(here("results", "stats.RData"))
 
 # Introduction
 
-A few ways to define CDI severity ([Figure 1](#fig-flowchart))
+prediction models based on EHR for whether infection occurs in the first
+place already in use. so how about predicting severity of infections to
+guide treatment? OTUs vs EHRs to predict severity.
+
+A few ways to define CDI severity ([Figure 1](#fig-flowchart)).
 
 The IDSA definition is known to be a poor predictor of adverse outcomes
 (Stevens et al. 2020), however, it is easy to collect.
@@ -42,7 +46,12 @@ The IDSA definition is known to be a poor predictor of adverse outcomes
 ## Model performance
 
 Report median AUROC for training set and test set, and median AUBPRC for
-test set ([Figure 2](#fig-performance)).
+test set ([Figure 2](#fig-performance)). Nearly all pairs of definitions
+have significantly different performances on the test set (P \< 0.05)
+except for AUROC and AUBPRC of Attributable vs. Pragmatic on the
+intersection dataset (as they are identical), AUROC of Attributable vs.
+All-cause on the full dataset, and AUROC of Attributable vs. IDSA on the
+full dataset.
 
 ## Feature importance
 
@@ -50,6 +59,12 @@ Most important OTUs contributing to model performance
 ([Figure 3](#fig-features))
 
 ## Clinical value of severity prediction models
+
+NNT x NNS = NNB
+
+NNT for Fidaxomicin, FMT, and/or Bezlotoxumab. Current standard is
+Vancomycin because it’s cheaper than Fidaxomicin, even though IDSA
+recommends Fidaxomicin.
 
 # Discussion
 
@@ -184,6 +199,8 @@ Accession no. PRJNA729511).
 # Acknowledgements
 
 TODO
+
+
 
 # References
 
@@ -358,6 +375,8 @@ Human Missense Variants.” *The American Journal of Human Genetics* 108
 
 </div>
 
+
+
 # Figures
 
 <div id="fig-flowchart">
@@ -366,8 +385,8 @@ Human Missense Variants.” *The American Journal of Human Genetics* 108
 
 Figure 1: **CDI severity definitions.** **A)** Decision flow chart to
 define CDI cases as severe according to the Infectious Diseases Society
-of America (IDSA) based on lab values, the occurence of an adverse
-outcome due to any cause (All-cause), and the occurence of
+of America (IDSA) based on lab values, the occurrence of an adverse
+outcome due to any cause (All-cause), and the occurrence of
 disease-related complications confirmed as attributable to CDI with
 chart review (Attrib). **B)** The proportion of severe CDI cases
 labelled according to each definition. An additional ‘Pragmatic’
@@ -389,8 +408,14 @@ precision-recall curve (AUBPRC) for the test sets. Left: models were
 trained on the full dataset, with different numbers of samples available
 for each severity definition. Right: models were trained on the
 intersection of samples with all labels available for each definition.
-Note that Attributable and Pragmatic severity are exactly the same for
-the intersection set. <!-- TODO add plots of AUROC and AUBPRC curves -->
+Note that the intersection dataset for Attributable and Pragmatic
+severity have exactly the same labels, thus an identical performance is
+expected. Nearly all pairs of definitions have significantly different
+performances on the test set (P \< 0.05) except for AUROC and AUBPRC of
+Attributable vs. Pragmatic on the intersection dataset (as they are
+identical), AUROC of Attributable vs. All-cause on the full dataset, and
+AUROC of Attributable vs. IDSA on the full dataset.
+<!-- TODO add plots of AUROC and AUBPRC curves -->
 
 </div>
 
@@ -409,10 +434,11 @@ trained on the full datasets, with different numbers of samples
 available for each severity definition. Right: models were trained on
 the intersection of samples with all labels available for each
 definition. Note that Attributable and Pragmatic severity are exactly
-the same for the intersection set. OTU 120 (*Pseudomonas*) is not shown
-for the full data set with IDSA severity on the full dataset because it
-was removed during pre-processing due to having near-zero variance.
-**B)** Log<sub>10</sub> transformed median relative abundances of the
-most important OTUs on the full datasets, grouped by severity (shape).
+the same for the intersection dataset. OTU 120 (*Pseudomonas*) is not
+shown for IDSA severity on the full dataset nor on the intersection
+dataset because it was removed during pre-processing due to having
+near-zero variance. **B)** Log<sub>10</sub>-transformed median relative
+abundances of the most important OTUs on the full datasets, grouped by
+severity (shape).
 
 </div>

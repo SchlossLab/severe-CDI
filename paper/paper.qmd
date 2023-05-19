@@ -66,7 +66,11 @@ load(here("results", "stats.RData"))
 
 # Introduction
 
-A few ways to define CDI severity (@fig-flowchart)
+prediction models based on EHR for whether infection occurs in the first place already in use.
+so how about predicting severity of infections to guide treatment?
+OTUs vs EHRs to predict severity.
+
+A few ways to define CDI severity (@fig-flowchart).
 
 The IDSA definition is known to be a poor predictor of adverse outcomes [@stevens_validation_2020],
 however, it is easy to collect.
@@ -76,12 +80,23 @@ however, it is easy to collect.
 ## Model performance
 
 Report median AUROC for training set and test set, and median AUBPRC for test set (@fig-performance).
+Nearly all pairs of definitions have significantly different performances on the
+test set (P < 0.05) except for AUROC and AUBPRC of Attributable vs. Pragmatic on
+the intersection dataset (as they are identical), AUROC of Attributable vs.
+All-cause on the full dataset, and AUROC of Attributable vs. IDSA on the full
+dataset.
 
 ## Feature importance
 
 Most important OTUs contributing to model performance (@fig-features)
 
 ## Clinical value of severity prediction models
+
+NNT x NNS = NNB
+
+NNT for Fidaxomicin, FMT, and/or Bezlotoxumab. Current standard is Vancomycin
+because it's cheaper than Fidaxomicin, even though IDSA recommends Fidaxomicin.
+
 
 # Discussion
 
@@ -226,18 +241,22 @@ Biotechnology Information Sequence Read Archive
 
 TODO
 
+{{< pagebreak >}}
+
 # References {.unnumbered}
 
 ::: {#refs}
 :::
+
+{{< pagebreak >}}
 
 # Figures
 
 ::: {#fig-flowchart fig-cap="**CDI severity definitions.**
 **A)** Decision flow chart to define CDI cases as severe according to the Infectious
 Diseases Society of America (IDSA) based on lab values,
-the occurence of an adverse outcome due to any cause (All-cause),
-and the occurence of disease-related complications confirmed as attributable to
+the occurrence of an adverse outcome due to any cause (All-cause),
+and the occurrence of disease-related complications confirmed as attributable to
 CDI with chart review (Attrib).
 **B)** The proportion of severe CDI cases labelled according to each definition.
 An additional 'Pragmatic' severity definition uses the Attributable definition
@@ -255,8 +274,14 @@ and the area under the balanced precision-recall curve (AUBPRC) for the test set
 Left: models were trained on the full dataset, with different numbers of samples
 available for each severity definition.
 Right: models were trained on the intersection of samples with all labels
-available for each definition. Note that Attributable and Pragmatic severity are
-exactly the same for the intersection set.
+available for each definition. 
+Note that the intersection dataset for Attributable and Pragmatic severity have
+exactly the same labels, thus an identical performance is expected.
+Nearly all pairs of definitions have significantly different performances on the
+test set (P < 0.05) except for AUROC and AUBPRC of Attributable vs. Pragmatic on
+the intersection dataset (as they are identical), AUROC of Attributable vs.
+All-cause on the full dataset, and AUROC of Attributable vs. IDSA on the full
+dataset.
 <!-- TODO add plots of AUROC and AUBPRC curves -->
 "}
 ![](figures/ml-performance.png)
@@ -274,11 +299,11 @@ Left: models were trained on the full datasets, with different numbers of
 samples available for each severity definition.
 Right: models were trained on the intersection of samples with all labels
 available for each definition. Note that Attributable and Pragmatic severity are
-exactly the same for the intersection set.
-OTU 120 (*Pseudomonas*) is not shown for the full data set with IDSA severity 
-on the full dataset because it was removed during pre-processing due to having
-near-zero variance.
-**B)** Log~10~ transformed median relative abundances of the most important OTUs
+exactly the same for the intersection dataset.
+OTU 120 (*Pseudomonas*) is not shown for IDSA severity on the full dataset nor
+on the intersection dataset because it was removed during pre-processing due to
+having near-zero variance.
+**B)** Log~10~-transformed median relative abundances of the most important OTUs
 on the full datasets, grouped by severity (shape).
 "}
 ![](figures/feature-importance.png)
