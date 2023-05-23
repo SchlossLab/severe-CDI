@@ -9,8 +9,10 @@ rel_diff <- function(final, init, percent = TRUE) {
 
 otu_dat <- data.table::fread(here('data', 'mothur', 'alpha', 'cdi.opti_mcc.shared'))
 metadat <- read_csv(here('data', 'process', 'cases_full_metadata.csv'))
+meta_int <- read_csv(here('data', 'process', 'cases_int_metadata.csv'))
 
 n_cases_first <- nrow(metadat)
+n_cases_int <- nrow(meta_int)
 num_otus <- otu_dat %>% pull(numOtus) %>% .[1]
 
 param_grid <- expand_grid(outcome = c('idsa','attrib','allcause','pragmatic'),
