@@ -136,10 +136,10 @@ relabun_plot <- relabun_medians %>%
          ) %>% 
   ggplot(aes(x = med_rel_abun, y = label_html,
              color = outcome, shape = is_severe, group = outcome)) +
+  geom_vline(xintercept = tiny_constant, linetype = 'dashed') +
   geom_point(position = position_dodge(width = 0.7)) +
   geom_hline(yintercept = seq(1.5, length(unique(top_otus_order))-0.5, 1), 
              lwd = 0.5, colour = "whitesmoke") +
-  geom_vline(xintercept = tiny_constant, linetype = 'dashed') +
   facet_wrap('dataset') +
   scale_color_manual(values = model_colors,
                      labels = c(idsa='IDSA', attrib='Attrib', 
