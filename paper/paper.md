@@ -2,31 +2,12 @@
 Composition of the Gut Microbiome
 Kelly L. SovacoolSarah E. TomkovichMegan L. CodenVincent B. YoungKrishna
 RaoPatrick D. Schloss
-May 18, 2023
+May 23, 2023
 
 ``` r
 library(here)
-```
-
-    here() starts at /Users/sovacool/projects/schloss-lab/severe-CDI
-
-``` r
 library(tidyverse)
-```
 
-    ── Attaching packages
-    ───────────────────────────────────────
-    tidyverse 1.3.2 ──
-
-    ✔ ggplot2 3.4.2     ✔ purrr   1.0.1
-    ✔ tibble  3.2.1     ✔ dplyr   1.1.2
-    ✔ tidyr   1.3.0     ✔ stringr 1.5.0
-    ✔ readr   2.1.3     ✔ forcats 0.5.2
-    ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-    ✖ dplyr::filter() masks stats::filter()
-    ✖ dplyr::lag()    masks stats::lag()
-
-``` r
 load(here("results", "stats.RData"))
 ```
 
@@ -41,9 +22,22 @@ A few ways to define CDI severity ([Figure 1](#fig-flowchart)).
 The IDSA definition is known to be a poor predictor of adverse outcomes
 (Stevens et al. 2020), however, it is easy to collect.
 
+new dataset.
+
 # Results
 
 ## Model performance
+
+We first set out to train the best models possible for each severity
+definition. Not all samples have labels available for all four severity
+definitions due to missing data for some patient lab values and
+incomplete chart review (TODO table).
+
+However, comparisons across these definitions is not fair when using
+different subsets of the data for each definition. To better compare the
+model performances across different severity definitions, we selected
+the intersection of samples (993) that had labels for all four severity
+definitions and repeated the model training and evaluation process.
 
 Report median AUROC for training set and test set, and median AUBPRC for
 test set ([Figure 2](#fig-performance)). Nearly all pairs of definitions
@@ -55,8 +49,8 @@ full dataset.
 
 ## Feature importance
 
-Most important OTUs contributing to model performance
-([Figure 3](#fig-features))
+We performed permutation feature importance to determine which OTUs were
+the most important for model performance ([Figure 3](#fig-features)).
 
 ## Clinical value of severity prediction models
 
@@ -66,9 +60,23 @@ NNT for Fidaxomicin, FMT, and/or Bezlotoxumab. Current standard is
 Vancomycin because it’s cheaper than Fidaxomicin, even though IDSA
 recommends Fidaxomicin.
 
+pragmatic vs attributable severity. table?
+
+rough estimate of costs. current: everyone gets vancomycin. potential:
+patients flagged as severe get fidaxomicin. based on NNB, estimate how
+much money saved in averting severe outcomes.
+
 # Discussion
 
-TODO
+Compare to EHR-based models.
+
+Discuss important OTUs. which ones concord with literature, which ones
+may be new.
+
+Amplicon sequencing is not typically performed for CDI patients, but if
+there is clinical value to be gained by implementing OTU-based models,
+we could make a case to routinely sequence and profile the microbial
+communities of CDI patients.
 
 # Materials and Methods
 
@@ -439,6 +447,7 @@ shown for IDSA severity on the full dataset nor on the intersection
 dataset because it was removed during pre-processing due to having
 near-zero variance. **B)** Log<sub>10</sub>-transformed median relative
 abundances of the most important OTUs on the full datasets, grouped by
-severity (shape).
+severity (shape). The vertical dashed line represents the limit of
+detection.
 
 </div>
