@@ -23,10 +23,10 @@ dat <- read_csv(here('results','performance_results_aggregated.csv')) %>%
 
 datasets <- dat %>% pull(dataset) %>% unique()
 metrics <- c('AUROC', 'AUBPRC')
-param_grid <- expand.grid(dataset = datasets, metric = metrics) %>% 
+param_grid1 <- expand.grid(dataset = datasets, metric = metrics) %>% 
   mutate(across(where(is.factor), as.character))
 
-results <- map2(param_grid$dataset, param_grid$metric, 
+results_outcome <- map2(param_grid1$dataset, param_grid1$metric, 
                 \(x, y) {
                   dat %>% 
                     filter(dataset == x) %>% 
@@ -36,5 +36,25 @@ results <- map2(param_grid$dataset, param_grid$metric,
                     mutate(metric = y, dataset = x)
                 }) %>% 
   list_rbind() 
+
+outcomes <- dat %>% pull(outcome) %>% unique()
+param_grid2 <- expand_grid(outcome = outcomes, 
+                           metric = metrics) %>% 
+  mutate(across(where(is.factor), as.character))
+
+results_dataset <- pmap(param_grid2,
+                        \(metric, outcome) {
+                          dat %>% 
+                            filter(outcome == outcome) %>% 
+                            compare_models(metric = metric, 
+                                           group_name = 'dataset',
+                                           nperm = 10000) %>% 
+                            mutate(metric = metric, 
+                                   outcome = outcome,)
+                        }) %>% 
+  list_rbind()
+
+results <- bind_rows(results_outcome, results_dataset)
+
 results %>% 
   write_csv(here('results', 'model_comparisons.csv'))
