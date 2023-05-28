@@ -56,6 +56,142 @@ model_comps <- read_csv(here('results', 'model_comparisons.csv')) %>%
 
 # TODO AUROC and AUBPRC curves
 
-ggsave("figures/ml-performance.tiff", plot = perf_plot, 
+sensspec_dat <- read_csv(here('results','sensspec_results_aggregated.csv'))
+roc_dat <- sensspec_dat %>% 
+  dplyr::mutate(specificity = round(specificity, 2)) %>%
+  dplyr::group_by(specificity, dataset, outcome) %>%
+  dplyr::summarise(
+    mean = mean(sensitivity),
+    sd = stats::sd(sensitivity)
+  ) %>%
+  dplyr::mutate(
+    upper = mean + sd,
+    lower = mean - sd,
+    upper = dplyr::case_when(
+      upper > 1 ~ 1,
+      TRUE ~ upper
+    ),
+    lower = dplyr::case_when(
+      lower < 0 ~ 0,
+      TRUE ~ lower
+    )
+  ) %>%
+  dplyr::rename(
+    "mean_sensitivity" = mean,
+    "sd_sensitivity" = sd
+  )
+
+roc_plot <- roc_dat %>%
+  ggplot(aes(x = specificity, y = mean_sensitivity, 
+             ymin = lower, ymax = upper)) +
+  #geom_ribbon(aes(fill = outcome), alpha = 0.1) +
+  geom_line(aes(color = outcome)) +
+  geom_abline(
+    intercept = 1,
+    slope = 1,
+    linetype = "dashed",
+    color = "grey50"
+  ) +
+  scale_color_brewer(palette = 'Dark2') +
+  scale_fill_brewer(palette = 'Dark2') +
+  scale_y_continuous(expand = c(0, 0), limits = c(-0.01, 1.01)) +
+  scale_x_reverse(expand = c(0, 0), limits = c(1.01,-0.01)) +
+  coord_equal() +
+  labs(x = "Specificity", y = "Mean Sensitivity") +
+  facet_wrap('dataset', ncol = 2) +
+  theme_sovacool() +
+  theme(text = element_text(size = 10, family = 'Helvetica'),
+        legend.position = 'none',
+        legend.title = element_blank(),
+        strip.background = element_blank())
+
+bprc_dat <- roc_dat <- sensspec_dat %>% 
+  dplyr::mutate(sensitivity = round(sensitivity, 2)) %>%
+  dplyr::group_by(sensitivity, dataset, outcome) %>%
+  dplyr::summarise(
+    mean_balanced_precision = mean(balanced_precision),
+    sd_balanced_precision = stats::sd(balanced_precision)
+  ) %>%
+  dplyr::mutate(
+    upper = mean_balanced_precision + sd_balanced_precision,
+    lower = mean_balanced_precision - sd_balanced_precision,
+    upper = dplyr::case_when(
+      upper > 1 ~ 1,
+      TRUE ~ upper
+    ),
+    lower = dplyr::case_when(
+      lower < 0 ~ 0,
+      TRUE ~ lower
+    )
+  ) 
+
+bprc_plot <- bprc_dat %>%
+  ggplot(aes(x = sensitivity, y = mean_balanced_precision, 
+             ymin = lower, ymax = upper)) +
+  #geom_ribbon(aes(fill = outcome), alpha = 0.2) +
+  geom_line(aes(color = outcome)) +
+  scale_color_brewer(palette = 'Dark2') +
+  scale_fill_brewer(palette = 'Dark2') +
+  scale_y_continuous(expand = c(0, 0), limits = c(-0.01, 1.01)) +
+  scale_x_continuous(expand = c(0, 0), limits = c(-0.01, 1.01)) +
+  coord_equal() +
+  labs(x = "Recall", y = "Mean Balanced Precision") +
+  facet_wrap('dataset', ncol = 2) +
+  theme_sovacool() +
+  theme(text = element_text(size = 10, family = 'Helvetica'),
+        legend.position = 'none',
+        legend.title = element_blank(),
+        strip.background = element_blank())
+
+prc_dat <- roc_dat <- sensspec_dat %>% 
+  dplyr::mutate(sensitivity = round(sensitivity, 2)) %>%
+  dplyr::group_by(sensitivity, dataset, outcome) %>%
+  dplyr::summarise(
+    mean = mean(precision),
+    sd = stats::sd(precision)
+  ) %>%
+  dplyr::mutate(
+    upper = mean + sd,
+    lower = mean - sd,
+    upper = dplyr::case_when(
+      upper > 1 ~ 1,
+      TRUE ~ upper
+    ),
+    lower = dplyr::case_when(
+      lower < 0 ~ 0,
+      TRUE ~ lower
+    )
+  ) %>%
+  dplyr::rename(
+    "mean_precision" = mean,
+    "sd_precision" = sd
+  )
+
+# TODO add baseline precision
+prc_plot_grid <- prc_dat %>%
+  ggplot(aes(x = sensitivity, y = mean_precision, 
+             ymin = lower, ymax = upper)) +
+  geom_ribbon(aes(fill = outcome), alpha = 0.2) +
+  geom_line(aes(color = outcome)) +
+  scale_color_brewer(palette = 'Dark2') +
+  scale_fill_brewer(palette = 'Dark2') +
+  scale_y_continuous(expand = c(0, 0), limits = c(-0.01, 1.01)) +
+  scale_x_continuous(expand = c(0, 0), limits = c(-0.01, 1.01)) +
+  coord_equal() +
+  labs(x = "Recall", y = "Mean Precision") +
+  facet_grid(dataset ~ outcome) +
+  theme_sovacool() +
+  theme(text = element_text(size = 10, family = 'Helvetica'),
+        legend.position = 'top',
+        legend.title = element_blank(),
+        strip.background = element_blank())
+
+curve_legend <- get_legend(bprc_plot + theme(legend.position = 'top'))
+fig <- plot_grid(perf_plot, labels = 'A',
+                 plot_grid(roc_plot, bprc_plot,
+                           nrow = 1, labels = c('B', 'C')),
+                 curve_legend,
+                 ncol = 1, rel_heights = c(1,0.5,0.1))
+ggsave("figures/ml-performance.tiff", plot = fig, 
        device = "tiff", compression = "lzw", dpi = 600,
-       width = 6.5, height = 5)
+       width = 6.875, height = 7) # https://journals.asm.org/figures-tables
