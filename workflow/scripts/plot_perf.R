@@ -55,8 +55,6 @@ perf_plot <- dat %>%
 model_comps <- read_csv(here('results', 'model_comparisons.csv')) %>% 
   mutate(is_signif = p_value < 0.05)
 
-# TODO AUROC and AUBPRC curves
-
 sensspec_dat <- read_csv(here('results','sensspec_results_aggregated.csv')) %>% 
   mutate(outcome = factor(outcome, levels = c('idsa', 'allcause', 'attrib', 'pragmatic'))) %>% 
   mutate(dataset = case_when(dataset == 'full' ~ 'Full dataset',
