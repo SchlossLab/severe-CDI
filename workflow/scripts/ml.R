@@ -35,13 +35,18 @@ ml_results <- run_ml(
   kfold = as.numeric(snakemake@params[['kfold']]),
   seed = seed,
   training_frac = as.numeric(snakemake@wildcards[['trainfrac']]),
-  perf_metric_name = snakemake@wildcards[['metric']]
+  perf_metric_name = snakemake@wildcards[['metric']],
+  perf_metric_function = caret::multiClassSummary
 )
-
+head(ml_results$performance)
 ml_results$performance %>%
   mutate(baseline_precision = prior,
-         balanced_precision = if_else(!is.na(Precision), calc_balanced_precision(Precision, prior), NA),
-         aubprc = if_else(!is.na(prAUC), calc_balanced_precision(prAUC, prior), NA)) %>% 
+         balanced_precision = if_else(!is.na(Precision), 
+                                      calc_balanced_precision(Precision, prior), 
+                                      NA),
+         aubprc = if_else(!is.na(prAUC), 
+                          calc_balanced_precision(prAUC, prior), 
+                          NA)) %>% 
   add_cols() %>%
   write_csv(snakemake@output[["perf"]])
 
@@ -53,8 +58,8 @@ saveRDS(ml_results$trained_model, file = snakemake@output[["model"]])
 get_feature_importance(ml_results$trained_model,
                        ml_results$test_data %>% as_tibble(),
                        outcome_colname,
-                       multiClassSummary,
-                       "AUC",
+                       perf_metric_fn = caret::multiClassSummary,
+                       perf_metric_name = "AUC",
                        class_probs = TRUE,
                        method = ml_method,
                        seed = seed) %>%
