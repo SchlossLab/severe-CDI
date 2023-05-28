@@ -171,12 +171,11 @@ prc_dat <- roc_dat <- sensspec_dat %>%
   dplyr::mutate(sensitivity = round(sensitivity, 2)) %>%
   dplyr::group_by(sensitivity, dataset, outcome) %>%
   dplyr::summarise(
-    mean = mean(precision),
-    sd = stats::sd(precision)
+    median_precision = median(precision),
+    upper = quantile(precision, 0.95),
+    lower = quantile(precision, 0.05)
   ) %>%
   dplyr::mutate(
-    upper = mean + sd,
-    lower = mean - sd,
     upper = dplyr::case_when(
       upper > 1 ~ 1,
       TRUE ~ upper
@@ -185,10 +184,6 @@ prc_dat <- roc_dat <- sensspec_dat %>%
       lower < 0 ~ 0,
       TRUE ~ lower
     )
-  ) %>%
-  dplyr::rename(
-    "mean_precision" = mean,
-    "sd_precision" = sd
   )
 
 # TODO add baseline precision
@@ -212,7 +207,7 @@ prc_plot_grid <- prc_dat %>%
     outcome == 'pragmatic' ~ 'Pragmatic',
     TRUE ~ NA_character_
   ), levels = c("IDSA", 'All-cause', 'Attrib', 'Pragmatic'))) %>% 
-  ggplot(aes(x = sensitivity, y = mean_precision, 
+  ggplot(aes(x = sensitivity, y = median_precision, 
              ymin = lower, ymax = upper)) +
   geom_ribbon(aes(fill = outcome), alpha = 0.2) +
   geom_line(aes(color = outcome)) +
@@ -226,7 +221,7 @@ prc_plot_grid <- prc_dat %>%
   scale_y_continuous(expand = c(0, 0), limits = c(-0.01, 1.01)) +
   scale_x_continuous(expand = c(0, 0), limits = c(-0.01, 1.01)) +
   coord_equal() +
-  labs(x = "Recall", y = "Mean Precision") +
+  labs(x = "Recall", y = "Median Precision") +
   facet_grid(dataset ~ outcome) +
   theme_sovacool() +
   theme(text = element_text(size = 10, family = 'Helvetica'),
