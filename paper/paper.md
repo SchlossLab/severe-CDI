@@ -2,7 +2,7 @@
 Composition of the Gut Microbiome
 Kelly L. SovacoolSarah E. TomkovichMegan L. CodenVincent B. YoungKrishna
 RaoPatrick D. Schloss
-May 23, 2023
+May 27, 2023
 
 ``` r
 library(here)
@@ -49,10 +49,10 @@ full dataset.
 
 ## Feature importance
 
-We performed permutation feature importance to determine which OTUs were
-the most important for model performance ([Figure 3](#fig-features)).
+We performed permutation feature importance to determine which OTUs
+contributed the most to model performance ([Figure 3](#fig-features)).
 
-## Clinical value of severity prediction models
+## Estimating the benefits of severity prediction models
 
 NNT x NNS = NNB
 
@@ -65,6 +65,8 @@ pragmatic vs attributable severity. table?
 rough estimate of costs. current: everyone gets vancomycin. potential:
 patients flagged as severe get fidaxomicin. based on NNB, estimate how
 much money saved in averting severe outcomes.
+
+decision curve analysis.
 
 # Discussion
 
@@ -171,7 +173,7 @@ depending on the severity definition. We randomly split the data into an
 training models with 5-fold cross-validation. Model performance was
 calculated on the test set using the area under the receiver-operator
 characteristic curve (AUROC) and the area under the balanced
-precision-recall curve (AUBPRC). Permutation feature importance was then
+precision-recall curve (AUBPRC). Permutation importance was then
 performed to determine which OTUs contributed most to model performance.
 We reported OTUs with a significant permutation test in at least 80 of
 the 100 models.
@@ -409,21 +411,24 @@ available.
 
 ![](figures/ml-performance.png)
 
-Figure 2: **Performance of ML models.** Area under the receiver-operator
-characteristic curve (AUROC) for the test sets and cross-validation
-folds of the training sets, and the area under the balanced
-precision-recall curve (AUBPRC) for the test sets. Left: models were
+Figure 2: **Performance of ML models.** In the left panels, models were
 trained on the full dataset, with different numbers of samples available
-for each severity definition. Right: models were trained on the
-intersection of samples with all labels available for each definition.
-Note that the intersection dataset for Attributable and Pragmatic
-severity have exactly the same labels, thus an identical performance is
-expected. Nearly all pairs of definitions have significantly different
-performances on the test set (P \< 0.05) except for AUROC and AUBPRC of
-Attributable vs. Pragmatic on the intersection dataset (as they are
-identical), AUROC of Attributable vs. All-cause on the full dataset, and
-AUROC of Attributable vs. IDSA on the full dataset.
-<!-- TODO add plots of AUROC and AUBPRC curves -->
+for each severity definition. In the right panels, models were trained
+on the intersection of samples with all labels available for each
+definition. Note that the intersection dataset for Attributable and
+Pragmatic severity have exactly the same labels, thus identical values
+are expected. **A)** Area under the receiver-operator characteristic
+curve (AUROC) for the test sets and cross-validation folds of the
+training sets, and the area under the balanced precision-recall curve
+(AUBPRC) for the test sets. Nearly all pairs of definitions have
+significantly different performances on the test set (P \< 0.05) except
+for AUROC and AUBPRC of Attributable vs. Pragmatic on the intersection
+dataset (as they are identical), AUROC of Attributable vs. All-cause on
+the full dataset, and AUROC of Attributable vs. IDSA on the full
+dataset. **B)** Receiver-operator characteristic curves for the test
+sets. Mean specificity is reported at each sensitivity value. **C)**
+Balanced precision-recall curves for the test sets. Mean balanced
+precision is reported at each recall value.
 
 </div>
 
