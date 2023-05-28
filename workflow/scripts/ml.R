@@ -14,34 +14,49 @@ add_cols <- function(dat) {
 
 doFuture::registerDoFuture()
 future::plan(future::multicore, workers = snakemake@threads)
+
 outcome_colname <- snakemake@wildcards[['outcome']]
-data_processed <- readRDS(snakemake@input[["rds"]])$dat_transformed %>% 
-  mutate(!!rlang::sym(outcome_colname) := factor(!!rlang::sym(outcome_colname), levels = c('yes','no'))) %>% select(!starts_with('Otu'))
+ml_method <- snakemake@params[["method"]]
+seed <- as.numeric(snakemake@params[["seed"]])
+data_processed <- readRDS(snakemake@input[["rds"]])$dat_transformed 
 prior <- data_processed %>% 
   calc_baseline_precision(outcome_colname = outcome_colname,
                           pos_outcome = 'yes')
 message(paste('prior:', prior))
 
 ml_results <- run_ml(
-  dataset = data_processed,
-  method = snakemake@params[["method"]],
-  outcome_colname = snakemake@wildcards[['outcome']],
-  find_feature_importance = TRUE,
+  dataset = data_processed %>% 
+    mutate(!!rlang::sym(outcome_colname) := factor(!!rlang::sym(outcome_colname), 
+                                                   levels = c('yes','no'))
+           ),
+  method = ml_method,
+  outcome_colname = outcome_colname,
+  find_feature_importance = FALSE,
   kfold = as.numeric(snakemake@params[['kfold']]),
-  seed = as.numeric(snakemake@params[["seed"]]),
+  seed = seed,
   training_frac = as.numeric(snakemake@wildcards[['trainfrac']]),
   perf_metric_name = snakemake@wildcards[['metric']]
 )
-message(paste('precision:', ml_results$performance %>% pull(Precision)))
+
 ml_results$performance %>%
   mutate(baseline_precision = prior,
          balanced_precision = if_else(!is.na(Precision), calc_balanced_precision(Precision, prior), NA),
          aubprc = if_else(!is.na(prAUC), calc_balanced_precision(prAUC, prior), NA)) %>% 
   add_cols() %>%
   write_csv(snakemake@output[["perf"]])
-ml_results$feature_importance %>%
-  add_cols() %>%
-  write_csv(snakemake@output[["feat"]])
+
 ml_results$test_data %>%
   write_csv(snakemake@output[['test']])
+
 saveRDS(ml_results$trained_model, file = snakemake@output[["model"]])
+
+get_feature_importance(ml_results$trained_model,
+                       ml_results$test_data %>% as_tibble(),
+                       outcome_colname,
+                       multiClassSummary,
+                       "AUC",
+                       class_probs = TRUE,
+                       method = ml_method,
+                       seed = seed) %>%
+  add_cols() %>%
+  write_csv(snakemake@output[["feat"]])
