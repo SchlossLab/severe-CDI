@@ -171,12 +171,11 @@ prc_dat <- roc_dat <- sensspec_dat %>%
   dplyr::mutate(sensitivity = round(sensitivity, 2)) %>%
   dplyr::group_by(sensitivity, dataset, outcome) %>%
   dplyr::summarise(
-    mean = mean(precision),
-    sd = stats::sd(precision)
+    median_precision = median(precision),
+    upper = quantile(precision, 0.75),
+    lower = quantile(precision, 0.25)
   ) %>%
   dplyr::mutate(
-    upper = mean + sd,
-    lower = mean - sd,
     upper = dplyr::case_when(
       upper > 1 ~ 1,
       TRUE ~ upper
@@ -185,10 +184,6 @@ prc_dat <- roc_dat <- sensspec_dat %>%
       lower < 0 ~ 0,
       TRUE ~ lower
     )
-  ) %>%
-  dplyr::rename(
-    "mean_precision" = mean,
-    "sd_precision" = sd
   )
 
 # TODO add baseline precision
