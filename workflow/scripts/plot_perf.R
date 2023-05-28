@@ -59,7 +59,6 @@ model_comps <- read_csv(here('results', 'model_comparisons.csv')) %>%
 
 sensspec_dat <- read_csv(here('results','sensspec_results_aggregated.csv')) %>% 
   mutate(outcome = factor(outcome, levels = c('idsa', 'allcause', 'attrib', 'pragmatic'))) %>% 
-  filter(!(dataset == 'int' & outcome == 'pragmatic'))  %>%  # remove pragmatic int since same as attrib
   mutate(dataset = case_when(dataset == 'full' ~ 'Full dataset',
                              dataset == 'int' ~ 'Intersection',
                              TRUE ~ NA_character_))
@@ -89,6 +88,7 @@ roc_dat <- sensspec_dat %>%
   )
 
 roc_plot <- roc_dat %>%
+  filter(!(dataset == 'int' & outcome == 'pragmatic'))  %>%  # remove pragmatic int since same as attrib
   ggplot(aes(x = specificity, y = mean_sensitivity, 
              ymin = lower, ymax = upper)) +
   #geom_ribbon(aes(fill = outcome), alpha = 0.1) +
@@ -139,6 +139,7 @@ bprc_dat <- roc_dat <- sensspec_dat %>%
   ) 
 
 bprc_plot <- bprc_dat %>%
+  filter(!(dataset == 'int' & outcome == 'pragmatic'))  %>%  # remove pragmatic int since same as attrib
   ggplot(aes(x = sensitivity, y = mean_balanced_precision, 
              ymin = lower, ymax = upper)) +
   #geom_ribbon(aes(fill = outcome), alpha = 0.2) +
@@ -191,16 +192,37 @@ prc_dat <- roc_dat <- sensspec_dat %>%
   )
 
 # TODO add baseline precision
+priors <- sensspec_dat %>% 
+  select(outcome, dataset, prior) %>% 
+  dplyr::distinct() %>%
+  mutate(outcome = factor(case_when(
+    outcome == 'idsa' ~ 'IDSA',
+    outcome == 'allcause' ~ 'All-cause',
+    outcome == 'attrib' ~ 'Attrib',
+    outcome == 'pragmatic' ~ 'Pragmatic',
+    TRUE ~ NA_character_
+  ), levels = c("IDSA", 'All-cause', 'Attrib', 'Pragmatic')))
+color_names <- c("IDSA"="#1B9E77", 'All-cause'="#7570B3", 
+                 'Attrib'="#D95F02", 'Pragmatic'="#E7298A")
 prc_plot_grid <- prc_dat %>%
+  mutate(outcome = factor(case_when(
+    outcome == 'idsa' ~ 'IDSA',
+    outcome == 'allcause' ~ 'All-cause',
+    outcome == 'attrib' ~ 'Attrib',
+    outcome == 'pragmatic' ~ 'Pragmatic',
+    TRUE ~ NA_character_
+  ), levels = c("IDSA", 'All-cause', 'Attrib', 'Pragmatic'))) %>% 
   ggplot(aes(x = sensitivity, y = mean_precision, 
              ymin = lower, ymax = upper)) +
   geom_ribbon(aes(fill = outcome), alpha = 0.2) +
   geom_line(aes(color = outcome)) +
-  scale_color_manual(values = c(idsa = "#1B9E77", 
-                                attrib = "#D95F02", 
-                                allcause = "#7570B3", 
-                                pragmatic = "#E7298A")) +
-  scale_fill_brewer(palette = 'Dark2') +
+  geom_hline(data = priors,
+             aes(yintercept = prior),
+             linetype = 'dashed') +
+  scale_color_manual(values = color_names,
+                     guide = guide_legend(label.position = "top")) +
+  scale_fill_manual(values = color_names,
+  ) +
   scale_y_continuous(expand = c(0, 0), limits = c(-0.01, 1.01)) +
   scale_x_continuous(expand = c(0, 0), limits = c(-0.01, 1.01)) +
   coord_equal() +
@@ -208,9 +230,15 @@ prc_plot_grid <- prc_dat %>%
   facet_grid(dataset ~ outcome) +
   theme_sovacool() +
   theme(text = element_text(size = 10, family = 'Helvetica'),
-        legend.position = 'top',
+        legend.position = 'none',
         legend.title = element_blank(),
-        strip.background = element_blank())
+        strip.background = element_blank(),
+        panel.spacing = unit(10, 'pt'),
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+ggsave('figures/prc_curves.tiff', plot = prc_plot_grid,
+       device = 'tiff', compression = 'lzw', dpi = 600,
+       width = 5, height = 3.5)
 
 curve_legend <- get_legend(bprc_plot + theme(legend.position = 'bottom'))
 fig <- plot_grid(perf_plot, 
