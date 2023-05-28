@@ -14,10 +14,11 @@ add_cols <- function(dat) {
 
 doFuture::registerDoFuture()
 future::plan(future::multicore, workers = snakemake@threads)
-
-data_processed <- readRDS(snakemake@input[["rds"]])$dat_transformed
+outcome_colname <- snakemake@wildcards[['outcome']]
+data_processed <- readRDS(snakemake@input[["rds"]])$dat_transformed %>% 
+  mutate(!!rlang::sym(outcome_colname) := factor(!!rlang::sym(outcome_colname), levels = c('yes','no'))) %>% select(!starts_with('Otu'))
 prior <- data_processed %>% 
-  calc_baseline_precision(outcome_colname = snakemake@wildcards[['outcome']],
+  calc_baseline_precision(outcome_colname = outcome_colname,
                           pos_outcome = 'yes')
 message(paste('prior:', prior))
 
