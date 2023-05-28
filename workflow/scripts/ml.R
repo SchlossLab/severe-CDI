@@ -16,7 +16,7 @@ doFuture::registerDoFuture()
 future::plan(future::multicore, workers = snakemake@threads)
 outcome_colname <- snakemake@wildcards[['outcome']]
 data_processed <- readRDS(snakemake@input[["rds"]])$dat_transformed %>% 
-  mutate(!!rlang::sym(outcome_colname) := factor(!!rlang::sym(outcome_colname), levels = c('yes','no'))) %>% select(!starts_with('Otu'))
+  mutate(!!rlang::sym(outcome_colname) := factor(!!rlang::sym(outcome_colname), levels = c('yes','no')))
 prior <- data_processed %>% 
   calc_baseline_precision(outcome_colname = outcome_colname,
                           pos_outcome = 'yes')
