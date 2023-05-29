@@ -30,7 +30,7 @@ ml_results <- run_ml(
 get_feature_importance(ml_results$trained_model,
                        ml_results$test_data %>% as_tibble(),
                        outcome_colname,
-                       perf_metric_fn = caret::multiClassSummary,
+                       perf_metric_function = caret::multiClassSummary,
                        perf_metric_name = snakemake@wildcards[['metric']],
                        class_probs = TRUE,
                        method = ml_method,
