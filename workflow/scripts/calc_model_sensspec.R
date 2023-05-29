@@ -143,7 +143,7 @@ treat_none <- test_dat %>%
   mutate(strategy = 'none')
 
 bind_rows(probs, treat_all, treat_none) %>% 
-  bind_cols(wildcards)
+  bind_cols(wildcards) %>% 
   write_csv(snakemake@output[['thresholds']])
   
   
