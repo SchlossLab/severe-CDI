@@ -1,12 +1,13 @@
 ml_methods:
- - glmnet
+ - rf
 kfold: 5
-ncores: 16
+ncores: 32
 nseeds: 1
 outcomes:
   - idsa
   - allcause
   - attrib
+  - pragmatic
 tax_levels:
   - OTU
 metrics:
