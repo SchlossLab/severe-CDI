@@ -1,4 +1,4 @@
-
+'''
 rule download_silva:
     output:
         fasta='data/references/silva.seed_v132.align',
@@ -295,3 +295,4 @@ rule nmds_pcoa:
         pcoa(phylip={input.dist_shared})
         "
         """
+'''
