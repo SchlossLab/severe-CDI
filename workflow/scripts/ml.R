@@ -1,6 +1,7 @@
 schtools::log_snakemake()
 library(here)
-library(mikropml)
+#library(mikropml)
+devtools::load_all('../mikropml') # TODO remove after debugging finished
 library(schtools)
 library(tidyverse)
 source(here('workflow','scripts','calc_balanced_precision.R'))
