@@ -65,12 +65,12 @@ roc_dat <- sensspec_dat %>%
   dplyr::mutate(specificity = round(specificity, 2)) %>%
   dplyr::group_by(specificity, dataset, outcome) %>%
   dplyr::summarise(
-    median_sensitivity = mean(sensitivity)
+    mean_sensitivity = mean(sensitivity)
   )
 
 roc_plot <- roc_dat %>%
   filter(!(dataset == 'int' & outcome == 'pragmatic'))  %>%  # remove pragmatic int since same as attrib
-  ggplot(aes(x = specificity, y = median_sensitivity
+  ggplot(aes(x = specificity, y = mean_sensitivity
              #ymin = lower, ymax = upper
              )) +
   #geom_ribbon(aes(fill = outcome), alpha = 0.1) +
@@ -89,7 +89,7 @@ roc_plot <- roc_dat %>%
   scale_y_continuous(expand = c(0, 0), limits = c(-0.01, 1.01)) +
   scale_x_reverse(expand = c(0, 0), limits = c(1.01,-0.01)) +
   coord_equal() +
-  labs(x = "Specificity", y = "Median Sensitivity") +
+  labs(x = "Specificity", y = "Mean Sensitivity") +
   facet_wrap('dataset', ncol = 2) +
   theme_sovacool() +
   theme(text = element_text(size = 10, family = 'Helvetica'),
@@ -104,12 +104,12 @@ bprc_dat <- sensspec_dat %>%
   dplyr::mutate(sensitivity = round(sensitivity, 2)) %>%
   dplyr::group_by(sensitivity, dataset, outcome) %>%
   dplyr::summarise(
-    median_balanced_precision = median(balanced_precision),
+    mean_balanced_precision = mean(balanced_precision),
   ) 
 
 bprc_plot <- bprc_dat %>%
   filter(!(dataset == 'int' & outcome == 'pragmatic'))  %>%  # remove pragmatic int since same as attrib
-  ggplot(aes(x = sensitivity, y = median_balanced_precision)) +
+  ggplot(aes(x = sensitivity, y = mean_balanced_precision)) +
   #geom_ribbon(aes(fill = outcome), alpha = 0.2) +
   geom_line(aes(color = outcome)) +
   geom_hline(yintercept = 0.5, color = "grey50", linetype = 'dashed') +
