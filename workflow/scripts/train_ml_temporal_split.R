@@ -52,7 +52,7 @@ calc_perf <- function(split) {
 
 test_dat <- ml_results$test_data
 bootstrap_perf <- bootstraps(test_dat, times = 10000) %>% 
-  mutate(perf = future_map(splits, ~ calc_perf(.x))) %>% 
+  mutate(perf = future_map(splits, ~ calc_perf(.x), seed = TRUE)) %>% 
   int_pctl(perf)
 
 bootstrap_perf %>%
