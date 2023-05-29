@@ -80,19 +80,22 @@ calc_model_sensspec(
 # decision thresholds
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
-get_threshold_performance <- function(dat, decision_threshold = 0.3) {
+get_threshold_performance <- function(dat, decision_threshold) {
   preds <- dat %>% 
     mutate(pred = factor(case_when(yes > decision_threshold ~ 'yes', 
                                    TRUE ~ 'no'), 
                          levels = c('yes', 'no')),
            actual = factor(actual, levels = c('yes','no')))
   
-  conf_mat <- caret::confusionMatrix(preds$actual, preds$pred)
+  conf_mat <- caret::confusionMatrix(data = preds$pred, 
+                                     reference = preds$actual,
+                                     positive = 'yes',
+                                     mode = 'everything')
   conf_mat$byClass %>% as_tibble_row()
   tp <- conf_mat$table[1,1]
-  fp <- conf_mat$table[2,1]
+  fp <- conf_mat$table[1,2]
   tn <- conf_mat$table[2,2]
-  fn <- conf_mat$table[1,2]
+  fn <- conf_mat$table[2,1]
   total <- nrow(dat)
   assert_that(total == tp+fp+tn+fn)
   return(conf_mat$byClass %>% 
