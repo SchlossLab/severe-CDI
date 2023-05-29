@@ -40,7 +40,8 @@ perf_plot <- dat %>%
     facet_wrap('dataset', ncol = 2) +
     scale_color_manual(values = c("training set AUROC" = "#BDBDBD", 
                                   "test set AUROC" = "#252525",
-                                  "test set AUBPRC" = "#4292C6")) +
+                                  "test set AUBPRC" = "#4292C6"),
+                       breaks = c("training set AUROC", "test set AUROC", "test set AUBPRC")) +
     guides(color = guide_legend(label.position = "bottom"))  +
     labs(x = 'Performance (AUROC or AUBPRC)') +
     theme_sovacool() +
