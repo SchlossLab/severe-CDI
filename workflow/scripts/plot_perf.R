@@ -69,12 +69,12 @@ roc_dat <- sensspec_dat %>%
   )
 
 roc_plot <- roc_dat %>%
-  filter(!(dataset == 'int' & outcome == 'pragmatic'))  %>%  # remove pragmatic int since same as attrib
+  filter(!(dataset == 'Intersection' & outcome == 'pragmatic'))  %>%  # remove pragmatic int since same as attrib
   ggplot(aes(x = specificity, y = mean_sensitivity
              #ymin = lower, ymax = upper
              )) +
   #geom_ribbon(aes(fill = outcome), alpha = 0.1) +
-  geom_line(aes(color = outcome)) +
+  geom_line(aes(color = outcome), alpha=0.6) +
   geom_abline(
     intercept = 1,
     slope = 1,
@@ -85,7 +85,7 @@ roc_plot <- roc_dat %>%
                                 attrib = "#D95F02", 
                                 allcause = "#7570B3", 
                                 pragmatic = "#E7298A")) +
-  scale_fill_brewer(palette = 'Dark2') +
+  #scale_fill_brewer(palette = 'Dark2') +
   scale_y_continuous(expand = c(0, 0), limits = c(-0.01, 1.01)) +
   scale_x_reverse(expand = c(0, 0), limits = c(1.01,-0.01)) +
   coord_equal() +
@@ -108,10 +108,10 @@ bprc_dat <- sensspec_dat %>%
   ) 
 
 bprc_plot <- bprc_dat %>%
-  filter(!(dataset == 'int' & outcome == 'pragmatic'))  %>%  # remove pragmatic int since same as attrib
+  filter(!(dataset == 'Intersection' & outcome == 'pragmatic'))  %>%  # remove pragmatic int since same as attrib
   ggplot(aes(x = sensitivity, y = mean_balanced_precision)) +
   #geom_ribbon(aes(fill = outcome), alpha = 0.2) +
-  geom_line(aes(color = outcome)) +
+  geom_line(aes(color = outcome), alpha=0.6) +
   geom_hline(yintercept = 0.5, color = "grey50", linetype = 'dashed') +
   scale_color_manual(values = c(idsa = "#1B9E77", 
                                 attrib = "#D95F02", 
@@ -119,7 +119,7 @@ bprc_plot <- bprc_dat %>%
                                 pragmatic = "#E7298A"),
                      labels = c(idsa='IDSA', attrib='Attrib', allcause='All-cause', pragmatic='Pragmatic'),
                      guide = guide_legend(label.position = "top")) +
-  scale_fill_brewer(palette = 'Dark2') +
+  #scale_fill_brewer(palette = 'Dark2') +
   scale_y_continuous(expand = c(0, 0), limits = c(-0.01, 1.01)) +
   scale_x_continuous(expand = c(0, 0), limits = c(-0.01, 1.01)) +
   coord_equal() +
