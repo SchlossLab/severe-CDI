@@ -37,11 +37,16 @@ ml_results <- run_ml(
   perf_metric_function = caret::multiClassSummary
 )
 
-calc_perf_metrics(ml_results$test_data, 
-                  ml_results$trained_model, 
-                  outcome_colname = outcome_colname, 
-                  perf_metric_function = caret::multiClassSummary, 
-                  class_probs = TRUE) %>%
+get_performance_tbl(
+  ml_results$trained_model,
+  ml_results$test_data,
+  outcome_colname = outcome_colname,
+  perf_metric_function = caret::multiClassSummary,
+  perf_metric_name = metric,
+  class_probs = TRUE,
+  method = ml_method,
+  seed = seed
+) %>%
   mutate(baseline_precision = prior,
          balanced_precision = if_else(!is.na(Precision), 
                                       calc_balanced_precision(Precision, prior), 
