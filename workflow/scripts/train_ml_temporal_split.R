@@ -8,16 +8,17 @@ doFuture::registerDoFuture()
 future::plan(future::multicore, workers = snakemake@threads)
 
 wildcards <- schtools::get_wildcards_tbl()
-data_processed <- readRDS(snakemake@input[["rds"]])$dat_transformed %>% 
-  mutate(!!rlang::sym(outcome_colname) := factor(!!rlang::sym(outcome_colname), 
-                                                 levels = c('yes','no'))
-  )
 train_indices <- readRDS(snakemake@input[['train']])
 outcome_colname <- snakemake@wildcards[['outcome']]
 method <- snakemake@wildcards[["method"]]
 seed <- as.numeric(snakemake@wildcards[["seed"]])
 metric <- snakemake@wildcards[['metric']]
 kfold <- as.numeric(snakemake@params[['kfold']])
+
+data_processed <- readRDS(snakemake@input[["rds"]])$dat_transformed %>% 
+  mutate(!!rlang::sym(outcome_colname) := factor(!!rlang::sym(outcome_colname), 
+                                                 levels = c('yes','no'))
+  )
 
 set.seed(seed)
 ml_results <- run_ml(
