@@ -10,7 +10,7 @@ future::plan(future::multicore, workers = snakemake@threads)
 wildcards <- schtools::get_wildcards_tbl()
 train_indices <- readRDS(snakemake@input[['train']])
 outcome_colname <- snakemake@wildcards[['outcome']]
-method <- snakemake@wildcards[["method"]]
+ml_method <- snakemake@wildcards[["method"]]
 seed <- as.numeric(snakemake@wildcards[["seed"]])
 metric <- snakemake@wildcards[['metric']]
 kfold <- as.numeric(snakemake@params[['kfold']])
@@ -23,7 +23,7 @@ data_processed <- readRDS(snakemake@input[["rds"]])$dat_transformed %>%
 set.seed(seed)
 ml_results <- run_ml(
   dataset = data_processed,
-  method = method,
+  method = ml_method,
   outcome_colname = outcome_colname,
   find_feature_importance = FALSE,
   calculate_performance = FALSE,
@@ -42,7 +42,7 @@ calc_perf <- function(split) {
     perf_metric_function = caret::multiClassSummary,
     perf_metric_name = metric,
     class_probs = TRUE,
-    method = method,
+    method = ml_method,
     seed = seed
   ) %>% 
     select(-c(method, seed)) %>% 
