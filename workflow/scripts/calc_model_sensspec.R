@@ -19,7 +19,7 @@ calc_model_sensspec <- function(trained_model, test_data,
                                 decision_threshold = 0.5,
                                 pos_outcome = 'yes') {
   # adapted from https://github.com/SchlossLab/2021-08-09_ROCcurves/blob/8e62ff8b6fe1b691450c953a9d93b2c11ce3369a/ROCcurves.Rmd#L95-L109
-  outcome_colname <- check_outcome_column(test_data, outcome_colname)
+  outcome_colname <- mikropml:::check_outcome_column(test_data, outcome_colname)
   actual <- is_pos <- tp <- fp <- fpr <- NULL
   probs <- stats::predict(trained_model,
                           newdata = test_data,
