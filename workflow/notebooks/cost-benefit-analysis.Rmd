@@ -10,7 +10,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-- use values from confusion matrix for one representative model on a test set. or get average precision?
+- use values from confusion matrix for one representative model on a test set. or get average precision? choose a particular sensitivity level and see the range in precision?
   - Number needed to screen (NNS) - the number of alerted patients the models must flag to identify 1 true positive. 
   - Number needed to treat (NNT) - the number of true positive patients one must treat for 1 patient to benefit from the treatment.
   - Number needed to benefit (NNB = NNS x NNT) - how many patients must be screened for 1 patient to benefit.
@@ -21,21 +21,56 @@ knitr::opts_chunk$set(echo = TRUE)
   - cost of possible treatments:
     - abx: metronizadole, vancomycin, fidaxomycin
     - fmt, bezlotoxumab (monoclonal antibodies) 
-  
+
+
 ## evaluating ml models
 
-[number needed to benefit](https://academic.oup.com/jamia/article-abstract/26/12/1655/5516459)
+### [number needed to benefit](https://academic.oup.com/jamia/article-abstract/26/12/1655/5516459)
 
 - Number needed to screen (NNS) - the number of alerted patients the models must flag to identify 1 true positive. 
 - Number needed to treat (NNT) - the number of true positive patients one must treat for 1 patient to benefit from the treatment.
 - Number needed to benefit (NNB = NNS x NNT) - how many patients must be screened for 1 patient to benefit.
 
 > In the simplest terms, prediction can be distilled into an NNS and action into a number needed to treat. When contextualized within this framework, the product of NNS and number needed to treat results in a number needed to benefit. The table outlines key variables in this framework that will alter the estimated number needed to benefit across different modeling and implementation scenarios.
-  
+
+### [decision curve analysis](https://journals.sagepub.com/doi/10.1177/0272989X06295361)
+
+QALYs are prone to systemic biases. 
+We can sidestep using them by doing decision curve analysis instead.
+Weight the relative harms of FP and FN results.
+
+- incidence of severe CDI
+- net benefit = $\frac{TP}{n} - \frac{FP}{n} \times \frac{p_t}{1-p_t}$ (Peirce 1884)
+- plot net benefit vs probability threshold ($p_t$).
+- harm of treating with fidaxomicin instead of vancomycin: more expensive. by how much?
+- assume all patients severe vs no patients severe.
+
+```{r decision-curve}
+library(here)
+library(tidyverse)
+thresh_dat <- read_csv(here('results','thresholds_results_aggregated.csv'))
+thresh_dat %>% 
+  filter(dataset == 'int',outcome=='attrib',seed==100) %>% 
+  ggplot(aes(decision_threshold, net_benefit, 
+             color = strategy, linetype = strategy)) +
+  geom_line(alpha = 0.6) +
+  theme_sovacool()
+```
+
+
 ## treatment options & costs
 
 - Vince: consider bezlotoxumab since it targets the toxin, mouse models show it reduces organ damage.
 - Krishna: bezlotoxumab clinical trials didn't find signal for limiting severity. however fidaxomicin is superior to vancomycin for cure and time to resolution of diarrhea ([IDSA 2021 update](https://doi.org/10.1093/cid/ciab549)).
+  - Fidaxomicin [NNT=10](https://thennt.com/nnt/oral-fidaxomicin-versus-vancomycin-clostridioides-difficile-infection/) for global cure (no recurrence occured).
+
+NNT for Fidaxomicin, FMT, and/or Bezlotoxumab. Current standard is Vancomycin
+because it's cheaper than Fidaxomicin, even though IDSA recommends Fidaxomicin.
+
+rough estimate of costs.
+current: everyone gets vancomycin.
+potential: patients flagged as severe get fidaxomicin. based on NNB, estimate
+how much money saved in averting severe outcomes.
 
 ### [Gupta _et al._ 2021 - Economic Burden of CDI](https://journals.sagepub.com/doi/10.1177/17562848211018654)
 
