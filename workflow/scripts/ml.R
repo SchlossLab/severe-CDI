@@ -12,9 +12,13 @@ wildcards <- schtools::get_wildcards_tbl()
 outcome_colname <- snakemake@wildcards[['outcome']]
 ml_method <- snakemake@wildcards[["method"]]
 seed <- as.numeric(snakemake@wildcards[["seed"]])
+kfold <- as.numeric(snakemake@params[['kfold']])
+metric <- snakemake@wildcards[['metric']]
+training_frac <- as.numeric(snakemake@wildcards[['trainfrac']])
+
 data_processed <- readRDS(snakemake@input[["rds"]])$dat_transformed 
 prior <- data_processed %>% 
-  calc_baseline_precision(outcome_colname = snakemake@wildcards[['outcome']],
+  calc_baseline_precision(outcome_colname = outcome_colname,
                           pos_outcome = 'yes')
 
 ml_results <- run_ml(
@@ -24,15 +28,20 @@ ml_results <- run_ml(
     ),
   method = ml_method,
   outcome_colname = outcome_colname,
-  find_feature_importance = TRUE,
-  kfold = as.numeric(snakemake@params[['kfold']]),
+  find_feature_importance = FALSE,
+  calculate_performance = FALSE,
+  kfold = kfold,
   seed = seed,
-  training_frac = as.numeric(snakemake@wildcards[['trainfrac']]),
-  perf_metric_name = snakemake@wildcards[['metric']],
+  training_frac = training_frac,
+  perf_metric_name = metric,
   perf_metric_function = caret::multiClassSummary
 )
 
-ml_results$performance %>%
+calc_perf_metrics(ml_results$test_data, 
+                  ml_results$trained_model, 
+                  outcome_colname = outcome_colname, 
+                  perf_metric_function = caret::multiClassSummary, 
+                  class_probs = TRUE) %>%
   mutate(baseline_precision = prior,
          balanced_precision = if_else(!is.na(Precision), 
                                       calc_balanced_precision(Precision, prior), 
@@ -43,7 +52,14 @@ ml_results$performance %>%
   left_join(wildcards) %>%
   write_csv(snakemake@output[["perf"]])
 
-ml_results$feature_importance %>%
+get_feature_importance(ml_results$trained_model, 
+                       ml_results$test_data, 
+                       outcome_colname = outcome_colname, 
+                       perf_metric_function = caret::multiClassSummary, 
+                       perf_metric_name = metric, 
+                       class_probs = TRUE, 
+                       method = ml_method, 
+                       seed = seed) %>%
   left_join(wildcards) %>%
   write_csv(snakemake@output[["feat"]])
 
