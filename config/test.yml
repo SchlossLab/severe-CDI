@@ -4,7 +4,7 @@ kfold: 5
 ncores: 16
 nseeds: 2
 outcomes:
-  - attrib
+  - idsa
 tax_levels:
   - OTU
 metrics:
@@ -12,4 +12,4 @@ metrics:
 train_frac:
   - 0.8
 dataset_subsets:
-  - full
+  - int
