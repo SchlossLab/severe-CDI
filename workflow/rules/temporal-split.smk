@@ -1,6 +1,6 @@
 rule prep_temporal_split:
     input:
-        metadat='data/process/cases_int_metadata.csv'
+        metadat='data/process/cases_{dataset}_metadata.csv'
     output:
         rds="data/process/temporal-split/predict_{outcome}/taxlevel_{taxlevel}/dataset_{dataset}/trainfrac_{trainfrac}/train-idx.Rds"
     log: 'log/temporal-split/predict_{outcome}/taxlevel_{taxlevel}/dataset_{dataset}/trainfrac_{trainfrac}/prep_temporal_split.txt'

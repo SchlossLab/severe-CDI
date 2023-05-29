@@ -2,7 +2,7 @@ schtools::log_snakemake()
 library(tidyverse)
 metadat <- read_csv(snakemake@input[['metadat']])
 train_frac <- as.numeric(snakemake@wildcards[['trainfrac']])
-print(train_frac)
+message(train_frac)
 
 train_indices <- metadat %>% 
   slice_min(order_by = collection_date, prop = train_frac) %>%
