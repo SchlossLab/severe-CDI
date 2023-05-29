@@ -57,7 +57,8 @@ rule paper_targets:
 
 rule targets:
     input:
-        expand('results/{type}_results_aggregated.csv', type = result_types)
+        expand('results/{type}_results_aggregated.csv', type = result_types),
+        'results/model_comparisons.csv'
     #default_target: True
 
 rule classify_idsa_severity:
