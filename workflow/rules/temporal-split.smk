@@ -41,6 +41,23 @@ rule mutate_benchmark:
     script:
         '../scripts/mutate_benchmark.R'
 
+rule calc_model_sensspec_temporal:
+    input:
+        rds=rules.preprocess_data.output.rds,
+        model=rules.run_ml_temporal_split.output.model,
+        test=rules.run_ml_temporal_split.output.test,
+    output:
+        sensspec="results/predict_{outcome}/taxlevel_{taxlevel}/metric_{metric}/dataset_{dataset}/trainfrac_{trainfrac}/temporal-split/{method}_{seed}_sensspec.csv",
+        thresholds="results/predict_{outcome}/taxlevel_{taxlevel}/metric_{metric}/dataset_{dataset}/trainfrac_{trainfrac}/temporal-split/{method}_{seed}_thresholds.csv"
+    log:
+        "log/predict_{outcome}/taxlevel_{taxlevel}/metric_{metric}/dataset_{dataset}/trainfrac_{trainfrac}/temporal-split/{method}_{seed}_sensspec.log"
+    params:
+        outcome_colname="{outcome}"
+    conda:
+        "../envs/mikropml.yml"
+    script:
+        "../scripts/calc_model_sensspec.R"
+
 rule combine_results_temporal:
     input:
         csv=expand("results/predict_{outcome}/taxlevel_{taxlevel}/metric_{metric}/dataset_{dataset}/trainfrac_{trainfrac}/temporal-split/{method}_{seed}_{{rtype}}.csv", outcome = outcomes, taxlevel = tax_levels, metric = metrics, dataset = datasets, trainfrac = train_fracs, method = ml_methods, seed = seeds)
@@ -51,6 +68,6 @@ rule combine_results_temporal:
         "../scripts/combine_results.R"
 
 rule targets_temporal_split:
-    input: expand('results/temporal-split/{rtype}_results.csv', rtype = ['performance', 'feature-importance', 'benchmarks'])
+    input: expand('results/temporal-split/{rtype}_results.csv', rtype = result_types)
 
 # TODO plot performance & feature importance
