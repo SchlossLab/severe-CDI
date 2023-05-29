@@ -80,7 +80,8 @@ calc_model_sensspec(
 # decision thresholds
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
-get_threshold_performance <- function(dat, decision_threshold) {
+get_threshold_performance <- function(dat, decision_threshold, 
+                                      pos_outcome = 'yes') {
   preds <- dat %>% 
     mutate(pred = factor(case_when(yes > decision_threshold ~ 'yes', 
                                    TRUE ~ 'no'), 
@@ -89,7 +90,7 @@ get_threshold_performance <- function(dat, decision_threshold) {
   
   conf_mat <- caret::confusionMatrix(data = preds$pred, 
                                      reference = preds$actual,
-                                     positive = 'yes',
+                                     positive = pos_outcome,
                                      mode = 'everything')
   conf_mat$byClass %>% as_tibble_row()
   tp <- conf_mat$table[1,1]
@@ -144,3 +145,39 @@ treat_none <- test_dat %>%
 bind_rows(probs, treat_all, treat_none) %>% 
   bind_cols(wildcards)
   write_csv(snakemake@output[['thresholds']])
+  
+  
+test_conf_mat <- function() {
+    library(testthat)
+    pos_outcome <- 1
+    df <- tibble(actual = factor(c(1, 2, 1, 1, 1, 1, 2, 2, 2, 2),
+                                 levels = c(1, 2)),
+                 prediction = factor(c(1, 1, 1, 1, 2, 1, 2, 1, 2 , 2),
+                                     levels = c(1, 2)))
+    cm <- df %>%
+      mutate(
+        cm = case_when(
+          actual == pos_outcome & actual == prediction ~ 'tp',
+          actual == pos_outcome & actual != prediction ~ 'fn',
+          actual != pos_outcome & actual == prediction ~ 'tn',
+          actual != pos_outcome & actual != prediction ~ 'fp',
+          TRUE ~ NA_character_
+        )
+      ) %>%
+      count(cm) %>%
+      pivot_wider(names_from = cm, values_from = n) %>%
+      as_vector()
+    conf_mat <-
+      confusionMatrix(
+        data = df$prediction,
+        reference = df$actual,
+        positive = as.character(pos_outcome)
+      )
+    test_that("confusion matrix values are accessed correctly", {
+      expect_equal(cm[['tp']], conf_mat$table[1, 1])
+      expect_equal(cm[['fp']], conf_mat$table[1, 2])
+      expect_equal(cm[['tn']], conf_mat$table[2, 2])
+      expect_equal(cm[['fn']], conf_mat$table[2, 1])
+    })
+}
+  
