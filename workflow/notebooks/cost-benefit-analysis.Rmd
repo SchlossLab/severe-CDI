@@ -48,31 +48,9 @@ Weight the relative harms of FP and FN results.
 ```{r decision-curve}
 library(here)
 library(tidyverse)
-perf_dat <- read_csv(here('results','performance_results_aggregated.csv'))
-med_auc <- perf_dat %>% filter(dataset == 'full', outcome == 'allcause') %>% 
-  summarize(med_auc = median(AUC)) %>% pull(med_auc)
-med_seed <- perf_dat %>% filter(dataset == 'full', outcome == 'allcause') %>% 
-  mutate(rel_diff_auc = abs(AUC - med_auc)) %>% 
-  slice_min(rel_diff_auc) %>% 
-  pull(seed) %>% 
-  .[1]
-sensspec_dat <- read_csv(here('results','sensspec_results_aggregated.csv'))
-dat_med <- sensspec_dat %>% filter(dataset == 'full', outcome == 'allcause', seed == med_seed) 
-sensspec_dat %>% 
-  filter(dataset == 'full', outcome == 'pragmatic', precision < 0.04)
-```
-
-```{r sensspec}
-model <- read_rds(here('results/predict_allcause/taxlevel_OTU/metric_AUC/dataset_full/trainfrac_0.8/runs/rf_142_model.Rds'))
-test_dat <- read_csv(here('results/predict_allcause/taxlevel_OTU/metric_AUC/dataset_full/trainfrac_0.8/runs/rf_142_test-data.csv'))
-preds <- stats::predict(model, test_dat, type = 'prob') %>% 
-  mutate(pred_pos = yes > 0.5)
-```
-
-```{r decision-thresholds}
 thresh_dat <- read_csv(here('results','thresholds_results_aggregated.csv'))
 thresh_dat %>% 
-  filter(dataset == 'full', outcome == 'attrib', seed == 100) %>% 
+  filter(dataset == 'int',outcome=='attrib',seed==100) %>% 
   ggplot(aes(decision_threshold, net_benefit, 
              color = strategy, linetype = strategy)) +
   geom_line(alpha = 0.6) +
@@ -84,6 +62,7 @@ thresh_dat %>%
 
 - Vince: consider bezlotoxumab since it targets the toxin, mouse models show it reduces organ damage.
 - Krishna: bezlotoxumab clinical trials didn't find signal for limiting severity. however fidaxomicin is superior to vancomycin for cure and time to resolution of diarrhea ([IDSA 2021 update](https://doi.org/10.1093/cid/ciab549)).
+  - Fidaxomicin [NNT=10](https://thennt.com/nnt/oral-fidaxomicin-versus-vancomycin-clostridioides-difficile-infection/) for global cure (no recurrence occured).
 
 NNT for Fidaxomicin, FMT, and/or Bezlotoxumab. Current standard is Vancomycin
 because it's cheaper than Fidaxomicin, even though IDSA recommends Fidaxomicin.
