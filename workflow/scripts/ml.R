@@ -38,11 +38,11 @@ ml_results <- run_ml(
   perf_metric_function = caret::multiClassSummary
 )
 
-preds <- stats::predict(model,
-                        newdata = test_dat,
+preds <- stats::predict(ml_results$trained_model,
+                        newdata = ml_results$test_data,
                         type = "prob"
 ) %>%
-  dplyr::mutate(actual = test_dat %>%
+  dplyr::mutate(actual = ml_results$test_data %>%
                   dplyr::pull(outcome_colname) %>% 
                   factor(., levels = c('yes','no')))
 
@@ -57,7 +57,7 @@ get_performance_tbl(
   seed = seed
 ) %>%
   mutate(prec = case_when(Sensitivity == 0 & Specificity == 1 ~ 1, 
-                          TRUE ~ Precision),
+                          TRUE ~ as.numeric(Precision)),
          auprc_prec = case_when(is.na(prAUC) & Sensitivity == 0 & Specificity == 1 ~ 1, 
                                 TRUE ~ prAUC),
          baseline_precision = prior,

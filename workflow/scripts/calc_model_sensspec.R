@@ -61,7 +61,7 @@ calc_model_sensspec <- function(trained_model, test_data,
     dplyr::mutate(
       specificity = 1 - fpr,
       precision = tp / (tp + fp),
-      prec = if (tp == 0 & fp == 0) {1} else {tp / (tp + fp)},
+      prec = case_when(tp == 0 & fp == 0 ~1, TRUE ~ tp / (tp + fp)),
     ) %>%
     dplyr::select(-is_pos)
   return(sensspec)
