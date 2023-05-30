@@ -66,9 +66,10 @@ feat_imp_plot <- dat %>%
   stat_summary(fun = 'median', 
                fun.max = function(x) quantile(x, 0.75), 
                fun.min = function(x) quantile(x, 0.25),
-               position = position_dodge(width = 0.7)) +
+               position = position_dodge(width = 0.9),
+               alpha=0.6) +
   geom_hline(yintercept = seq(1.5, length(unique(top_otus_order))-0.5, 1), 
-             lwd = 0.5, colour = "whitesmoke") +
+             lwd = 0.5, colour = "grey92") +
   facet_wrap('dataset') +
   scale_color_manual(values = model_colors,
                      labels = c(idsa='IDSA', attrib='Attrib', allcause='All-cause', pragmatic='Pragmatic'),
@@ -137,9 +138,10 @@ relabun_plot <- relabun_medians %>%
   ggplot(aes(x = med_rel_abun, y = label_html,
              color = outcome, shape = is_severe, group = outcome)) +
   geom_vline(xintercept = tiny_constant, linetype = 'dashed') +
-  geom_point(position = position_dodge(width = 0.7)) +
+  geom_point(position = position_dodge(width = 0.9),
+             alpha=0.6) +
   geom_hline(yintercept = seq(1.5, length(unique(top_otus_order))-0.5, 1), 
-             lwd = 0.5, colour = "whitesmoke") +
+             lwd = 0.5, colour = "grey92") +
   facet_wrap('dataset') +
   scale_color_manual(values = model_colors,
                      labels = c(idsa='IDSA', attrib='Attrib', 
