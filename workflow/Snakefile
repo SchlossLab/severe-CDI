@@ -167,7 +167,7 @@ rule render_paper:
         ext=rules.install_quarto_ms.output,
         figs=expand("paper/figures/{figname}.png", figname = figures_dict.values()),
         dat=rules.calc_stats.output.rda,
-        tab='results/decision_thresholds.csv',
+        #tab='results/decision_thresholds.csv',
     output:
         'paper/paper.pdf',
         'paper/paper.md',
