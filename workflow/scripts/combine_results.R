@@ -1,4 +1,4 @@
-source("workflow/scripts/log_smk.R")
+schtools::log_snakemake()
 library(tidyverse)
 
 snakemake@input[["csv"]] %>%
