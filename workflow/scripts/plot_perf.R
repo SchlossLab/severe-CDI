@@ -197,12 +197,12 @@ prc_plot_grid <- prc_dat %>%
         legend.position = 'none',
         legend.title = element_blank(),
         strip.background = element_blank(),
-        panel.spacing = unit(10, 'pt'),
+        panel.spacing = unit(8, 'pt'),
         axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 
 ggsave('figures/prc_curves.tiff', plot = prc_plot_grid,
        device = 'tiff', compression = 'lzw', dpi = 600,
-       width = 5, height = 3.5)
+       width = 5, height = 3)
 
 curve_legend <- get_legend(bprc_plot + theme(legend.position = 'bottom'))
 fig <- plot_grid(perf_plot, 
