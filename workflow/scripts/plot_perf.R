@@ -9,7 +9,8 @@ dat <- read_csv(here("results","performance_results_aggregated.csv")) %>%
     rename(`test set AUROC` = AUC,
            `training set AUROC` = cv_metric_AUC,
            `test set AUPRC` = prAUC,
-           `test set AUBPRC` = aubprc) %>% 
+           `test set AUBPRC` = aubprc,
+           `test set ABP` = average_precision_balanced) %>% 
     filter(metric == 'AUC', method == 'rf', trainfrac == 0.8) %>%
   mutate(dataset = case_when(dataset == 'full' ~ 'Full dataset',
                              TRUE ~ 'Intersection of samples with all labels available')) %>% 
@@ -24,33 +25,50 @@ dat <- read_csv(here("results","performance_results_aggregated.csv")) %>%
                            'Pragmatic\n severity'))
   )
 perf_plot <- dat %>% 
-    pivot_longer(c(`training set AUROC`, `test set AUROC`, `test set AUBPRC`
+    pivot_longer(c(`training set AUROC`, `test set AUROC`, 
+                   #`test set AUBPRC`, 
+                   `test set ABP`
                    ),
                  names_to = "data_partition",
                  values_to = 'performance'
                  )  %>%
     ggplot(aes(x = performance, y = outcome, color = data_partition)) +
-    geom_vline(xintercept = 0.5, linetype = "dashed") +
-    geom_boxplot() +
     stat_summary(fun = median, 
-                 geom = "text", 
+                 fun.max = function(x) quantile(x, 0.95), 
+                 fun.min = function(x) quantile(x, 0.05),
+                 position = position_dodge(width = 0.7)
+                 ) +
+    stat_summary(fun = median, 
+                 geom = "label", 
                  show.legend = FALSE,
-                 mapping = aes(label = round(after_stat(x),2)),
-                 position = position_nudge(x = 0, y = c(-0.45, -0.2, 0.45))) +
-    facet_wrap('dataset', ncol = 2) +
-    scale_color_manual(values = c("training set AUROC" = "#BDBDBD", 
+                 mapping = aes(label = format(round(after_stat(x),2), nsmall = 2)),
+                 alpha = 0.7,
+                 label.padding = unit(0, 'pt'),
+                 label.size = unit(0,'pt'),
+                 position = position_nudge(x = 0.12, y = c(-0.25, 0, 0.25))
+                 ) +
+    geom_hline(yintercept = seq(1.5, length(unique(dat %>% pull(outcome)))-0.5, 1), 
+             lwd = 0.5, colour = "grey92") +
+    geom_vline(xintercept = 0.5, linetype = "dashed") +
+    scale_x_continuous(limits = c(0.3, 1), expand = c(0,0)) +
+    scale_color_manual(values = c("training set AUROC" = "#BDBDBD",
                                   "test set AUROC" = "#252525",
-                                  "test set AUBPRC" = "#4292C6"),
-                       breaks = c("training set AUROC", "test set AUROC", "test set AUBPRC")) +
-    guides(color = guide_legend(label.position = "bottom"))  +
-    labs(x = 'Performance (AUROC or AUBPRC)') +
+                                  "test set ABP" = "#4292C6"),
+                       breaks = c("training set AUROC", 
+                                  "test set AUROC", 
+                                  "test set ABP"),
+                       guide = guide_legend(label.position = "top")) +
+    facet_wrap('dataset', ncol = 2) +
+    labs(x = 'Performance (AUROC or ABP)') +
     theme_sovacool() +
     theme(
         text = element_text(size = 10, family = 'Helvetica'),
         axis.title.y = element_blank(),
         legend.position = 'top',
         legend.title = element_blank(),
-        strip.background = element_blank()
+        strip.background = element_blank(),
+        panel.grid.major.y = element_blank(),
+        plot.margin = margin(2,7,2,2, unit = 'pt')
     )
 
 model_comps <- read_csv(here('results', 'model_comparisons.csv')) %>% 
@@ -71,15 +89,27 @@ roc_dat <- read_csv(here('results', 'roccurve_results_aggregated.csv')) %>%
   dplyr::mutate(specificity = round(specificity, 1)) %>%
   dplyr::group_by(specificity, dataset, outcome) %>%
   dplyr::summarise(
-    mean_sensitivity = mean(sensitivity)
+    mean_sensitivity = mean(sensitivity),
+    upper = quantile(sensitivity, 0.95),
+    lower = quantile(sensitivity, 0.05)
+  ) %>%
+  dplyr::mutate(
+    upper = dplyr::case_when(
+      upper > 1 ~ 1,
+      TRUE ~ upper
+    ),
+    lower = dplyr::case_when(
+      lower < 0 ~ 0,
+      TRUE ~ lower
+    )
   )
 
 roc_plot <- roc_dat %>%
   filter(!(dataset == 'Intersection' & outcome == 'pragmatic'))  %>%  # remove pragmatic int since same as attrib
-  ggplot(aes(x = specificity, y = mean_sensitivity
-             #ymin = lower, ymax = upper
+  ggplot(aes(x = specificity, y = mean_sensitivity,
+             ymin = lower, ymax = upper
              )) +
-  #geom_ribbon(aes(fill = outcome), alpha = 0.1) +
+  geom_ribbon(aes(fill = outcome), alpha = 0.08) +
   geom_line(aes(color = outcome), alpha=0.6) +
   geom_abline(
     intercept = 1,
@@ -91,11 +121,17 @@ roc_plot <- roc_dat %>%
                                 attrib = "#D95F02", 
                                 allcause = "#7570B3", 
                                 pragmatic = "#E7298A")) +
-  #scale_fill_brewer(palette = 'Dark2') +
+  scale_fill_manual(values = c(idsa = "#1B9E77", 
+                               attrib = "#D95F02", 
+                               allcause = "#7570B3", 
+                               pragmatic = "#E7298A"),
+                    labels = c(idsa='IDSA', attrib='Attrib', allcause='All-cause', pragmatic='Pragmatic')
+  ) +
+  guides(fill = 'none') +
   scale_y_continuous(expand = c(0, 0), limits = c(-0.01, 1.01)) +
   scale_x_reverse(expand = c(0, 0), limits = c(1.01,-0.01)) +
   coord_equal() +
-  labs(x = "Specificity", y = "Mean Sensitivity") +
+  labs(x = "Specificity", y = "Sensitivity") +
   facet_wrap('dataset', ncol = 2) +
   theme_sovacool() +
   theme(text = element_text(size = 10, family = 'Helvetica'),
@@ -120,13 +156,25 @@ bprc_dat <- read_csv(here('results', 'prcurve_results_aggregated.csv')) %>%
          recall = round(recall, 1)) %>%
   group_by(recall, dataset, outcome) %>%
   summarise(
-    mean_balanced_precision = mean(balanced_precision),
-  ) 
-
+    mean_balanced_precision = median(balanced_precision),
+    upper = quantile(balanced_precision, 0.95),
+    lower = quantile(balanced_precision, 0.05)
+  ) %>%
+  dplyr::mutate(
+    upper = dplyr::case_when(
+      upper > 1 ~ 1,
+      TRUE ~ upper
+    ),
+    lower = dplyr::case_when(
+      lower < 0 ~ 0,
+      TRUE ~ lower
+    )
+  )
 bprc_plot <- bprc_dat %>%
   filter(!(dataset == 'Intersection' & outcome == 'pragmatic'))  %>%  # remove pragmatic int since same as attrib
-  ggplot(aes(x = recall, y = mean_balanced_precision)) +
-  #geom_ribbon(aes(fill = outcome), alpha = 0.2) +
+  ggplot(aes(x = recall, y = mean_balanced_precision, 
+             ymin = lower, ymax = upper)) +
+  geom_ribbon(aes(fill = outcome), alpha = 0.08) +
   geom_line(aes(color = outcome), alpha=0.6) +
   geom_hline(yintercept = 0.5, color = "grey50", linetype = 'dashed') +
   scale_color_manual(values = c(idsa = "#1B9E77", 
@@ -135,11 +183,17 @@ bprc_plot <- bprc_dat %>%
                                 pragmatic = "#E7298A"),
                      labels = c(idsa='IDSA', attrib='Attrib', allcause='All-cause', pragmatic='Pragmatic'),
                      guide = guide_legend(label.position = "top")) +
-  #scale_fill_brewer(palette = 'Dark2') +
+  scale_fill_manual(values = c(idsa = "#1B9E77", 
+                                attrib = "#D95F02", 
+                                allcause = "#7570B3", 
+                                pragmatic = "#E7298A"),
+                     labels = c(idsa='IDSA', attrib='Attrib', allcause='All-cause', pragmatic='Pragmatic')
+                     ) +
+  guides(fill = 'none') +
   scale_y_continuous(expand = c(0, 0), limits = c(-0.01, 1.01)) +
   scale_x_continuous(expand = c(0, 0), limits = c(-0.01, 1.01)) +
   coord_equal() +
-  labs(x = "Recall", y = "Mean Balanced Precision") +
+  labs(x = "Recall", y = "Balanced Precision") +
   facet_wrap('dataset', ncol = 2) +
   theme_sovacool() +
   theme(text = element_text(size = 10, family = 'Helvetica'),
@@ -199,7 +253,7 @@ prc_plot_grid <- prcurve_dat %>%
   ), levels = c("IDSA", 'All-cause', 'Attrib', 'Pragmatic'))) %>% 
   ggplot(aes(x = recall, y = mean_precision, 
              ymin = lower, ymax = upper)) +
-  geom_ribbon(aes(fill = outcome), alpha = 0.2) +
+  geom_ribbon(aes(fill = outcome), alpha = 0.15) +
   geom_line(aes(color = outcome)) +
   geom_hline(data = priors,
              aes(yintercept = prior),
