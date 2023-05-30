@@ -203,4 +203,55 @@ test_conf_mat <- function() {
       expect_equal(cm[['fn']], conf_mat$table[2, 1])
     })
 }
-  
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+# Overall Performance on test set.
+# moved out of run_ml rule.
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+
+get_performance_tbl(
+  model,
+  test_dat,
+  outcome_colname = wildcards[['outcome']],
+  perf_metric_function = caret::multiClassSummary,
+  perf_metric_name = wildcards[['metric']],
+  class_probs = TRUE,
+  method = wildcards[['method']],
+  seed = as.numeric(wildcards[['seed']])
+) %>%
+  mutate(Precision = as.numeric(Precision),
+         prec = case_when(Sensitivity == 0 & Specificity == 1 ~ 1, 
+                          TRUE ~ Precision),
+         auprc_prec = case_when(is.na(prAUC) & Sensitivity == 0 & Specificity == 1 ~ 1, 
+                                TRUE ~ prAUC),
+         baseline_precision = prior,
+         balanced_precision = if_else(!is.na(Precision), 
+                                      calc_balanced_precision(Precision, prior), 
+                                      NA),
+         balanced_prec = if_else(!is.na(prec), 
+                                 calc_balanced_precision(prec, prior), 
+                                 NA),
+         aubprc = if_else(!is.na(prAUC), 
+                          calc_balanced_precision(prAUC, prior), 
+                          NA),
+         aubprc_prec = if_else(!is.na(auprc_prec), 
+                               calc_balanced_precision(auprc_prec, prior), 
+                               NA),
+         pr_auc = yardstick::pr_auc(preds, yes,
+                                    truth = actual,
+                                    estimator = 'binary') %>% pull(.estimate), 
+         bpr_auc = if_else(!is.na(pr_auc), 
+                           calc_balanced_precision(pr_auc, prior), 
+                           NA),
+         roc_auc = yardstick::roc_auc(preds, yes,
+                                      truth = actual,
+                                      estimator = 'binary') %>% pull(.estimate), 
+         average_precision = yardstick::average_precision(preds, yes, 
+                                                          truth = actual, 
+                                                          estimator = 'binary') %>% pull(.estimate),
+         average_precision_balanced = if_else(!is.na(average_precision),
+                                              calc_balanced_precision(average_precision, prior),
+                                              NA)) %>% 
+  left_join(wildcards) %>%
+  write_csv(snakemake@output[["perf"]])
+
