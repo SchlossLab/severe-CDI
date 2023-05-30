@@ -62,8 +62,13 @@ sensspec_dat <- read_csv(here('results','sensspec_results_aggregated.csv')) %>%
                              dataset == 'int' ~ 'Intersection',
                              TRUE ~ NA_character_))
 
-roc_dat <- sensspec_dat %>% 
-  dplyr::mutate(specificity = round(specificity, 2)) %>%
+
+roc_dat <- read_csv(here('results', 'roccurve_results_aggregated.csv')) %>%
+  mutate(outcome = factor(outcome, levels = c('idsa', 'allcause', 'attrib', 'pragmatic'))) %>% 
+  mutate(dataset = case_when(dataset == 'full' ~ 'Full dataset',
+                             dataset == 'int' ~ 'Intersection',
+                             TRUE ~ NA_character_)) %>% 
+  dplyr::mutate(specificity = round(specificity, 1)) %>%
   dplyr::group_by(specificity, dataset, outcome) %>%
   dplyr::summarise(
     mean_sensitivity = mean(sensitivity)
@@ -101,16 +106,26 @@ roc_plot <- roc_dat %>%
         axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
         plot.margin = margin(0,5,0,0))
 
-bprc_dat <- sensspec_dat %>% 
-  dplyr::mutate(sensitivity = round(sensitivity, 2)) %>%
-  dplyr::group_by(sensitivity, dataset, outcome) %>%
-  dplyr::summarise(
+bprc_dat <- read_csv(here('results', 'prcurve_results_aggregated.csv')) %>%
+  mutate(outcome = factor(outcome, levels = c('idsa', 'allcause', 'attrib', 'pragmatic')),
+         dataset = case_when(dataset == 'full' ~ 'Full dataset',
+                             dataset == 'int' ~ 'Intersection',
+                             TRUE ~ NA_character_)) %>% 
+  left_join(sensspec_dat %>% 
+              select(outcome, dataset, prior) %>% 
+              dplyr::distinct(), 
+            by = join_by(outcome, dataset)) %>% 
+  mutate(
+         balanced_precision = mikropml::calc_balanced_precision(precision, prior),
+         recall = round(recall, 1)) %>%
+  group_by(recall, dataset, outcome) %>%
+  summarise(
     mean_balanced_precision = mean(balanced_precision),
   ) 
 
 bprc_plot <- bprc_dat %>%
   filter(!(dataset == 'Intersection' & outcome == 'pragmatic'))  %>%  # remove pragmatic int since same as attrib
-  ggplot(aes(x = sensitivity, y = mean_balanced_precision)) +
+  ggplot(aes(x = recall, y = mean_balanced_precision)) +
   #geom_ribbon(aes(fill = outcome), alpha = 0.2) +
   geom_line(aes(color = outcome), alpha=0.6) +
   geom_hline(yintercept = 0.5, color = "grey50", linetype = 'dashed') +
@@ -124,7 +139,7 @@ bprc_plot <- bprc_dat %>%
   scale_y_continuous(expand = c(0, 0), limits = c(-0.01, 1.01)) +
   scale_x_continuous(expand = c(0, 0), limits = c(-0.01, 1.01)) +
   coord_equal() +
-  labs(x = "Recall", y = "Median Balanced Precision") +
+  labs(x = "Recall", y = "Mean Balanced Precision") +
   facet_wrap('dataset', ncol = 2) +
   theme_sovacool() +
   theme(text = element_text(size = 10, family = 'Helvetica'),
@@ -136,11 +151,16 @@ bprc_plot <- bprc_dat %>%
         axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
         plot.margin = margin(15,5,0,5))
 
-prc_dat <- roc_dat <- sensspec_dat %>% 
-  dplyr::mutate(sensitivity = round(sensitivity, 2)) %>%
-  dplyr::group_by(sensitivity, dataset, outcome) %>%
+
+prcurve_dat <- read_csv(here('results', 'prcurve_results_aggregated.csv')) %>%
+  mutate(outcome = factor(outcome, levels = c('idsa', 'allcause', 'attrib', 'pragmatic'))) %>% 
+  mutate(dataset = case_when(dataset == 'full' ~ 'Full dataset',
+                             dataset == 'int' ~ 'Intersection',
+                             TRUE ~ NA_character_)) %>% 
+  dplyr::mutate(recall = round(recall, 2)) %>%
+  dplyr::group_by(recall, dataset, outcome) %>%
   dplyr::summarise(
-    median_precision = median(precision),
+    mean_precision = mean(precision),
     upper = quantile(precision, 0.95),
     lower = quantile(precision, 0.05)
   ) %>%
@@ -155,7 +175,9 @@ prc_dat <- roc_dat <- sensspec_dat %>%
     )
   )
 
-# TODO add baseline precision
+color_names <- c("IDSA"="#1B9E77", 'All-cause'="#7570B3", 
+                 'Attrib'="#D95F02", 'Pragmatic'="#E7298A")
+
 priors <- sensspec_dat %>% 
   select(outcome, dataset, prior) %>% 
   dplyr::distinct() %>%
@@ -166,9 +188,8 @@ priors <- sensspec_dat %>%
     outcome == 'pragmatic' ~ 'Pragmatic',
     TRUE ~ NA_character_
   ), levels = c("IDSA", 'All-cause', 'Attrib', 'Pragmatic')))
-color_names <- c("IDSA"="#1B9E77", 'All-cause'="#7570B3", 
-                 'Attrib'="#D95F02", 'Pragmatic'="#E7298A")
-prc_plot_grid <- prc_dat %>%
+
+prc_plot_grid <- prcurve_dat %>%
   mutate(outcome = factor(case_when(
     outcome == 'idsa' ~ 'IDSA',
     outcome == 'allcause' ~ 'All-cause',
@@ -176,7 +197,7 @@ prc_plot_grid <- prc_dat %>%
     outcome == 'pragmatic' ~ 'Pragmatic',
     TRUE ~ NA_character_
   ), levels = c("IDSA", 'All-cause', 'Attrib', 'Pragmatic'))) %>% 
-  ggplot(aes(x = sensitivity, y = median_precision, 
+  ggplot(aes(x = recall, y = mean_precision, 
              ymin = lower, ymax = upper)) +
   geom_ribbon(aes(fill = outcome), alpha = 0.2) +
   geom_line(aes(color = outcome)) +
@@ -190,7 +211,7 @@ prc_plot_grid <- prc_dat %>%
   scale_y_continuous(expand = c(0, 0), limits = c(-0.01, 1.01)) +
   scale_x_continuous(expand = c(0, 0), limits = c(-0.01, 1.01)) +
   coord_equal() +
-  labs(x = "Recall", y = "Median Precision") +
+  labs(x = "Recall", y = "Mean Precision") +
   facet_grid(dataset ~ outcome) +
   theme_sovacool() +
   theme(text = element_text(size = 10, family = 'Helvetica'),
