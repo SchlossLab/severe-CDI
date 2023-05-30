@@ -1,9 +1,10 @@
 Cost-Benefit Analysis
 ================
-2023-05-11
+2023-05-30
 
 - use values from confusion matrix for one representative model on a
-  test set. or get average precision?
+  test set. or get average precision? choose a particular sensitivity
+  level and see the range in precision?
   - Number needed to screen (NNS) - the number of alerted patients the
     models must flag to identify 1 true positive.
   - Number needed to treat (NNT) - the number of true positive patients
@@ -20,8 +21,7 @@ Cost-Benefit Analysis
 
 ## evaluating ml models
 
-[number needed to
-benefit](https://academic.oup.com/jamia/article-abstract/26/12/1655/5516459)
+### [number needed to benefit](https://academic.oup.com/jamia/article-abstract/26/12/1655/5516459)
 
 - Number needed to screen (NNS) - the number of alerted patients the
   models must flag to identify 1 true positive.
@@ -37,6 +37,50 @@ benefit](https://academic.oup.com/jamia/article-abstract/26/12/1655/5516459)
 > framework that will alter the estimated number needed to benefit
 > across different modeling and implementation scenarios.
 
+### [decision curve analysis](https://journals.sagepub.com/doi/10.1177/0272989X06295361)
+
+QALYs are prone to systemic biases. We can sidestep using them by doing
+decision curve analysis instead. Weight the relative harms of FP and FN
+results.
+
+- incidence of severe CDI
+- net benefit = $\frac{TP}{n} - \frac{FP}{n} \times \frac{p_t}{1-p_t}$
+  (Peirce 1884)
+- plot net benefit vs probability threshold ($p_t$).
+- harm of treating with fidaxomicin instead of vancomycin: more
+  expensive. by how much?
+- assume all patients severe vs no patients severe.
+
+``` r
+library(here)
+library(schtools)
+library(tidyverse)
+thresh_dat <- read_csv(here('results','thresholds_results_aggregated.csv'))
+
+max_thresholds <- thresh_dat %>% 
+  filter(strategy == 'model') %>% 
+  group_by(dataset, outcome, strategy, decision_threshold)  %>% 
+  summarize(mean_nb = mean(net_benefit)) %>% 
+  filter(mean_nb < 0) %>% 
+  slice_min(mean_nb) %>% 
+  ungroup() %>% 
+  mutate(max_thresh = decision_threshold) %>% 
+  select(dataset,outcome,max_thresh)
+
+thresh_dat %>% 
+  left_join(max_thresholds, by = join_by(dataset, outcome)) %>% 
+  filter(decision_threshold <= max_thresh) %>% 
+  group_by(dataset, outcome, strategy, decision_threshold) %>% 
+  summarize(mean_nb = mean(net_benefit)) %>% 
+  ggplot(aes(decision_threshold, mean_nb, 
+             color = strategy, linetype = strategy)) +
+  geom_line(alpha = 0.6) +
+  facet_grid(dataset ~ outcome, scales = 'free') +
+  theme_sovacool()
+```
+
+![](figures/decision-curve-1.png)<!-- -->
+
 ## treatment options & costs
 
 - Vince: consider bezlotoxumab since it targets the toxin, mouse models
@@ -45,6 +89,17 @@ benefit](https://academic.oup.com/jamia/article-abstract/26/12/1655/5516459)
   severity. however fidaxomicin is superior to vancomycin for cure and
   time to resolution of diarrhea ([IDSA 2021
   update](https://doi.org/10.1093/cid/ciab549)).
+  - Fidaxomicin
+    [NNT=10](https://thennt.com/nnt/oral-fidaxomicin-versus-vancomycin-clostridioides-difficile-infection/)
+    for global cure (no recurrence occured).
+
+NNT for Fidaxomicin, FMT, and/or Bezlotoxumab. Current standard is
+Vancomycin because it’s cheaper than Fidaxomicin, even though IDSA
+recommends Fidaxomicin.
+
+rough estimate of costs. current: everyone gets vancomycin. potential:
+patients flagged as severe get fidaxomicin. based on NNB, estimate how
+much money saved in averting severe outcomes.
 
 ### [Gupta *et al.* 2021 - Economic Burden of CDI](https://journals.sagepub.com/doi/10.1177/17562848211018654)
 

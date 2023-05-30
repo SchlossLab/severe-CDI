@@ -7,7 +7,10 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE,
+                      message = FALSE,
+                      warning = FALSE,
+                      fig.path = 'figures/')
 ```
 
 - use values from confusion matrix for one representative model on a test set. or get average precision? choose a particular sensitivity level and see the range in precision?
@@ -47,13 +50,29 @@ Weight the relative harms of FP and FN results.
 
 ```{r decision-curve}
 library(here)
+library(schtools)
 library(tidyverse)
 thresh_dat <- read_csv(here('results','thresholds_results_aggregated.csv'))
+
+max_thresholds <- thresh_dat %>% 
+  filter(strategy == 'model') %>% 
+  group_by(dataset, outcome, strategy, decision_threshold)  %>% 
+  summarize(mean_nb = mean(net_benefit)) %>% 
+  filter(mean_nb < 0) %>% 
+  slice_min(mean_nb) %>% 
+  ungroup() %>% 
+  mutate(max_thresh = decision_threshold) %>% 
+  select(dataset,outcome,max_thresh)
+
 thresh_dat %>% 
-  filter(dataset == 'int',outcome=='attrib',seed==100) %>% 
-  ggplot(aes(decision_threshold, net_benefit, 
+  left_join(max_thresholds, by = join_by(dataset, outcome)) %>% 
+  filter(decision_threshold <= max_thresh) %>% 
+  group_by(dataset, outcome, strategy, decision_threshold) %>% 
+  summarize(mean_nb = mean(net_benefit)) %>% 
+  ggplot(aes(decision_threshold, mean_nb, 
              color = strategy, linetype = strategy)) +
   geom_line(alpha = 0.6) +
+  facet_grid(dataset ~ outcome, scales = 'free') +
   theme_sovacool()
 ```
 
