@@ -94,11 +94,12 @@ feat_imp_plot <- dat %>%
   theme_sovacool() +
   theme(text = element_text(size = 10, family = 'Helvetica'),
         axis.text.y = element_markdown(size = 10),
-        axis.text.x = element_text(size = 10),
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
         strip.background = element_blank(),
         panel.spacing = unit(1, 'pt'),
         legend.position = "top",
-        panel.grid.major.y = element_blank()) 
+        panel.grid.major.y = element_blank(),
+        plot.margin = margin(0,5,0,0, unit = 'pt')) 
 
 relabun_dat <- data.table::fread(here('data', 'mothur', 'alpha', 
                                       'cdi.opti_mcc.shared')) %>% 
