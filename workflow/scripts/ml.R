@@ -20,6 +20,7 @@ data_processed <- readRDS(snakemake@input[["rds"]])$dat_transformed
 prior <- data_processed %>% 
   calc_baseline_precision(outcome_colname = outcome_colname,
                           pos_outcome = 'yes')
+message('baseline precision: ', prior)
 
 ml_results <- run_ml(
   dataset = data_processed  %>% 
@@ -55,8 +56,9 @@ get_performance_tbl(
   method = ml_method,
   seed = seed
 ) %>%
-  mutate(prec = case_when(Sensitivity == 0 & Specificity == 1 ~ 1, 
-                          TRUE ~ as.numeric(Precision)),
+  mutate(Precision = as.numeric(Precision),
+         prec = case_when(Sensitivity == 0 & Specificity == 1 ~ 1, 
+                          TRUE ~ Precision),
          auprc_prec = case_when(is.na(prAUC) & Sensitivity == 0 & Specificity == 1 ~ 1, 
                                 TRUE ~ prAUC),
          baseline_precision = prior,
