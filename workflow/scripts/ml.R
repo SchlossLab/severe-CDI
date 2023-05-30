@@ -4,7 +4,6 @@ library(here)
 devtools::load_all('../mikropml') # TODO remove after debugging finished
 library(schtools)
 library(tidyverse)
-source(here('workflow','scripts','calc_balanced_precision.R'))
 
 doFuture::registerDoFuture()
 future::plan(future::multicore, workers = snakemake@threads)
@@ -73,6 +72,15 @@ get_performance_tbl(
          aubprc_prec = if_else(!is.na(auprc_prec), 
                                calc_balanced_precision(auprc_prec, prior), 
                                NA),
+         pr_auc = yardstick::pr_auc(preds, yes,
+                                    truth = actual,
+                                    estimator = 'binary') %>% pull(.estimate), 
+         bpr_auc = if_else(!is.na(pr_auc), 
+                           calc_balanced_precision(pr_auc, prior), 
+                           NA),
+         roc_auc = yardstick::roc_auc(preds, yes,
+                                      truth = actual,
+                                      estimator = 'binary') %>% pull(.estimate), 
          average_precision = yardstick::average_precision(preds, yes, 
                                                           truth = actual, 
                                                           estimator = 'binary') %>% pull(.estimate),
