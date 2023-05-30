@@ -5,6 +5,7 @@ library(glue)
 library(here)
 library(schtools)
 library(tidyverse)
+percent_ci = 75
 filter_top_feats <- function(feat_dat, 
                              frac_important_threshold = 0.75,
                              otu_col = label_html, 
@@ -34,7 +35,7 @@ alpha_level <- 0.05
 
 dat <- left_join(feat_dat, tax_dat, by = 'otu')
 dat_top_otus <- dat %>% 
-  filter_top_feats(frac_important_threshold = 0.75) %>% 
+  filter_top_feats(frac_important_threshold = percent_ci/100) %>% 
   mutate(is_signif = TRUE)
 
 top_otus_order <- dat_top_otus %>% 
@@ -79,12 +80,12 @@ feat_imp_plot <- dat %>%
                                           order = 2)) +
   scale_shape_manual(values = c(Yes=8, No=20),
                      guide = guide_legend(label.position = 'bottom',
-                                          title = 'Significant\n(75% CI)',
+                                          title = glue('Significant\n({percent_ci}% CI)'),
                                           title.position = 'top',
                                           order = 1)) +
   scale_size_manual(values = c(Yes=0.4, No=0.2),
                     guide = guide_legend(label.position = 'bottom',
-                                         title = 'Significant\n(75% CI)',
+                                         title = glue('Significant\n({percent_ci}% CI)'),
                                          title.position = 'top',
                                          order = 1)
                     ) +
