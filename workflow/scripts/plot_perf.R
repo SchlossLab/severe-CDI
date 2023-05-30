@@ -27,7 +27,7 @@ dat <- read_csv(here("results","performance_results_aggregated.csv")) %>%
 perf_plot <- dat %>% 
     pivot_longer(c(`training set AUROC`, `test set AUROC`, 
                    #`test set AUBPRC`, 
-                   `test set ABP`
+                   `test set ABP` # TODO use balanced pr_auc from yardstick
                    ),
                  names_to = "data_partition",
                  values_to = 'performance'
@@ -104,13 +104,29 @@ roc_dat <- read_csv(here('results', 'roccurve_results_aggregated.csv')) %>%
     )
   )
 
+thresh_dat <- read_csv(here('results','thresholds_results_aggregated.csv')) %>% 
+  mutate(predicted_pos_frac = (tp + fp) / (tp + fp + tn + fn))
+roc_risk_pct <- thresh_dat %>% 
+  mutate(Specificity = round(Specificity, 2)) %>%
+  group_by(Specificity, dataset, outcome) %>%
+  summarise(
+    mean_sensitivity = mean(Sensitivity),
+    mean_pred_pos_frac = mean(predicted_pos_frac)
+  ) %>% 
+  ungroup() %>%
+  group_by(dataset, outcome) %>%
+  mutate(diff_95th_pct = abs(mean_pred_pos_frac - 0.05)) %>%
+  slice_min(diff_95th_pct) %>% 
+  mutate(dataset = case_when(dataset == 'full' ~ 'Full dataset',
+                             dataset == 'int' ~ 'Intersection',
+                             TRUE ~ NA_character_))
 roc_plot <- roc_dat %>%
   filter(!(dataset == 'Intersection' & outcome == 'pragmatic'))  %>%  # remove pragmatic int since same as attrib
-  ggplot(aes(x = specificity, y = mean_sensitivity,
-             ymin = lower, ymax = upper
-             )) +
-  geom_ribbon(aes(fill = outcome), alpha = 0.08) +
-  geom_line(aes(color = outcome), alpha=0.6) +
+  ggplot() +
+  geom_ribbon(aes(x = specificity, ymin = lower, ymax = upper, fill = outcome), 
+              alpha = 0.08) +
+  geom_line(aes(x = specificity, y = mean_sensitivity, color = outcome), alpha=0.6) +
+  #geom_point(data = roc_risk_pct, aes(x = Specificity, y = mean_sensitivity, color = outcome)) +
   geom_abline(
     intercept = 1,
     slope = 1,
@@ -153,7 +169,7 @@ bprc_dat <- read_csv(here('results', 'prcurve_results_aggregated.csv')) %>%
             by = join_by(outcome, dataset)) %>% 
   mutate(
          balanced_precision = mikropml::calc_balanced_precision(precision, prior),
-         recall = round(recall, 1)) %>%
+         recall = round(recall, 2)) %>%
   group_by(recall, dataset, outcome) %>%
   summarise(
     mean_balanced_precision = median(balanced_precision),
@@ -265,7 +281,7 @@ prc_plot_grid <- prcurve_dat %>%
   scale_y_continuous(expand = c(0, 0), limits = c(-0.01, 1.01)) +
   scale_x_continuous(expand = c(0, 0), limits = c(-0.01, 1.01)) +
   coord_equal() +
-  labs(x = "Recall", y = "Mean Precision") +
+  labs(x = "Recall", y = "Precision") +
   facet_grid(dataset ~ outcome) +
   theme_sovacool() +
   theme(text = element_text(size = 10, family = 'Helvetica'),
