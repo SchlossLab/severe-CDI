@@ -34,6 +34,44 @@ ml_results <- run_ml(
 )
 
 trained_model <- ml_results$trained_model
+yardstick_perf <- function(split) {
+  test_dat <- analysis(split)
+  preds <- stats::predict(trained_model,
+                          newdata = test_dat,
+                          type = "prob") %>%
+    dplyr::mutate(actual = test_dat %>%
+                    dplyr::pull(outcome_colname) %>%
+                    factor(., levels = c('yes', 'no')))
+  
+  get_performance_tbl(
+    trained_model,
+    analysis(split),
+    outcome_colname = outcome_colname,
+    perf_metric_function = caret::multiClassSummary,
+    perf_metric_name = metric,
+    class_probs = TRUE,
+    method = ml_method,
+    seed = seed
+  ) %>%
+    select(cv_metric_AUC, AUC, Sensitivity, Specificity, Precision, Recall) %>%
+    mutate(
+      Precision = case_when(Sensitivity == 0 & Specificity == 1 ~ 1, 
+                            TRUE ~ as.numeric(Precision)),
+      pr_auc = yardstick::pr_auc(preds, yes,
+                                 truth = actual,
+                                 estimator = 'binary') %>% pull(.estimate),
+      average_precision = yardstick::average_precision(preds, yes,
+                                                       truth = actual,
+                                                       estimator = 'binary') %>% pull(.estimate),
+      average_precision_balanced = if_else(
+        !is.na(average_precision),
+        calc_balanced_precision(average_precision, prior),
+        NA
+      )
+    ) %>% 
+    pivot_longer(everything(), names_to = 'term', values_to = 'estimate')
+}
+
 calc_perf <- function(split) {
   get_performance_tbl(
     trained_model,
@@ -52,7 +90,7 @@ calc_perf <- function(split) {
 
 test_dat <- ml_results$test_data
 bootstrap_perf <- bootstraps(test_dat, times = 10000) %>% 
-  mutate(perf = future_map(splits, ~ calc_perf(.x), seed = TRUE)) %>% 
+  mutate(perf = future_map(splits, ~ yardstick_perf(.x), seed = TRUE)) %>% 
   int_pctl(perf)
 
 bootstrap_perf %>%
