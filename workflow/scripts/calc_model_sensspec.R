@@ -1,7 +1,8 @@
 schtools::log_snakemake()
 library(assertthat)
 library(here)
-library(mikropml)
+#library(mikropml)
+devtools::load_all('../mikropml')
 library(purrr)
 library(schtools)
 library(tidyverse)
@@ -58,7 +59,7 @@ calc_model_sensspec <- function(trained_model, test_data,
     ) %>%
     dplyr::mutate(
       specificity = 1 - fpr,
-      precision = tp / (tp + fp)
+      precision = if (tp == 0 & fp == 0) {0} else {tp / (tp + fp)}
     ) %>%
     dplyr::select(-is_pos)
   return(sensspec)
@@ -105,8 +106,9 @@ get_threshold_performance <- function(dat, decision_threshold,
                   fp = fp,
                   tn = tn,
                   fn = fn,
+                  Precision = case_when(tp == 0 & fp == 0 ~ 0, TRUE ~ Precision),
                   net_benefit = tp / total - (fp / total) * (decision_threshold / (1 - decision_threshold)),
-                  nns = 1 / `Pos Pred Value`,
+                  nns = 1 / Precision,
                   decision_threshold = decision_threshold
            )
   )
@@ -128,14 +130,14 @@ probs <- stats::predict(model,
   compute_thresholds() %>% 
   mutate(strategy = 'model')
 
-treat_all <- test_dat %>% 
+treat_all <- data_processed %>% 
   select(outcome_colname) %>% 
   rename(actual = outcome_colname) %>% 
   mutate(no = 0, yes = 1) %>% 
   compute_thresholds() %>% 
   mutate(strategy = 'all')
 
-treat_none <- test_dat %>% 
+treat_none <- data_processed %>% 
   select(outcome_colname) %>% 
   rename(actual = outcome_colname) %>% 
   mutate(no = 1, yes = 0) %>% 
