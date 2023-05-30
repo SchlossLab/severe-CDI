@@ -6,6 +6,7 @@ devtools::load_all('../mikropml')
 library(purrr)
 library(schtools)
 library(tidyverse)
+library(yardstick)
 source(here('workflow','scripts','calc_balanced_precision.R'))
 
 wildcards <- get_wildcards_tbl()
@@ -60,7 +61,7 @@ calc_model_sensspec <- function(trained_model, test_data,
     dplyr::mutate(
       specificity = 1 - fpr,
       precision = tp / (tp + fp),
-      prec = if (tp == 0 & fp == 0) {0} else {tp / (tp + fp)},
+      prec = if (tp == 0 & fp == 0) {1} else {tp / (tp + fp)},
     ) %>%
     dplyr::select(-is_pos)
   return(sensspec)
@@ -78,7 +79,25 @@ calc_model_sensspec(
   bind_cols(wildcards) %>%
   write_csv(snakemake@output[["sensspec"]])
 
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+# yardstick for roc & pr curves
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+preds <- stats::predict(model,
+                        newdata = test_dat,
+                        type = "prob"
+) %>%
+  dplyr::mutate(actual = test_dat %>%
+                  dplyr::pull(outcome_colname) %>% 
+                  factor(., levels = c('yes','no')))
+pr_curve(preds, yes, truth = actual, 
+         estimator = 'binary', event_level = 'first') %>% 
+  bind_cols(wildcards) %>% 
+  write_csv(snakemake@output[['prcurve']])
 
+roc_curve(preds, yes, truth = actual, 
+          estimator = 'binary', event_level = 'first') %>% 
+  bind_cols(wildcards) %>% 
+  write_csv(snakemake@output[['roccurve']])
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 # decision thresholds
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
@@ -108,7 +127,7 @@ get_threshold_performance <- function(dat, decision_threshold,
                   fp = fp,
                   tn = tn,
                   fn = fn,
-                  prec = case_when(tp == 0 & fp == 0 ~ 0, TRUE ~ Precision),
+                  prec = case_when(tp == 0 & fp == 0 ~ 1, TRUE ~ Precision),
                   net_benefit = tp / total - (fp / total) * (decision_threshold / (1 - decision_threshold)),
                   nns = 1 / prec,
                   decision_threshold = decision_threshold

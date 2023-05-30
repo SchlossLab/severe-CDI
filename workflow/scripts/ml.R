@@ -38,6 +38,14 @@ ml_results <- run_ml(
   perf_metric_function = caret::multiClassSummary
 )
 
+preds <- stats::predict(model,
+                        newdata = test_dat,
+                        type = "prob"
+) %>%
+  dplyr::mutate(actual = test_dat %>%
+                  dplyr::pull(outcome_colname) %>% 
+                  factor(., levels = c('yes','no')))
+
 get_performance_tbl(
   ml_results$trained_model,
   ml_results$test_data,
@@ -48,8 +56,10 @@ get_performance_tbl(
   method = ml_method,
   seed = seed
 ) %>%
-  mutate(prec = case_when(Sensitivity == 0 & Specificity == 1 ~ 0, TRUE ~ Precision),
-         auprc_prec = case_when(is.na(prAUC) & Sensitivity == 0 & Specificity == 1 ~ 0 ~ 0, TRUE ~ prAUC)
+  mutate(prec = case_when(Sensitivity == 0 & Specificity == 1 ~ 1, 
+                          TRUE ~ Precision),
+         auprc_prec = case_when(is.na(prAUC) & Sensitivity == 0 & Specificity == 1 ~ 1, 
+                                TRUE ~ prAUC),
          baseline_precision = prior,
          balanced_precision = if_else(!is.na(Precision), 
                                       calc_balanced_precision(Precision, prior), 
@@ -62,7 +72,13 @@ get_performance_tbl(
                           NA),
          aubprc_prec = if_else(!is.na(auprc_prec), 
                                calc_balanced_precision(auprc_prec, prior), 
-                               NA)) %>% 
+                               NA),
+         average_precision = yardstick::average_precision(preds, yes, 
+                                                          truth = actual, 
+                                                          estimator = 'binary') %>% pull(.estimate),
+         average_precision_balanced = if_else(!is.na(average_precision),
+                                              calc_balanced_precision(average_precision, prior),
+                                              NA)) %>% 
   left_join(wildcards) %>%
   write_csv(snakemake@output[["perf"]])
 

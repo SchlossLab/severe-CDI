@@ -19,3 +19,4 @@ dependencies:
   - r-schtools>=0.4
   - r-testthat
   - r-tidyverse>=1.3
+  - r-yardstick

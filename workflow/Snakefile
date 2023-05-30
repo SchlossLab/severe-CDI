@@ -19,7 +19,7 @@ metrics = config['metrics']
 train_fracs = config['train_frac']
 datasets = config['dataset_subsets']
 
-result_types = ['performance', 'feature-importance', 'sensspec', 'thresholds']
+result_types = ['performance', 'feature-importance', 'sensspec', 'thresholds', 'prcurve', 'roccurve']
 
 notebooks_dir = pathlib.Path('workflow', 'notebooks')
 md_notebooks = [pathlib.Path(notebooks_dir, nb)
