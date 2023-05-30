@@ -59,7 +59,8 @@ calc_model_sensspec <- function(trained_model, test_data,
     ) %>%
     dplyr::mutate(
       specificity = 1 - fpr,
-      precision = if (tp == 0 & fp == 0) {0} else {tp / (tp + fp)}
+      precision = tp / (tp + fp),
+      prec = if (tp == 0 & fp == 0) {0} else {tp / (tp + fp)},
     ) %>%
     dplyr::select(-is_pos)
   return(sensspec)
@@ -72,7 +73,8 @@ calc_model_sensspec(
   outcome_colname
 ) %>%
   mutate(prior = prior_baseline,
-         balanced_precision = calc_balanced_precision_v(precision, prior)) %>%
+         balanced_precision = calc_balanced_precision_v(precision, prior),
+         balanced_prec = calc_balanced_precision_v(prec, prior)) %>%
   bind_cols(wildcards) %>%
   write_csv(snakemake@output[["sensspec"]])
 
@@ -106,9 +108,9 @@ get_threshold_performance <- function(dat, decision_threshold,
                   fp = fp,
                   tn = tn,
                   fn = fn,
-                  Precision = case_when(tp == 0 & fp == 0 ~ 0, TRUE ~ Precision),
+                  prec = case_when(tp == 0 & fp == 0 ~ 0, TRUE ~ Precision),
                   net_benefit = tp / total - (fp / total) * (decision_threshold / (1 - decision_threshold)),
-                  nns = 1 / Precision,
+                  nns = 1 / prec,
                   decision_threshold = decision_threshold
            )
   )

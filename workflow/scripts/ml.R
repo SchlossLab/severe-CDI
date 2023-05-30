@@ -48,13 +48,21 @@ get_performance_tbl(
   method = ml_method,
   seed = seed
 ) %>%
-  mutate(baseline_precision = prior,
+  mutate(prec = case_when(Sensitivity == 0 & Specificity == 1 ~ 0, TRUE ~ Precision),
+         auprc_prec = case_when(is.na(prAUC) & Sensitivity == 0 & Specificity == 1 ~ 0 ~ 0, TRUE ~ prAUC)
+         baseline_precision = prior,
          balanced_precision = if_else(!is.na(Precision), 
                                       calc_balanced_precision(Precision, prior), 
                                       NA),
+         balanced_prec = if_else(!is.na(prec), 
+                                      calc_balanced_precision(prec, prior), 
+                                      NA),
          aubprc = if_else(!is.na(prAUC), 
                           calc_balanced_precision(prAUC, prior), 
-                          NA)) %>% 
+                          NA),
+         aubprc_prec = if_else(!is.na(auprc_prec), 
+                               calc_balanced_precision(auprc_prec, prior), 
+                               NA)) %>% 
   left_join(wildcards) %>%
   write_csv(snakemake@output[["perf"]])
 
