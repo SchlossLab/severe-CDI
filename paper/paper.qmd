@@ -13,6 +13,8 @@ format:
     lof: false
   html:
     embed-resources: true
+  gfm:
+    prefer-html: true
 runningtitle: Predicting CDI Severity from OTUs
 runningauthor: Sovacool
 papertype: Preprint
@@ -62,10 +64,12 @@ knitr::opts_chunk$set(dpi = 600)
 ```
 ```{r load_data, message = FALSE}
 library(here)
+library(kableExtra)
 library(knitr)
 library(tidyverse)
 
 load(here("results", "stats.RData"))
+table_font_size <- 11
 ```
 
 # Introduction
@@ -96,7 +100,7 @@ is potential clinical value in OTU-based models.
 
 We first set out to train the best models possible for each severity definition.
 Not all samples have labels available for all four severity definitions due to
-missing data for some patient lab values and incomplete chart review (TODO table).
+missing data for some patient lab values and incomplete chart review (@tbl-counts).
 
 However, comparisons across these definitions is not fair when using different
 subsets of the data for each definition.
@@ -104,6 +108,26 @@ To better compare the model performances across different severity definitions,
 we selected the intersection of samples (`r n_cases_int`) that had labels for
 all four severity definitions and repeated the model training and evaluation
 process.
+
+```{r sample_counts}
+#| label: tbl-counts
+#| tbl-pos: h
+#| tbl-cap: "Dataset sample counts"
+#| tbl-subcap: 
+#|   - "Full datasets"
+#|   - "Intersection of samples with all labels available"
+#| layout-ncol: 2
+format_table <- function(tab) {
+  tab %>%
+    kable(col.names = c(' ', 'IDSA', 'Attrib', 'All-cause', "Pragmatic"),
+          format.args = list(big.mark = ',')) %>% 
+    kable_styling(font_size = table_font_size)
+}
+read_csv(here('results','count_table_full.csv')) %>% 
+  format_table()
+read_csv(here('results','count_table_int.csv')) %>% 
+  format_table()
+```
 
 Report median AUROC for training set and test set, and median AUBPRC for test set (@fig-performance).
 Nearly all pairs of definitions have significantly different performances on the
@@ -119,14 +143,9 @@ the most to model performance (@fig-features).
 
 ## Estimating clinical benefit
 
+it's not enough for models to perform well to deploy it in a clinical setting;
+benefit over current practices must be shown.
 table of NNS at 95th pct of risk for each outcome x dataset (@tbl-risk).
-
-```{r risk_95th_pct_decision_thresholds, message=FALSE}
-#| label: tbl-risk
-#| tbl-cap: "**Predictive model performance at 95th percentile of risk.** The confusion matrix was computed at the 95th percentile of risk for each severity prediction model, which corresponds to 5% of cases predicted to be severe."
-read_csv(here('results','decision_thresholds.csv')) %>% kable()
-```
-
 
 NNT x NNS = NNB
 
@@ -140,7 +159,30 @@ current: everyone gets vancomycin.
 potential: patients flagged as severe get fidaxomicin. based on NNB, estimate
 how much money saved in averting severe outcomes.
 
-decision curve analysis.
+```{r risk_95th_pct_decision_thresholds, message=FALSE}
+#| label: tbl-risk
+#| tbl-pos: h
+#| tbl-cap: "**Predictive model performance at 95th percentile of risk.** 
+#|   The confusion matrix was computed at the 95th percentile of risk for each
+#|    severity prediction model, which corresponds to 5% of cases predicted to 
+#|    be severe. The number needed to screen (NNS) to identify one true positive
+#|    is the reciprocal of precision.
+#|    "
+#| tbl-subcap: 
+#|   - "Full datasets"
+#|   - "Intersection of samples with all labels available"
+risk_thresh <- read_csv(here('results','decision_thresholds.csv'))
+risk_thresh %>% 
+  filter(Dataset == 'Full') %>% 
+  select(-Dataset) %>% 
+  kable() %>% 
+  kable_styling(font_size = table_font_size)
+risk_thresh %>% 
+  filter(Dataset == 'Intersection') %>% 
+  select(-Dataset) %>% 
+  kable() %>% 
+  kable_styling(font_size = table_font_size)
+```
 
 # Discussion
 
@@ -300,7 +342,7 @@ TODO
 
 {{< pagebreak >}}
 
-# Figures
+#  Figures
 
 ::: {#fig-flowchart fig-cap="**CDI severity definitions.**
 **A)** Decision flow chart to define CDI cases as severe according to the Infectious

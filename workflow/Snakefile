@@ -59,7 +59,7 @@ rule paper_targets:
 rule targets:
     input:
         expand('results/{type}_results_aggregated.csv', type = result_types),
-        'results/model_comparisons.csv'
+        'results/model_comparisons.csv', 'results/decision_thresholds.csv'
     #default_target: True
 
 rule classify_idsa_severity:
@@ -161,14 +161,22 @@ rule calc_stats:
     script:
         'scripts/calc_stats.R'
 
+rule sample_count_tables:
+    output:
+        'results/count_table_full.csv',
+        'results/count_table_int.csv'
+    conda: 'envs/notebooks.yml'
+    script:
+        'scripts/sample_counts.R'
+
 rule render_paper:
     input:
         qmd='paper/paper.qmd',
         bib='paper/references.bib',
         ext=rules.install_quarto_ms.output,
         figs=expand("paper/figures/{figname}.png", figname = {figures_dict[k] for k in figures_dict.keys() if not k.startswith('S')}),
-        dat=rules.calc_stats.output.rda,
-        #tab='results/decision_thresholds.csv',
+        stats=rules.calc_stats.output.rda,
+        tab=[rules.sample_count_tables.output],#'results/decision_thresholds.csv',
     output:
         'paper/paper.pdf',
         'paper/paper.md',

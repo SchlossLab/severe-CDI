@@ -2,7 +2,11 @@
 Composition of the Gut Microbiome
 Kelly L. SovacoolSarah E. TomkovichMegan L. CodenVincent B. YoungKrishna
 RaoPatrick D. Schloss
-May 30, 2023
+May 31, 2023
+
+<script src="paper_files/libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="paper_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+
 
 # Introduction
 
@@ -35,13 +39,37 @@ models.
 We first set out to train the best models possible for each severity
 definition. Not all samples have labels available for all four severity
 definitions due to missing data for some patient lab values and
-incomplete chart review (TODO table).
+incomplete chart review (**?@tbl-counts**).
 
 However, comparisons across these definitions is not fair when using
 different subsets of the data for each definition. To better compare the
 model performances across different severity definitions, we selected
 the intersection of samples (993) that had labels for all four severity
 definitions and repeated the model training and evaluation process.
+
+<div id="tbl-counts-1">
+
+|        |    IDSA |  Attrib | All-cause | Pragmatic |
+|:-------|--------:|--------:|----------:|----------:|
+| n      | 1,072.0 | 1,178.0 |   1,218.0 |   1,218.0 |
+| % pos. |    34.2 |     2.2 |       7.1 |       5.4 |
+
+Table 1: Full datasets
+
+</div>
+
+<div id="tbl-counts-2">
+
+|        |  IDSA | Attrib | All-cause | Pragmatic |
+|:-------|------:|-------:|----------:|----------:|
+| n      | 993.0 |  993.0 |     993.0 |     993.0 |
+| % pos. |  32.7 |    2.6 |       4.6 |       2.6 |
+
+Table 2: Intersection of samples with all labels available
+
+</div>
+
+Dataset sample counts
 
 Report median AUROC for training set and test set, and median AUBPRC for
 test set ([Figure 2](#fig-performance)). Nearly all pairs of definitions
@@ -58,25 +86,9 @@ contributed the most to model performance ([Figure 3](#fig-features)).
 
 ## Estimating clinical benefit
 
-table of NNS at 95th pct of risk for each outcome x dataset
-([Table 1](#tbl-risk)).
-
-<div id="tbl-risk">
-
-| Severity     | Dataset      | Precision | NNS | Balanced Precision | Recall | Specificity |  TP |  FP |  TN |  FN |
-|:-------------|:-------------|----------:|----:|-------------------:|-------:|------------:|----:|----:|----:|----:|
-| All-cause    | Full         |      0.33 | 3.0 |               0.87 |   0.12 |        0.98 |   2 |   4 | 222 |  15 |
-| Attributable | Full         |      0.25 | 4.0 |               0.94 |   0.20 |        0.99 |   1 |   3 | 227 |   4 |
-| Pragmatic    | Full         |      0.29 | 3.5 |               0.87 |   0.15 |        0.98 |   2 |   5 | 225 |  11 |
-| All-cause    | Intersection |      0.00 | Inf |               0.00 |   0.00 |        0.99 |   0 |   1 | 188 |   9 |
-| Attributable | Intersection |      0.17 | 6.0 |               0.88 |   0.20 |        0.97 |   1 |   5 | 188 |   4 |
-
-Table 1: **Predictive model performance at 95th percentile of risk.**
-The confusion matrix was computed at the 95th percentile of risk for
-each severity prediction model, which corresponds to 5% of cases
-predicted to be severe.
-
-</div>
+it’s not enough for models to perform well to deploy it in a clinical
+setting; benefit over current practices must be shown. table of NNS at
+95th pct of risk for each outcome x dataset (**?@tbl-risk**).
 
 NNT x NNS = NNB
 
@@ -90,7 +102,34 @@ rough estimate of costs. current: everyone gets vancomycin. potential:
 patients flagged as severe get fidaxomicin. based on NNB, estimate how
 much money saved in averting severe outcomes.
 
-decision curve analysis.
+<div id="tbl-risk-1">
+
+| Severity     | Precision | NNS | Balanced Precision | Recall | Specificity |  TP |  FP |  TN |  FN |
+|:-------------|----------:|----:|-------------------:|-------:|------------:|----:|----:|----:|----:|
+| All-cause    |      0.29 | 3.5 |               0.84 |   0.12 |        0.98 |   2 |   5 | 221 |  15 |
+| Attributable |      0.20 | 5.0 |               0.92 |   0.20 |        0.98 |   1 |   4 | 226 |   4 |
+| Pragmatic    |      0.29 | 3.5 |               0.87 |   0.15 |        0.98 |   2 |   5 | 225 |  11 |
+
+Table 3: Full datasets
+
+</div>
+
+<div id="tbl-risk-2">
+
+| Severity     | Precision | NNS | Balanced Precision | Recall | Specificity |  TP |  FP |  TN |  FN |
+|:-------------|----------:|----:|-------------------:|-------:|------------:|----:|----:|----:|----:|
+| All-cause    |      0.12 |   8 |               0.75 |   0.11 |        0.96 |   1 |   7 | 182 |   8 |
+| Attributable |      0.14 |   7 |               0.86 |   0.20 |        0.97 |   1 |   6 | 187 |   4 |
+
+Table 4: Intersection of samples with all labels available
+
+</div>
+
+**Predictive model performance at 95th percentile of risk.** The
+confusion matrix was computed at the 95th percentile of risk for each
+severity prediction model, which corresponds to 5% of cases predicted to
+be severe. The number needed to screen (NNS) to identify one true
+positive is the reciprocal of precision.
 
 # Discussion
 
