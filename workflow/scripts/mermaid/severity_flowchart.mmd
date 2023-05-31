@@ -27,7 +27,7 @@ flowchart TB
         chart{{physician chart review:\nthe adverse outcome was attributable to the CDI}}:::decision
         chart --> yes_at
         chart --> no_at
-        subgraph attrib[Attrib]
+        subgraph attrib[Attributable]
             direction TB
             yes_at[Yes]:::outcome_yes
             no_at[No]:::outcome_no

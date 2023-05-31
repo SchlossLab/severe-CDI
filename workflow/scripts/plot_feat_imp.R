@@ -51,7 +51,7 @@ feat_imp_plot <- dat %>%
   left_join(dat_top_otus, 
              by = c('label_html', 'outcome', 'dataset')) %>% 
   mutate(label_html = factor(label_html, levels = top_otus_order),
-         dataset = case_when(dataset == 'full' ~ 'Full dataset',
+         dataset = case_when(dataset == 'full' ~ 'Full datasets',
                              TRUE ~ 'Intersection'),
          outcome = factor(outcome, levels = c('idsa', 'allcause', 'attrib', 'pragmatic')),
          is_signif = factor(case_when(is.na(is_signif) ~ 'No',
@@ -73,7 +73,7 @@ feat_imp_plot <- dat %>%
              lwd = 0.5, colour = "grey92") +
   facet_wrap('dataset') +
   scale_color_manual(values = model_colors,
-                     labels = c(idsa='IDSA', attrib='Attrib', allcause='All-cause', pragmatic='Pragmatic'),
+                     labels = c(idsa='IDSA', attrib='Attributable', allcause='All-cause', pragmatic='Pragmatic'),
                      guide = guide_legend(label.position = "bottom",
                                           title = "Severity Definition",
                                           title.position = 'top',
@@ -137,7 +137,7 @@ relabun_plot <- relabun_medians %>%
          med_rel_abun = med_rel_abun + tiny_constant,
          is_severe = factor(str_to_sentence(is_severe),
                             levels = c('Yes', 'No')),
-         dataset = 'Full dataset'
+         dataset = 'Full datasets'
          ) %>% 
   ggplot(aes(x = med_rel_abun, y = label_html,
              color = outcome, shape = is_severe, group = outcome)) +
@@ -148,7 +148,7 @@ relabun_plot <- relabun_medians %>%
              lwd = 0.5, colour = "grey92") +
   facet_wrap('dataset') +
   scale_color_manual(values = model_colors,
-                     labels = c(idsa='IDSA', attrib='Attrib', 
+                     labels = c(idsa='IDSA', attrib='Attributable', 
                                 allcause='All-cause', pragmatic='Pragmatic')
                      ) +
   scale_shape_manual(values = c(Yes=3, No=1),

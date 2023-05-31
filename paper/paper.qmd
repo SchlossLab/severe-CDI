@@ -69,7 +69,7 @@ library(knitr)
 library(tidyverse)
 
 load(here("results", "stats.RData"))
-table_font_size <- 11
+table_font_size <- 10
 ```
 
 # Introduction
@@ -119,7 +119,7 @@ process.
 #| layout-ncol: 2
 format_table <- function(tab) {
   tab %>%
-    kable(col.names = c(' ', 'IDSA', 'Attrib', 'All-cause', "Pragmatic"),
+    kable(col.names = c(' ', 'IDSA', 'Attributable', 'All-cause', "Pragmatic"),
           format.args = list(big.mark = ',')) %>% 
     kable_styling(font_size = table_font_size)
 }
@@ -345,11 +345,11 @@ TODO
 #  Figures
 
 ::: {#fig-flowchart fig-cap="**CDI severity definitions.**
-**A)** Decision flow chart to define CDI cases as severe according to the Infectious
-Diseases Society of America (IDSA) based on lab values,
+**A)** Decision flow chart to define CDI cases as severe according to the
+Infectious Diseases Society of America (IDSA) based on lab values,
 the occurrence of an adverse outcome due to any cause (All-cause),
 and the occurrence of disease-related complications confirmed as attributable to
-CDI with chart review (Attrib).
+CDI with chart review (Attributable).
 **B)** The proportion of severe CDI cases labelled according to each definition.
 An additional 'Pragmatic' severity definition uses the Attributable definition
 when possible, and falls back to the All-cause definition when chart review is
@@ -360,10 +360,10 @@ not available.
 :::
 
 ::: {#fig-performance fig-cap="**Performance of ML models.**
-In the left panels, models were trained on the full dataset, with different numbers of samples
-available for each severity definition.
-In the right panels, models were trained on the intersection of samples with all labels
-available for each definition. 
+In the left panels, models were trained on the full dataset, with different
+numbers of samples available for each severity definition.
+In the right panels, models were trained on the intersection of samples with all
+labels available for each definition.
 Note that the intersection dataset for Attributable and Pragmatic severity have
 exactly the same labels, thus identical values are expected.
 **A)** 
@@ -375,10 +375,13 @@ test set (P < 0.05) except for AUROC and AUBPRC of Attributable vs. Pragmatic on
 the intersection dataset (as they are identical), AUROC of Attributable vs.
 All-cause on the full dataset, and AUROC of Attributable vs. IDSA on the full
 dataset.
+Each point is the median with tails as the 95% CI.
 **B)** Receiver-operator characteristic curves for the test sets.
-Mean specificity is reported at each sensitivity value.
+Mean specificity is reported at each sensitivity value, 
+with ribbons as the 95% CI.
 **C)** Balanced precision-recall curves for the test sets.
-Mean balanced precision is reported at each recall value.
+Mean balanced precision is reported at each recall value, 
+with ribbons as the 95% CI.
 "}
 ![](figures/ml-performance.png)
 :::

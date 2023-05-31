@@ -11,7 +11,7 @@ dat <- read_csv(here("results","performance_results_aggregated.csv")) %>%
            `test set AUBPRC` = bpr_auc, # yardstick::pr_auc doesn't overestimate
            `test set ABP` = average_precision_balanced) %>% 
     filter(metric == 'AUC', method == 'rf', trainfrac == 0.8) %>%
-  mutate(dataset = case_when(dataset == 'full' ~ 'Full dataset',
+  mutate(dataset = case_when(dataset == 'full' ~ 'Full datasets',
                              TRUE ~ 'Intersection of samples with all labels available')) %>% 
   mutate(
     outcome = factor(case_when(outcome == 'idsa' ~ 'IDSA\n severity',
@@ -73,14 +73,14 @@ model_comps <- read_csv(here('results', 'model_comparisons.csv')) %>%
 
 sensspec_dat <- read_csv(here('results','sensspec_results_aggregated.csv')) %>% 
   mutate(outcome = factor(outcome, levels = c('idsa', 'allcause', 'attrib', 'pragmatic'))) %>% 
-  mutate(dataset = case_when(dataset == 'full' ~ 'Full dataset',
+  mutate(dataset = case_when(dataset == 'full' ~ 'Full datasets',
                              dataset == 'int' ~ 'Intersection',
                              TRUE ~ NA_character_))
 
 
 roc_dat <- read_csv(here('results', 'roccurve_results_aggregated.csv')) %>%
   mutate(outcome = factor(outcome, levels = c('idsa', 'allcause', 'attrib', 'pragmatic'))) %>% 
-  mutate(dataset = case_when(dataset == 'full' ~ 'Full dataset',
+  mutate(dataset = case_when(dataset == 'full' ~ 'Full datasets',
                              dataset == 'int' ~ 'Intersection',
                              TRUE ~ NA_character_)) %>% 
   dplyr::mutate(specificity = round(specificity, 1)) %>%
@@ -114,7 +114,7 @@ roc_risk_pct <- thresh_dat %>%
   group_by(dataset, outcome) %>%
   mutate(diff_95th_pct = abs(mean_pred_pos_frac - 0.05)) %>%
   slice_min(diff_95th_pct) %>% 
-  mutate(dataset = case_when(dataset == 'full' ~ 'Full dataset',
+  mutate(dataset = case_when(dataset == 'full' ~ 'Full datasets',
                              dataset == 'int' ~ 'Intersection',
                              TRUE ~ NA_character_))
 roc_plot <- roc_dat %>%
@@ -138,7 +138,7 @@ roc_plot <- roc_dat %>%
                                attrib = "#D95F02", 
                                allcause = "#7570B3", 
                                pragmatic = "#E7298A"),
-                    labels = c(idsa='IDSA', attrib='Attrib', allcause='All-cause', pragmatic='Pragmatic')
+                    labels = c(idsa='IDSA', attrib='Attributable', allcause='All-cause', pragmatic='Pragmatic')
   ) +
   guides(fill = 'none') +
   scale_y_continuous(expand = c(0, 0), limits = c(-0.01, 1.01)) +
@@ -157,7 +157,7 @@ roc_plot <- roc_dat %>%
 
 bprc_dat <- read_csv(here('results', 'prcurve_results_aggregated.csv')) %>%
   mutate(outcome = factor(outcome, levels = c('idsa', 'allcause', 'attrib', 'pragmatic')),
-         dataset = case_when(dataset == 'full' ~ 'Full dataset',
+         dataset = case_when(dataset == 'full' ~ 'Full datasets',
                              dataset == 'int' ~ 'Intersection',
                              TRUE ~ NA_character_)) %>% 
   left_join(sensspec_dat %>% 
@@ -194,13 +194,13 @@ bprc_plot <- bprc_dat %>%
                                 attrib = "#D95F02", 
                                 allcause = "#7570B3", 
                                 pragmatic = "#E7298A"),
-                     labels = c(idsa='IDSA', attrib='Attrib', allcause='All-cause', pragmatic='Pragmatic'),
+                     labels = c(idsa='IDSA', attrib='Attributable', allcause='All-cause', pragmatic='Pragmatic'),
                      guide = guide_legend(label.position = "top")) +
   scale_fill_manual(values = c(idsa = "#1B9E77", 
                                 attrib = "#D95F02", 
                                 allcause = "#7570B3", 
                                 pragmatic = "#E7298A"),
-                     labels = c(idsa='IDSA', attrib='Attrib', allcause='All-cause', pragmatic='Pragmatic')
+                     labels = c(idsa='IDSA', attrib='Attributable', allcause='All-cause', pragmatic='Pragmatic')
                      ) +
   guides(fill = 'none') +
   scale_y_continuous(expand = c(0, 0), limits = c(-0.01, 1.01)) +
@@ -221,7 +221,7 @@ bprc_plot <- bprc_dat %>%
 
 prcurve_dat <- read_csv(here('results', 'prcurve_results_aggregated.csv')) %>%
   mutate(outcome = factor(outcome, levels = c('idsa', 'allcause', 'attrib', 'pragmatic'))) %>% 
-  mutate(dataset = case_when(dataset == 'full' ~ 'Full dataset',
+  mutate(dataset = case_when(dataset == 'full' ~ 'Full datasets',
                              dataset == 'int' ~ 'Intersection',
                              TRUE ~ NA_character_)) %>% 
   dplyr::mutate(recall = round(recall, 2)) %>%
@@ -243,7 +243,7 @@ prcurve_dat <- read_csv(here('results', 'prcurve_results_aggregated.csv')) %>%
   )
 
 color_names <- c("IDSA"="#1B9E77", 'All-cause'="#7570B3", 
-                 'Attrib'="#D95F02", 'Pragmatic'="#E7298A")
+                 'Attributable'="#D95F02", 'Pragmatic'="#E7298A")
 
 priors <- sensspec_dat %>% 
   select(outcome, dataset, prior) %>% 
@@ -251,19 +251,19 @@ priors <- sensspec_dat %>%
   mutate(outcome = factor(case_when(
     outcome == 'idsa' ~ 'IDSA',
     outcome == 'allcause' ~ 'All-cause',
-    outcome == 'attrib' ~ 'Attrib',
+    outcome == 'attrib' ~ 'Attributable',
     outcome == 'pragmatic' ~ 'Pragmatic',
     TRUE ~ NA_character_
-  ), levels = c("IDSA", 'All-cause', 'Attrib', 'Pragmatic')))
+  ), levels = c("IDSA", 'All-cause', 'Attributable', 'Pragmatic')))
 
 prc_plot_grid <- prcurve_dat %>%
   mutate(outcome = factor(case_when(
     outcome == 'idsa' ~ 'IDSA',
     outcome == 'allcause' ~ 'All-cause',
-    outcome == 'attrib' ~ 'Attrib',
+    outcome == 'attrib' ~ 'Attributable',
     outcome == 'pragmatic' ~ 'Pragmatic',
     TRUE ~ NA_character_
-  ), levels = c("IDSA", 'All-cause', 'Attrib', 'Pragmatic'))) %>% 
+  ), levels = c("IDSA", 'All-cause', 'Attributable', 'Pragmatic'))) %>% 
   ggplot(aes(x = recall, y = mean_precision, 
              ymin = lower, ymax = upper)) +
   geom_ribbon(aes(fill = outcome), alpha = 0.15) +

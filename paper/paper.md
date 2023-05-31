@@ -49,10 +49,10 @@ definitions and repeated the model training and evaluation process.
 
 <div id="tbl-counts-1">
 
-|        |    IDSA |  Attrib | All-cause | Pragmatic |
-|:-------|--------:|--------:|----------:|----------:|
-| n      | 1,072.0 | 1,178.0 |   1,218.0 |   1,218.0 |
-| % pos. |    34.2 |     2.2 |       7.1 |       5.4 |
+|        |    IDSA | Attributable | All-cause | Pragmatic |
+|:-------|--------:|-------------:|----------:|----------:|
+| n      | 1,072.0 |      1,178.0 |   1,218.0 |   1,218.0 |
+| % pos. |    34.2 |          2.2 |       7.1 |       5.4 |
 
 Table 1: Full datasets
 
@@ -60,10 +60,10 @@ Table 1: Full datasets
 
 <div id="tbl-counts-2">
 
-|        |  IDSA | Attrib | All-cause | Pragmatic |
-|:-------|------:|-------:|----------:|----------:|
-| n      | 993.0 |  993.0 |     993.0 |     993.0 |
-| % pos. |  32.7 |    2.6 |       4.6 |       2.6 |
+|        |  IDSA | Attributable | All-cause | Pragmatic |
+|:-------|------:|-------------:|----------:|----------:|
+| n      | 993.0 |        993.0 |     993.0 |     993.0 |
+| % pos. |  32.7 |          2.6 |       4.6 |       2.6 |
 
 Table 2: Intersection of samples with all labels available
 
@@ -461,7 +461,7 @@ define CDI cases as severe according to the Infectious Diseases Society
 of America (IDSA) based on lab values, the occurrence of an adverse
 outcome due to any cause (All-cause), and the occurrence of
 disease-related complications confirmed as attributable to CDI with
-chart review (Attrib). **B)** The proportion of severe CDI cases
+chart review (Attributable). **B)** The proportion of severe CDI cases
 labelled according to each definition. An additional ‘Pragmatic’
 severity definition uses the Attributable definition when possible, and
 falls back to the All-cause definition when chart review is not
@@ -488,10 +488,12 @@ significantly different performances on the test set (P \< 0.05) except
 for AUROC and AUBPRC of Attributable vs. Pragmatic on the intersection
 dataset (as they are identical), AUROC of Attributable vs. All-cause on
 the full dataset, and AUROC of Attributable vs. IDSA on the full
-dataset. **B)** Receiver-operator characteristic curves for the test
-sets. Mean specificity is reported at each sensitivity value. **C)**
-Balanced precision-recall curves for the test sets. Mean balanced
-precision is reported at each recall value.
+dataset. Each point is the median with tails as the 95% CI. **B)**
+Receiver-operator characteristic curves for the test sets. Mean
+specificity is reported at each sensitivity value, with ribbons as the
+95% CI. **C)** Balanced precision-recall curves for the test sets. Mean
+balanced precision is reported at each recall value, with ribbons as the
+95% CI.
 
 </div>
 
