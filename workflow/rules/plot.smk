@@ -69,7 +69,8 @@ rule plot_perf:
         #csv="results/performance_results_aggregated.csv",
         #pvals=rules.compare_models.output.csv
     output:
-        tiff="figures/ml-performance.tiff"
+        tiff="figures/ml-performance.tiff",
+        prc="figures/prc_curves.tiff"
     log: "log/plot_perf.txt"
     conda: "../envs/mikropml.yml"
     script:

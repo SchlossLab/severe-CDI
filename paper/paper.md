@@ -4,17 +4,12 @@ Kelly L. SovacoolSarah E. TomkovichMegan L. CodenVincent B. YoungKrishna
 RaoPatrick D. Schloss
 May 30, 2023
 
-``` r
-library(here)
-library(knitr)
-library(tidyverse)
-
-load(here("results", "stats.RData"))
-```
-
 # Introduction
 
 prevalance of cdi. prevalance of severe cdi outcomes.
+
+Numerous studies indicate that the gut microbiome may play a role in *C.
+diff* colonization, infection, and clearance.
 
 prediction models based on EHR for whether infection occurs in the first
 place already in use. so how about predicting severity of infections to
@@ -26,6 +21,12 @@ The IDSA definition is known to be a poor predictor of adverse outcomes
 (Stevens et al. 2020), however, it is easy to collect.
 
 new dataset.
+
+Two goals: investigate whether we can predict CDI severity based on OTU
+data to inform how the gut microbiome may modulate severity (ML-based
+science: good performance implies something about underlying biology),
+and determine whether there is potential clinical value in OTU-based
+models.
 
 # Results
 
@@ -59,10 +60,6 @@ contributed the most to model performance ([Figure 3](#fig-features)).
 
 table of NNS at 95th pct of risk for each outcome x dataset
 ([Table 1](#tbl-risk)).
-
-``` r
-read_csv(here('results','decision_thresholds.csv')) %>% kable()
-```
 
 <div id="tbl-risk">
 
@@ -125,7 +122,7 @@ different aliquots. For 16S sequencing, the aliquot of stool was
 resuspended in DNA genotek stabilization buffer and then stored in the
 -80°C freezer. Only the first CDI sample per patient was used for
 subsequent ML analyses such that no patient is represented more than
-once, resulting in a dataset of 1277 samples.
+once, resulting in a dataset of 1,277 samples.
 
 ## 16S rRNA gene amplicon sequencing
 
@@ -193,7 +190,7 @@ were preprocessed with the default options in mikropml to remove
 features with near-zero variance and scale continuous features from -1
 to 1.
 <!-- No features had missing values and no features were perfectly correlated -->
-During preprocessing, 9757 to 9760 features were removed due to having
+During preprocessing, 9,757 to 9,760 features were removed due to having
 near-zero variance, resulting in datasets ranging from 179 to 182
 depending on the severity definition. We randomly split the data into an
 80% training and 20% test set and repeated this 100 times, followed by
@@ -202,7 +199,7 @@ calculated on the test set using the area under the receiver-operator
 characteristic curve (AUROC) and the area under the balanced
 precision-recall curve (AUBPRC). Permutation importance was then
 performed to determine which OTUs contributed most to model performance.
-We reported OTUs with a significant permutation test in at least 80 of
+We reported OTUs with a significant permutation test in at least 75 of
 the 100 models.
 
 Since the severity labels are imbalanced with different frequencies of

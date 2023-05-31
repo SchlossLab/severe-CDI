@@ -52,11 +52,11 @@ affiliations:
     name: Division of Infectious Diseases, Department of Internal Medicine, University of Michigan
   - id: ccmb
     name: Center for Computational Medicine and Bioinformatics, University of Michigan
-abstract: TODO
-importance: TODO
+#abstract: TODO
+#importance: TODO
 keywords: _C. difficile_ infection, supervised machine learning, gut microbiome, amplicion sequencing
 ---
-```{rsetup, eval=TRUE, echo=FALSE, cache=FALSE}
+```{r setup, eval=TRUE, echo=FALSE, cache=FALSE}
 schtools::set_knitr_opts()
 knitr::opts_chunk$set(dpi = 600)
 ```

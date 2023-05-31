@@ -1,0 +1,18 @@
+---
+title: 'Supplement'
+fontsize: 11pt
+mainfont: Helvetica
+format:
+  pdf:
+    keep-tex: false
+    linenumbers: true
+    doublespacing: true
+    lof: false
+crossref:
+  fig-title: FIG S
+---
+
+::: {#fig-performance fig-cap="**Precision-recall curves.**"}
+![](figures/prc_curves.png)
+:::
+
