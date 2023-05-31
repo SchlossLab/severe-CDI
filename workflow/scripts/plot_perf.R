@@ -8,8 +8,7 @@ library(tidyverse)
 dat <- read_csv(here("results","performance_results_aggregated.csv")) %>%
     rename(`test set AUROC` = AUC,
            `training set AUROC` = cv_metric_AUC,
-           `test set AUPRC` = prAUC,
-           `test set AUBPRC` = aubprc,
+           `test set AUBPRC` = bpr_auc, # yardstick::pr_auc doesn't overestimate
            `test set ABP` = average_precision_balanced) %>% 
     filter(metric == 'AUC', method == 'rf', trainfrac == 0.8) %>%
   mutate(dataset = case_when(dataset == 'full' ~ 'Full dataset',
@@ -25,9 +24,7 @@ dat <- read_csv(here("results","performance_results_aggregated.csv")) %>%
                            'Pragmatic\n severity'))
   )
 perf_plot <- dat %>% 
-    pivot_longer(c(`training set AUROC`, `test set AUROC`, 
-                   #`test set AUBPRC`, 
-                   `test set ABP` # TODO use balanced pr_auc from yardstick
+    pivot_longer(c(`training set AUROC`, `test set AUROC`, `test set AUBPRC`, 
                    ),
                  names_to = "data_partition",
                  values_to = 'performance'
@@ -53,13 +50,13 @@ perf_plot <- dat %>%
     scale_x_continuous(limits = c(0.3, 1), expand = c(0,0)) +
     scale_color_manual(values = c("training set AUROC" = "#BDBDBD",
                                   "test set AUROC" = "#252525",
-                                  "test set ABP" = "#4292C6"),
+                                  "test set AUBPRC" = "#4292C6"),
                        breaks = c("training set AUROC", 
                                   "test set AUROC", 
-                                  "test set ABP"),
+                                  "test set AUBPRC"),
                        guide = guide_legend(label.position = "top")) +
     facet_wrap('dataset', ncol = 2) +
-    labs(x = 'Performance (AUROC or ABP)') +
+    labs(x = 'Performance (AUROC or AUBPRC)') +
     theme_sovacool() +
     theme(
         text = element_text(size = 10, family = 'Helvetica'),
