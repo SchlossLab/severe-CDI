@@ -2,16 +2,19 @@
 Composition of the Gut Microbiome
 Kelly L. SovacoolSarah E. TomkovichMegan L. CodenVincent B. YoungKrishna
 RaoPatrick D. Schloss
-May 27, 2023
+May 30, 2023
 
 ``` r
 library(here)
+library(knitr)
 library(tidyverse)
 
 load(here("results", "stats.RData"))
 ```
 
 # Introduction
+
+prevalance of cdi. prevalance of severe cdi outcomes.
 
 prediction models based on EHR for whether infection occurs in the first
 place already in use. so how about predicting severity of infections to
@@ -53,6 +56,28 @@ We performed permutation feature importance to determine which OTUs
 contributed the most to model performance ([Figure 3](#fig-features)).
 
 ## Estimating the benefits of severity prediction models
+
+table of NNS at 95th pct of risk for each outcome x dataset
+([Table 1](#tbl-risk)).
+
+``` r
+read_csv(here('results','decision_thresholds.csv')) %>% kable()
+```
+
+<div id="tbl-risk">
+
+| Severity     | Dataset | Precision | NNS | Bal. Prec. | Recall | Specificity |  TP |  FP |  TN |  FN |
+|:-------------|:--------|----------:|----:|-----------:|-------:|------------:|----:|----:|----:|----:|
+| All-cause    | full    |      0.29 | 3.5 |       0.84 |   0.12 |        0.98 |   2 |   5 | 221 |  15 |
+| Attributable | full    |      0.20 | 5.0 |       0.92 |   0.20 |        0.98 |   1 |   4 | 226 |   4 |
+| Pragmatic    | full    |      0.29 | 3.5 |       0.87 |   0.15 |        0.98 |   2 |   5 | 225 |  11 |
+| All-cause    | int     |      0.12 | 8.0 |       0.75 |   0.11 |        0.96 |   1 |   7 | 182 |   8 |
+| Attributable | int     |      0.14 | 7.0 |       0.86 |   0.20 |        0.97 |   1 |   6 | 187 |   4 |
+| Pragmatic    | int     |      0.14 | 7.0 |       0.86 |   0.20 |        0.97 |   1 |   6 | 187 |   4 |
+
+Table 1: **Predive model performance at 95th percentile of risk.**
+
+</div>
 
 NNT x NNS = NNB
 
