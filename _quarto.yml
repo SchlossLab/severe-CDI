@@ -12,6 +12,8 @@ website:
 execute:
   freeze: auto
 
+mainfont: Helvetica
+sansfont: Helvetica
 format:
   html:
     embed-resources: true
