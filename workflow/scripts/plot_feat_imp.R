@@ -100,7 +100,9 @@ feat_imp_plot <- dat %>%
         panel.spacing = unit(1, 'pt'),
         legend.position = "top",
         panel.grid.major.y = element_blank(),
-        plot.margin = margin(0,5,0,0, unit = 'pt')) 
+        plot.margin = margin(0,1,0,0, unit = 'pt'),
+        legend.box.margin = margin(0,0,0,0, unit = 'pt'),
+        legend.margin = margin(0,0,0,0, unit = 'pt')) 
 
 relabun_dat <- data.table::fread(here('data', 'mothur', 'alpha', 
                                       'cdi.opti_mcc.shared')) %>% 
@@ -165,7 +167,9 @@ relabun_plot <- relabun_medians %>%
         axis.text.x = element_text(size = 10),
         panel.grid.major.y = element_blank(),
         strip.background = element_blank(),
-        legend.position = 'top')
+        legend.position = 'top',
+        legend.box.margin = margin(0,0,0,0, unit = 'pt'),
+        legend.margin = margin(0,0,0,0, unit = 'pt'))
   
 fig <- plot_grid(feat_imp_plot, relabun_plot,
                  ncol = 2, rel_widths = c(1, 0.3), align = 'h', axis = 'tb', 
