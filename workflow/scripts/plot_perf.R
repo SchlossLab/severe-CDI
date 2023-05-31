@@ -153,7 +153,7 @@ roc_plot <- roc_dat %>%
         strip.background = element_blank(),
         panel.spacing = unit(10, 'pt'),
         axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
-        plot.margin = margin(0,5,0,0))
+        plot.margin = margin(0,2,0,0))
 
 bprc_dat <- read_csv(here('results', 'prcurve_results_aggregated.csv')) %>%
   mutate(outcome = factor(outcome, levels = c('idsa', 'allcause', 'attrib', 'pragmatic')),
@@ -216,7 +216,7 @@ bprc_plot <- bprc_dat %>%
         strip.background = element_blank(),
         panel.spacing = unit(10, 'pt'),
         axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
-        plot.margin = margin(15,5,0,5))
+        plot.margin = margin(5,2,0,2))
 
 
 prcurve_dat <- read_csv(here('results', 'prcurve_results_aggregated.csv')) %>%
@@ -299,7 +299,7 @@ fig <- plot_grid(perf_plot,
                            labels = c('B', 'C')),
                  curve_legend,
                  labels = c('A', '', ''),
-                 ncol = 1, rel_heights = c(1,0.5,0.1))
+                 ncol = 1, rel_heights = c(1,0.7,0.1))
 ggsave("figures/ml-performance.tiff", plot = fig, 
        device = "tiff", compression = "lzw", dpi = 600,  bg = '#FFFFFF',
        width = 6.875, height = 6.875) # https://journals.asm.org/figures-tables
