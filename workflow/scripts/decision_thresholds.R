@@ -40,6 +40,7 @@ priors <- read_csv(here("results","sensspec_results_aggregated.csv")) %>%
   dplyr::distinct()
 
 confmat_95th_pct <- thresh_dat %>% 
+  filter(!is.na(Precision), !(outcome == 'pragmatic' & dataset == 'int')) %>% 
   mutate(Recall = round(Recall, 2)) %>% 
   inner_join(prc_risk_pct, by = join_by(Recall, dataset, outcome)) %>% 
   mutate(diff_mean_prec = abs(mean_precision - Precision)) %>% 
@@ -57,10 +58,13 @@ confmat_95th_pct <- thresh_dat %>%
                              outcome == 'attrib' ~ 'Attributable',
                              outcome == 'allcause' ~ 'All-cause',
                              outcome == 'pragmatic' ~ 'Pragmatic',
+                             TRUE ~ NA_character_),
+         dataset = case_when(dataset == 'full' ~ 'Full',
+                             dataset == 'int' ~ 'Intersection',
                              TRUE ~ NA_character_)) %>% 
   rename(Severity = outcome,
          Dataset = dataset,
-         `Bal. Prec.` = balanced_precision,
+         `Balanced Precision` = balanced_precision,
          NNS = nns,
          TP = tp,
          FP = fp,

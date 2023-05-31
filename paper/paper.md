@@ -55,7 +55,7 @@ full dataset.
 We performed permutation feature importance to determine which OTUs
 contributed the most to model performance ([Figure 3](#fig-features)).
 
-## Estimating the benefits of severity prediction models
+## Estimating clinical benefit
 
 table of NNS at 95th pct of risk for each outcome x dataset
 ([Table 1](#tbl-risk)).
@@ -66,16 +66,18 @@ read_csv(here('results','decision_thresholds.csv')) %>% kable()
 
 <div id="tbl-risk">
 
-| Severity     | Dataset | Precision | NNS | Bal. Prec. | Recall | Specificity |  TP |  FP |  TN |  FN |
-|:-------------|:--------|----------:|----:|-----------:|-------:|------------:|----:|----:|----:|----:|
-| All-cause    | full    |      0.29 | 3.5 |       0.84 |   0.12 |        0.98 |   2 |   5 | 221 |  15 |
-| Attributable | full    |      0.20 | 5.0 |       0.92 |   0.20 |        0.98 |   1 |   4 | 226 |   4 |
-| Pragmatic    | full    |      0.29 | 3.5 |       0.87 |   0.15 |        0.98 |   2 |   5 | 225 |  11 |
-| All-cause    | int     |      0.12 | 8.0 |       0.75 |   0.11 |        0.96 |   1 |   7 | 182 |   8 |
-| Attributable | int     |      0.14 | 7.0 |       0.86 |   0.20 |        0.97 |   1 |   6 | 187 |   4 |
-| Pragmatic    | int     |      0.14 | 7.0 |       0.86 |   0.20 |        0.97 |   1 |   6 | 187 |   4 |
+| Severity     | Dataset      | Precision | NNS | Balanced Precision | Recall | Specificity |  TP |  FP |  TN |  FN |
+|:-------------|:-------------|----------:|----:|-------------------:|-------:|------------:|----:|----:|----:|----:|
+| All-cause    | Full         |      0.33 | 3.0 |               0.87 |   0.12 |        0.98 |   2 |   4 | 222 |  15 |
+| Attributable | Full         |      0.25 | 4.0 |               0.94 |   0.20 |        0.99 |   1 |   3 | 227 |   4 |
+| Pragmatic    | Full         |      0.29 | 3.5 |               0.87 |   0.15 |        0.98 |   2 |   5 | 225 |  11 |
+| All-cause    | Intersection |      0.00 | Inf |               0.00 |   0.00 |        0.99 |   0 |   1 | 188 |   9 |
+| Attributable | Intersection |      0.17 | 6.0 |               0.88 |   0.20 |        0.97 |   1 |   5 | 188 |   4 |
 
-Table 1: **Predive model performance at 95th percentile of risk.**
+Table 1: **Predictive model performance at 95th percentile of risk.**
+The confusion matrix was computed at the 95th percentile of risk for
+each severity prediction model, which corresponds to 5% of cases
+predicted to be severe.
 
 </div>
 

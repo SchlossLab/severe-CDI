@@ -110,13 +110,13 @@ dataset.
 We performed permutation feature importance to determine which OTUs contributed
 the most to model performance (@fig-features).
 
-## Estimating the benefits of severity prediction models
+## Estimating clinical benefit
 
 table of NNS at 95th pct of risk for each outcome x dataset (@tbl-risk).
 
 ```{r risk_95th_pct_decision_thresholds, message=FALSE}
 #| label: tbl-risk
-#| tbl-cap: "**Predive model performance at 95th percentile of risk.**"
+#| tbl-cap: "**Predictive model performance at 95th percentile of risk.** The confusion matrix was computed at the 95th percentile of risk for each severity prediction model, which corresponds to 5% of cases predicted to be severe."
 read_csv(here('results','decision_thresholds.csv')) %>% kable()
 ```
 
