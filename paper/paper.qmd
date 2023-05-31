@@ -72,6 +72,9 @@ load(here("results", "stats.RData"))
 
 prevalance of cdi. prevalance of severe cdi outcomes.
 
+Numerous studies indicate that the gut microbiome may play a role in _C. diff_ 
+colonization, infection, and clearance. 
+
 prediction models based on EHR for whether infection occurs in the first place already in use.
 so how about predicting severity of infections to guide treatment?
 OTUs vs EHRs to predict severity.
@@ -82,6 +85,10 @@ The IDSA definition is known to be a poor predictor of adverse outcomes [@steven
 however, it is easy to collect.
 
 new dataset. 
+
+Two goals: investigate whether we can predict CDI severity based on OTU data to
+inform how the gut microbiome may modulate severity (ML-based science: good performance implies something about underlying biology), and determine whether there
+is potential clinical value in OTU-based models.
 
 # Results
 
@@ -244,7 +251,7 @@ receiver-operator characteristic curve (AUROC) and the area under the balanced
 precision-recall curve (AUBPRC).
 Permutation importance was then performed to determine which OTUs contributed
 most to model performance.
-We reported OTUs with a significant permutation test in at least 80 of the 100
+We reported OTUs with a significant permutation test in at least 75 of the 100
 models.
 
 Since the severity labels are imbalanced with different frequencies of severity
