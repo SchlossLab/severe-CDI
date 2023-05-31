@@ -302,4 +302,4 @@ fig <- plot_grid(perf_plot,
                  ncol = 1, rel_heights = c(1,0.7,0.1))
 ggsave("figures/ml-performance.tiff", plot = fig, 
        device = "tiff", compression = "lzw", dpi = 600,  bg = '#FFFFFF',
-       width = 6.875, height = 6.875) # https://journals.asm.org/figures-tables
+       width = 6.875, height = 6) # https://journals.asm.org/figures-tables
