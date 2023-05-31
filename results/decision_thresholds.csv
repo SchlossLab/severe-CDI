@@ -1,0 +1,6 @@
+Severity,Dataset,Precision,NNS,Balanced Precision,Recall,Specificity,TP,FP,TN,FN
+All-cause,Full,0.33,3,0.87,0.12,0.98,2,4,222,15
+Attributable,Full,0.25,4,0.94,0.2,0.99,1,3,227,4
+Pragmatic,Full,0.29,3.5,0.87,0.15,0.98,2,5,225,11
+All-cause,Intersection,0,Inf,0,0,0.99,0,1,188,9
+Attributable,Intersection,0.17,6,0.88,0.2,0.97,1,5,188,4

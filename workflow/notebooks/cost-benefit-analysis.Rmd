@@ -7,13 +7,35 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE,
+                      message = FALSE,
+                      warning = FALSE,
+                      fig.path = 'figures/')
+```
+```{r load}
+library(here)
+library(schtools)
+library(tidyverse)
+thresh_dat <- read_csv(here('results','thresholds_results_aggregated.csv')) %>% 
+  mutate(predicted_pos_frac = (tp + fp) / (tp + fp + tn + fn))
+treat_all <- thresh_dat %>% 
+  filter(strategy == 'all') %>% 
+  select(strategy, decision_threshold, net_benefit, dataset, outcome) %>% 
+  unique() %>% 
+  pivot_wider(names_from = strategy, values_from = net_benefit, 
+              names_prefix = "nb_treat_")
+treat_none <- thresh_dat %>% filter(strategy == 'none') %>% 
+  select(strategy, decision_threshold, net_benefit, dataset, outcome) %>% 
+  unique() %>% 
+  pivot_wider(names_from = strategy, values_from = net_benefit, 
+              names_prefix = "nb_treat_")
+thresh_dat <- thresh_dat %>% 
+  filter(strategy == 'model') %>% 
+  left_join(treat_all, by = join_by(decision_threshold, dataset, outcome)) %>% 
+  left_join(treat_none, by = join_by(decision_threshold, dataset, outcome))
 ```
 
 - use values from confusion matrix for one representative model on a test set. or get average precision? choose a particular sensitivity level and see the range in precision?
-  - Number needed to screen (NNS) - the number of alerted patients the models must flag to identify 1 true positive. 
-  - Number needed to treat (NNT) - the number of true positive patients one must treat for 1 patient to benefit from the treatment.
-  - Number needed to benefit (NNB = NNS x NNT) - how many patients must be screened for 1 patient to benefit.
 - assumptions
   - cost of a non-severe case
   - cost of a severe case
@@ -33,6 +55,64 @@ knitr::opts_chunk$set(echo = TRUE)
 
 > In the simplest terms, prediction can be distilled into an NNS and action into a number needed to treat. When contextualized within this framework, the product of NNS and number needed to treat results in a number needed to benefit. The table outlines key variables in this framework that will alter the estimated number needed to benefit across different modeling and implementation scenarios.
 
+## percentile of risk
+
+95th percentile of risk: risk threshold where action is taken in 5% of patients.
+
+```{r risk-pct}
+roc_risk_pct <- thresh_dat %>% 
+  mutate(Specificity = round(Specificity, 2)) %>%
+  group_by(Specificity, dataset, outcome) %>%
+  summarise(
+    mean_sensitivity = mean(Sensitivity),
+    mean_pred_pos_frac = mean(predicted_pos_frac)
+   ) %>% 
+  ungroup() %>%
+  group_by(dataset, outcome) %>%
+  mutate(diff_95th_pct = abs(mean_pred_pos_frac - 0.05)) %>%
+  slice_min(diff_95th_pct)
+prc_risk_pct <- thresh_dat %>% 
+  mutate(Recall = round(Recall, 2)) %>%
+  group_by(Recall, dataset, outcome) %>%
+  summarise(
+    mean_precision = mean(Precision),
+    mean_pred_pos_frac = mean(predicted_pos_frac)
+   ) %>% 
+  ungroup() %>%
+  group_by(dataset, outcome) %>% 
+  mutate(diff_95th_pct = abs(mean_pred_pos_frac - 0.05)) %>%
+  slice_min(diff_95th_pct)
+
+# confusion matrix values for 95th percentile of risk
+confmat_95th_roc <- thresh_dat %>% 
+  mutate(Specificity = round(Specificity, 2)) %>%
+  inner_join(roc_risk_pct, by = join_by(Specificity, dataset, outcome)) %>% 
+  mutate(diff_mean_sens = abs(mean_sensitivity - Sensitivity)) %>% 
+  group_by(dataset, outcome) %>% 
+  slice_min(diff_mean_sens) %>% 
+  select(-seed) %>% 
+  unique() %>% 
+  slice_max(net_benefit) %>% 
+  select(outcome, dataset, Precision, Recall, Specificity, tp,fp,tn,fn,
+         net_benefit, nns, decision_threshold)
+
+confmat_95th_prc <- thresh_dat %>% 
+  mutate(Recall = round(Recall, 2)) %>% 
+  inner_join(prc_risk_pct, by = join_by(Recall, dataset, outcome)) %>% 
+  mutate(diff_mean_prec = abs(mean_precision - Precision)) %>% 
+  group_by(dataset, outcome) %>% 
+  slice_min(diff_mean_prec) %>% 
+  select(-seed) %>% 
+  unique() %>% 
+  slice_max(net_benefit) %>% 
+  select(outcome, dataset, Precision, Recall, Specificity, tp,fp,tn,fn,
+         net_benefit, nns, decision_threshold)
+confmat_95th_prc
+```
+
+
+## decision curve based on cost?
+
 ### [decision curve analysis](https://journals.sagepub.com/doi/10.1177/0272989X06295361)
 
 QALYs are prone to systemic biases. 
@@ -46,14 +126,29 @@ Weight the relative harms of FP and FN results.
 - assume all patients severe vs no patients severe.
 
 ```{r decision-curve}
-library(here)
-library(tidyverse)
-thresh_dat <- read_csv(here('results','thresholds_results_aggregated.csv'))
+max_thresholds <- thresh_dat %>% 
+  filter(strategy == 'model') %>% 
+  group_by(dataset, outcome, strategy, decision_threshold)  %>% 
+  summarize(mean_nb = mean(net_benefit)) %>% 
+  filter(mean_nb <= 0) %>% 
+  slice_min(mean_nb) %>% 
+  ungroup() %>% 
+  mutate(max_thresh = decision_threshold) %>% 
+  select(dataset,outcome,max_thresh)
+
 thresh_dat %>% 
-  filter(dataset == 'int',outcome=='attrib',seed==100) %>% 
-  ggplot(aes(decision_threshold, net_benefit, 
-             color = strategy, linetype = strategy)) +
-  geom_line(alpha = 0.6) +
+  left_join(max_thresholds, by = join_by(dataset, outcome)) %>% 
+  filter(decision_threshold <= max_thresh) %>% 
+  group_by(dataset, outcome, decision_threshold) %>% 
+  summarize(mean_nb = mean(net_benefit),
+            nb_treat_all = mean(nb_treat_all),
+            nb_treat_none = mean(nb_treat_none)) %>% 
+  ggplot(aes(x = decision_threshold)) +
+  geom_line(aes(y = mean_nb, color = outcome), alpha = 0.6) +
+  geom_line(aes(y = nb_treat_all), linetype = 'dotted') +
+  geom_line(aes(y = nb_treat_none), linetype = 'dashed') +
+  scale_y_continuous(limits = c(-0.1,0.1)) +
+  facet_grid(dataset ~ outcome, scales = 'free') +
   theme_sovacool()
 ```
 

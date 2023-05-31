@@ -5,6 +5,7 @@ library(glue)
 library(here)
 library(schtools)
 library(tidyverse)
+percent_ci = 75
 filter_top_feats <- function(feat_dat, 
                              frac_important_threshold = 0.75,
                              otu_col = label_html, 
@@ -34,7 +35,7 @@ alpha_level <- 0.05
 
 dat <- left_join(feat_dat, tax_dat, by = 'otu')
 dat_top_otus <- dat %>% 
-  filter_top_feats(frac_important_threshold = 0.75) %>% 
+  filter_top_feats(frac_important_threshold = percent_ci/100) %>% 
   mutate(is_signif = TRUE)
 
 top_otus_order <- dat_top_otus %>% 
@@ -66,9 +67,10 @@ feat_imp_plot <- dat %>%
   stat_summary(fun = 'median', 
                fun.max = function(x) quantile(x, 0.75), 
                fun.min = function(x) quantile(x, 0.25),
-               position = position_dodge(width = 0.7)) +
+               position = position_dodge(width = 0.9),
+               alpha=0.6) +
   geom_hline(yintercept = seq(1.5, length(unique(top_otus_order))-0.5, 1), 
-             lwd = 0.5, colour = "whitesmoke") +
+             lwd = 0.5, colour = "grey92") +
   facet_wrap('dataset') +
   scale_color_manual(values = model_colors,
                      labels = c(idsa='IDSA', attrib='Attrib', allcause='All-cause', pragmatic='Pragmatic'),
@@ -78,12 +80,12 @@ feat_imp_plot <- dat %>%
                                           order = 2)) +
   scale_shape_manual(values = c(Yes=8, No=20),
                      guide = guide_legend(label.position = 'bottom',
-                                          title = 'Significant\n(75% CI)',
+                                          title = glue('Significant\n({percent_ci}% CI)'),
                                           title.position = 'top',
                                           order = 1)) +
   scale_size_manual(values = c(Yes=0.4, No=0.2),
                     guide = guide_legend(label.position = 'bottom',
-                                         title = 'Significant\n(75% CI)',
+                                         title = glue('Significant\n({percent_ci}% CI)'),
                                          title.position = 'top',
                                          order = 1)
                     ) +
@@ -93,11 +95,14 @@ feat_imp_plot <- dat %>%
   theme_sovacool() +
   theme(text = element_text(size = 10, family = 'Helvetica'),
         axis.text.y = element_markdown(size = 10),
-        axis.text.x = element_text(size = 10),
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
         strip.background = element_blank(),
         panel.spacing = unit(1, 'pt'),
         legend.position = "top",
-        panel.grid.major.y = element_blank()) 
+        panel.grid.major.y = element_blank(),
+        plot.margin = margin(0,1,0,0, unit = 'pt'),
+        legend.box.margin = margin(0,0,0,0, unit = 'pt'),
+        legend.margin = margin(0,0,0,0, unit = 'pt')) 
 
 relabun_dat <- data.table::fread(here('data', 'mothur', 'alpha', 
                                       'cdi.opti_mcc.shared')) %>% 
@@ -137,9 +142,10 @@ relabun_plot <- relabun_medians %>%
   ggplot(aes(x = med_rel_abun, y = label_html,
              color = outcome, shape = is_severe, group = outcome)) +
   geom_vline(xintercept = tiny_constant, linetype = 'dashed') +
-  geom_point(position = position_dodge(width = 0.7)) +
+  geom_point(position = position_dodge(width = 0.9),
+             alpha=0.6) +
   geom_hline(yintercept = seq(1.5, length(unique(top_otus_order))-0.5, 1), 
-             lwd = 0.5, colour = "whitesmoke") +
+             lwd = 0.5, colour = "grey92") +
   facet_wrap('dataset') +
   scale_color_manual(values = model_colors,
                      labels = c(idsa='IDSA', attrib='Attrib', 
@@ -161,7 +167,9 @@ relabun_plot <- relabun_medians %>%
         axis.text.x = element_text(size = 10),
         panel.grid.major.y = element_blank(),
         strip.background = element_blank(),
-        legend.position = 'top')
+        legend.position = 'top',
+        legend.box.margin = margin(0,0,0,0, unit = 'pt'),
+        legend.margin = margin(0,0,0,0, unit = 'pt'))
   
 fig <- plot_grid(feat_imp_plot, relabun_plot,
                  ncol = 2, rel_widths = c(1, 0.3), align = 'h', axis = 'tb', 

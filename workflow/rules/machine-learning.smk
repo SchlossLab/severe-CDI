@@ -75,3 +75,14 @@ rule compare_models:
     conda: "../envs/mikropml.yml"
     script:
         "../scripts/compare_models.R"
+
+rule decision_thresholds:
+    input:
+        'results/thresholds_results_aggregated.csv',
+        'results/sensspec_results_aggregated.csv'
+    output:
+        csv='results/decision_thresholds.csv'
+    log: "log/decision_thresholds.txt"
+    conda: "../envs/mikropml.yml"
+    script:
+        "../scripts/decision_thresholds.R"
