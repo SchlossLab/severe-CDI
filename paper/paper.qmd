@@ -195,10 +195,9 @@ order for one patient to benefit.
 As the NNS values were computed at the 95th percentile of risk (where 5% of
 patients screened are predicted to experience severity), these NNB values mean
 that `r min_screen` to `r max_screen` total CDI patients would need to be
-screened by an OTU-based prediction model in order for one patient to benefit by
-treatment guided by the model.
-For comparison, the NNB for pairing the prior EHR-based model with fidaxomicin
-would be `r ehr_fdx_nnb` with `r ehr_screen` total CDI patients screened for
+screened by an OTU-based prediction model in order for one patient to benefit.
+For comparison, pairing the prior EHR-based model with fidaxomicin would yield
+an NNB of `r ehr_fdx_nnb` with `r ehr_screen` total CDI patients screened for
 one patient to benefit.
 These estimates represent a proof-of-concept demonstration of the potential
 value of deploying severity prediction models to guide clinicians' treatment

@@ -133,12 +133,12 @@ in order for one patient to benefit. As the NNS values were computed at
 the 95th percentile of risk (where 5% of patients screened are predicted
 to experience severity), these NNB values mean that 600 to 1,200 total
 CDI patients would need to be screened by an OTU-based prediction model
-in order for one patient to benefit by treatment guided by the model.
-For comparison, the NNB for pairing the prior EHR-based model with
-fidaxomicin would be 24.0 with 479.6 total CDI patients screened for one
-patient to benefit. These estimates represent a proof-of-concept
-demonstration of the potential value of deploying severity prediction
-models to guide clinicians’ treatment decisions.
+in order for one patient to benefit. For comparison, the NNB for pairing
+the prior EHR-based model with fidaxomicin would be 24 with 480 total
+CDI patients screened for one patient to benefit. These estimates
+represent a proof-of-concept demonstration of the potential value of
+deploying severity prediction models to guide clinicians’ treatment
+decisions.
 
 <!--
 rough estimate of costs.

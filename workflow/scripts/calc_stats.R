@@ -58,8 +58,8 @@ max_fdx_nnb <- max(c(allcause_fdx_nnb, attrib_fdx_nnb, pragmatic_fdx_nnb))
 min_screen <- min_fdx_nnb * 100/5 # 95th percentile of risk
 max_screen <- max_fdx_nnb * 100/5 # 95th percentile of risk
 
-ehr_fdx_nnb <- ehr_nns * fdx_nnt
-ehr_screen <- ehr_fdx_nnb * 100/5
+ehr_fdx_nnb <- round(ehr_nns * fdx_nnt, 0)
+ehr_screen <- round(ehr_fdx_nnb * 100/5, 0)
 # clean up objects not used in paper
 remove(otu_dat, metadat, preproc_info, confmat_95th_pct)
 
