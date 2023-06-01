@@ -272,6 +272,11 @@ to estimate the NNB.
 To calculate a clinically-relevant NNS for these models, we computed the
 confusion matrix at the 95th percentile of risk for each prediction model
 (@tbl-risk).
+We excluded the IDSA severity models as the IDSA severity scores were calculated
+on the day of diagnosis, thus they are classification rather than prediction
+problems.
+Furthermore, IDSA severity scores do not correlate well with disease-related
+adverse events which are a more salient outcome to prevent.
 Among the models predicting severe outcomes, those trained on the full
 datasets performed best with an NNS of `r allcause_nns` for the all-cause
 definition, `r attrib_nns` for the attributable definition, and 
@@ -453,6 +458,27 @@ the labels were balanced.
 The balanced precision and the area under the balanced precision-recall curve
 (AUBPRC) were calculated with Equations 1 and 7 from @wu_improved_2021.
 
+## Number needed to benefit
+
+For the severity prediction models (which excludes the IDSA definition),
+we set out to estimate the potential benefit of deploying models in clincal
+settings.
+We determined the decision threshold at the 95th percentile of risk for each
+model, which corresponds to 5% of cases being predicted by the model to
+experience a severe outcome.
+At this threshold we computed the number needed to screen (NNS), which is the
+reciprocal of precision and represents the number of cases that must be
+predicted as severe to identify one true positive [@rembold_number_1998].
+The number needed to treat (NNT) is the number of true positive
+patients that must be treated by an intervention in order for one patient to
+benefit, and is calculated from the reciprocal of absolute risk in randomized
+controlled trials [@laupacis_assessment_1988].
+Multiplying the NNS of a model by the NNT of a treatment yields the number
+needed to benefit (NNB) - the number of patients that must be predicted to have
+a severe outcome and undergo a treatment to benefit from it [@liu_number_2019].
+NNB encapsulates the benefit of pairing a predictive model with a treatment in
+a clinical setting, with lower NNB numbers being better.
+
 ## Code availability
 
 The complete workflow, code, and supporting files required to reproduce this
@@ -575,8 +601,8 @@ and pragmatic severity, thus these have identical performance.
 Area under the receiver-operator characteristic curve (AUROC) for the test sets
 and cross-validation folds of the training sets, and the area under the balanced
 precision-recall curve (AUBPRC) for the test sets.
-Each point is the median performance across 100 train/test splits with tails as
-the 95% CI.
+Each point is annotated with the median performance across 100 train/test splits
+with tails as the 95% CI.
 **B)** Receiver-operator characteristic curves for the test sets.
 Mean specificity is reported at each sensitivity value, 
 with ribbons as the 95% CI.

@@ -169,31 +169,36 @@ the NNB.
 
 To calculate a clinically-relevant NNS for these models, we computed the
 confusion matrix at the 95th percentile of risk for each prediction
-model (**?@tbl-risk**). Among the models predicting severe outcomes,
-those trained on the full datasets performed best with an NNS of 4 for
-the all-cause definition, 6 for the attributable definition, and 3 for
-the pragmatic definition. For context, prior studies predicted
-CDI-attributable severity using whole Electronic Health Record data
-extracted two days after diagnosis and from a smaller set of manually
-curated variables, achieving precision values of 0.417 (NNS = 2.4) for
-the EHR model and 0.167 (NNS = 6.0) for the curated model at the 95th
-percentile of risk (Li et al. 2019; Rao et al. 2015).
-<!-- TODO what about NNS on day of diagnosis? --> Multiplying the NNS of
-the OTU-based models by the estimated NNT of 10 for fidaxomicin yields
-NNB values of 40 for all-cause severity, 60 for attributable severity,
-and 30 for pragmatic severity. Thus, in a hypothetical scenario where
-these assumptions about fidaxomicin hold true, between 30 and 60
-patients would need to be predicted to experience a severe outcome and
-be treated with fidaxomicin in order for one patient to benefit. As the
-NNS values were computed at the 95th percentile of risk (where 5% of
-patients screened are predicted to experience severity), these NNB
-values mean that 600 to 1,200 total CDI patients would need to be
-screened by an OTU-based prediction model in order for one patient to
-benefit. For comparison, pairing the prior EHR-based model with
-fidaxomicin would yield an NNB of 24 with 480 total CDI patients
-screened for one patient to benefit. These estimates represent a
-proof-of-concept demonstration of the potential value of deploying
-severity prediction models to guide clinicians’ treatment decisions.
+model (**?@tbl-risk**). We excluded the IDSA severity models as the IDSA
+severity scores were calculated on the day of diagnosis, thus they are
+classification rather than prediction problems. Furthermore, IDSA
+severity scores do not correlate well with disease-related adverse
+events which are a more salient outcome to prevent. Among the models
+predicting severe outcomes, those trained on the full datasets performed
+best with an NNS of 4 for the all-cause definition, 6 for the
+attributable definition, and 3 for the pragmatic definition. For
+context, prior studies predicted CDI-attributable severity using whole
+Electronic Health Record data extracted two days after diagnosis and
+from a smaller set of manually curated variables, achieving precision
+values of 0.417 (NNS = 2.4) for the EHR model and 0.167 (NNS = 6.0) for
+the curated model at the 95th percentile of risk (Li et al. 2019; Rao et
+al. 2015). <!-- TODO what about NNS on day of diagnosis? --> Multiplying
+the NNS of the OTU-based models by the estimated NNT of 10 for
+fidaxomicin yields NNB values of 40 for all-cause severity, 60 for
+attributable severity, and 30 for pragmatic severity. Thus, in a
+hypothetical scenario where these assumptions about fidaxomicin hold
+true, between 30 and 60 patients would need to be predicted to
+experience a severe outcome and be treated with fidaxomicin in order for
+one patient to benefit. As the NNS values were computed at the 95th
+percentile of risk (where 5% of patients screened are predicted to
+experience severity), these NNB values mean that 600 to 1,200 total CDI
+patients would need to be screened by an OTU-based prediction model in
+order for one patient to benefit. For comparison, pairing the prior
+EHR-based model with fidaxomicin would yield an NNB of 24 with 480 total
+CDI patients screened for one patient to benefit. These estimates
+represent a proof-of-concept demonstration of the potential value of
+deploying severity prediction models to guide clinicians’ treatment
+decisions.
 
 <!--
 rough estimate of costs.
@@ -345,6 +350,27 @@ severity for each definition, we calculated balanced precision, the
 precision expected if the labels were balanced. The balanced precision
 and the area under the balanced precision-recall curve (AUBPRC) were
 calculated with Equations 1 and 7 from Wu et al. (2021).
+
+## Number needed to benefit
+
+For the severity prediction models (which excludes the IDSA definition),
+we set out to estimate the potential benefit of deploying models in
+clincal settings. We determined the decision threshold at the 95th
+percentile of risk for each model, which corresponds to 5% of cases
+being predicted by the model to experience a severe outcome. At this
+threshold we computed the number needed to screen (NNS), which is the
+reciprocal of precision and represents the number of cases that must be
+predicted as severe to identify one true positive (Rembold 1998). The
+number needed to treat (NNT) is the number of true positive patients
+that must be treated by an intervention in order for one patient to
+benefit, and is calculated from the reciprocal of absolute risk in
+randomized controlled trials (**laupacis_assessment_1988?**).
+Multiplying the NNS of a model by the NNT of a treatment yields the
+number needed to benefit (NNB) - the number of patients that must be
+predicted to have a severe outcome and undergo a treatment to benefit
+from it (Liu et al. 2019). NNB encapsulates the benefit of pairing a
+predictive model with a treatment in a clinical setting, with lower NNB
+numbers being better.
 
 ## Code availability
 
@@ -512,6 +538,14 @@ Difficile Ribotype 027: Relationship to Age, Detectability of Toxins A
 or B in Stool With Rapid Testing, Severe Infection, and Mortality.”
 *Clinical Infectious Diseases* 61 (2): 233–41.
 <https://doi.org/10.1093/cid/civ254>.
+
+</div>
+
+<div id="ref-rembold_number_1998" class="csl-entry">
+
+Rembold, Christopher M. 1998. “Number Needed to Screen: Development of a
+Statistic for Disease Screening.” *BMJ* 317 (7154): 307–12.
+<https://doi.org/10.1136/bmj.317.7154.307>.
 
 </div>
 
@@ -724,12 +758,12 @@ severity, thus these have identical performance. **A)** Area under the
 receiver-operator characteristic curve (AUROC) for the test sets and
 cross-validation folds of the training sets, and the area under the
 balanced precision-recall curve (AUBPRC) for the test sets. Each point
-is the median performance across 100 train/test splits with tails as the
-95% CI. **B)** Receiver-operator characteristic curves for the test
-sets. Mean specificity is reported at each sensitivity value, with
-ribbons as the 95% CI. **C)** Balanced precision-recall curves for the
-test sets. Mean balanced precision is reported at each recall value,
-with ribbons as the 95% CI.
+is annotated with the median performance across 100 train/test splits
+with tails as the 95% CI. **B)** Receiver-operator characteristic curves
+for the test sets. Mean specificity is reported at each sensitivity
+value, with ribbons as the 95% CI. **C)** Balanced precision-recall
+curves for the test sets. Mean balanced precision is reported at each
+recall value, with ribbons as the 95% CI.
 
 </div>
 
