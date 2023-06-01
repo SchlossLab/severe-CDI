@@ -62,32 +62,6 @@ the intersection of samples (n=993) that had labels for all four
 severity definitions and repeated the model training and evaluation
 process.
 
-<div id="tbl-counts-1">
-
-|          |    IDSA | Attributable | All-cause | Pragmatic |
-|:---------|--------:|-------------:|----------:|----------:|
-| n        | 1,072.0 |      1,178.0 |   1,218.0 |   1,218.0 |
-| % Severe |    34.2 |          2.2 |       7.1 |       5.4 |
-
-Table 1: Full datasets
-
-</div>
-
-<div id="tbl-counts-2">
-
-|          |  IDSA | Attributable | All-cause | Pragmatic |
-|:---------|------:|-------------:|----------:|----------:|
-| n        | 993.0 |        993.0 |     993.0 |     993.0 |
-| % Severe |  32.7 |          2.6 |       4.6 |       2.6 |
-
-Table 2: Intersection of samples with all labels available
-
-</div>
-
-**Sample counts and proportion of severe cases.** Each severity
-definition has a different number of patient samples available, as well
-as a different proportion of cases labelled as severe.
-
 Report median AUROC for training set and test set, and median AUBPRC for
 test set ([Figure 2](#fig-performance)). Nearly all pairs of definitions
 have significantly different performances on the test set (P \< 0.05)
@@ -100,6 +74,8 @@ full dataset.
 
 We performed permutation feature importance to determine which OTUs
 contributed the most to model performance ([Figure 3](#fig-features)).
+An OTU was considered important if performance decreased when it was
+permuted in at least 75% of the train/test splits.
 
 ## Estimating clinical value
 
@@ -113,80 +89,52 @@ paired with treatments that may reduce severity. When considering the
 suitability of a model for deployment in clinical settings, the number
 needed to screen (NNS) is a highly relevant metric representing how many
 patients must be predicted as severe by the model to identify one true
-positive. The number needed to treat (NNT) is the number of true
-positive patients that must be treated by an intervention in order for
-one patient to benefit from the treatment. Multiplying NNS by NNT yields
-the number needed to benefit (NNB): the number of patients predicted to
-have a severe outcome who then benefit from the treatment (Liu et al.
-2019). The NNB pairs model performance with treatment effectiveness to
-estimate the benefit of using predictive models in clinical practice.
-
-We determined the decision threshold at the 95th percentile of risk for
-each prediction model and computed the confusion matrix and several
-performance metrics including the NNS (**?@tbl-risk**). Among the models
-predicting severe outcomes, those trained on the full datasets performed
-best with an NNS of 4 for the all-cause definition, 6 for the
-attributable definition, and 3 for the pragmatic definition. For
-context, prior studies predicted CDI-attributable severity using whole
-Electronic Health Record data and from a smaller set of
-clinician-curated variables, achieving precision values of 0.417 (NNS =
-2.4) for the EHR model and 0.167 (NNS = 6.0) for the curated model (Li
-et al. 2019; Rao et al. 2015). While the attributable definition had a
-worse NNS for our OTU-based models, it did not perform worse than prior
-curated models and it is the most clinically relevant as physician chart
-review increases confidence that positively-labelled severe outcomes are
-due to the CDI rather than other causes.
+positive. Similarly, the number needed to treat (NNT) is the number of
+true positive patients that must be treated by an intervention in order
+for one patient to benefit from the treatment. Multiplying NNS by NNT
+yields the number needed to benefit (NNB): the number of patients
+predicted to have a severe outcome who then benefit from the treatment
+(Liu et al. 2019). Thus the NNB pairs model performance with treatment
+effectiveness to estimate the benefit of using predictive models in
+clinical practice.
 
 Current clinical guidelines specify vancomycin and fidaxomicin as the
 standard antibiotics to treat CDI, with a preference for fidaxomicin due
-to its higher sustained resolution of CDI and reduced risk of recurrence
-(**stuart_clinical_2021?**). However, fidaxomicin is considerably more
-expensive than vancomycin, resulting in most CDI patients in the US
-being treated with vancomycin (TODO citation). If fidaxomicin were shown
-to reduce the risk of severe CDI outcomes, it could be preferentially
-prescribed to patients predicted to be at risk. While we are not aware
-of evidence demonstrating the superiority of fidaxomicin for reducing
-severe CDI outcomes, the reduced risk of recurrence
+to its higher rate of sustained resolution of CDI and lower rate of
+recurrence (**stuart_clinical_2021?**). The NNTs of fidaxomicin for
+sustained resolution and prevention of recurrence are each estimated to
+be 10 (Long and Gottlieb 2022; Tashiro et al. 2022). However,
+fidaxomicin is considerably more expensive than vancomycin. If
+fidaxomicin were shown to reduce the risk of severe CDI outcomes, it
+could be preferentially prescribed to patients predicted to be at risk,
+while prescribing vancomycin to low-risk patients. If we assume that the
+superior efficacy of fidaxomicin for sustained resolution and reduced
+recurrence also translates to reducing the risk of severe outcomes, we
+can pair the NNT of fidaxomicin with the NNS of OTU-based prediction
+models to estimate the NNB.
 
-NNT x NNS = NNB
+We determined the 95th percentile of risk for each prediction model and
+computed the confusion matrix and several performance metrics including
+the NNS at this threshold (**?@tbl-risk**). Among the models predicting
+severe outcomes, those trained on the full datasets performed best with
+an NNS of 4 for the all-cause definition, 6 for the attributable
+definition, and 3 for the pragmatic definition. For context, prior
+studies predicted CDI-attributable severity using whole Electronic
+Health Record data and from a smaller set of clinician-curated
+variables, achieving precision values of 0.417 (NNS = 2.4) for the EHR
+model and 0.167 (NNS = 6.0) for the curated model (Li et al. 2019; Rao
+et al. 2015). While the attributable definition had a worse NNS for our
+OTU-based models, it did not perform worse than the prior curated model,
+and it is the most clinically relevant as physician chart review
+increases confidence that positively-labelled severe outcomes are due to
+the CDI rather than other causes.
 
-NNT for fidaxomicin, FMT, and/or Bezlotoxumab. Current standard is
-vancomycin because it’s cheaper than fidaxomicin, even though IDSA
-recommends fidaxomicin.
-
-rough estimate of costs. current: everyone gets vancomycin. potential:
-patients flagged as severe get fidaxomicin. based on NNB, estimate how
-much money saved in averting severe outcomes.
-
-<div id="tbl-risk-1">
-
-| Outcome      | Risk threshold |  TP |  FP |  TN |  FN | Precision | NNS | Recall | Specificity |
-|:-------------|---------------:|----:|----:|----:|----:|----------:|----:|-------:|------------:|
-| All-cause    |           0.20 |   3 |   9 | 217 |  14 |      0.25 |   4 |   0.18 |        0.96 |
-| Attributable |           0.10 |   2 |  10 | 220 |   3 |      0.17 |   6 |   0.40 |        0.96 |
-| Pragmatic    |           0.25 |   4 |   8 | 222 |   9 |      0.33 |   3 |   0.31 |        0.97 |
-
-Table 3: Full datasets
-
-</div>
-
-<div id="tbl-risk-2">
-
-| Outcome      | Risk threshold |  TP |  FP |  TN |  FN | Precision | NNS | Recall | Specificity |
-|:-------------|---------------:|----:|----:|----:|----:|----------:|----:|-------:|------------:|
-| All-cause    |            0.2 |   2 |   8 | 181 |   7 |       0.2 |   5 |   0.22 |        0.96 |
-| Attributable |            0.1 |   1 |   9 | 184 |   4 |       0.1 |  10 |   0.20 |        0.95 |
-
-Table 4: Intersection of samples with all labels available
-
-</div>
-
-**Predictive model performance at 95th percentile of risk.** The
-confusion matrix was computed for the decision threshold at the 95th
-percentile of risk for each severity prediction model, which corresponds
-to 5% of cases predicted to have a severe outcome. The number needed to
-screen (NNS) to identify one true positive is the reciprocal of
-precision.
+TODO NNB <!--
+rough estimate of costs.
+current: everyone gets vancomycin.
+potential: patients flagged as severe get fidaxomicin. based on NNB, estimate
+how much money saved in averting severe outcomes.
+-->
 
 # Discussion
 
@@ -206,7 +154,8 @@ higher number of false positives may be tolerable as long as treatment
 cost is not unbearably high. However, for highly invasive and
 irreversibly treatments such as colectomy, false positives must be
 minimized. Cite studies saying fidaxomicin is cost-effective relative to
-vancomycin - mentioned by (**stuart_clinical_2021?**).
+vancomycin - mentioned by (**stuart_clinical_2021?**), e.g.
+(**jiang_budget_2022?**).
 
 It’s not enough for models to perform well to justify deploying them in
 a clinical setting; benefit over current practices must be shown.
@@ -271,21 +220,21 @@ We explore four different ways to define CDI cases as severe or not. The
 IDSA definition of severe CDI is based on lab values collected on the
 day of diagnosis, with a case being severe if serum creatinine level is
 greater than or equal to $1.5 mg/dL$ and the white blood cell count is
-greater than or equal to $15 k/\mu L$ (**mcdonald_clinical_2018?**). The
-remaining definitions focus on the occurrence of adverse outcomes, which
-may be more clinically relevant. The all-cause severity definition
-defines a case as severe if ICU admission, colectomy, or death occurs
-within 30 days of CDI diagnosis, regardless of the cause of the adverse
-event. The attributable severity definition is based on disease-related
-complications defined by the CDC, where an adverse event of ICU
-admission, colectomy, or death occurs within 30 days of CDI diagnosis,
-and the adverse event is determined to be attributable to the CDI by
-physician chart review (McDonald et al. 2007). Finally, we defined a
-pragmatic severity definition that makes use of the attributable
-definition when available and falls back to the all-cause definition
-when chart review has not been completed, allowing us to use as many
-samples as we have available while taking physicians’ expert opinions
-into account where possible.
+greater than or equal to $15 k/\mu L$ (L. Clifford McDonald et al.
+2018). The remaining definitions focus on the occurrence of adverse
+outcomes, which may be more clinically relevant. The all-cause severity
+definition defines a case as severe if ICU admission, colectomy, or
+death occurs within 30 days of CDI diagnosis, regardless of the cause of
+the adverse event. The attributable severity definition is based on
+disease-related complications defined by the CDC, where an adverse event
+of ICU admission, colectomy, or death occurs within 30 days of CDI
+diagnosis, and the adverse event is determined to be attributable to the
+CDI by physician chart review (L. Clifford McDonald et al. 2007).
+Finally, we defined a pragmatic severity definition that makes use of
+the attributable definition when available and falls back to the
+all-cause definition when chart review has not been completed, allowing
+us to use as many samples as we have available while taking physicians’
+expert opinions into account where possible.
 
 ## Model training
 
@@ -303,11 +252,11 @@ as much data as possible for model training and evaluation. Datasets
 were pre-processed with the default options in mikropml to remove
 features with near-zero variance and scale continuous features from -1
 to 1. During pre-processing, 9,757 to 9,760 features were removed due to
-having near-zero variance, resulting in datasets ranging from 179 to 182
-depending on the severity definition. No features had missing values and
-no features were perfectly correlated. We randomly split the data into
-an 80% training and 20% test set and repeated this 100 times, followed
-by training models with 5-fold cross-validation.
+having near-zero variance, resulting in datasets having 179 to 182
+features depending on the severity definition. No features had missing
+values and no features were perfectly correlated. We randomly split the
+data into an 80% training and 20% test set and repeated this 100 times,
+followed by training models with 5-fold cross-validation.
 
 ## Model evaluation
 
@@ -346,9 +295,10 @@ The 16S rRNA sequencing data have been deposited in the National Center
 for Biotechnology Information Sequence Read Archive (BioProject
 Accession no. PRJNA729511).
 
+<!--
 # Acknowledgements
-
-TODO
+&#10;TODO funding & author contributions
+-->
 
 
 
@@ -401,6 +351,26 @@ Liu, Vincent X, David W Bates, Jenna Wiens, and Nigam H Shah. 2019. “The
 Number Needed to Benefit: Estimating the Value of Predictive Analytics
 in Healthcare.” *Journal of the American Medical Informatics
 Association* 26 (12): 1655–59. <https://doi.org/10.1093/jamia/ocz088>.
+
+</div>
+
+<div id="ref-long_oral_2022" class="csl-entry">
+
+Long, Brit, and Michael Gottlieb. 2022. “Oral Fidaxomicin Versus
+Vancomycin for Clostridioides Difficile Infection.” *Academic Emergency
+Medicine* 29 (12): 1506–7. <https://doi.org/10.1111/acem.14600>.
+
+</div>
+
+<div id="ref-mcdonald_clinical_2018" class="csl-entry">
+
+McDonald, L Clifford, Dale N Gerding, Stuart Johnson, Johan S Bakken,
+Karen C Carroll, Susan E Coffin, Erik R Dubberke, et al. 2018. “Clinical
+Practice Guidelines for Clostridium Difficile Infection in Adults and
+Children: 2017 Update by the Infectious Diseases Society of America
+(IDSA) and Society for Healthcare Epidemiology of America (SHEA).”
+*Clinical Infectious Diseases* 66 (7): e1–48.
+<https://doi.org/10.1093/cid/cix1085>.
 
 </div>
 
@@ -495,6 +465,17 @@ Epidemiology* 41 (5): 510–16. <https://doi.org/10.1017/ice.2020.8>.
 
 </div>
 
+<div id="ref-tashiro_oral_2022" class="csl-entry">
+
+Tashiro, Sho, Takayuki Mihara, Moe Sasaki, Chiaki Shimamura, Rina
+Shimamura, Shiho Suzuki, Maiko Yoshikawa, et al. 2022. “Oral Fidaxomicin
+Versus Vancomycin for the Treatment of Clostridioides Difficile
+Infection: A Systematic Review and Meta-Analysis of Randomized
+Controlled Trials.” *Journal of Infection and Chemotherapy* 28 (11):
+1536–45. <https://doi.org/10.1016/j.jiac.2022.08.008>.
+
+</div>
+
 <div id="ref-topcuoglu_mikropml_2021" class="csl-entry">
 
 Topçuoğlu, Begüm D., Zena Lapp, Kelly L. Sovacool, Evan Snitkin, Jenna
@@ -554,7 +535,65 @@ Human Missense Variants.” *The American Journal of Human Genetics* 108
 
 </div>
 
+# Tables
+
 
+
+<div id="tbl-counts-1">
+
+|          |    IDSA | Attributable | All-cause | Pragmatic |
+|:---------|--------:|-------------:|----------:|----------:|
+| n        | 1,072.0 |      1,178.0 |   1,218.0 |   1,218.0 |
+| % Severe |    34.2 |          2.2 |       7.1 |       5.4 |
+
+Table 1: Full datasets
+
+</div>
+
+<div id="tbl-counts-2">
+
+|          |  IDSA | Attributable | All-cause | Pragmatic |
+|:---------|------:|-------------:|----------:|----------:|
+| n        | 993.0 |        993.0 |     993.0 |     993.0 |
+| % Severe |  32.7 |          2.6 |       4.6 |       2.6 |
+
+Table 2: Intersection of samples with all labels available
+
+</div>
+
+**Sample counts and proportion of severe cases.** Each severity
+definition has a different number of patient samples available, as well
+as a different proportion of cases labelled as severe.
+
+<div id="tbl-risk-1">
+
+| Outcome      | Risk threshold |  TP |  FP |  TN |  FN | Precision | NNS | Recall | Specificity |
+|:-------------|---------------:|----:|----:|----:|----:|----------:|----:|-------:|------------:|
+| All-cause    |           0.20 |   3 |   9 | 217 |  14 |      0.25 |   4 |   0.18 |        0.96 |
+| Attributable |           0.10 |   2 |  10 | 220 |   3 |      0.17 |   6 |   0.40 |        0.96 |
+| Pragmatic    |           0.25 |   4 |   8 | 222 |   9 |      0.33 |   3 |   0.31 |        0.97 |
+
+Table 3: Full datasets
+
+</div>
+
+<div id="tbl-risk-2">
+
+| Outcome      | Risk threshold |  TP |  FP |  TN |  FN | Precision | NNS | Recall | Specificity |
+|:-------------|---------------:|----:|----:|----:|----:|----------:|----:|-------:|------------:|
+| All-cause    |            0.2 |   2 |   8 | 181 |   7 |       0.2 |   5 |   0.22 |        0.96 |
+| Attributable |            0.1 |   1 |   9 | 184 |   4 |       0.1 |  10 |   0.20 |        0.95 |
+
+Table 4: Intersection of samples with all labels available
+
+</div>
+
+**Predictive model performance at 95th percentile of risk.** The
+confusion matrix was computed for the decision threshold at the 95th
+percentile of risk for each severity prediction model, which corresponds
+to 5% of cases predicted to have a severe outcome. The number needed to
+screen (NNS) to identify one true positive is the reciprocal of
+precision.
 
 # Figures
 
