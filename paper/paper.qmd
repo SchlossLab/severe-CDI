@@ -568,20 +568,15 @@ not available.
 In the left facets, models were trained on the full datasets, with different
 numbers of samples available for each severity definition.
 In the right facets, models were trained on the same dataset consisting of the
-intersection of samples with all labels available for each definition.
-Note that the intersection dataset for Attributable and Pragmatic severity have
-exactly the same labels, thus they have identical performance.
+intersection of samples with labels available for all definitions.
+Note that the intersection dataset has exactly the same labels for attributable
+and pragmatic severity, thus these have identical performance.
 **A)** 
 Area under the receiver-operator characteristic curve (AUROC) for the test sets
 and cross-validation folds of the training sets, and the area under the balanced
 precision-recall curve (AUBPRC) for the test sets.
 Each point is the median performance across 100 train/test splits with tails as
 the 95% CI.
-Nearly all pairs of definitions have significantly different performances on the
-test set (P < 0.05) except for AUROC and AUBPRC of Attributable vs. Pragmatic on
-the intersection dataset (as they are identical), AUROC of Attributable vs.
-All-cause on the full dataset, and AUROC of Attributable vs. IDSA on the full
-dataset.
 **B)** Receiver-operator characteristic curves for the test sets.
 Mean specificity is reported at each sensitivity value, 
 with ribbons as the 95% CI.

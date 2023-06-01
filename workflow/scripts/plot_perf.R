@@ -6,6 +6,7 @@ library(schtools)
 library(tidyverse)
 
 dat <- read_csv(here("results","performance_results_aggregated.csv")) %>%
+    filter(!(outcome == 'pragmatic' & dataset == 'int')) %>% 
     rename(`test set AUROC` = AUC,
            `training set AUROC` = cv_metric_AUC,
            `test set AUBPRC` = bpr_auc, # yardstick::pr_auc doesn't overestimate
@@ -23,6 +24,12 @@ dat <- read_csv(here("results","performance_results_aggregated.csv")) %>%
                            'Attributable\n severity',
                            'Pragmatic\n severity'))
   )
+
+label_pragmatic_int <- data.frame(outcome = 'Pragmatic\n severity',
+                                  dataset = 'Intersection of samples with all labels available',
+                                  data_partition = 'test set AUBPRC',
+                                  text = 'Same as\nAttributable')
+
 perf_plot <- dat %>% 
     pivot_longer(c(`training set AUROC`, `test set AUROC`, `test set AUBPRC`, 
                    ),
@@ -40,13 +47,20 @@ perf_plot <- dat %>%
                  show.legend = FALSE,
                  mapping = aes(label = format(round(after_stat(x),2), nsmall = 2)),
                  alpha = 0.7,
-                 label.padding = unit(0, 'pt'),
+                 label.padding = unit(1, 'pt'),
                  label.size = unit(0,'pt'),
                  position = position_nudge(x = 0.12, y = c(-0.25, 0, 0.25))
                  ) +
     geom_hline(yintercept = seq(1.5, length(unique(dat %>% pull(outcome)))-0.5, 1), 
              lwd = 0.5, colour = "grey92") +
     geom_vline(xintercept = 0.5, linetype = "dashed") +
+    geom_label(data = label_pragmatic_int, 
+               mapping = aes(x = 0.6, y = outcome, label = text),
+               color = 'black', fill = 'grey92',
+               size = 2.8,
+               label.size = unit(0, 'pt'),
+               show.legend = FALSE,
+              ) +
     scale_x_continuous(limits = c(0.3, 1), expand = c(0,0)) +
     scale_color_manual(values = c("training set AUROC" = "#BDBDBD",
                                   "test set AUROC" = "#252525",

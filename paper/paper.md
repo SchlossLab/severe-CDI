@@ -636,10 +636,10 @@ Human Missense Variants.” *The American Journal of Human Genetics* 108
 
 <div id="tbl-counts-1">
 
-|          |    IDSA | Attributable | All-cause | Pragmatic |
-|:---------|--------:|-------------:|----------:|----------:|
-| n        | 1,072.0 |      1,178.0 |   1,218.0 |   1,218.0 |
-| % Severe |    34.2 |          2.2 |       7.1 |       5.4 |
+|          |    IDSA | All-cause | Attributable | Pragmatic |
+|:---------|--------:|----------:|-------------:|----------:|
+| n        | 1,072.0 |   1,218.0 |      1,178.0 |   1,218.0 |
+| % Severe |    34.2 |       7.1 |          2.2 |       5.4 |
 
 Table 1: Full datasets
 
@@ -647,10 +647,10 @@ Table 1: Full datasets
 
 <div id="tbl-counts-2">
 
-|          |  IDSA | Attributable | All-cause | Pragmatic |
-|:---------|------:|-------------:|----------:|----------:|
-| n        | 993.0 |        993.0 |     993.0 |     993.0 |
-| % Severe |  32.7 |          2.6 |       4.6 |       2.6 |
+|          |  IDSA | All-cause | Attributable | Pragmatic |
+|:---------|------:|----------:|-------------:|----------:|
+| n        | 993.0 |     993.0 |        993.0 |     993.0 |
+| % Severe |  32.7 |       4.6 |          2.6 |       2.6 |
 
 Table 2: Intersection of samples with all labels available
 
@@ -718,23 +718,18 @@ Figure 2: **Performance of ML models.** In the left facets, models were
 trained on the full datasets, with different numbers of samples
 available for each severity definition. In the right facets, models were
 trained on the same dataset consisting of the intersection of samples
-with all labels available for each definition. Note that the
-intersection dataset for Attributable and Pragmatic severity have
-exactly the same labels, thus they have identical performance. **A)**
-Area under the receiver-operator characteristic curve (AUROC) for the
-test sets and cross-validation folds of the training sets, and the area
-under the balanced precision-recall curve (AUBPRC) for the test sets.
-Each point is the median performance across 100 train/test splits with
-tails as the 95% CI. Nearly all pairs of definitions have significantly
-different performances on the test set (P \< 0.05) except for AUROC and
-AUBPRC of Attributable vs. Pragmatic on the intersection dataset (as
-they are identical), AUROC of Attributable vs. All-cause on the full
-dataset, and AUROC of Attributable vs. IDSA on the full dataset. **B)**
-Receiver-operator characteristic curves for the test sets. Mean
-specificity is reported at each sensitivity value, with ribbons as the
-95% CI. **C)** Balanced precision-recall curves for the test sets. Mean
-balanced precision is reported at each recall value, with ribbons as the
-95% CI.
+with labels available for all definitions. Note that the intersection
+dataset has exactly the same labels for attributable and pragmatic
+severity, thus these have identical performance. **A)** Area under the
+receiver-operator characteristic curve (AUROC) for the test sets and
+cross-validation folds of the training sets, and the area under the
+balanced precision-recall curve (AUBPRC) for the test sets. Each point
+is the median performance across 100 train/test splits with tails as the
+95% CI. **B)** Receiver-operator characteristic curves for the test
+sets. Mean specificity is reported at each sensitivity value, with
+ribbons as the 95% CI. **C)** Balanced precision-recall curves for the
+test sets. Mean balanced precision is reported at each recall value,
+with ribbons as the 95% CI.
 
 </div>
 
