@@ -1,6 +1,9 @@
 on:
   push:
-    branches: main
+    paths:
+      - _quarto.yml
+      - paper/paper.qmd
+      - index.qmd
 
 name: Render and Publish
 
