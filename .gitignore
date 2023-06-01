@@ -17,6 +17,7 @@ current_files.summary
 *.log
 *.docx
 *.out
+severe-cdi-results.tar.gz
 
 paper/*.sty
 paper/*.ldf
