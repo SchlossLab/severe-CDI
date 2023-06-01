@@ -154,8 +154,10 @@ rule convert_figures:
 
 rule calc_stats:
     input:
-        #meta='data/process/cases_full_metadata.csv',
-        'results/decision_thresholds.csv'
+        #'data/process/cases_full_metadata.csv',
+        #'results/performance_results_aggregated.csv',
+        #'results/model_comparisons.csv',
+        'results/decision_thresholds.csv',
     output:
         rda='results/stats.RData'
     conda: 'envs/mikropml.yml'

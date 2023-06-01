@@ -20,7 +20,7 @@ jobs:
 
       - name: "Install R deps"
         run: |
-          install.packages(c("here", "knitr", "kableExtra", "tidyverse"))
+          install.packages(c("assertthat, "here", "knitr", "kableExtra", "tidyverse"))
         shell: Rscript {0}
 
       - name: Set up Quarto

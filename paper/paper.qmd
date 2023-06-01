@@ -62,6 +62,7 @@ schtools::set_knitr_opts()
 knitr::opts_chunk$set(dpi = 600)
 ```
 ```{r load_data, message = FALSE}
+library(assertthat)
 library(here)
 library(kableExtra)
 library(knitr)
@@ -106,27 +107,123 @@ is potential clinical value in OTU-based models.
 
 We first set out to train the best models possible for each severity definition.
 Not all samples have labels available for all four severity definitions due to
-missing data for some patient lab values and incomplete chart review (@fig-flowchart B),
-thus each severity definition has a different number of samples (@tbl-counts)
-when using as many samples as possible. We refer to these as the full datasets.
-Random forest models were trained on repeated 100 splits of the datasets into
-training and test sets, and performance was evaluated on the held-out
-test set using the area under the receiver-operator characteristic curve (AUROC)
-the area under the balanced precision-recall curve (AUBPRC).
+missing data for some patient lab values and incomplete chart review
+(@fig-flowchart B), thus each severity definition has a different number of
+samples when using as many samples as possible (@tbl-counts).
+We refer to these as the full datasets.
+Random forest models were trained on 100 splits of the datasets into training
+and test sets, and performance was evaluated on the held-out test set using the
+area under the receiver-operator characteristic curve (AUROC).
+Since the severity classes are highly imbalanced with different proportions of
+severe samples between definitions, we also calculated the balanced precision
+and the area under the balanced precision-recall curve (AUBPRC) as first
+proposed by @wu_improved_2021 to describe the precision that would be expected
+if the outcome classes were balanced.
 
-However, comparisons across these definitions is not fair when using different
-subsets of the data for each definition.
-To better compare the model performances across different severity definitions,
-we selected the intersection of samples (n=`r n_cases_int`) that had labels for
-all four severity definitions and repeated the model training and evaluation
-process.
+```{r model_comps_full, output = FALSE}
+model_comps <- read_csv(here('results','model_comparisons.csv'))
+comps_full_auroc <- model_comps %>% 
+  filter(dataset == 'full', metric == 'AUROC', p_value < 0.05)
+assert_that(all((comps_full_auroc %>% pull(group1)) == c("allcause", "attrib", "idsa", "idsa")))
+assert_that(all((comps_full_auroc %>% pull(group2)) == c("pragmatic", "pragmatic", "allcause", "pragmatic")))
+assert_that(all(
+  model_comps %>%
+    filter(dataset == 'full', metric == 'AUBPRC', p_value > 0.05) %>%
+    select(group1, group2) %>%
+    as.vector() %>% 
+    unlist() == c('attrib', 'allcause')
+))
+```
 
-Report median AUROC for training set and test set, and median AUBPRC for test set (@fig-performance).
-Nearly all pairs of definitions have significantly different performances on the
-test set (P < 0.05) except for AUROC and AUBPRC of Attributable vs. Pragmatic on
-the intersection dataset (as they are identical), AUROC of Attributable vs.
-All-cause on the full dataset, and AUROC of Attributable vs. IDSA on the full
-dataset.
+After training on the full datasets, the performance as measured by the AUROCs
+of the training set cross-validation folds were similar to those of the held-out
+test sets, indicating that the models are neither overfit nor underfit
+(@fig-performance A).
+As measured by AUROC on the held-out test sets, models predicting pragmatic
+severity performed best with a median AUROC of `r perf_medians$auroc_full_pragmatic`,
+and this was significantly different from that of the other definitions 
+on the full datasets (P < 0.05).
+Models predicting IDSA, all-cause, and attributable severity performed similarly
+with median test set AUROCs of
+`r perf_medians$auroc_full_idsa`,
+`r perf_medians$auroc_full_allcause`, and
+`r perf_medians$auroc_full_attrib` respectively.
+The test set AUROCs were not significantly different (P > 0.05) for attributable
+and IDSA nor for attributable and all-cause, but the IDSA and all-cause AUROCs
+were significantly different from each other (P < 0.05).
+We plotted the receiver-operator characteristic curve and found that the
+pragmatic severity models outperformed the others at all specificity values
+(@fig-performance B).
+A prior study trained a logistic regression model on whole Electronic Health
+Record data extracted on the day of CDI diagnosis to predict attributable
+severity, yielding an AUROC of `r ehr_auroc` [@li_using_2019].
+While our OTU-based attributable severity model did not meet this performance,
+the OTU-based pragmatic severity model performed just as well as the EHR-based
+model in terms of AUROC.
+
+The test set median AUBPRCs from the full datasets followed a similar pattern as 
+the test set AUROCs with
+`r perf_medians$aubprc_full_idsa` for IDSA severity,
+`r perf_medians$aubprc_full_allcause` for all-cause severity,
+`r perf_medians$aubprc_full_attrib` for attributable severity, and
+`r perf_medians$aubprc_full_pragmatic` for pragmatic severity.
+The AUBPRCs were significantly different from each other (P < 0.05) for
+each pair of severity definitions except for attributable vs all-cause.
+We plotted the balanced precision-recall curve and found that the IDSA definition
+outperformed all other models at very low recall values, but the others outperform
+IDSA at all other points of the curve (@fig-performance C).
+The 95% confidence intervals overlapped the baseline AUROC and AUBPRC for
+the attributable severity models, while all others did not overlap the baseline.
+
+While it is advantageous to use as much data as available to train the best
+models possible, comparing performances of models trained on different subsets
+of the data is not entirely fair.
+To enable fair comparisons of the model performances across different severity
+definitions, we also selected the intersection of samples (n=`r n_cases_int`)
+that had labels for all four severity definitions and repeated the model
+training and evaluation process on this intersection dataset.
+The attributable definition is exactly the same as the pragmatic definition for
+the intersection dataset, as we defined pragmatic severity to use the
+attributable label when available.
+The performance results on the intersection dataset are shown in the right
+facets of each panel of @fig-performance.
+
+```{r model_comps_int, output = FALSE}
+
+comps_int_auroc <- model_comps %>% filter(group1 != 'pragmatic', group2 != 'pragmatic') %>% 
+  filter(dataset == 'int', metric == 'AUROC', p_value < 0.05)
+assert_that(all(comps_int_auroc %>% pull(group1) == c('attrib', 'idsa')))
+assert_that(all(comps_int_auroc %>% pull(group2) == 'allcause'))
+
+comps_int_aubprc <- model_comps %>% filter(group1 != 'pragmatic', group2 != 'pragmatic') %>% 
+  filter(dataset == 'int', metric == 'AUBPRC', p_value < 0.05)
+
+assert_that(all(comps_int_aubprc %>% pull(group1) == c('attrib', 'idsa')))
+assert_that(all(comps_int_aubprc %>% pull(group2) == 'allcause'))
+```
+
+As with the full datasets, the AUROCs of the training sets and test sets were
+similar within each severity definition.
+The median test set AUROCs were 
+`r perf_medians$auroc_int_idsa` for IDSA severity,
+`r perf_medians$auroc_int_allcause` for all-cause severity,
+`r perf_medians$auroc_int_attrib` and for attributable severity.
+The AUROCs on the intersection dataset were significantly different for
+all-cause vs attributable and all-cause vs IDSA severity (P < 0.05), but not for
+IDSA vs attributable severity (P > 0.05).
+The median test set AUBPRCs were
+`r perf_medians$aubprc_int_idsa` for IDSA severity,
+`r perf_medians$aubprc_int_allcause` for all-cause severity,
+`r perf_medians$aubprc_int_attrib` and for attributable severity.
+Just as with the AUROCs, the AUBPRCs were significantly different for
+all-cause vs attributable and all-cause vs IDSA severity (P < 0.05), but not for
+IDSA vs attributable severity (P > 0.05).
+For all severity definitions, performance dropped between the full dataset and
+the intersection dataset since fewer samples are available, but this effect is
+least dramatic for IDSA severity as the full and intersection datasets are more
+similar for this definition.
+The 95% confidence interval overlaps with the baseline for both AUROC and AUBPRC
+for all definitions on the intersection dataset except for IDSA severity.
 
 ## Feature importance
 
@@ -180,16 +277,17 @@ datasets performed best with an NNS of `r allcause_nns` for the all-cause
 definition, `r attrib_nns` for the attributable definition, and 
 `r pragmatic_nns` for the pragmatic definition.
 For context, prior studies predicted CDI-attributable severity using whole
-Electronic Health Record data and from a smaller set of clinician-curated
-variables, achieving precision values of 0.417 (NNS = `r ehr_nns`) for the EHR
-model and 0.167 (NNS = `r curated_nns`) for the curated model at the 95th
-percentile of risk [@li_using_2019;@rao_clostridium_2015].
+Electronic Health Record data extracted two days after diagnosis and from a
+smaller set of manually curated variables, achieving precision values of 0.417
+(NNS = `r ehr_nns`) for the EHR model and 0.167 (NNS = `r curated_nns`) for the
+curated model at the 95th percentile of risk
+[@li_using_2019;@rao_clostridium_2015]. <!-- TODO what about NNS on day of diagnosis? -->
 Multiplying the NNS of the OTU-based models by the estimated NNT of 
 `r fdx_nnt` for fidaxomicin yields NNB values of `r allcause_fdx_nnb` 
 for all-cause severity, `r attrib_fdx_nnb` for attributable severity,
 and `r pragmatic_fdx_nnb` for pragmatic severity.
-Thus, in a hypothetical scenario where these assumptions about fidaxomicin were
-correct, between `r min_fdx_nnb` and `r max_fdx_nnb` patients would need to be
+Thus, in a hypothetical scenario where these assumptions about fidaxomicin hold
+true, between `r min_fdx_nnb` and `r max_fdx_nnb` patients would need to be
 predicted to experience a severe outcome and be treated with fidaxomicin in
 order for one patient to benefit.
 As the NNS values were computed at the 95th percentile of risk (where 5% of
@@ -467,12 +565,12 @@ not available.
 :::
 
 ::: {#fig-performance fig-cap="**Performance of ML models.**
-In the left panels, models were trained on the full dataset, with different
+In the left facets, models were trained on the full datasets, with different
 numbers of samples available for each severity definition.
-In the right panels, models were trained on the intersection of samples with all
-labels available for each definition.
+In the right facets, models were trained on the same dataset consisting of the
+intersection of samples with all labels available for each definition.
 Note that the intersection dataset for Attributable and Pragmatic severity have
-exactly the same labels, thus identical values are expected.
+exactly the same labels, thus they have identical performance.
 **A)** 
 Area under the receiver-operator characteristic curve (AUROC) for the test sets
 and cross-validation folds of the training sets, and the area under the balanced

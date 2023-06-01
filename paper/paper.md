@@ -47,28 +47,82 @@ We first set out to train the best models possible for each severity
 definition. Not all samples have labels available for all four severity
 definitions due to missing data for some patient lab values and
 incomplete chart review ([Figure 1](#fig-flowchart) B), thus each
-severity definition has a different number of samples (**?@tbl-counts**)
-when using as many samples as possible. We refer to these as the full
-datasets. Random forest models were trained on repeated 100 splits of
-the datasets into training and test sets, and performance was evaluated
-on the held-out test set using the area under the receiver-operator
-characteristic curve (AUROC) the area under the balanced
-precision-recall curve (AUBPRC).
+severity definition has a different number of samples when using as many
+samples as possible (**?@tbl-counts**). We refer to these as the full
+datasets. Random forest models were trained on 100 splits of the
+datasets into training and test sets, and performance was evaluated on
+the held-out test set using the area under the receiver-operator
+characteristic curve (AUROC). Since the severity classes are highly
+imbalanced with different proportions of severe samples between
+definitions, we also calculated the balanced precision and the area
+under the balanced precision-recall curve (AUBPRC) as first proposed by
+Wu et al. (2021) to describe the precision that would be expected if the
+outcome classes were balanced.
 
-However, comparisons across these definitions is not fair when using
-different subsets of the data for each definition. To better compare the
-model performances across different severity definitions, we selected
-the intersection of samples (n=993) that had labels for all four
-severity definitions and repeated the model training and evaluation
-process.
+After training on the full datasets, the performance as measured by the
+AUROCs of the training set cross-validation folds were similar to those
+of the held-out test sets, indicating that the models are neither
+overfit nor underfit ([Figure 2](#fig-performance) A). As measured by
+AUROC on the held-out test sets, models predicting pragmatic severity
+performed best with a median AUROC of 0.69, and this was significantly
+different from that of the other definitions on the full datasets (P \<
+0.05). Models predicting IDSA, all-cause, and attributable severity
+performed similarly with median test set AUROCs of 0.61, 0.63, and 0.61
+respectively. The test set AUROCs were not significantly different (P \>
+0.05) for attributable and IDSA nor for attributable and all-cause, but
+the IDSA and all-cause AUROCs were significantly different from each
+other (P \< 0.05). We plotted the receiver-operator characteristic curve
+and found that the pragmatic severity models outperformed the others at
+all specificity values ([Figure 2](#fig-performance) B). A prior study
+trained a logistic regression model on whole Electronic Health Record
+data extracted on the day of CDI diagnosis to predict attributable
+severity, yielding an AUROC of 0.69 (Li et al. 2019). While our
+OTU-based attributable severity model did not meet this performance, the
+OTU-based pragmatic severity model performed just as well as the
+EHR-based model in terms of AUROC.
 
-Report median AUROC for training set and test set, and median AUBPRC for
-test set ([Figure 2](#fig-performance)). Nearly all pairs of definitions
-have significantly different performances on the test set (P \< 0.05)
-except for AUROC and AUBPRC of Attributable vs. Pragmatic on the
-intersection dataset (as they are identical), AUROC of Attributable vs.
-All-cause on the full dataset, and AUROC of Attributable vs. IDSA on the
-full dataset.
+The test set median AUBPRCs from the full datasets followed a similar
+pattern as the test set AUROCs with 0.60 for IDSA severity, 0.67 for
+all-cause severity, 0.66 for attributable severity, and 0.75 for
+pragmatic severity. The AUBPRCs were significantly different from each
+other (P \< 0.05) for each pair of severity definitions except for
+attributable vs all-cause. We plotted the balanced precision-recall
+curve and found that the IDSA definition outperformed all other models
+at very low recall values, but the others outperform IDSA at all other
+points of the curve ([Figure 2](#fig-performance) C). The 95% confidence
+intervals overlapped the baseline AUROC and AUBPRC for the attributable
+severity models, while all others did not overlap the baseline.
+
+While it is advantageous to use as much data as available to train the
+best models possible, comparing performances of models trained on
+different subsets of the data is not entirely fair. To enable fair
+comparisons of the model performances across different severity
+definitions, we also selected the intersection of samples (n=993) that
+had labels for all four severity definitions and repeated the model
+training and evaluation process on this intersection dataset. The
+attributable definition is exactly the same as the pragmatic definition
+for the intersection dataset, as we defined pragmatic severity to use
+the attributable label when available. The performance results on the
+intersection dataset are shown in the right facets of each panel of
+[Figure 2](#fig-performance).
+
+As with the full datasets, the AUROCs of the training sets and test sets
+were similar within each severity definition. The median test set AUROCs
+were 0.60 for IDSA severity, 0.55 for all-cause severity, 0.59 and for
+attributable severity. The AUROCs on the intersection dataset were
+significantly different for all-cause vs attributable and all-cause vs
+IDSA severity (P \< 0.05), but not for IDSA vs attributable severity (P
+\> 0.05). The median test set AUBPRCs were 0.59 for IDSA severity, 0.55
+for all-cause severity, 0.58 and for attributable severity. Just as with
+the AUROCs, the AUBPRCs were significantly different for all-cause vs
+attributable and all-cause vs IDSA severity (P \< 0.05), but not for
+IDSA vs attributable severity (P \> 0.05). For all severity definitions,
+performance dropped between the full dataset and the intersection
+dataset since fewer samples are available, but this effect is least
+dramatic for IDSA severity as the full and intersection datasets are
+more similar for this definition. The 95% confidence interval overlaps
+with the baseline for both AUROC and AUBPRC for all definitions on the
+intersection dataset except for IDSA severity.
 
 ## Feature importance
 
@@ -119,26 +173,27 @@ model (**?@tbl-risk**). Among the models predicting severe outcomes,
 those trained on the full datasets performed best with an NNS of 4 for
 the all-cause definition, 6 for the attributable definition, and 3 for
 the pragmatic definition. For context, prior studies predicted
-CDI-attributable severity using whole Electronic Health Record data and
-from a smaller set of clinician-curated variables, achieving precision
-values of 0.417 (NNS = 2.4) for the EHR model and 0.167 (NNS = 6.0) for
-the curated model at the 95th percentile of risk (Li et al. 2019; Rao et
-al. 2015). Multiplying the NNS of the OTU-based models by the estimated
-NNT of 10 for fidaxomicin yields NNB values of 40 for all-cause
-severity, 60 for attributable severity, and 30 for pragmatic severity.
-Thus, in a hypothetical scenario where these assumptions about
-fidaxomicin were correct, between 30 and 60 patients would need to be
-predicted to experience a severe outcome and be treated with fidaxomicin
-in order for one patient to benefit. As the NNS values were computed at
-the 95th percentile of risk (where 5% of patients screened are predicted
-to experience severity), these NNB values mean that 600 to 1,200 total
-CDI patients would need to be screened by an OTU-based prediction model
-in order for one patient to benefit. For comparison, the NNB for pairing
-the prior EHR-based model with fidaxomicin would be 24 with 480 total
-CDI patients screened for one patient to benefit. These estimates
-represent a proof-of-concept demonstration of the potential value of
-deploying severity prediction models to guide clinicians’ treatment
-decisions.
+CDI-attributable severity using whole Electronic Health Record data
+extracted two days after diagnosis and from a smaller set of manually
+curated variables, achieving precision values of 0.417 (NNS = 2.4) for
+the EHR model and 0.167 (NNS = 6.0) for the curated model at the 95th
+percentile of risk (Li et al. 2019; Rao et al. 2015).
+<!-- TODO what about NNS on day of diagnosis? --> Multiplying the NNS of
+the OTU-based models by the estimated NNT of 10 for fidaxomicin yields
+NNB values of 40 for all-cause severity, 60 for attributable severity,
+and 30 for pragmatic severity. Thus, in a hypothetical scenario where
+these assumptions about fidaxomicin hold true, between 30 and 60
+patients would need to be predicted to experience a severe outcome and
+be treated with fidaxomicin in order for one patient to benefit. As the
+NNS values were computed at the 95th percentile of risk (where 5% of
+patients screened are predicted to experience severity), these NNB
+values mean that 600 to 1,200 total CDI patients would need to be
+screened by an OTU-based prediction model in order for one patient to
+benefit. For comparison, pairing the prior EHR-based model with
+fidaxomicin would yield an NNB of 24 with 480 total CDI patients
+screened for one patient to benefit. These estimates represent a
+proof-of-concept demonstration of the potential value of deploying
+severity prediction models to guide clinicians’ treatment decisions.
 
 <!--
 rough estimate of costs.
@@ -659,26 +714,27 @@ available.
 
 ![](figures/ml-performance.png)
 
-Figure 2: **Performance of ML models.** In the left panels, models were
-trained on the full dataset, with different numbers of samples available
-for each severity definition. In the right panels, models were trained
-on the intersection of samples with all labels available for each
-definition. Note that the intersection dataset for Attributable and
-Pragmatic severity have exactly the same labels, thus identical values
-are expected. **A)** Area under the receiver-operator characteristic
-curve (AUROC) for the test sets and cross-validation folds of the
-training sets, and the area under the balanced precision-recall curve
-(AUBPRC) for the test sets. Each point is the median performance across
-100 train/test splits with tails as the 95% CI. Nearly all pairs of
-definitions have significantly different performances on the test set (P
-\< 0.05) except for AUROC and AUBPRC of Attributable vs. Pragmatic on
-the intersection dataset (as they are identical), AUROC of Attributable
-vs. All-cause on the full dataset, and AUROC of Attributable vs. IDSA on
-the full dataset. **B)** Receiver-operator characteristic curves for the
-test sets. Mean specificity is reported at each sensitivity value, with
-ribbons as the 95% CI. **C)** Balanced precision-recall curves for the
-test sets. Mean balanced precision is reported at each recall value,
-with ribbons as the 95% CI.
+Figure 2: **Performance of ML models.** In the left facets, models were
+trained on the full datasets, with different numbers of samples
+available for each severity definition. In the right facets, models were
+trained on the same dataset consisting of the intersection of samples
+with all labels available for each definition. Note that the
+intersection dataset for Attributable and Pragmatic severity have
+exactly the same labels, thus they have identical performance. **A)**
+Area under the receiver-operator characteristic curve (AUROC) for the
+test sets and cross-validation folds of the training sets, and the area
+under the balanced precision-recall curve (AUBPRC) for the test sets.
+Each point is the median performance across 100 train/test splits with
+tails as the 95% CI. Nearly all pairs of definitions have significantly
+different performances on the test set (P \< 0.05) except for AUROC and
+AUBPRC of Attributable vs. Pragmatic on the intersection dataset (as
+they are identical), AUROC of Attributable vs. All-cause on the full
+dataset, and AUROC of Attributable vs. IDSA on the full dataset. **B)**
+Receiver-operator characteristic curves for the test sets. Mean
+specificity is reported at each sensitivity value, with ribbons as the
+95% CI. **C)** Balanced precision-recall curves for the test sets. Mean
+balanced precision is reported at each recall value, with ribbons as the
+95% CI.
 
 </div>
 

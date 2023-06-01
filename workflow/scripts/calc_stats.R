@@ -36,6 +36,20 @@ preproc_ranges <- preproc_info %>%
             max_feats = max(nfeats)) %>% 
   as.list()
 
+# performance
+perf_dat <- read_csv('results/performance_results_aggregated.csv')
+perf_medians <- perf_dat %>% 
+  group_by(dataset,outcome) %>% 
+  summarize(auroc = median(AUC),
+            aubprc = median(bpr_auc)
+            ) %>% 
+  pivot_wider(names_from = c(dataset, outcome),
+              values_from = c(auroc, aubprc)) %>% 
+  as.list()
+ehr_auroc <- 0.69 # @li_using_2019 - day of diagnosis - page 3
+# model comparisons
+model_comps <- read_csv('results/model_comparisons.csv')
+
 # 95th percentile of risk / decision thresholds
 confmat_95th_pct <- read_csv('results/decision_thresholds.csv')
 attrib_nns <- confmat_95th_pct %>% filter(Dataset == 'Full', Outcome == 'Attributable') %>% pull(NNS)
@@ -60,7 +74,8 @@ max_screen <- max_fdx_nnb * 100/5 # 95th percentile of risk
 
 ehr_fdx_nnb <- round(ehr_nns * fdx_nnt, 0)
 ehr_screen <- round(ehr_fdx_nnb * 100/5, 0)
+
 # clean up objects not used in paper
-remove(otu_dat, metadat, preproc_info, confmat_95th_pct)
+remove(otu_dat, metadat, preproc_info, perf_dat, confmat_95th_pct)
 
 save.image(file = here("results", "stats.RData"))
