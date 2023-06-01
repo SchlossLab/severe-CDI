@@ -159,34 +159,42 @@ the most to model performance (@fig-features).
 
 ## Estimating clinical value
 
-
-When considering the suitability of a model for deployment in clinical settings, 
-the number needed to screen (NNS) is a highly relevant metric representing how
-many patients must be predicted as severe by the model to identify one true positive.
-We determined the decision threshold at the 95th percentile
-of risk for each prediction model and computed the confusion matrix and several
-performance metrics at this threshold including the NNS (@tbl-risk).
-Among the models predicting severe outcomes, the models trained on the full
-datasets performed best with an NNS of `r allcause_nns` for the all-cause
-definition, `r attrib_nns` for the attributable definition, and 
-`r pragmatic_nns` for the pragmatic definition.
-For context, prior studies predicted CDI-attributable severity using whole
-Electronic Health Record data and from a smaller set of 9 clinician-curated
-variables, achieving precision values of 0.417 (NNS = `r 1/0.417`) for the EHR
-model and 0.167 (NNS = `r 1/0.167`) for the curated model [@li_using_2019;
-@rao_clostridium_2015].
-While the attributable definition had a worse NNS for our OTU-based models, it
-did not perform worse than prior curated models and it is the most clinically
-relevant as physician chart review ensures that positively-labelled severe
-outcomes are due to the CDI rather than other causes.
-
 Even if a model performs well, it may not be useful in a clinical setting unless
 it can guide clinicians to choose between treatment options.
 At this time, we are not aware of any direct evidence that a particular
 treatment reduces the risk of severe CDI outcomes.
 However, with some assumptions we offer a proof-of-concept analysis of the
-potential clinical value of OTU-based severity prediction models.
-Paired with the NNS of these models, 
+potential clinical value of OTU-based severity prediction models when paired
+with treatments that may reduce severity.
+When considering the suitability of a model for deployment in clinical settings,
+the number needed to screen (NNS) is a highly relevant metric representing how
+many patients must be predicted as severe by the model to identify one true
+positive.
+The number needed to treat (NNT) is the number of true positive patients that
+must be treated by an intervention in order for one patient to benefit from the
+treatment. 
+Multiplying NNS by NNT yields the number needed to benefit (NNB): the number
+of patients predicted to have a severe outcome who then benefit from the
+treatment [@liu_number_2019].
+The NNB pairs model performance with treatment effectiveness to estimate the
+benefit of using predictive models in clinical practice.
+
+We determined the decision threshold at the 95th percentile of risk for each
+prediction model and computed the confusion matrix and several performance
+metrics including the NNS (@tbl-risk).
+Among the models predicting severe outcomes, those trained on the full
+datasets performed best with an NNS of `r allcause_nns` for the all-cause
+definition, `r attrib_nns` for the attributable definition, and 
+`r pragmatic_nns` for the pragmatic definition.
+For context, prior studies predicted CDI-attributable severity using whole
+Electronic Health Record data and from a smaller set of clinician-curated
+variables, achieving precision values of 0.417 (NNS = `r 1/0.417`) for the EHR
+model and 0.167 (NNS = `r 1/0.167`) for the curated model [@li_using_2019;
+@rao_clostridium_2015].
+While the attributable definition had a worse NNS for our OTU-based models, it
+did not perform worse than prior curated models and it is the most clinically
+relevant as physician chart review increases confidence that positively-labelled
+severe outcomes are due to the CDI rather than other causes.
 
 Current clinical guidelines specify vancomycin and fidaxomicin as the standard
 antibiotics to treat CDI, with a preference for fidaxomicin due to its higher
@@ -197,7 +205,7 @@ in most CDI patients in the US being treated with vancomycin (TODO citation).
 If fidaxomicin were shown to reduce the risk of severe CDI outcomes, it could be
 preferentially prescribed to patients predicted to be at risk.
 While we are not aware of evidence demonstrating the superiority of fidaxomicin
-for reducing severe CDI outcomes, 
+for reducing severe CDI outcomes, the reduced risk of recurrence 
 
 NNT x NNS = NNB
 
@@ -255,6 +263,7 @@ mentioned by @stuart_clinical_2021.
 
 It's not enough for models to perform well to justify deploying them in a
 clinical setting; benefit over current practices must be shown.
+Estimating the NNB contextualizes model performance within clinical reality.
 Amplicon sequencing is not typically performed for CDI patients, but if there is
 clinical value to be gained by implementing OTU-based models, routinely
 sequencing and profiling the microbial communities of CDI patients could be

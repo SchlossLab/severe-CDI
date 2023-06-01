@@ -35,15 +35,16 @@ confmat_95th_pct <-
   mutate(balanced_precision = calc_balanced_precision(prec, prior)) %>%
   select(outcome,
          dataset,
-         prec,
-         nns,
-         balanced_precision,
-         Recall,
-         Specificity,
+         decision_threshold,
          tp,
          fp,
          tn,
-         fn) %>%
+         fn,
+         prec,
+         nns,
+         #balanced_precision,
+         Recall,
+         Specificity,) %>%
   filter(outcome != 'idsa', !(outcome == 'pragmatic' & dataset == 'int')) %>%
   mutate(
     outcome = case_when(
@@ -62,13 +63,13 @@ confmat_95th_pct <-
   rename(
     Outcome = outcome,
     Dataset = dataset,
+    `Risk threshold` = decision_threshold,
     TP = tp,
     FP = fp,
     TN = tn,
     FN = fn,
     Precision = prec,
-    NNS = nns,
-    `Balanced\nPrecision` = balanced_precision
+    NNS = nns
   ) %>%
   mutate(across(is.numeric, ~ round(.x, digits = 2)))
 
