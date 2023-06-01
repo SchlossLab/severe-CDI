@@ -23,11 +23,15 @@ paper/*.ldf
 paper/*.cls
 paper/*.bst
 paper/*.aux
-paper/paper.tex
 paper/*.zip
+paper/paper_files/
+paper/paper.tex
+paper/paper.html
 
 *_KLS*
 *_MLC*
 *_mlc*
 
+index.html
+_freeze/
 /.quarto/
