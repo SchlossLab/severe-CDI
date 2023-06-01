@@ -24,7 +24,7 @@ make_table <- function(dat) {
     select(severity_definition, total, percent)
   percents <- totals %>% select(severity_definition, percent) %>%
     pivot_wider(names_from = severity_definition, values_from = percent)%>%
-    mutate(stat = '% pos.', .before = allcause)
+    mutate(stat = '% Severe', .before = allcause)
   totals_percents <- totals %>%
     select(-percent) %>%
     pivot_wider(names_from = severity_definition, values_from = total) %>%

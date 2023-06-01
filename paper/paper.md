@@ -10,14 +10,21 @@ May 31, 2023
 
 # Introduction
 
-prevalance of cdi. prevalance of severe cdi outcomes.
+prevalence of cdi. prevalence of severe cdi outcomes.
 
 Numerous studies indicate that the gut microbiome may play a role in *C.
-diff* colonization, infection, and clearance.
+diff* colonization, infection, and clearance. Contribution of the gut
+microbiome.
 
 prediction models based on EHR for whether infection occurs in the first
 place already in use. so how about predicting severity of infections to
-guide treatment? OTUs vs EHRs to predict severity.
+guide treatment? also models on EHR to predict adverse outcomes (Li,
+Rao). OTUs vs EHRs to predict severity. CDI severity prediction models
+could be deployed to screen patients at risk and guide clinicians to
+consider prescribing a different course of treatment. When paired with
+treatment options that may reduce risk of severity, deploying prediction
+models can guide clinician decision-making to improve patient outcomes
+while minimizing unnecessary harms.
 
 A few ways to define CDI severity ([Figure 1](#fig-flowchart)).
 
@@ -39,20 +46,28 @@ models.
 We first set out to train the best models possible for each severity
 definition. Not all samples have labels available for all four severity
 definitions due to missing data for some patient lab values and
-incomplete chart review (**?@tbl-counts**).
+incomplete chart review ([Figure 1](#fig-flowchart) B), thus each
+severity definition has a different number of samples (**?@tbl-counts**)
+when using as many samples as possible. We refer to these as the full
+datasets. Random forest models were trained on repeated 100 splits of
+the datasets into training and test sets, and performance was evaluated
+on the held-out test set using the area under the receiver-operator
+characteristic curve (AUROC) the area under the balanced
+precision-recall curve (AUBPRC).
 
 However, comparisons across these definitions is not fair when using
 different subsets of the data for each definition. To better compare the
 model performances across different severity definitions, we selected
-the intersection of samples (993) that had labels for all four severity
-definitions and repeated the model training and evaluation process.
+the intersection of samples (n=993) that had labels for all four
+severity definitions and repeated the model training and evaluation
+process.
 
 <div id="tbl-counts-1">
 
-|        |    IDSA | Attributable | All-cause | Pragmatic |
-|:-------|--------:|-------------:|----------:|----------:|
-| n      | 1,072.0 |      1,178.0 |   1,218.0 |   1,218.0 |
-| % pos. |    34.2 |          2.2 |       7.1 |       5.4 |
+|          |    IDSA | Attributable | All-cause | Pragmatic |
+|:---------|--------:|-------------:|----------:|----------:|
+| n        | 1,072.0 |      1,178.0 |   1,218.0 |   1,218.0 |
+| % Severe |    34.2 |          2.2 |       7.1 |       5.4 |
 
 Table 1: Full datasets
 
@@ -60,16 +75,18 @@ Table 1: Full datasets
 
 <div id="tbl-counts-2">
 
-|        |  IDSA | Attributable | All-cause | Pragmatic |
-|:-------|------:|-------------:|----------:|----------:|
-| n      | 993.0 |        993.0 |     993.0 |     993.0 |
-| % pos. |  32.7 |          2.6 |       4.6 |       2.6 |
+|          |  IDSA | Attributable | All-cause | Pragmatic |
+|:---------|------:|-------------:|----------:|----------:|
+| n        | 993.0 |        993.0 |     993.0 |     993.0 |
+| % Severe |  32.7 |          2.6 |       4.6 |       2.6 |
 
 Table 2: Intersection of samples with all labels available
 
 </div>
 
-Dataset sample counts
+**Sample counts and proportion of severe cases.** Each severity
+definition has a different number of patient samples available, as well
+as a different proportion of cases labelled as severe.
 
 Report median AUROC for training set and test set, and median AUBPRC for
 test set ([Figure 2](#fig-performance)). Nearly all pairs of definitions
@@ -84,19 +101,52 @@ full dataset.
 We performed permutation feature importance to determine which OTUs
 contributed the most to model performance ([Figure 3](#fig-features)).
 
-## Estimating clinical benefit
+## Estimating clinical value
 
-it’s not enough for models to perform well to deploy it in a clinical
-setting; benefit over current practices must be shown. table of NNS at
-95th pct of risk for each outcome x dataset (**?@tbl-risk**).
+When considering the suitability of a model for deployment in clinical
+settings, the number needed to screen (NNS) is a highly relevant metric
+representing how many patients must be predicted as severe by the model
+to identify one true positive. We determined the decision threshold at
+the 95th percentile of risk for each prediction model and computed the
+confusion matrix and several performance metrics at this threshold
+including the NNS (**?@tbl-risk**). Among the models predicting severe
+outcomes, the models trained on the full datasets performed best with an
+NNS of 4 for the all-cause definition, 6 for the attributable
+definition, and 3 for the pragmatic definition. For context, prior
+studies predicted CDI-attributable severity using whole Electronic
+Health Record data and from a smaller set of 9 clinician-curated
+variables, achieving precision values of `0.417` (NNS = 2.4) for the EHR
+model and 0.17 (NNS = 6.0) for the curated model (Li et al. 2019; Rao et
+al. 2015). While the attributable definition had a worse NNS for our
+OTU-based models, it did not perform worse than prior curated models and
+it is the most clinically relevant as physician chart review ensures
+that positively-labelled severe outcomes are due to the CDI rather than
+other causes.
+
+Even if a model performs well, it may not be useful in a clinical
+setting unless it can guide clinicians to choose between treatment
+options. At this time, we are not aware of any direct evidence that a
+particular treatment reduces the risk of severe CDI outcomes. However,
+with some assumptions we offer a proof-of-concept analysis of the
+potential clinical value of OTU-based severity prediction models. Paired
+with the NNS of these models,
+
+Current clinical guidelines specify vancomycin and fidaxomicin as the
+standard antibiotics to treat CDI, with a preference for fidaxomicin due
+to its higher sustained resolution of CDI and reduced risk of recurrence
+(**stuart_clinical_2021?**). However, fidaxomicin is considerably more
+expensive than vancomycin, resulting in most CDI patients in the US
+being treated with vancomycin (TODO citation). If fidaxomicin were shown
+to reduce the risk of severe CDI outcomes, it could be preferentially
+prescribed to patients predicted to be at risk. While we are not aware
+of evidence demonstrating the superiority of fidaxomicin for reducing
+severe CDI outcomes,
 
 NNT x NNS = NNB
 
-NNT for Fidaxomicin, FMT, and/or Bezlotoxumab. Current standard is
-Vancomycin because it’s cheaper than Fidaxomicin, even though IDSA
-recommends Fidaxomicin.
-
-pragmatic vs attributable severity. table?
+NNT for fidaxomicin, FMT, and/or Bezlotoxumab. Current standard is
+vancomycin because it’s cheaper than fidaxomicin, even though IDSA
+recommends fidaxomicin.
 
 rough estimate of costs. current: everyone gets vancomycin. potential:
 patients flagged as severe get fidaxomicin. based on NNB, estimate how
@@ -104,11 +154,11 @@ much money saved in averting severe outcomes.
 
 <div id="tbl-risk-1">
 
-| Severity     | Precision | NNS | Balanced Precision | Recall | Specificity |  TP |  FP |  TN |  FN |
+| Outcome      | Precision | NNS | Balanced Precision | Recall | Specificity |  TP |  FP |  TN |  FN |
 |:-------------|----------:|----:|-------------------:|-------:|------------:|----:|----:|----:|----:|
-| All-cause    |      0.29 | 3.5 |               0.84 |   0.12 |        0.98 |   2 |   5 | 221 |  15 |
-| Attributable |      0.20 | 5.0 |               0.92 |   0.20 |        0.98 |   1 |   4 | 226 |   4 |
-| Pragmatic    |      0.29 | 3.5 |               0.87 |   0.15 |        0.98 |   2 |   5 | 225 |  11 |
+| All-cause    |      0.25 |   4 |               0.81 |   0.18 |        0.96 |   3 |   9 | 217 |  14 |
+| Attributable |      0.17 |   6 |               0.90 |   0.40 |        0.96 |   2 |  10 | 220 |   3 |
+| Pragmatic    |      0.33 |   3 |               0.90 |   0.31 |        0.97 |   4 |   8 | 222 |   9 |
 
 Table 3: Full datasets
 
@@ -116,32 +166,48 @@ Table 3: Full datasets
 
 <div id="tbl-risk-2">
 
-| Severity     | Precision | NNS | Balanced Precision | Recall | Specificity |  TP |  FP |  TN |  FN |
+| Outcome      | Precision | NNS | Balanced Precision | Recall | Specificity |  TP |  FP |  TN |  FN |
 |:-------------|----------:|----:|-------------------:|-------:|------------:|----:|----:|----:|----:|
-| All-cause    |      0.12 |   8 |               0.75 |   0.11 |        0.96 |   1 |   7 | 182 |   8 |
-| Attributable |      0.14 |   7 |               0.86 |   0.20 |        0.97 |   1 |   6 | 187 |   4 |
+| All-cause    |       0.2 |   5 |               0.84 |   0.22 |        0.96 |   2 |   8 | 181 |   7 |
+| Attributable |       0.1 |  10 |               0.81 |   0.20 |        0.95 |   1 |   9 | 184 |   4 |
 
 Table 4: Intersection of samples with all labels available
 
 </div>
 
 **Predictive model performance at 95th percentile of risk.** The
-confusion matrix was computed at the 95th percentile of risk for each
-severity prediction model, which corresponds to 5% of cases predicted to
-be severe. The number needed to screen (NNS) to identify one true
-positive is the reciprocal of precision.
+confusion matrix was computed for the decision threshold at the 95th
+percentile of risk for each severity prediction model, which corresponds
+to 5% of cases predicted to have a severe outcome. The number needed to
+screen (NNS) to identify one true positive is the reciprocal of
+precision.
 
 # Discussion
 
-Compare to EHR-based models.
+Performance
 
 Discuss important OTUs. which ones concord with literature, which ones
-may be new.
+may be new. Abundance data are sparse, likely due to these patients
+being on antibiotics. Really showcases importance of having as many
+samples as possible when data are sparse and the outcome is low
+prevalence.
 
+Compare to EHR-based models.
+
+Models to guide treatment options. In the case of low-risk and
+non-invasive treatments such as choosing between oral antibiotics, a
+higher number of false positives may be tolerable as long as treatment
+cost is not unbearably high. However, for highly invasive and
+irreversibly treatments such as colectomy, false positives must be
+minimized. Cite studies saying fidaxomicin is cost-effective relative to
+vancomycin - mentioned by (**stuart_clinical_2021?**).
+
+It’s not enough for models to perform well to justify deploying them in
+a clinical setting; benefit over current practices must be shown.
 Amplicon sequencing is not typically performed for CDI patients, but if
 there is clinical value to be gained by implementing OTU-based models,
-we could make a case to routinely sequence and profile the microbial
-communities of CDI patients.
+routinely sequencing and profiling the microbial communities of CDI
+patients could be justified.
 
 # Materials and Methods
 
@@ -158,7 +224,7 @@ gene when results were discordant. 1,517 stool samples were collected
 from patients diagnosed with a CDI. Leftover stool samples that were
 sent to the clinical microbiology lab were collected and split into
 different aliquots. For 16S sequencing, the aliquot of stool was
-resuspended in DNA genotek stabilization buffer and then stored in the
+re-suspended in DNA genotek stabilization buffer and then stored in the
 -80°C freezer. Only the first CDI sample per patient was used for
 subsequent ML analyses such that no patient is represented more than
 once, resulting in a dataset of 1,277 samples.
@@ -174,7 +240,7 @@ DNA polymerase (Thermo Fisher Scientific) using custom barcoded primers,
 as previously described (Kozich et al. 2013). Each library preparation
 plate for sequencing contained a negative control (water) and mock
 community control (ZymoBIOMICS microbial community DNA standards). The
-PCR amplicons were normalized (SequalPrep normalizatin plate kit from
+PCR amplicons were normalized (SequalPrep normalization plate kit from
 Thermo Fisher Scientific), pooled and quantified (KAPA library
 quantification kit from KAPA Biosystems), and sequenced with the MiSeq
 system (Illumina).
@@ -185,10 +251,12 @@ reads were combined and aligned with the SILVA (v132) reference database
 (Quast et al. 2013) and taxonomy was assigned with a modified version of
 the Ribosomal Database Project reference sequences (v16) (Cole et al.
 2014). Sequences were clustered into *de novo* OTUs with the OptiClust
-algorithm in mothur (Westcott and Schloss 2017), resulting in Samples
-were rarefied to 5,000 sequences per sample, repeated 1,000 times for
-alpha and beta diversity analysis.
-<!-- TODO supplementary figure with alpha and beta diversity & significance -->
+algorithm in mothur (Westcott and Schloss 2017), resulting in 9,939
+OTUs.
+<!-- TODO supplementary figure with alpha and beta diversity & significance.
+Samples were rarefied to 5,000 sequences per sample, repeated 1,000
+times for alpha and beta diversity analysis.
+ -->
 
 ## Defining CDI severity
 
@@ -212,34 +280,36 @@ when chart review has not been completed, allowing us to use as many
 samples as we have available while taking physicians’ expert opinions
 into account where possible.
 
-## Model training and evaluation
+## Model training
 
 Random forest models were used to examine whether OTU data collected on
 the day of diagnosis could classify CDI cases as severe according to
 four different definitions of severity. We used the mikropml R package
 v1.5.0 (Topçuoğlu et al. 2021) implemented in a custom version of the
 mikropml Snakemake workflow (Sovacool et al. 2023) for all steps of the
-machine learning analysis. We have a full dataset which uses all samples
+machine learning analysis. We have full datasets which use all samples
 available for each severity definition, and an intersection dataset
 which consists of only the samples that have all four definitions
 labelled. The intersection dataset is the most fair for comparing model
 performance across definitions, while the full dataset allows us to use
 as much data as possible for model training and evaluation. Datasets
-were preprocessed with the default options in mikropml to remove
+were pre-processed with the default options in mikropml to remove
 features with near-zero variance and scale continuous features from -1
-to 1.
-<!-- No features had missing values and no features were perfectly correlated -->
-During preprocessing, 9,757 to 9,760 features were removed due to having
-near-zero variance, resulting in datasets ranging from 179 to 182
-depending on the severity definition. We randomly split the data into an
-80% training and 20% test set and repeated this 100 times, followed by
-training models with 5-fold cross-validation. Model performance was
-calculated on the test set using the area under the receiver-operator
-characteristic curve (AUROC) and the area under the balanced
-precision-recall curve (AUBPRC). Permutation importance was then
-performed to determine which OTUs contributed most to model performance.
-We reported OTUs with a significant permutation test in at least 75 of
-the 100 models.
+to 1. During pre-processing, 9,757 to 9,760 features were removed due to
+having near-zero variance, resulting in datasets ranging from 179 to 182
+depending on the severity definition. No features had missing values and
+no features were perfectly correlated. We randomly split the data into
+an 80% training and 20% test set and repeated this 100 times, followed
+by training models with 5-fold cross-validation.
+
+## Model evaluation
+
+Model performance was calculated on the held-out test sets using the
+area under the receiver-operator characteristic curve (AUROC) and the
+area under the balanced precision-recall curve (AUBPRC). Permutation
+feature importance was then performed to determine which OTUs
+contributed most to model performance. We reported OTUs with a
+significant permutation test in at least 75 of the 100 models.
 
 Since the severity labels are imbalanced with different frequencies of
 severity for each definition, we calculated balanced precision, the
@@ -309,6 +379,15 @@ Environ. Microbiol.* 79 (17): 5112–20.
 
 </div>
 
+<div id="ref-li_using_2019" class="csl-entry">
+
+Li, Benjamin Y., Jeeheh Oh, Vincent B. Young, Krishna Rao, and Jenna
+Wiens. 2019. “Using Machine Learning and the Electronic Health Record to
+Predict Complicated Clostridium Difficile Infection.” *Open Forum Infect
+Dis* 6 (5): ofz186. <https://doi.org/10.1093/ofid/ofz186>.
+
+</div>
+
 <div id="ref-mcdonald_recommendations_2007" class="csl-entry">
 
 McDonald, L. Clifford, Bruno Coignard, Erik Dubberke, Xiaoyan Song,
@@ -341,6 +420,17 @@ and Web-Based Tools.” *Nucleic Acids Research* 41 (D1): D590–96.
 R Core Team. 2020. *R: A Language and Environment for Statistical
 Computing*. Manual. Vienna, Austria: R Foundation for Statistical
 Computing.
+
+</div>
+
+<div id="ref-rao_clostridium_2015" class="csl-entry">
+
+Rao, Krishna, Dejan Micic, Mukil Natarajan, Spencer Winters, Mark J.
+Kiel, Seth T. Walk, Kavitha Santhosh, et al. 2015. “Clostridium
+Difficile Ribotype 027: Relationship to Age, Detectability of Toxins A
+or B in Stool With Rapid Testing, Severe Infection, and Mortality.”
+*Clinical Infectious Diseases* 61 (2): 233–41.
+<https://doi.org/10.1093/cid/civ254>.
 
 </div>
 
@@ -483,17 +573,17 @@ Pragmatic severity have exactly the same labels, thus identical values
 are expected. **A)** Area under the receiver-operator characteristic
 curve (AUROC) for the test sets and cross-validation folds of the
 training sets, and the area under the balanced precision-recall curve
-(AUBPRC) for the test sets. Nearly all pairs of definitions have
-significantly different performances on the test set (P \< 0.05) except
-for AUROC and AUBPRC of Attributable vs. Pragmatic on the intersection
-dataset (as they are identical), AUROC of Attributable vs. All-cause on
-the full dataset, and AUROC of Attributable vs. IDSA on the full
-dataset. Each point is the median with tails as the 95% CI. **B)**
-Receiver-operator characteristic curves for the test sets. Mean
-specificity is reported at each sensitivity value, with ribbons as the
-95% CI. **C)** Balanced precision-recall curves for the test sets. Mean
-balanced precision is reported at each recall value, with ribbons as the
-95% CI.
+(AUBPRC) for the test sets. Each point is the median performance across
+100 train/test splits with tails as the 95% CI. Nearly all pairs of
+definitions have significantly different performances on the test set (P
+\< 0.05) except for AUROC and AUBPRC of Attributable vs. Pragmatic on
+the intersection dataset (as they are identical), AUROC of Attributable
+vs. All-cause on the full dataset, and AUROC of Attributable vs. IDSA on
+the full dataset. **B)** Receiver-operator characteristic curves for the
+test sets. Mean specificity is reported at each sensitivity value, with
+ribbons as the 95% CI. **C)** Balanced precision-recall curves for the
+test sets. Mean balanced precision is reported at each recall value,
+with ribbons as the 95% CI.
 
 </div>
 
@@ -512,12 +602,11 @@ trained on the full datasets, with different numbers of samples
 available for each severity definition. Right: models were trained on
 the intersection of samples with all labels available for each
 definition. Note that Attributable and Pragmatic severity are exactly
-the same for the intersection dataset. OTU 120 (*Pseudomonas*) is not
-shown for IDSA severity on the full dataset nor on the intersection
+the same for the intersection dataset. *Pseudomonas* (OTU 120) is not
+shown for IDSA severity in the full datasets nor in the intersection
 dataset because it was removed during pre-processing due to having
 near-zero variance. **B)** Log<sub>10</sub>-transformed median relative
 abundances of the most important OTUs on the full datasets, grouped by
-severity (shape). The vertical dashed line represents the limit of
-detection.
+severity (shape). The vertical dashed line is the limit of detection.
 
 </div>

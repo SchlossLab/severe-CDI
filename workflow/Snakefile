@@ -154,7 +154,8 @@ rule convert_figures:
 
 rule calc_stats:
     input:
-        #meta='data/process/cases_full_metadata.csv'
+        #meta='data/process/cases_full_metadata.csv',
+        'results/decision_thresholds.csv'
     output:
         rda='results/stats.RData'
     conda: 'envs/mikropml.yml'
@@ -176,7 +177,7 @@ rule render_paper:
         ext=rules.install_quarto_ms.output,
         figs=expand("paper/figures/{figname}.png", figname = {figures_dict[k] for k in figures_dict.keys() if not k.startswith('S')}),
         stats=rules.calc_stats.output.rda,
-        tab=[rules.sample_count_tables.output],#'results/decision_thresholds.csv',
+        tab=[rules.sample_count_tables.output],
     output:
         'paper/paper.pdf',
         'paper/paper.md',

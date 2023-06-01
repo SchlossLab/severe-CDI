@@ -36,5 +36,12 @@ preproc_ranges <- preproc_info %>%
             max_feats = max(nfeats)) %>% 
   as.list()
 
-remove(otu_dat, metadat, preproc_info)
+# 95th percentile of risk / decision thresholds
+confmat_95th_pct <- read_csv('results/decision_thresholds.csv')
+attrib_nns <- confmat_95th_pct %>% filter(Dataset == 'Full', Outcome == 'Attributable') %>% pull(NNS)
+allcause_nns <- confmat_95th_pct %>% filter(Dataset == 'Full', Outcome == 'All-cause') %>% pull(NNS)
+pragmatic_nns <- confmat_95th_pct %>% filter(Dataset == 'Full', Outcome == 'Pragmatic') %>% pull(NNS)
+# clean up objects not used in paper
+remove(otu_dat, metadat, preproc_info, confmat_95th_pct)
+
 save.image(file = here("results", "stats.RData"))

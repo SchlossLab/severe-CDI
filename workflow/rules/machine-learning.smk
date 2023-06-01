@@ -78,8 +78,8 @@ rule compare_models:
 
 rule decision_thresholds:
     input:
-        'results/thresholds_results_aggregated.csv',
-        'results/sensspec_results_aggregated.csv'
+        # 'results/thresholds_results_aggregated.csv',
+        # 'results/sensspec_results_aggregated.csv'
     output:
         csv='results/decision_thresholds.csv'
     log: "log/decision_thresholds.txt"
