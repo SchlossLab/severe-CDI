@@ -2,3 +2,4 @@ _extensions/** linguist-vendored=true
 docs/** linguist-vendored=true
 paper/paper.tex linguist-vendored=true
 paper/references.bib linguist-vendored=true
+*.html linguist-vendored=true
