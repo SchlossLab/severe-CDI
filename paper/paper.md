@@ -2,7 +2,7 @@
 Composition of the Gut Microbiome
 Kelly L. SovacoolSarah E. TomkovichMegan L. CodenVincent B. YoungKrishna
 RaoPatrick D. Schloss
-May 31, 2023
+Jun 1, 2023
 
 <script src="paper_files/libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="paper_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
@@ -101,35 +101,46 @@ clinical practice.
 Current clinical guidelines specify vancomycin and fidaxomicin as the
 standard antibiotics to treat CDI, with a preference for fidaxomicin due
 to its higher rate of sustained resolution of CDI and lower rate of
-recurrence (**stuart_clinical_2021?**). The NNTs of fidaxomicin for
-sustained resolution and prevention of recurrence are each estimated to
-be 10 (Long and Gottlieb 2022; Tashiro et al. 2022). However,
-fidaxomicin is considerably more expensive than vancomycin. If
-fidaxomicin were shown to reduce the risk of severe CDI outcomes, it
-could be preferentially prescribed to patients predicted to be at risk,
-while prescribing vancomycin to low-risk patients. If we assume that the
-superior efficacy of fidaxomicin for sustained resolution and reduced
-recurrence also translates to reducing the risk of severe outcomes, we
-can pair the NNT of fidaxomicin with the NNS of OTU-based prediction
-models to estimate the NNB.
+recurrence (Johnson et al. 2021). The NNTs of fidaxomicin for sustained
+resolution and prevention of recurrence are each estimated to be 10
+(Long and Gottlieb 2022; Tashiro et al. 2022). However, fidaxomicin is
+considerably more expensive than vancomycin. If fidaxomicin were shown
+to reduce the risk of severe CDI outcomes, it could be preferentially
+prescribed to patients predicted to be at risk, while prescribing
+vancomycin to low-risk patients. If we assume that the superior efficacy
+of fidaxomicin for sustained resolution and reduced recurrence also
+translates to reducing the risk of severe outcomes, we can pair the NNT
+of fidaxomicin with the NNS of OTU-based prediction models to estimate
+the NNB.
 
-We determined the 95th percentile of risk for each prediction model and
-computed the confusion matrix and several performance metrics including
-the NNS at this threshold (**?@tbl-risk**). Among the models predicting
-severe outcomes, those trained on the full datasets performed best with
-an NNS of 4 for the all-cause definition, 6 for the attributable
-definition, and 3 for the pragmatic definition. For context, prior
-studies predicted CDI-attributable severity using whole Electronic
-Health Record data and from a smaller set of clinician-curated
-variables, achieving precision values of 0.417 (NNS = 2.4) for the EHR
-model and 0.167 (NNS = 6.0) for the curated model (Li et al. 2019; Rao
-et al. 2015). While the attributable definition had a worse NNS for our
-OTU-based models, it did not perform worse than the prior curated model,
-and it is the most clinically relevant as physician chart review
-increases confidence that positively-labelled severe outcomes are due to
-the CDI rather than other causes.
+To calculate a clinically-relevant NNS for these models, we computed the
+confusion matrix at the 95th percentile of risk for each prediction
+model (**?@tbl-risk**). Among the models predicting severe outcomes,
+those trained on the full datasets performed best with an NNS of 4 for
+the all-cause definition, 6 for the attributable definition, and 3 for
+the pragmatic definition. For context, prior studies predicted
+CDI-attributable severity using whole Electronic Health Record data and
+from a smaller set of clinician-curated variables, achieving precision
+values of 0.417 (NNS = 2.4) for the EHR model and 0.167 (NNS = 6.0) for
+the curated model at the 95th percentile of risk (Li et al. 2019; Rao et
+al. 2015). Multiplying the NNS of the OTU-based models by the estimated
+NNT of 10 for fidaxomicin yields NNB values of 40 for all-cause
+severity, 60 for attributable severity, and 30 for pragmatic severity.
+Thus, in a hypothetical scenario where these assumptions about
+fidaxomicin were correct, between 30 and 60 patients would need to be
+predicted to experience a severe outcome and be treated with fidaxomicin
+in order for one patient to benefit. As the NNS values were computed at
+the 95th percentile of risk (where 5% of patients screened are predicted
+to experience severity), these NNB values mean that 600 to 1,200 total
+CDI patients would need to be screened by an OTU-based prediction model
+in order for one patient to benefit by treatment guided by the model.
+For comparison, the NNB for pairing the prior EHR-based model with
+fidaxomicin would be 24.0 with 479.6 total CDI patients screened for one
+patient to benefit. These estimates represent a proof-of-concept
+demonstration of the potential value of deploying severity prediction
+models to guide clinicians’ treatment decisions.
 
-TODO NNB <!--
+<!--
 rough estimate of costs.
 current: everyone gets vancomycin.
 potential: patients flagged as severe get fidaxomicin. based on NNB, estimate
@@ -154,8 +165,8 @@ higher number of false positives may be tolerable as long as treatment
 cost is not unbearably high. However, for highly invasive and
 irreversibly treatments such as colectomy, false positives must be
 minimized. Cite studies saying fidaxomicin is cost-effective relative to
-vancomycin - mentioned by (**stuart_clinical_2021?**), e.g.
-(**jiang_budget_2022?**).
+vancomycin - mentioned by Johnson et al. (2021), e.g. Jiang et al.
+(2022).
 
 It’s not enough for models to perform well to justify deploying them in
 a clinical setting; benefit over current practices must be shown.
@@ -164,6 +175,13 @@ reality. Amplicon sequencing is not typically performed for CDI
 patients, but if there is clinical value to be gained by implementing
 OTU-based models, routinely sequencing and profiling the microbial
 communities of CDI patients could be justified.
+
+Models predicting the pragmatic definition yielded the best NNS. While
+the attributable definition had a worse NNS for our OTU-based models, it
+did not perform worse than the prior curated model, and it is the most
+clinically relevant as physician chart review increases confidence that
+positively-labelled severe outcomes are due to the CDI rather than other
+causes.
 
 # Materials and Methods
 
@@ -285,9 +303,9 @@ dependencies were managed with conda environments. Scripts were written
 in R (R Core Team 2020), Python (Van Rossum and Drake 2009), and GNU
 bash. Additional software and packages used in the creation of this
 manuscript include cowplot (Wilke 2020a), ggtext (Wilke 2020b), ggsankey
-(Sjoberg 2022), schtools (Sovacool, Lesniak, and Schloss 2022), the
-tidyverse metapackage (Wickham et al. 2019), Quarto, and vegan (Oksanen
-et al. 2023).
+(Sjoberg 2022), schtools (Sovacool et al. 2022), the tidyverse
+metapackage (Wickham et al. 2019), Quarto, and vegan (Oksanen et al.
+2023).
 
 ## Data availability
 
@@ -314,6 +332,28 @@ Kuske, and James M. Tiedje. 2014. “Ribosomal Database Project: Data and
 Tools for High Throughput <span class="nocase">rRNA</span> Analysis.”
 *Nucl. Acids Res.* 42 (D1): D633–42.
 <https://doi.org/10.1093/nar/gkt1244>.
+
+</div>
+
+<div id="ref-jiang_budget_2022" class="csl-entry">
+
+Jiang, Yiling, Eric M. Sarpong, Pamela Sears, and Engels N. Obi. 2022.
+“Budget Impact Analysis of Fidaxomicin Versus Vancomycin for the
+Treatment of Clostridioides Difficile Infection in the United States.”
+*Infect Dis Ther* 11 (1): 111–26.
+<https://doi.org/10.1007/s40121-021-00480-0>.
+
+</div>
+
+<div id="ref-johnson_clinical_2021" class="csl-entry">
+
+Johnson, Stuart, Valéry Lavergne, Andrew M Skinner, Anne J
+Gonzales-Luna, Kevin W Garey, Ciaran P Kelly, and Mark H Wilcox. 2021.
+“Clinical Practice Guideline by the Infectious Diseases Society of
+America (IDSA) and Society for Healthcare Epidemiology of America
+(SHEA): 2021 Focused Update Guidelines on Management of *Clostridioides*
+*Difficile* Infection in Adults.” *Clinical Infectious Diseases* 73 (5):
+e1029–44. <https://doi.org/10.1093/cid/ciab549>.
 
 </div>
 
@@ -448,9 +488,9 @@ Schloss. 2023. “Mikropml Snakemake Workflow.” Zenodo.
 
 <div id="ref-sovacool_schtools_2022" class="csl-entry">
 
-Sovacool, Kelly, Nick Lesniak, and Patrick Schloss. 2022. “Schtools:
-Schloss Lab Tools for Reproducible Microbiome Research.”
-<https://doi.org/10.5281/zenodo.6540687>.
+Sovacool, Kelly, Nick Lesniak, Sarah Lucas, Courtney Armour, and Patrick
+Schloss. 2022. “Schtools: Schloss Lab Tools for Reproducible Microbiome
+Research.” <https://doi.org/10.5281/zenodo.6540686>.
 
 </div>
 

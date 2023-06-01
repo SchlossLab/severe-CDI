@@ -4,6 +4,7 @@ bibliography: references.bib
 fontsize: 11pt
 date: last-modified
 date-format: medium
+prefer-html: true
 format:
   manuscript-pdf:
     mainfont: Helvetica
@@ -13,8 +14,6 @@ format:
     lof: false
   html:
     embed-resources: true
-  gfm:
-    prefer-html: true
 runningtitle: Predicting CDI Severity from OTUs
 runningauthor: Sovacool
 papertype: Preprint
@@ -161,9 +160,9 @@ the benefit of using predictive models in clinical practice.
 Current clinical guidelines specify vancomycin and fidaxomicin as the standard
 antibiotics to treat CDI, with a preference for fidaxomicin due to its higher
 rate of sustained resolution of CDI and lower rate of recurrence
-[@stuart_clinical_2021].
-The NNTs of fidaxomicin for sustained resolution and prevention of recurrence are
-each estimated to be 10 [@long_oral_2022;@tashiro_oral_2022].
+[@johnson_clinical_2021].
+The NNTs of fidaxomicin for sustained resolution and prevention of recurrence
+are each estimated to be 10 [@long_oral_2022;@tashiro_oral_2022].
 However, fidaxomicin is considerably more expensive than vancomycin.
 If fidaxomicin were shown to reduce the risk of severe CDI outcomes, it could be
 preferentially prescribed to patients predicted to be at risk, while prescribing
@@ -173,25 +172,38 @@ and reduced recurrence also translates to reducing the risk of severe outcomes,
 we can pair the NNT of fidaxomicin with the NNS of OTU-based prediction models
 to estimate the NNB.
 
-We determined the 95th percentile of risk for each prediction model and computed
-the confusion matrix and several performance metrics including the NNS at this
-threshold (@tbl-risk).
+To calculate a clinically-relevant NNS for these models, we computed the
+confusion matrix at the 95th percentile of risk for each prediction model
+(@tbl-risk).
 Among the models predicting severe outcomes, those trained on the full
 datasets performed best with an NNS of `r allcause_nns` for the all-cause
 definition, `r attrib_nns` for the attributable definition, and 
 `r pragmatic_nns` for the pragmatic definition.
 For context, prior studies predicted CDI-attributable severity using whole
 Electronic Health Record data and from a smaller set of clinician-curated
-variables, achieving precision values of 0.417 (NNS = `r 1/0.417`) for the EHR
-model and 0.167 (NNS = `r 1/0.167`) for the curated model [@li_using_2019;
-@rao_clostridium_2015].
-While the attributable definition had a worse NNS for our OTU-based models, it
-did not perform worse than the prior curated model, and it is the most
-clinically relevant as physician chart review increases confidence that
-positively-labelled severe outcomes are due to the CDI rather than other causes.
+variables, achieving precision values of 0.417 (NNS = `r ehr_nns`) for the EHR
+model and 0.167 (NNS = `r curated_nns`) for the curated model at the 95th
+percentile of risk [@li_using_2019;@rao_clostridium_2015].
+Multiplying the NNS of the OTU-based models by the estimated NNT of 
+`r fdx_nnt` for fidaxomicin yields NNB values of `r allcause_fdx_nnb` 
+for all-cause severity, `r attrib_fdx_nnb` for attributable severity,
+and `r pragmatic_fdx_nnb` for pragmatic severity.
+Thus, in a hypothetical scenario where these assumptions about fidaxomicin were
+correct, between `r min_fdx_nnb` and `r max_fdx_nnb` patients would need to be
+predicted to experience a severe outcome and be treated with fidaxomicin in
+order for one patient to benefit.
+As the NNS values were computed at the 95th percentile of risk (where 5% of
+patients screened are predicted to experience severity), these NNB values mean
+that `r min_screen` to `r max_screen` total CDI patients would need to be
+screened by an OTU-based prediction model in order for one patient to benefit by
+treatment guided by the model.
+For comparison, the NNB for pairing the prior EHR-based model with fidaxomicin
+would be `r ehr_fdx_nnb` with `r ehr_screen` total CDI patients screened for
+one patient to benefit.
+These estimates represent a proof-of-concept demonstration of the potential
+value of deploying severity prediction models to guide clinicians' treatment
+decisions.
 
-
-TODO NNB
 <!--
 rough estimate of costs.
 current: everyone gets vancomycin.
@@ -215,7 +227,7 @@ such as choosing between oral antibiotics, a higher number of false positives ma
 be tolerable as long as treatment cost is not unbearably high. However, for highly
 invasive and irreversibly treatments such as colectomy, false positives must be minimized.
 Cite studies saying fidaxomicin is cost-effective relative to vancomycin -
-mentioned by @stuart_clinical_2021, e.g. @jiang_budget_2022.
+mentioned by @johnson_clinical_2021, e.g. @jiang_budget_2022.
 
 It's not enough for models to perform well to justify deploying them in a
 clinical setting; benefit over current practices must be shown.
@@ -224,6 +236,12 @@ Amplicon sequencing is not typically performed for CDI patients, but if there is
 clinical value to be gained by implementing OTU-based models, routinely
 sequencing and profiling the microbial communities of CDI patients could be
 justified.
+
+Models predicting the pragmatic definition yielded the best NNS.
+While the attributable definition had a worse NNS for our OTU-based models, it
+did not perform worse than the prior curated model, and it is the most
+clinically relevant as physician chart review increases confidence that
+positively-labelled severe outcomes are due to the CDI rather than other causes.
 
 # Materials and Methods
 
