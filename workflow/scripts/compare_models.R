@@ -19,7 +19,7 @@ future::plan(future::multicore, workers = nworkers)
 
 dat <- read_csv(here('results','performance_results_aggregated.csv')) %>% 
   rename(AUROC = AUC,
-         AUBPRC = aubprc)
+         AUBPRC = bpr_auc)
 
 datasets <- dat %>% pull(dataset) %>% unique()
 metrics <- c('AUROC', 'AUBPRC')
