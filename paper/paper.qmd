@@ -509,7 +509,7 @@ TODO funding & author contributions
 #| layout-ncol: 2
 format_table <- function(tab) {
   tab %>%
-    kable(col.names = c(' ', 'IDSA', 'Attributable', 'All-cause', "Pragmatic"),
+    kable(col.names = c(' ', 'IDSA', 'All-cause', 'Attributable', "Pragmatic"),
           format.args = list(big.mark = ',')) %>% 
     kable_styling(font_size = table_font_size)
 }

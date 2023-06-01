@@ -30,7 +30,7 @@ make_table <- function(dat) {
     pivot_wider(names_from = severity_definition, values_from = total) %>%
     mutate(stat = 'n', .before = allcause) %>%
     add_row(percents) %>%
-    select(stat, idsa, attrib, allcause, pragmatic)
+    select(stat, idsa, allcause, attrib, pragmatic)
   return(totals_percents)
 }
 
