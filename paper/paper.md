@@ -2,7 +2,7 @@
 Composition of the Gut Microbiome
 Kelly L. SovacoolSarah E. TomkovichMegan L. CodenVincent B. YoungKrishna
 RaoPatrick D. Schloss
-Jun 1, 2023
+Jun 2, 2023
 
 <script src="paper_files/libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="paper_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
@@ -10,7 +10,10 @@ Jun 1, 2023
 
 # Introduction
 
-prevalence of cdi. prevalence of severe cdi outcomes.
+prevalence of cdi. prevalence of severe cdi outcomes. antibiotics
+typical risk factor for cdi, but nonantibiotic medications can increase
+susceptibilty too (Tomkovich et al. 2021) and non-nosomial CDI on the
+rise
 
 Numerous studies indicate that the gut microbiome may play a role in *C.
 diff* colonization, infection, and clearance. Contribution of the gut
@@ -127,26 +130,32 @@ intersection dataset except for IDSA severity.
 ## Feature importance
 
 We performed permutation feature importance to determine which OTUs
-contributed the most to model performance ([Figure 3](#fig-features)).
-An OTU was considered important if performance decreased when it was
-permuted in at least 75% of the train/test splits, with greater
-differences in AUROC meaning greater importance. We plotted
-log<sub>10</sub>-transformed median relative abundances for the most
-important OTUs. *Enterococcus* was the most important OTU, being
-significantly important for all models except for attributable severity
-on the full dataset. The relative abundance of *Enterococcus* was also
-elevated in severe cases over not severe cases for all severity
-definitions. *Staphylococcus* was important for the pragmatic and
-all-cause definitions on the full datasets. *Lactobacillus* was
-important only for the all-cause definition on the intersection dataset.
-All remaining OTUs had differences in AUROC \< 0.02 and were only
-significantly important in one or two of the models. For many of the top
-OTUs, there is wide variance in importance, likely due to the imbalanced
-nature of the severity outcomes. There is not always a clear pattern of
-increased or decreased relative abundance of important OTUs in severe
-cases.
-
-TODO reference other literature?
+contributed the most to model performance. An OTU was considered
+important if performance decreased when it was permuted in at least 75%
+of the train/test splits, with greater differences in AUROC meaning
+greater importance. We plotted mean decrease in AUROC alongside
+log<sub>10</sub>-transformed mean relative abundances for the top OTUs
+([Figure 3](#fig-features)). There is not always a clear pattern of
+increased or decreased relative abundance for important OTUs in severe
+CDI cases, but all of the top 5 OTUs had an increased mean relative
+abundance in severe cases relative to not severe cases. *Enterococcus*
+was the most important OTU, being significantly important for all models
+except for attributable severity on the full dataset. Enrichment of
+*Enterococcus* in *C. difficile* infection and severity has been
+well-documented in prior studies, thus its importance and increase in
+abundance for severe cases is not suprising (Schubert et al. 2014;
+**antharam_intestinal_2013?**; **berkell_microbiota-based_2021?**;
+Lesniak et al. 2022). *Staphylococcus* was important for the pragmatic
+and all-cause definitions on the full datasets, but not for models
+trained on the intersection dataset. *Lactobacillus* was important only
+for the all-cause definition on the intersection dataset, and its
+enrichment during *C. difficile* infection has also been shown in prior
+studies (**antharam_intestinal_2013?**;
+**berkell_microbiota-based_2021?**). All remaining OTUs had differences
+in AUROC \< 0.02 and were only significantly important in one or two of
+the models at most. For many of the top OTUs, there is wide variance in
+importance, perhaps due to the imbalanced nature of the severity
+outcomes.
 
 ## Estimating clinical value
 
@@ -232,7 +241,13 @@ Discuss important OTUs. which ones concord with literature, which ones
 may be new. Abundance data are sparse, likely due to these patients
 being on antibiotics. Really showcases importance of having as many
 samples as possible when data are sparse and the outcome is low
-prevalence.
+prevalence. we do not know which antibiotics were prescribed to treat
+these CDI cases, nor which antibiotics patients may have taken prior to
+the CDI. differences in microbiota between patients may be due to
+different abx… different antibiotics have been shown to create different
+forms of dysbiotic microbiota (**berkell_microbiota-based_2021?**) and
+differential cdi clearance (**tomkovick_initial_2020?**). vanc-resistant
+enterococcus new nosocomial alliance (**poduval_clostridium_2000?**).
 
 Compare to EHR-based models.
 
@@ -247,11 +262,13 @@ vancomycin - mentioned by Johnson et al. (2021), e.g. Jiang et al.
 
 It’s not enough for models to perform well to justify deploying them in
 a clinical setting; benefit over current practices must be shown. do no
-harm (**wiens_do_2019?**). Estimating the NNB contextualizes model
+harm (Wiens et al. 2019). Estimating the NNB contextualizes model
 performance within clinical reality. Amplicon sequencing is not
 typically performed for CDI patients, but if there is clinical value to
 be gained by implementing OTU-based models, routinely sequencing and
 profiling the microbial communities of CDI patients could be justified.
+resistance to vancomycin is increasing in staph, cdi, and enterococci –
+even more important to find alternate treatments.
 
 Models predicting the pragmatic definition yielded the best NNS. While
 the attributable definition had a worse NNS for our OTU-based models, it
@@ -381,7 +398,7 @@ predicted as severe to identify one true positive (Rembold 1998). The
 number needed to treat (NNT) is the number of true positive patients
 that must be treated by an intervention in order for one patient to
 benefit, and is calculated from the reciprocal of absolute risk in
-randomized controlled trials (**laupacis_assessment_1988?**).
+randomized controlled trials (Laupacis, Sackett, and Roberts 1988).
 Multiplying the NNS of a model by the NNT of a treatment yields the
 number needed to benefit (NNB) - the number of patients that must be
 predicted to have a severe outcome and undergo a treatment to benefit
@@ -471,6 +488,25 @@ Sequencing Strategy and Curation Pipeline for Analyzing Amplicon
 Sequence Data on the MiSeq Illumina Sequencing Platform.” *Appl.
 Environ. Microbiol.* 79 (17): 5112–20.
 <https://doi.org/10.1128/AEM.01043-13>.
+
+</div>
+
+<div id="ref-laupacis_assessment_1988" class="csl-entry">
+
+Laupacis, Andreas, David L. Sackett, and Robin S. Roberts. 1988. “An
+Assessment of Clinically Useful Measures of the Consequences of
+Treatment.” *New England Journal of Medicine* 318 (26): 1728–33.
+<https://doi.org/10.1056/NEJM198806303182605>.
+
+</div>
+
+<div id="ref-lesniak_gut_2022" class="csl-entry">
+
+Lesniak, Nicholas A., Alyxandria M. Schubert, Kaitlin J. Flynn, Jhansi
+L. Leslie, Hamide Sinani, Ingrid L. Bergin, Vincent B. Young, and
+Patrick D. Schloss. 2022. “The Gut Bacterial Community Potentiates
+Clostridioides Difficile Infection Severity.” *mBio* 13 (4): e01183–22.
+<https://doi.org/10.1128/mbio.01183-22>.
 
 </div>
 
@@ -577,6 +613,17 @@ Communities.” *Applied and Environmental Microbiology* 75 (23): 7537–41.
 
 </div>
 
+<div id="ref-schubert_microbiome_2014" class="csl-entry">
+
+Schubert, Alyxandria M., Mary A. M. Rogers, Cathrin Ring, Jill Mogle,
+Joseph P. Petrosino, Vincent B. Young, David M. Aronoff, and Patrick D.
+Schloss. 2014. “Microbiome Data Distinguish Patients with Clostridium
+Difficile Infection and Non-C. Difficile-Associated Diarrhea from
+Healthy Controls.” *mBio* 5 (3).
+<https://doi.org/10.1128/mBio.01021-14>.
+
+</div>
+
 <div id="ref-sjoberg_ggsankey_2022" class="csl-entry">
 
 Sjoberg, David. 2022. *Ggsankey: Sankey, Alluvial and Sankey Bump
@@ -622,6 +669,17 @@ Controlled Trials.” *Journal of Infection and Chemotherapy* 28 (11):
 
 </div>
 
+<div id="ref-tomkovich_osmotic_2021" class="csl-entry">
+
+Tomkovich, Sarah, Ana Taylor, Jacob King, Joanna Colovas, Lucas Bishop,
+Kathryn McBride, Sonya Royzenblat, Nicholas A. Lesniak, Ingrid L.
+Bergin, and Patrick D. Schloss. 2021. “An Osmotic Laxative Renders Mice
+Susceptible to Prolonged Clostridioides Difficile Colonization and
+Hinders Clearance.” *mSphere* 0 (0): e00629–21.
+<https://doi.org/10.1128/mSphere.00629-21>.
+
+</div>
+
 <div id="ref-topcuoglu_mikropml_2021" class="csl-entry">
 
 Topçuoğlu, Begüm D., Zena Lapp, Kelly L. Sovacool, Evan Snitkin, Jenna
@@ -653,6 +711,15 @@ Wickham, Hadley, Mara Averick, Jennifer Bryan, Winston Chang, Lucy
 D’Agostino McGowan, Romain François, Garrett Grolemund, et al. 2019.
 “Welcome to the Tidyverse.” *Journal of Open Source Software* 4 (43):
 1686. <https://doi.org/10.21105/joss.01686>.
+
+</div>
+
+<div id="ref-wiens_no_2019" class="csl-entry">
+
+Wiens, Jenna, Suchi Saria, Mark Sendak, Marzyeh Ghassemi, Vincent X.
+Liu, Finale Doshi-Velez, Kenneth Jung, et al. 2019. “Do No Harm: A
+Roadmap for Responsible Machine Learning for Health Care.” *Nat Med* 25
+(9): 1337–40. <https://doi.org/10.1038/s41591-019-0548-6>.
 
 </div>
 
@@ -780,7 +847,8 @@ with tails as the 95% CI. **B)** Receiver-operator characteristic curves
 for the test sets. Mean specificity is reported at each sensitivity
 value, with ribbons as the 95% CI. **C)** Balanced precision-recall
 curves for the test sets. Mean balanced precision is reported at each
-recall value, with ribbons as the 95% CI.
+recall value, with ribbons as the 95% CI. Original unbalanced
+precision-recall curves are shown in Figure S1.
 
 </div>
 
@@ -793,18 +861,18 @@ permutation test. For each OTU, the order of samples was randomized in
 the test set 100 times and the performance was re-calculated to estimate
 the permutation performance. An OTU was considered important if the
 performance decreased when the OTU was permuted in at least 75% of the
-models. Median difference in AUROC is reported for each OTU, with
-starred OTUs being significant for a 75% confidence interval. OTUs with
-a greater difference in AUROC (actual performance minus permutation
-performance) are more important. Left: models were trained on the full
-datasets, with different numbers of samples available for each severity
-definition. Right: models were trained on the intersection of samples
-with all labels available for each definition. Note that Attributable
-and Pragmatic severity are exactly the same for the intersection
-dataset. *Pseudomonas* (OTU 120) is not shown for IDSA severity in the
-full datasets nor in the intersection dataset because it was removed
-during pre-processing due to having near-zero variance. **B)**
-Log<sub>10</sub>-transformed median relative abundances of the most
+models. Mean difference in AUROC and the 75% confidence interval (CI) is
+reported for each OTU, with starred OTUs being significant for the 75%
+CI. OTUs with a greater difference in AUROC (actual performance minus
+permutation performance) are more important. Left: models were trained
+on the full datasets, with different numbers of samples available for
+each severity definition. Right: models were trained on the intersection
+of samples with all labels available for each definition. Note that
+Attributable and Pragmatic severity are exactly the same for the
+intersection dataset. *Pseudomonas* (OTU 120) is not shown for IDSA
+severity in the full datasets nor in the intersection dataset because it
+was removed during pre-processing due to having near-zero variance.
+**B)** Log<sub>10</sub>-transformed mean relative abundances of the most
 important OTUs on the full datasets, grouped by severity (shape). The
 vertical dashed line is the limit of detection.
 
