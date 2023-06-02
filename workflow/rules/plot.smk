@@ -82,7 +82,8 @@ rule plot_feat_imp:
         #tax="data/mothur/alpha/cdi.taxonomy",
         #otu="data/mothur/alpha/cdi.opti_mcc.shared"
     output:
-        tiff="figures/feature-importance.tiff"
+        tiff="figures/feature-importance.tiff",
+        csv="results/top_features.csv",
     log: "log/plot_feat_imp.txt"
     conda: "../envs/mikropml.yml"
     script:

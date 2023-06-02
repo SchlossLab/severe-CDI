@@ -47,8 +47,11 @@ perf_medians <- perf_dat %>%
               values_from = c(auroc, aubprc)) %>% 
   as.list()
 ehr_auroc <- 0.69 # @li_using_2019 - day of diagnosis - page 3
-# model comparisons
+# model comparisons (permutation test of performance)
 model_comps <- read_csv('results/model_comparisons.csv')
+
+# feature importance
+top_feats <- read_csv(here('results', 'top_features.csv'))
 
 # 95th percentile of risk / decision thresholds
 confmat_95th_pct <- read_csv('results/decision_thresholds.csv')

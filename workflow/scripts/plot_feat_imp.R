@@ -46,19 +46,31 @@ top_otus_order <- dat_top_otus %>%
   pull(label_html)
 dat_top_otus <- dat_top_otus %>% filter(label_html %in% top_otus_order)
 
-feat_imp_plot <- dat %>% 
-  filter(label_html %in% top_otus_order) %>% 
+top_feats_dat <- dat %>% 
+  filter(label_html %in% top_otus_order, !(dataset == 'int' & outcome == 'pragmatic')) %>% 
   left_join(dat_top_otus, 
-             by = c('label_html', 'outcome', 'dataset')) %>% 
+            by = c('label_html', 'outcome', 'dataset')) 
+
+top_feats_dat %>% 
+  group_by(dataset, outcome, tax_otu_label) %>% 
+  summarize(med_auroc_diff = median(perf_metric_diff),
+            ) %>% 
+  full_join(relabun_medians %>% 
+               filter(label_html %in% top_otus_order) %>% 
+               select(outcome, tax_otu_label, med_rel_abun),
+            relationship = 'many-to-many') %>% 
+  write_csv(here('results', 'top_features.csv'))
+
+feat_imp_plot <- top_feats_dat %>% 
   mutate(label_html = factor(label_html, levels = top_otus_order),
          dataset = case_when(dataset == 'full' ~ 'Full datasets',
                              TRUE ~ 'Intersection'),
          outcome = factor(outcome, levels = c('idsa', 'allcause', 'attrib', 'pragmatic')),
          is_signif = factor(case_when(is.na(is_signif) ~ 'No',
-                               TRUE ~ 'Yes'),
+                                      TRUE ~ 'Yes'),
                             levels = c('Yes', 'No')
-                            )
-         ) %>% 
+         )
+  ) %>% 
   ggplot(aes(x = perf_metric_diff, 
              y = label_html, 
              color = outcome,

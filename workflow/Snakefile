@@ -157,6 +157,7 @@ rule calc_stats:
         #'data/process/cases_full_metadata.csv',
         #'results/performance_results_aggregated.csv',
         #'results/model_comparisons.csv',
+        "results/top_features.csv",
         'results/decision_thresholds.csv',
     output:
         rda='results/stats.RData'
