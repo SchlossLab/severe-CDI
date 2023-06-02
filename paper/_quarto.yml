@@ -1,2 +1,6 @@
 project:
   title: "Severe CDI manuscript"
+
+mainfont: Helvetica
+sansfont: Helvetica
+fontfamily: helvet
