@@ -28,6 +28,8 @@ paper/*.zip
 paper/paper_files/
 paper/paper.tex
 paper/paper.html
+paper/supplement_files/
+paper/supplement.tex
 
 *_KLS*
 *_MLC*
