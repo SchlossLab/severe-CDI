@@ -1,4 +1,16 @@
 
+rule cdiff_relabun:
+    input:
+        #csv="results/feature-importance_results_aggregated.csv",
+        #tax="data/mothur/alpha/cdi.taxonomy",
+        #otu="data/mothur/alpha/cdi.opti_mcc.shared"
+    output:
+        tiff='figures/cdiff-otu.tiff'
+    log: "log/cdiff_relabun.txt"
+    conda: "../envs/mikropml.yml"
+    script:
+        '../scripts/cdiff_relabun.R'
+
 # rule mermaid_flowchart:
 #     input:
 #         mmd='workflow/scripts/mermaid/severity_flowchart.mmd',

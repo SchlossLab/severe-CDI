@@ -50,7 +50,8 @@ include: 'rules/temporal-split.smk'
 figures_dict = {'1': 'flowchart_sankey',
                 '2': 'ml-performance',
                 '3': 'feature-importance',
-                'S1': 'prc_curves'}
+                'S1': 'prc_curves',
+                'S2': 'cdiff-otu',}
 
 rule paper_targets:
     input:
@@ -210,6 +211,7 @@ rule render_supplement:
 rule zip_submission:
     input:
         'paper/paper.pdf',
+        'paper/supplement.pdf',
         expand("paper/figures/figure_{num}.tiff", num = figures_dict.keys())
     output:
         'paper/submission.zip'
