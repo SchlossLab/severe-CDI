@@ -129,7 +129,24 @@ intersection dataset except for IDSA severity.
 We performed permutation feature importance to determine which OTUs
 contributed the most to model performance ([Figure 3](#fig-features)).
 An OTU was considered important if performance decreased when it was
-permuted in at least 75% of the train/test splits.
+permuted in at least 75% of the train/test splits, with greater
+differences in AUROC meaning greater importance. We plotted
+log<sub>10</sub>-transformed median relative abundances for the most
+important OTUs. *Enterococcus* was the most important OTU, being
+significantly important for all models except for attributable severity
+on the full dataset. The relative abundance of *Enterococcus* was also
+elevated in severe cases over not severe cases for all severity
+definitions. *Staphylococcus* was important for the pragmatic and
+all-cause definitions on the full datasets. *Lactobacillus* was
+important only for the all-cause definition on the intersection dataset.
+All remaining OTUs had differences in AUROC \< 0.02 and were only
+significantly important in one or two of the models. For many of the top
+OTUs, there is wide variance in importance, likely due to the imbalanced
+nature of the severity outcomes. There is not always a clear pattern of
+increased or decreased relative abundance of important OTUs in severe
+cases.
+
+TODO reference other literature?
 
 ## Estimating clinical value
 
@@ -229,12 +246,12 @@ vancomycin - mentioned by Johnson et al. (2021), e.g. Jiang et al.
 (2022).
 
 It’s not enough for models to perform well to justify deploying them in
-a clinical setting; benefit over current practices must be shown.
-Estimating the NNB contextualizes model performance within clinical
-reality. Amplicon sequencing is not typically performed for CDI
-patients, but if there is clinical value to be gained by implementing
-OTU-based models, routinely sequencing and profiling the microbial
-communities of CDI patients could be justified.
+a clinical setting; benefit over current practices must be shown. do no
+harm (**wiens_do_2019?**). Estimating the NNB contextualizes model
+performance within clinical reality. Amplicon sequencing is not
+typically performed for CDI patients, but if there is clinical value to
+be gained by implementing OTU-based models, routinely sequencing and
+profiling the microbial communities of CDI patients could be justified.
 
 Models predicting the pragmatic definition yielded the best NNS. While
 the attributable definition had a worse NNS for our OTU-based models, it
@@ -776,17 +793,19 @@ permutation test. For each OTU, the order of samples was randomized in
 the test set 100 times and the performance was re-calculated to estimate
 the permutation performance. An OTU was considered important if the
 performance decreased when the OTU was permuted in at least 75% of the
-models. OTUs with a greater difference in AUROC (actual performance
-minus permutation performance) are more important. Left: models were
-trained on the full datasets, with different numbers of samples
-available for each severity definition. Right: models were trained on
-the intersection of samples with all labels available for each
-definition. Note that Attributable and Pragmatic severity are exactly
-the same for the intersection dataset. *Pseudomonas* (OTU 120) is not
-shown for IDSA severity in the full datasets nor in the intersection
-dataset because it was removed during pre-processing due to having
-near-zero variance. **B)** Log<sub>10</sub>-transformed median relative
-abundances of the most important OTUs on the full datasets, grouped by
-severity (shape). The vertical dashed line is the limit of detection.
+models. Median difference in AUROC is reported for each OTU, with
+starred OTUs being significant for a 75% confidence interval. OTUs with
+a greater difference in AUROC (actual performance minus permutation
+performance) are more important. Left: models were trained on the full
+datasets, with different numbers of samples available for each severity
+definition. Right: models were trained on the intersection of samples
+with all labels available for each definition. Note that Attributable
+and Pragmatic severity are exactly the same for the intersection
+dataset. *Pseudomonas* (OTU 120) is not shown for IDSA severity in the
+full datasets nor in the intersection dataset because it was removed
+during pre-processing due to having near-zero variance. **B)**
+Log<sub>10</sub>-transformed median relative abundances of the most
+important OTUs on the full datasets, grouped by severity (shape). The
+vertical dashed line is the limit of detection.
 
 </div>
