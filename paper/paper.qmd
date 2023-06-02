@@ -333,6 +333,7 @@ mentioned by @johnson_clinical_2021, e.g. @jiang_budget_2022.
 
 It's not enough for models to perform well to justify deploying them in a
 clinical setting; benefit over current practices must be shown.
+do no harm [@wiens_do_2019].
 Estimating the NNB contextualizes model performance within clinical reality.
 Amplicon sequencing is not typically performed for CDI patients, but if there is
 clinical value to be gained by implementing OTU-based models, routinely

@@ -178,16 +178,22 @@ bprc_dat <- read_csv(here('results', 'prcurve_results_aggregated.csv')) %>%
               select(outcome, dataset, prior) %>% 
               dplyr::distinct(), 
             by = join_by(outcome, dataset)) %>% 
-  mutate(
-         balanced_precision = mikropml::calc_balanced_precision(precision, prior),
-         recall = round(recall, 2)) %>%
+  mutate(recall = round(recall, 2),
+         bal_prec = calc_balanced_precision(precision, prior)) %>%
   group_by(recall, dataset, outcome) %>%
   summarise(
-    mean_balanced_precision = median(balanced_precision),
-    upper = quantile(balanced_precision, 0.95),
-    lower = quantile(balanced_precision, 0.05)
+    mean_precision = mean(precision),
+    mean_balanced_precision = mean(bal_prec),
+    upper = quantile(precision, 0.95),
+    lower = quantile(precision, 0.05),
+    #recall = round(mean(recall), 2),
+    .threshold = mean(.threshold),
+    prior = mean(prior)
   ) %>%
   dplyr::mutate(
+    mbp_after_summarize = calc_balanced_precision(mean_precision, prior),
+    lower = calc_balanced_precision(lower, prior),
+    upper = calc_balanced_precision(upper, prior),
     upper = dplyr::case_when(
       upper > 1 ~ 1,
       TRUE ~ upper
