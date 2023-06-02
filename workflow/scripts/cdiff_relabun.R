@@ -38,7 +38,7 @@ cdiff_relabun_dat <- relabun_dat %>%
 # OTU 25 is the only cdiff OTU with abundance above the LOD
 cdiff_plot <- cdiff_relabun_dat %>% 
   group_by(outcome, is_severe, label_html) %>% 
-  summarize(med_rel_abun = median(rel_abun_c)) %>% 
+  summarize(med_rel_abun = mean(rel_abun_c)) %>% 
   ggplot(aes(x = med_rel_abun, y = label_html, 
              color = outcome, shape = is_severe, group = outcome)) +
   geom_point(
@@ -54,7 +54,7 @@ cdiff_plot <- cdiff_relabun_dat %>%
                      guide = guide_legend(label.position = 'bottom',
                                           title = 'Is Severe',
                                           title.position = 'top')) +
-  labs(x = 'Median Relative Abundance') +
+  labs(x = 'mean Relative Abundance') +
   theme_sovacool() +
   theme(axis.text.y = element_markdown(),
         axis.title.y = element_blank(),
@@ -98,7 +98,7 @@ relabun_plot <- cdiff_relabun_dat %>%
 feat_plot <- feat_dat %>% 
   mutate(outcome = factor(outcome, levels = c('idsa', 'allcause', 'attrib', 'pragmatic'))) %>% 
   ggplot(aes(x = perf_metric_diff, y = outcome, color = outcome))+
-  stat_summary(fun = median,
+  stat_summary(fun = mean,
                fun.max = ~ quantile(.x, 0.75),
                fun.min = ~ quantile(.x, 0.25),
                geom = 'pointrange',

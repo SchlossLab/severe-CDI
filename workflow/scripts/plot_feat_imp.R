@@ -19,10 +19,10 @@ filter_top_feats <- function(feat_dat,
     group_by({{ otu_col }}, {{ outcome_col }}, {{ ds_col }}) %>%
     summarise(
       frac_important = sum(is_important) / n_models,
-      median_perf_diff = median(perf_metric_diff)
+      mean_perf_diff = mean(perf_metric_diff)
     ) %>%
     filter(frac_important >= frac_important_threshold) %>%
-    arrange(by = desc(median_perf_diff)) 
+    arrange(by = desc(mean_perf_diff)) 
 }
 
 model_colors <- RColorBrewer::brewer.pal(4, 'Dark2')
@@ -40,7 +40,7 @@ dat_top_otus <- dat %>%
 
 top_otus_order <- dat_top_otus %>% 
   group_by(label_html) %>% 
-  summarize(max_med = max(median_perf_diff)) %>% 
+  summarize(max_med = max(mean_perf_diff)) %>% 
   filter(max_med >= 0.005) %>% 
   arrange(max_med) %>% 
   pull(label_html)
@@ -64,10 +64,10 @@ relabun_dat <- data.table::fread(here('data', 'mothur', 'alpha',
   pivot_longer(c(idsa, attrib, allcause, pragmatic), 
                names_to = 'outcome', values_to = 'is_severe')
 
-relabun_medians <- relabun_dat %>% 
+relabun_means <- relabun_dat %>% 
   group_by(outcome, is_severe, otu) %>% 
   filter(!is.na(is_severe)) %>% 
-  summarize(med_rel_abun = median(rel_abun)) %>% 
+  summarize(med_rel_abun = mean(rel_abun)) %>% 
   left_join(tax_dat, by = 'otu')
 
 tiny_constant <- relabun_dat %>%
@@ -77,9 +77,9 @@ tiny_constant <- relabun_dat %>%
 
 top_feats_dat %>% 
   group_by(dataset, outcome, tax_otu_label) %>% 
-  summarize(med_auroc_diff = median(perf_metric_diff),
+  summarize(med_auroc_diff = mean(perf_metric_diff),
             ) %>% 
-  full_join(relabun_medians %>% 
+  full_join(relabun_means %>% 
                filter(label_html %in% top_otus_order) %>% 
                select(outcome, tax_otu_label, med_rel_abun),
             relationship = 'many-to-many') %>% 
@@ -100,7 +100,7 @@ feat_imp_plot <- top_feats_dat %>%
              color = outcome,
              shape = is_signif,
              size = is_signif))+
-  stat_summary(fun = 'median', 
+  stat_summary(fun = 'mean', 
                fun.max = function(x) quantile(x, 0.75), 
                fun.min = function(x) quantile(x, 0.25),
                position = position_dodge(width = 0.9),
@@ -143,7 +143,7 @@ feat_imp_plot <- top_feats_dat %>%
 
 
 
-relabun_plot <- relabun_medians %>% 
+relabun_plot <- relabun_means %>% 
   filter(label_html %in% top_otus_order) %>% 
   mutate(label_html = factor(label_html, levels = top_otus_order),
          outcome = factor(outcome, levels = c('idsa', 'allcause', 'attrib', 'pragmatic')),
