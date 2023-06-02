@@ -5,7 +5,7 @@ library(glue)
 library(here)
 library(schtools)
 library(tidyverse)
-percent_ci = 75
+percent_ci <- 75
 filter_top_feats <- function(feat_dat, 
                              frac_important_threshold = 0.75,
                              otu_col = label_html, 
@@ -51,6 +51,30 @@ top_feats_dat <- dat %>%
   left_join(dat_top_otus, 
             by = c('label_html', 'outcome', 'dataset')) 
 
+relabun_dat <- data.table::fread(here('data', 'mothur', 'alpha', 
+                                      'cdi.opti_mcc.shared')) %>% 
+  calc_relabun() %>% 
+  right_join(left_join(read_csv(here('data', 'process', 'cases_full_metadata.csv')),
+                       data.table::fread(here('data', 'SraRunTable.csv')) %>% 
+                         select(-Group) %>% 
+                         rename(sample_id = sample_title,
+                                sample = Run) %>% 
+                         select(sample_id, sample), by = 'sample_id')) %>% 
+  select(sample_id, otu, rel_abun, idsa, attrib, allcause, pragmatic) %>% 
+  pivot_longer(c(idsa, attrib, allcause, pragmatic), 
+               names_to = 'outcome', values_to = 'is_severe')
+
+relabun_medians <- relabun_dat %>% 
+  group_by(outcome, is_severe, otu) %>% 
+  filter(!is.na(is_severe)) %>% 
+  summarize(med_rel_abun = median(rel_abun)) %>% 
+  left_join(tax_dat, by = 'otu')
+
+tiny_constant <- relabun_dat %>%
+  filter(rel_abun > 0) %>%
+  slice_min(rel_abun) %>%
+  pull(rel_abun) %>% .[1]/10 # select tiniest non-zero relabun and divide by 10
+
 top_feats_dat %>% 
   group_by(dataset, outcome, tax_otu_label) %>% 
   summarize(med_auroc_diff = median(perf_metric_diff),
@@ -83,6 +107,7 @@ feat_imp_plot <- top_feats_dat %>%
                alpha=0.6) +
   geom_hline(yintercept = seq(1.5, length(unique(top_otus_order))-0.5, 1), 
              lwd = 0.5, colour = "grey92") +
+  geom_vline(xintercept = 0, linetype = 'dotted') +
   facet_wrap('dataset') +
   scale_color_manual(values = model_colors,
                      labels = c(idsa='IDSA', attrib='Attributable', allcause='All-cause', pragmatic='Pragmatic'),
@@ -115,30 +140,6 @@ feat_imp_plot <- top_feats_dat %>%
         plot.margin = margin(0,1,0,0, unit = 'pt'),
         legend.box.margin = margin(0,0,0,0, unit = 'pt'),
         legend.margin = margin(0,0,0,0, unit = 'pt')) 
-
-relabun_dat <- data.table::fread(here('data', 'mothur', 'alpha', 
-                                      'cdi.opti_mcc.shared')) %>% 
-  calc_relabun() %>% 
-  right_join(left_join(read_csv(here('data', 'process', 'cases_full_metadata.csv')),
-                       data.table::fread(here('data', 'SraRunTable.csv')) %>% 
-                         select(-Group) %>% 
-                         rename(sample_id = sample_title,
-                                sample = Run) %>% 
-                         select(sample_id, sample), by = 'sample_id')) %>% 
-  select(sample_id, otu, rel_abun, idsa, attrib, allcause, pragmatic) %>% 
-  pivot_longer(c(idsa, attrib, allcause, pragmatic), 
-               names_to = 'outcome', values_to = 'is_severe')
-
-relabun_medians <- relabun_dat %>% 
-  group_by(outcome, is_severe, otu) %>% 
-  filter(!is.na(is_severe)) %>% 
-  summarize(med_rel_abun = median(rel_abun)) %>% 
-  left_join(tax_dat, by = 'otu')
-
-tiny_constant <- relabun_dat %>%
-  filter(rel_abun > 0) %>%
-  slice_min(rel_abun) %>%
-  pull(rel_abun) %>% .[1]/10 # select tiniest non-zero relabun and divide by 10
 
 
 
