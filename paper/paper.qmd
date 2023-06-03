@@ -1,10 +1,10 @@
 ---
 title: "Predicting _C. difficile_ Infection Severity from the Taxonomic Composition of the Gut Microbiome"
-bibliography: references.bib
-fontsize: 11pt
 date: last-modified
 date-format: medium
 prefer-html: true
+bibliography: references.bib
+fontsize: 11pt
 format:
   manuscript-pdf:
     keep-tex: true
@@ -52,16 +52,46 @@ affiliations:
     name: Division of Infectious Diseases, Department of Internal Medicine, University of Michigan
   - id: ccmb
     name: Center for Computational Medicine and Bioinformatics, University of Michigan
-#abstract: TODO
+abstract: |
+  _Clostridioides difficile_ (_C. difficile_) infection (CDI) can lead to 
+  adverse outcomes including ICU admission, colectomy, and death.
+  The composition of the gut microbiome plays an important role in determining
+  colonization resistance and clearance upon exposure to _C. difficile_.
+  We investigated whether machine learning (ML) models trained on gut
+  microbiome compositions could predict which CDI cases led to severe outcomes.
+  We collected 1,277 stool samples from CDI patients on the day of diagnosis and
+  characterized the gut microbiome via 16S rRNA gene amplicon sequencing.
+  We processed and clustered the sequences into _de novo_ Operational Taxonomic Units
+  (OTUs), which we used to train ML models for predicting whether a severe outcome
+  occurred according to three different severity definitions.
+  We learned that our OTU-based Random Forest models perform best when predicting
+  attributable severity, defined as an adverse outcome within 30 days of CDI
+  diagnosis confirmed as attributable to CDI following chart review by a clinician.
+  This finding suggests that chart review is valuable to verify the cause of
+  severe outcomes.
+  We used permutation importance to identify which OTUs contributed most to model
+  performance and found that _Enterococcus_, which has previously been identified as
+  positively correlated with _C. difficile_ colonization, was the largest contributor.
+  In all, our results show that ML models can modestly identify patients at risk
+  for CDI, which will allow healthcare providers to personalize treatment options
+  to protect patients likely at risk and ultimately improve CDI outcomes.
 #importance: TODO
 keywords: _C. difficile_ infection, supervised machine learning, gut microbiome, amplicion sequencing
+execute:
+  eval: true
+  echo: false
+  output: false
+  cache: true
+  message: false
+  warning: false
 ---
-```{r setup, eval=TRUE, echo=FALSE, cache=FALSE}
+```{r setup}
 schtools::set_knitr_opts()
 knitr::opts_chunk$set(dpi = 600)
 ```
-```{r load_data, message = FALSE}
+```{r load_data}
 library(assertthat)
+library(glue)
 library(here)
 library(kableExtra)
 library(knitr)
@@ -69,22 +99,38 @@ library(tidyverse)
 
 load(here("results", "stats.RData"))
 table_font_size <- 10
+assert_that(n_cases_first == 1277)
 ```
+
+::: {.content-visible when-format="markdown"}
+
+```{r abstract}
+#| output: asis
+if ('abstract' %in% names(rmarkdown::metadata)) {
+  cat('# Abstract\n', rmarkdown::metadata$abstract)
+}
+if ('importance' %in% names(rmarkdown::metadata)) {
+  cat('# Importance\n', rmarkdown::metadata$importance)
+}
+```
+:::
+
 
 # Introduction
 
 prevalence of cdi. prevalence of severe cdi outcomes.
 antibiotics typical risk factor for cdi, but nonantibiotic medications can 
 increase susceptibilty too [@tomkovich_osmotic_2021]
-and non-nosomial CDI on the rise
+and non-nosocomial CDI on the rise
 
 Numerous studies indicate that the gut microbiome may play a role in _C. diff_ 
 colonization, infection, and clearance.
 Contribution of the gut microbiome. 
 
-prediction models based on EHR for whether infection occurs in the first place already in use.
-so how about predicting severity of infections to guide treatment?
+prediction models based on EHR for whether infection occurs in the first place already in use [@otles_clostridioides_2023].
+so how about predicting severity of infections to guide treatment.
 also models on EHR to predict adverse outcomes (Li, Rao).
+serum-based biomarker model (Dieterle mbio 2020).
 OTUs vs EHRs to predict severity.
 CDI severity prediction models could be deployed to screen patients at risk and
 guide clinicians to consider prescribing a different course of treatment.
@@ -100,8 +146,9 @@ however, it is easy to collect.
 new dataset. 
 
 Two goals: investigate whether we can predict CDI severity based on OTU data to
-inform how the gut microbiome may modulate severity (ML-based science: good performance implies something about underlying biology), and determine whether there
-is potential clinical value in OTU-based models.
+inform how the gut microbiome may modulate severity (ML-based science: good
+performance implies something about underlying biology), and determine whether
+there is potential clinical value in OTU-based models.
 
 # Results
 
@@ -156,9 +203,9 @@ were significantly different from each other (P < 0.05).
 We plotted the receiver-operator characteristic curve and found that the
 pragmatic severity models outperformed the others at all specificity values
 (@fig-performance B).
-A prior study trained a logistic regression model on whole Electronic Health
-Record data extracted on the day of CDI diagnosis to predict attributable
-severity, yielding an AUROC of `r ehr_auroc` [@li_using_2019].
+For comparison, a prior study trained a logistic regression model on whole
+Electronic Health Record data extracted on the day of CDI diagnosis to predict
+attributable severity, yielding an AUROC of `r ehr_auroc` [@li_using_2019].
 While our OTU-based attributable severity model did not meet this performance,
 the OTU-based pragmatic severity model performed just as well as the EHR-based
 model in terms of AUROC.
@@ -241,24 +288,14 @@ for important OTUs in severe CDI cases, but all of the top 5 OTUs had an
 increased mean relative abundance in severe cases relative to not severe cases.
 _Enterococcus_ was the most important OTU, being significantly important for 
 all models except for attributable severity on the full dataset.
-Enrichment of _Enterococcus_ in _C. difficile_ infection and severity has been well-documented
-in prior studies, thus its importance and increase in abundance for severe cases
-is not suprising 
-[@schubert_microbiome_2014;
-@antharam_intestinal_2013;
-@berkell_microbiota-based_2021;
-@lesniak_gut_2022].
 _Staphylococcus_ was important for the pragmatic and all-cause definitions on
 the full datasets, but not for models trained on the intersection dataset.
 _Lactobacillus_ was important only for the all-cause definition on the intersection
-dataset, and its enrichment during _C. difficile_ infection has also been shown
-in prior studies 
-[@antharam_intestinal_2013;
-@berkell_microbiota-based_2021].
+dataset.
 All remaining OTUs had differences in AUROC < 0.02 and were only significantly
 important in one or two of the models at most.
-For many of the top OTUs, there is wide variance in importance, perhaps due to
-the imbalanced nature of the severity outcomes.
+TODO summarize which OTUs enriched in severe vs not severe.
+TODO concluding sentence.
 
 ## Estimating clinical value
 
@@ -280,7 +317,8 @@ Multiplying NNS by NNT yields the number needed to benefit (NNB): the number
 of patients predicted to have a severe outcome who then benefit from the
 treatment [@liu_number_2019].
 Thus the NNB pairs model performance with treatment effectiveness to estimate
-the benefit of using predictive models in clinical practice.
+the benefit of using predictive models in clinical practice, and are useful for
+comparing models and performing cost-benefit analyses.
 
 Current clinical guidelines specify vancomycin and fidaxomicin as the standard
 antibiotics to treat CDI, with a preference for fidaxomicin due to its higher
@@ -309,12 +347,6 @@ Among the models predicting severe outcomes, those trained on the full
 datasets performed best with an NNS of `r allcause_nns` for the all-cause
 definition, `r attrib_nns` for the attributable definition, and 
 `r pragmatic_nns` for the pragmatic definition.
-For context, prior studies predicted CDI-attributable severity using whole
-Electronic Health Record data extracted two days after diagnosis and from a
-smaller set of manually curated variables, achieving precision values of 0.417
-(NNS = `r ehr_nns`) for the EHR model and 0.167 (NNS = `r curated_nns`) for the
-curated model at the 95th percentile of risk
-[@li_using_2019;@rao_clostridium_2015]. <!-- TODO what about NNS on day of diagnosis? -->
 Multiplying the NNS of the OTU-based models by the estimated NNT of 
 `r fdx_nnt` for fidaxomicin yields NNB values of `r allcause_fdx_nnb` 
 for all-cause severity, `r attrib_fdx_nnb` for attributable severity,
@@ -327,15 +359,22 @@ As the NNS values were computed at the 95th percentile of risk (where 5% of
 patients screened are predicted to experience severity), these NNB values mean
 that `r min_screen` to `r max_screen` total CDI patients would need to be
 screened by an OTU-based prediction model in order for one patient to benefit.
-For comparison, pairing the prior EHR-based model with fidaxomicin would yield
+For comparison, prior studies predicted CDI-attributable severity using whole
+Electronic Health Record data extracted two days after diagnosis and from a
+smaller set of manually curated variables, achieving precision values of 0.417
+(NNS = `r ehr_nns`) for the EHR model and 0.167 (NNS = `r curated_nns`) for the
+curated model at the 95th percentile of risk
+[@li_using_2019;@rao_clostridium_2015]. <!-- TODO possible to find NNS on day of diagnosis for EHR model-->
+Pairing the prior EHR-based model with fidaxomicin would yield
 an NNB of `r ehr_fdx_nnb` with `r ehr_screen` total CDI patients screened for
-one patient to benefit.
+one patient to benefit, although the EHR was extracted two days after diagnosis
+while OTUs in this study are from stool samples collected on the day of diagnosis.
 These estimates represent a proof-of-concept demonstration of the potential
-value of deploying severity prediction models to guide clinicians' treatment
-decisions.
+value and trade-offs of deploying severity prediction models trained on
+microbial factors versus EHRs to guide clinicians' treatment decisions.
 
 <!--
-rough estimate of costs.
+rough estimate of treatment costs. exclude others like cost of 16S sequencing & deployment.
 current: everyone gets vancomycin.
 potential: patients flagged as severe get fidaxomicin. based on NNB, estimate
 how much money saved in averting severe outcomes.
@@ -346,6 +385,15 @@ how much money saved in averting severe outcomes.
 Performance
 
 Discuss important OTUs. which ones concord with literature, which ones may be new.
+For many of the top OTUs, there is wide variance in importance, perhaps due to
+the imbalanced nature of the severity outcomes.
+Enrichment of _Enterococcus_ and _Lactobacillus_ in _C. difficile_ infection and severity has been well-documented
+in prior studies, thus its importance and increase in abundance for severe cases
+is not surprising 
+[@schubert_microbiome_2014;
+@antharam_intestinal_2013;
+@berkell_microbiota-based_2021;
+@lesniak_gut_2022].
 Abundance data are sparse, likely due to these patients being on antibiotics.
 Really showcases importance of having as many samples as possible when data are
 sparse and the outcome is low prevalence.
@@ -354,10 +402,12 @@ which antibiotics patients may have taken prior to the CDI.
 differences in microbiota between patients may be due to different abx...
 different antibiotics have been shown to create different forms of dysbiotic
 microbiota [@berkell_microbiota-based_2021] and
-differential cdi clearance [@tomkovick_initial_2020].
+differential cdi clearance [@tomkovich_initial_2020].
 vanc-resistant enterococcus new nosocomial alliance [@poduval_clostridium_2000].
 
 Compare to EHR-based models.
+in practice, EHR-based models are easier and less costly to deploy than an OTU-based model would be.
+further work needed to characterize the costs and benefits.
 
 Models to guide treatment options. In the case of low-risk and non-invasive treatments
 such as choosing between oral antibiotics, a higher number of false positives may
@@ -399,9 +449,6 @@ Leftover stool samples that were sent to the clinical microbiology lab were
 collected and split into different aliquots.
 For 16S sequencing, the aliquot of stool was re-suspended in
 DNA genotek stabilization buffer and then stored in the -80&deg;C freezer.
-Only the first CDI sample per patient was used for subsequent ML analyses such
-that no patient is represented more than once, resulting in a dataset of
-`r n_cases_first` samples.
 
 ## 16S rRNA gene amplicon sequencing
 
@@ -429,6 +476,9 @@ assigned with a modified version of the Ribosomal Database Project reference
 sequences (v16) [@cole_ribosomal_2014].
 Sequences were clustered into _de novo_ OTUs with the OptiClust algorithm in
 mothur [@westcott_opticlust_2017], resulting in `r num_otus` OTUs.
+Only the first CDI sample per patient was used for subsequent ML analyses such
+that no patient is represented more than once, resulting in a dataset of
+`r n_cases_first` samples.
 <!-- TODO supplementary figure with alpha and beta diversity & significance.
 Samples were rarefied to 5,000 sequences per sample, repeated 1,000
 times for alpha and beta diversity analysis.
@@ -623,7 +673,8 @@ CDI with chart review (Attributable).
 An additional 'Pragmatic' severity definition uses the Attributable definition
 when possible, and falls back to the All-cause definition when chart review is
 not available.
-<!-- TODO table (supplementary?) showing counts & frequency of positives-->
+See @tbl-counts for sample counts and proportions of severe cases across
+severity definitions.
 "}
 ![](figures/flowchart_sankey.png)
 :::
