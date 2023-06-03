@@ -25,6 +25,7 @@ paper/*.cls
 paper/*.bst
 paper/*.aux
 paper/*.zip
+paper/paper_cache/
 paper/paper_files/
 paper/paper.tex
 paper/paper.html
