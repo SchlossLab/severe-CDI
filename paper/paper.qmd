@@ -8,6 +8,7 @@ fontsize: 11pt
 format:
   manuscript-pdf:
     keep-tex: true
+    keep-md: true
     linenumbers: true
     doublespacing: true
     lof: false
@@ -53,28 +54,35 @@ affiliations:
   - id: ccmb
     name: Center for Computational Medicine and Bioinformatics, University of Michigan
 abstract: |
-  _Clostridioides difficile_ (_C. difficile_) infection (CDI) can lead to 
+  _Clostridioides difficile_ infection (CDI) can lead to 
   adverse outcomes including ICU admission, colectomy, and death.
   The composition of the gut microbiome plays an important role in determining
   colonization resistance and clearance upon exposure to _C. difficile_.
-  We investigated whether machine learning (ML) models trained on gut
-  microbiome compositions could predict which CDI cases led to severe outcomes.
-  We collected 1,277 stool samples from CDI patients on the day of diagnosis and
-  characterized the gut microbiome via 16S rRNA gene amplicon sequencing.
-  We processed and clustered the sequences into _de novo_ Operational Taxonomic Units
-  (OTUs), which we used to train ML models for predicting whether a severe outcome
-  occurred according to three different severity definitions.
-  We learned that our OTU-based Random Forest models perform best when predicting
-  attributable severity, defined as an adverse outcome within 30 days of CDI
-  diagnosis confirmed as attributable to CDI following chart review by a clinician.
-  This finding suggests that chart review is valuable to verify the cause of
-  severe outcomes.
-  We used permutation importance to identify which OTUs contributed most to model
-  performance and found that _Enterococcus_, which has previously been identified as
-  positively correlated with _C. difficile_ colonization, was the largest contributor.
-  In all, our results show that ML models can modestly identify patients at risk
-  for CDI, which will allow healthcare providers to personalize treatment options
-  to protect patients likely at risk and ultimately improve CDI outcomes.
+  We investigated whether machine learning (ML) models trained on gut microbiota
+  isolated from stool samples on the day of CDI diagnosis could predict which
+  CDI cases led to severe outcomes.
+  We collected 1,277 stool samples from CDI patients,
+  performed 16S rRNA gene amplicon sequencing, then processed and clustered the
+  sequences into _de novo_ Operational Taxonomic Units.
+  We trained ML models to predict CDI severity according to four different
+  severity definitions: 
+  the IDSA severity score on the day of diagnosis,
+  all-cause adverse outcomes within 30 days,
+  disease-related complications confirmed attributable to CDI via chart review, 
+  and a pragmatic definition that uses the attributable definition when available
+  and falls back to the all-cause definition otherwise.
+  The models predicting the pragmatic severity definition performed best, 
+  suggesting that while chart review is valuable to verify the cause of
+  complications, including as many samples as possible is indispensable for
+  training performant models on imbalanced datasets.
+  Permutation importance identified _Enterococcus_ as the most important OTU for
+  model performance across all severity definitions. 
+  Finally, we evaluated the potential clinical value of the OTU-based models
+  and found similar performance compared to prior models based on Electronic
+  Health Record data.
+  Our results show that OTU-based models can modestly identify patients at risk
+  for severe CDI, which could be used by healthcare providers to identify
+  patients at risk and ultimately improve CDI outcomes.
 #importance: TODO
 keywords: _C. difficile_ infection, supervised machine learning, gut microbiome, amplicion sequencing
 execute:
