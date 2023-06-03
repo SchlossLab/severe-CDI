@@ -8,7 +8,6 @@ Composition of the Gut Microbiome
 
 - [Quarto](paper/paper.qmd)
 - [PDF](paper/paper.pdf)
+- [Markdown](paper/paper-gfm.md)
 
-abstract: 236
-
-importance: 1
+abstract: 247

@@ -61,28 +61,28 @@ abstract: |
   We investigated whether machine learning (ML) models trained on gut microbiota
   isolated from stool samples on the day of CDI diagnosis could predict which
   CDI cases led to severe outcomes.
-  We collected 1,277 stool samples from CDI patients,
-  performed 16S rRNA gene amplicon sequencing, then processed and clustered the
-  sequences into _de novo_ Operational Taxonomic Units.
-  We trained ML models to predict CDI severity according to four different
-  severity definitions: 
+  We collected 1,277 stool samples from CDI patients and clustered 16S rRNA gene
+  amplicon sequences into _de novo_ Operational Taxonomic Units (OTUs).
+  We then trained ML models to predict CDI severity on OTU relative abundances
+  according to four different severity definitions: 
   the IDSA severity score on the day of diagnosis,
   all-cause adverse outcomes within 30 days,
-  disease-related complications confirmed attributable to CDI via chart review, 
+  adverse outcomes confirmed as attributable to CDI via chart review, 
   and a pragmatic definition that uses the attributable definition when available
   and falls back to the all-cause definition otherwise.
-  The models predicting the pragmatic severity definition performed best, 
+  The models predicting pragmatic severity performed best, 
   suggesting that while chart review is valuable to verify the cause of
-  complications, including as many samples as possible is indispensable for
-  training performant models on imbalanced datasets.
+  complications,
+  including as many samples as possible is indispensable for training performant
+  models on imbalanced datasets.
   Permutation importance identified _Enterococcus_ as the most important OTU for
-  model performance across all severity definitions. 
+  model performance. 
   Finally, we evaluated the potential clinical value of the OTU-based models
   and found similar performance compared to prior models based on Electronic
-  Health Record data.
-  Our results show that OTU-based models can modestly identify patients at risk
-  for severe CDI, which could be used by healthcare providers to identify
-  patients at risk and ultimately improve CDI outcomes.
+  Health Records.
+  The modest performance of the OTU-based models represents a step toward the
+  goal of deploying models to inform clinical decisions and ultimately improve
+  CDI outcomes.
 #importance: TODO
 keywords: _C. difficile_ infection, supervised machine learning, gut microbiome, amplicion sequencing
 execute:

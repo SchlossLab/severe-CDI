@@ -14,6 +14,7 @@ Predicting _C. difficile_ Infection Severity from the Taxonomic Composition of t
 
 - [Quarto](paper/paper.qmd)
 - [PDF](paper/paper.pdf)
+- [Markdown](paper/paper-gfm.md)
 
 ```{python}
 #| output: 'asis'

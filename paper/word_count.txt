@@ -1,1 +1,1 @@
-abstract: 259
+abstract: 247
