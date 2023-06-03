@@ -267,3 +267,11 @@ rule render_quarto_notebook:
 rule render_notebooks:
     input:
         md_notebooks
+
+rule abstract_word_count:
+    input:
+        'paper/paper.qmd'
+    output:
+        'paper/word_count.txt'
+    script:
+        'scripts/word-count.py'
