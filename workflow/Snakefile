@@ -55,7 +55,7 @@ figures_dict = {'1': 'flowchart_sankey',
 
 rule paper_targets:
     input:
-        'paper/paper.md', 'paper/paper.pdf', 'paper/submission.zip'
+        'paper/paper-gfm.md'#, 'paper/paper.pdf', 'paper/submission.zip'
 
 rule targets:
     input:
@@ -174,7 +174,7 @@ rule sample_count_tables:
     script:
         'scripts/sample_counts.R'
 
-rule render_paper:
+rule render_paper_pdf:
     input:
         qmd='paper/paper.qmd',
         bib='paper/references.bib',
@@ -183,15 +183,34 @@ rule render_paper:
         stats=rules.calc_stats.output.rda,
         tab=[rules.sample_count_tables.output],
     output:
-        'paper/paper.pdf',
-        'paper/paper.md',
+        pdf='paper/paper.pdf',
     conda:
         'envs/notebooks.yml'
     shell:
         """
         cd paper
         quarto render paper.qmd --to manuscript-pdf
-        quarto render paper.qmd --to gfm --metadata variant:+yaml_metadata_block
+        """
+
+rule render_paper_markdown:
+    input:
+        qmd='paper/paper.qmd',
+        bib='paper/references.bib',
+        ext=rules.install_quarto_ms.output,
+        figs=expand("paper/figures/{figname}.png", figname = {figures_dict[k] for k in figures_dict.keys() if not k.startswith('S')}),
+        stats=rules.calc_stats.output.rda,
+        tab=[rules.sample_count_tables.output],
+    output:
+        md='paper/paper-gfm.md',
+    conda:
+        'envs/notebooks.yml'
+    shell:
+        """
+        cd paper
+        quarto render paper.qmd \
+            --to gfm \
+            --metadata variant:+yaml_metadata_block \
+            --metadata output-file:paper-gfm.md
         """
 
 rule render_supplement:
@@ -270,7 +289,7 @@ rule render_notebooks:
 
 rule abstract_word_count:
     input:
-        'paper/paper.md'
+        rules.render_paper_markdown.output.md
     output:
         'paper/word_count.txt'
     conda:
