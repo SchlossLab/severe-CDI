@@ -191,7 +191,7 @@ rule render_paper:
         """
         cd paper
         quarto render paper.qmd --to manuscript-pdf
-        quarto render paper.qmd --to gfm
+        quarto render paper.qmd --to gfm --metadata variant:+yaml_metadata_block
         """
 
 rule render_supplement:
@@ -270,8 +270,23 @@ rule render_notebooks:
 
 rule abstract_word_count:
     input:
-        'paper/paper.qmd'
+        'paper/paper.md'
     output:
         'paper/word_count.txt'
+    conda:
+        'envs/notebooks.yml'
     script:
         'scripts/word-count.py'
+
+rule render_readme:
+    input:
+        qmd='README.qmd',
+        dat=rules.abstract_word_count.output,
+    output:
+        md='README.md'
+    conda:
+        'envs/notebooks.yml'
+    shell:
+        """
+        quarto render {input.qmd} --to gfm
+        """
