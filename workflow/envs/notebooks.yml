@@ -2,6 +2,8 @@ name: notebooks
 channels:
   - conda-forge
 dependencies:
+  - jupyter
+  - nbclient
   - quarto
   - r-base=4
   - r-cowplot
