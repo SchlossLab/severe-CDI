@@ -1,6 +1,6 @@
 import yaml
 
-with open('paper/paper.qmd', "r") as infile:
+with open(snakemake.input[0], "r") as infile:
     is_yaml = False
     yaml_text = list()
     for line in infile:
@@ -11,7 +11,7 @@ with open('paper/paper.qmd', "r") as infile:
 
 yaml_dict = yaml.load(''.join(yaml_text), Loader=yaml.CLoader)
 
-with open('paper/word_count.txt', "w") as outfile:
+with open(snakemake.output[0], "w") as outfile:
     for key in ['abstract', 'importance']:
         if key in yaml_dict.keys():
             word_count = len(yaml_dict[key].split())
