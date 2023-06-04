@@ -8,10 +8,13 @@ fontsize: 11pt
 format:
   manuscript-pdf:
     keep-tex: true
-    keep-md: true
+    keep-md: false
     linenumbers: true
     doublespacing: true
     lof: false
+    header-includes:
+      - \usepackage{float}
+      - \floatplacement{table}{H}
   html:
     embed-resources: true
 runningtitle: Predicting CDI Severity from OTUs
@@ -88,26 +91,27 @@ keywords: _C. difficile_ infection, supervised machine learning, gut microbiome,
 execute:
   eval: true
   echo: false
-  output: false
   cache: true
   message: false
   warning: false
 ---
 ```{r setup}
+#| output: false
 schtools::set_knitr_opts()
 knitr::opts_chunk$set(dpi = 600)
+knitr::knit_hooks$set(inline = schtools::inline_hook)
 ```
 ```{r load_data}
+#| output: false
 library(assertthat)
 library(glue)
 library(here)
 library(kableExtra)
 library(knitr)
 library(tidyverse)
-
 load(here("results", "stats.RData"))
 table_font_size <- 10
-assert_that(n_cases_first == 1277)
+assert_that(n_cases_first == 1277) # hard-coded in abstract
 ```
 
 ::: {.content-visible when-format="markdown"}
@@ -126,10 +130,14 @@ if ('importance' %in% names(rmarkdown::metadata)) {
 
 # Introduction
 
-prevalence of cdi. prevalence of severe cdi outcomes.
+_Clostridoides difficile_ infection (CDI) is the most common nosocomial
+infection in the United States, and community-acquired cases are on the rise
+[@magill_multistate_2014;@feuerstadt_burden_2023].
+prevalence of severe cdi outcomes.
+mortality ~9% [@napolitano_clostridium_2017].
 antibiotics typical risk factor for cdi, but nonantibiotic medications can 
-increase susceptibilty too [@tomkovich_osmotic_2021]
-and non-nosocomial CDI on the rise
+increase susceptibilty too [@tomkovich_osmotic_2021].
+and non-nosocomial CDI on the rise.
 
 Numerous studies indicate that the gut microbiome may play a role in _C. diff_ 
 colonization, infection, and clearance.
@@ -166,7 +174,7 @@ We first set out to train the best models possible for each severity definition.
 Not all samples have labels available for all four severity definitions due to
 missing data for some patient lab values and incomplete chart review
 (@fig-flowchart B), thus each severity definition has a different number of
-samples when using as many samples as possible (@tbl-counts).
+samples when using as many samples as possible (@tbl-counts A).
 We refer to these as the full datasets.
 Random forest models were trained on 100 splits of the datasets into training
 and test sets, and performance was evaluated on the held-out test set using the
@@ -177,7 +185,8 @@ and the area under the balanced precision-recall curve (AUBPRC) as first
 proposed by @wu_improved_2021 to describe the precision that would be expected
 if the outcome classes were balanced.
 
-```{r model_comps_full, output = FALSE}
+```{r model_comps_full}
+#| output: false
 model_comps <- read_csv(here('results','model_comparisons.csv'))
 comps_full_auroc <- model_comps %>% 
   filter(dataset == 'full', metric == 'AUROC', p_value < 0.05)
@@ -245,16 +254,17 @@ attributable label when available.
 The performance results on the intersection dataset are shown in the right
 facets of each panel of @fig-performance.
 
-```{r model_comps_int, output = FALSE}
-
-comps_int_auroc <- model_comps %>% filter(group1 != 'pragmatic', group2 != 'pragmatic') %>% 
+```{r model_comps_int}
+#| output: false
+comps_int_auroc <-
+  model_comps %>% filter(group1 != 'pragmatic', group2 != 'pragmatic') %>%
   filter(dataset == 'int', metric == 'AUROC', p_value < 0.05)
 assert_that(all(comps_int_auroc %>% pull(group1) == c('attrib', 'idsa')))
 assert_that(all(comps_int_auroc %>% pull(group2) == 'allcause'))
 
-comps_int_aubprc <- model_comps %>% filter(group1 != 'pragmatic', group2 != 'pragmatic') %>% 
+comps_int_aubprc <-
+  model_comps %>% filter(group1 != 'pragmatic', group2 != 'pragmatic') %>%
   filter(dataset == 'int', metric == 'AUBPRC', p_value < 0.05)
-
 assert_that(all(comps_int_aubprc %>% pull(group1) == c('attrib', 'idsa')))
 assert_that(all(comps_int_aubprc %>% pull(group2) == 'allcause'))
 ```
@@ -278,7 +288,7 @@ IDSA vs attributable severity (P > 0.05).
 For all severity definitions, performance dropped between the full dataset and
 the intersection dataset since fewer samples are available, but this effect is
 least dramatic for IDSA severity as the full and intersection datasets are more
-similar for this definition.
+similar for this definition (@tbl-counts B).
 The 95% confidence interval overlaps with the baseline for both AUROC and AUBPRC
 for all definitions on the intersection dataset except for IDSA severity.
 
@@ -382,7 +392,7 @@ value and trade-offs of deploying severity prediction models trained on
 microbial factors versus EHRs to guide clinicians' treatment decisions.
 
 <!--
-rough estimate of treatment costs. exclude others like cost of 16S sequencing & deployment.
+rough estimate of treatment costs. exclude other costs like cost of 16S sequencing & deployment.
 current: everyone gets vancomycin.
 potential: patients flagged as severe get fidaxomicin. based on NNB, estimate
 how much money saved in averting severe outcomes.
@@ -390,18 +400,23 @@ how much money saved in averting severe outcomes.
 
 # Discussion
 
-Performance
+Performance.
+full datasets for best models possible for clinical application.
+intersection dataset for comparing severity definitions.
 
 Discuss important OTUs. which ones concord with literature, which ones may be new.
-For many of the top OTUs, there is wide variance in importance, perhaps due to
-the imbalanced nature of the severity outcomes.
-Enrichment of _Enterococcus_ and _Lactobacillus_ in _C. difficile_ infection and severity has been well-documented
-in prior studies, thus its importance and increase in abundance for severe cases
-is not surprising 
+Enrichment of _Enterococcus_ and _Lactobacillus_ in _C. difficile_ infection and
+severity has been well-documented in prior studies, thus its importance and
+increase in abundance for severe cases is not surprising
 [@schubert_microbiome_2014;
 @antharam_intestinal_2013;
 @berkell_microbiota-based_2021;
 @lesniak_gut_2022].
+For many of the top OTUs, there is wide variance in importance, perhaps due to
+the imbalanced nature of the severity outcomes.
+e.g. pseudomonas super high variance for attributable, highest point more 
+important than any other OTU, but minimum CI crosses zero -- some data splits
+are unlucky? could be more important if more data available?
 Abundance data are sparse, likely due to these patients being on antibiotics.
 Really showcases importance of having as many samples as possible when data are
 sparse and the outcome is low prevalence.
@@ -434,6 +449,9 @@ sequencing and profiling the microbial communities of CDI patients could be
 justified.
 resistance to vancomycin is increasing in staph, cdi, and enterococci -- even
 more important to find alternate treatments.
+analysis of clinical value could be extended to include costs as well as include
+other treatments if evidence of severity prevention emerges.
+bezlotoxumab shown to prevent systemic organ damage in a mouse study [@mileto_bezlotoxumab_2022].
 
 Models predicting the pragmatic definition yielded the best NNS.
 While the attributable definition had a worse NNS for our OTU-based models, it
@@ -478,10 +496,10 @@ and sequenced with the MiSeq system (Illumina).
 
 All sequences were processed with mothur (v1.46) using the MiSeq SOP protocol
 [@schloss_introducing_2009; @kozich_development_2013].
-Paired sequencing reads were combined and
-aligned with the SILVA (v132) reference database [@quast_silva_2013] and taxonomy was
-assigned with a modified version of the Ribosomal Database Project reference
-sequences (v16) [@cole_ribosomal_2014].
+Paired sequencing reads were combined and aligned with the SILVA (v132)
+reference database [@quast_silva_2013] and taxonomy was assigned with a modified
+version of the Ribosomal Database Project reference sequences (v16)
+[@cole_ribosomal_2014].
 Sequences were clustered into _de novo_ OTUs with the OptiClust algorithm in
 mothur [@westcott_opticlust_2017], resulting in `r num_otus` OTUs.
 Only the first CDI sample per patient was used for subsequent ML analyses such
@@ -517,8 +535,8 @@ possible.
 ## Model training
 
 Random forest models were used to examine whether OTU data collected on the day
-of diagnosis could classify CDI cases as severe according to four different
-definitions of severity.
+of diagnosis could classify CDI cases as severe according to each severity
+definition.
 We used the mikropml R package v1.5.0 [@topcuoglu_mikropml_2021] implemented in
 a custom version of the mikropml Snakemake workflow [@sovacool_mikropml_2023]
 for all steps of the machine learning analysis.
@@ -530,7 +548,8 @@ definitions, while the full dataset allows us to use as much data as possible
 for model training and evaluation.
 Datasets were pre-processed with the default options in mikropml to remove
 features with near-zero variance and scale continuous features from -1 to 1. 
-During pre-processing, `r preproc_ranges$min_removed` to `r preproc_ranges$max_removed`
+During pre-processing, 
+`r preproc_ranges$min_removed` to `r preproc_ranges$max_removed`
 features were removed due to having near-zero variance, resulting in datasets
 having `r preproc_ranges$min_feats` to `r preproc_ranges$max_feats` features
 depending on the severity definition.
@@ -557,7 +576,7 @@ The balanced precision and the area under the balanced precision-recall curve
 ## Number needed to benefit
 
 For the severity prediction models (which excludes the IDSA definition),
-we set out to estimate the potential benefit of deploying models in clincal
+we set out to estimate the potential benefit of deploying models in clinical
 settings.
 We determined the decision threshold at the 95th percentile of risk for each
 model, which corresponds to 5% of cases being predicted by the model to
@@ -615,10 +634,12 @@ TODO funding & author contributions
 ::: {#refs}
 :::
 
-# Tables
 {{< pagebreak >}}
 
+# Tables
+
 ```{r sample_counts}
+#| message: false
 #| label: tbl-counts
 #| tbl-pos: h
 #| tbl-cap: "**Sample counts and proportion of severe cases.** Each severity 
@@ -642,7 +663,8 @@ read_csv(here('results','count_table_int.csv')) %>%
 ```
 
 
-```{r risk_95th_pct_decision_thresholds, message=FALSE}
+```{r risk_95th_pct_decision_thresholds}
+#| message: false
 #| label: tbl-risk
 #| tbl-pos: h
 #| tbl-cap: "**Predictive model performance at 95th percentile of risk.** 
@@ -668,6 +690,8 @@ risk_thresh %>%
   kable_styling(font_size = table_font_size)
 ```
 
+
+{{< pagebreak >}}
 
 #  Figures
 
@@ -704,7 +728,7 @@ with tails as the 95% CI.
 Mean specificity is reported at each sensitivity value, 
 with ribbons as the 95% CI.
 **C)** Balanced precision-recall curves for the test sets.
-Mean balanced precision is reported at each recall value, 
+Mean balanced precision is reported at each recall (sensitivity) value, 
 with ribbons as the 95% CI.
 Original unbalanced precision-recall curves are shown in Figure S1.
 "}

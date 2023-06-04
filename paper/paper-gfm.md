@@ -8,10 +8,13 @@ fontsize: 11pt
 format:
   manuscript-pdf:
     keep-tex: true
-    keep-md: true
+    keep-md: false
     linenumbers: true
     doublespacing: true
     lof: false
+    header-includes:
+      - \usepackage{float}
+      - \floatplacement{table}{H}
   html:
     embed-resources: true
 runningtitle: Predicting CDI Severity from OTUs
@@ -88,45 +91,52 @@ keywords: _C. difficile_ infection, supervised machine learning, gut microbiome,
 execute:
   eval: true
   echo: false
-  output: false
   cache: true
   message: false
   warning: false
 ---
 
+<script src="paper_files/libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="paper_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+
+
 # Abstract
 
-*Clostridioides difficile* (*C. difficile*) infection (CDI) can lead to
-adverse outcomes including ICU admission, colectomy, and death. The
-composition of the gut microbiome plays an important role in determining
-colonization resistance and clearance upon exposure to *C. difficile*.
-We investigated whether machine learning (ML) models trained on gut
-microbiome compositions could predict which CDI cases led to severe
-outcomes. We collected 1,277 stool samples from CDI patients on the day
-of diagnosis and characterized the gut microbiome via 16S rRNA gene
-amplicon sequencing. We processed and clustered the sequences into *de
-novo* Operational Taxonomic Units (OTUs), which we used to train ML
-models for predicting whether a severe outcome occurred according to
-three different severity definitions. We learned that our OTU-based
-Random Forest models perform best when predicting attributable severity,
-defined as an adverse outcome within 30 days of CDI diagnosis confirmed
-as attributable to CDI following chart review by a clinician. This
-finding suggests that chart review is valuable to verify the cause of
-severe outcomes. We used permutation importance to identify which OTUs
-contributed most to model performance and found that *Enterococcus*,
-which has previously been identified as positively correlated with *C.
-difficile* colonization, was the largest contributor. In all, our
-results show that ML models can modestly identify patients at risk for
-CDI, which will allow healthcare providers to personalize treatment
-options to protect patients likely at risk and ultimately improve CDI
-outcomes.
+*Clostridioides difficile* infection (CDI) can lead to adverse outcomes
+including ICU admission, colectomy, and death. The composition of the
+gut microbiome plays an important role in determining colonization
+resistance and clearance upon exposure to *C. difficile*. We
+investigated whether machine learning (ML) models trained on gut
+microbiota isolated from stool samples on the day of CDI diagnosis could
+predict which CDI cases led to severe outcomes. We collected 1,277 stool
+samples from CDI patients and clustered 16S rRNA gene amplicon sequences
+into *de novo* Operational Taxonomic Units (OTUs). We then trained ML
+models to predict CDI severity on OTU relative abundances according to
+four different severity definitions: the IDSA severity score on the day
+of diagnosis, all-cause adverse outcomes within 30 days, adverse
+outcomes confirmed as attributable to CDI via chart review, and a
+pragmatic definition that uses the attributable definition when
+available and falls back to the all-cause definition otherwise. The
+models predicting pragmatic severity performed best, suggesting that
+while chart review is valuable to verify the cause of complications,
+including as many samples as possible is indispensable for training
+performant models on imbalanced datasets. Permutation importance
+identified *Enterococcus* as the most important OTU for model
+performance. Finally, we evaluated the potential clinical value of the
+OTU-based models and found similar performance compared to prior models
+based on Electronic Health Records. The modest performance of the
+OTU-based models represents a step toward the goal of deploying models
+to inform clinical decisions and ultimately improve CDI outcomes.
 
 # Introduction
 
-prevalence of cdi. prevalence of severe cdi outcomes. antibiotics
-typical risk factor for cdi, but nonantibiotic medications can increase
-susceptibilty too (Tomkovich et al. 2021) and non-nosocomial CDI on the
-rise
+*Clostridoides difficile* infection (CDI) is the most common nosocomial
+infection in the United States, and community-acquired cases are on the
+rise (Magill et al. 2014; Feuerstadt, Theriault, and Tillotson 2023).
+prevalence of severe cdi outcomes. mortality ~9% (Napolitano and
+Edmiston 2017). antibiotics typical risk factor for cdi, but
+nonantibiotic medications can increase susceptibilty too (Tomkovich et
+al. 2021). and non-nosocomial CDI on the rise.
 
 Numerous studies indicate that the gut microbiome may play a role in *C.
 diff* colonization, infection, and clearance. Contribution of the gut
@@ -165,7 +175,7 @@ definition. Not all samples have labels available for all four severity
 definitions due to missing data for some patient lab values and
 incomplete chart review ([Figure 1](#fig-flowchart) B), thus each
 severity definition has a different number of samples when using as many
-samples as possible (**?@tbl-counts**). We refer to these as the full
+samples as possible (**?@tbl-counts** A). We refer to these as the full
 datasets. Random forest models were trained on 100 splits of the
 datasets into training and test sets, and performance was evaluated on
 the held-out test set using the area under the receiver-operator
@@ -239,10 +249,10 @@ IDSA severity (P \< 0.05), but not for IDSA vs attributable severity (P
 \> 0.05). For all severity definitions, performance dropped between the
 full dataset and the intersection dataset since fewer samples are
 available, but this effect is least dramatic for IDSA severity as the
-full and intersection datasets are more similar for this definition. The
-95% confidence interval overlaps with the baseline for both AUROC and
-AUBPRC for all definitions on the intersection dataset except for IDSA
-severity.
+full and intersection datasets are more similar for this definition
+(**?@tbl-counts** B). The 95% confidence interval overlaps with the
+baseline for both AUROC and AUBPRC for all definitions on the
+intersection dataset except for IDSA severity.
 
 ## Feature importance
 
@@ -340,7 +350,7 @@ trained on microbial factors versus EHRs to guide clinicians’ treatment
 decisions.
 
 <!--
-rough estimate of treatment costs. exclude others like cost of 16S sequencing & deployment.
+rough estimate of treatment costs. exclude other costs like cost of 16S sequencing & deployment.
 current: everyone gets vancomycin.
 potential: patients flagged as severe get fidaxomicin. based on NNB, estimate
 how much money saved in averting severe outcomes.
@@ -348,16 +358,20 @@ how much money saved in averting severe outcomes.
 
 # Discussion
 
-Performance
+Performance. full datasets for best models possible for clinical
+application. intersection dataset for comparing severity definitions.
 
 Discuss important OTUs. which ones concord with literature, which ones
-may be new. For many of the top OTUs, there is wide variance in
-importance, perhaps due to the imbalanced nature of the severity
-outcomes. Enrichment of *Enterococcus* and *Lactobacillus* in *C.
+may be new. Enrichment of *Enterococcus* and *Lactobacillus* in *C.
 difficile* infection and severity has been well-documented in prior
 studies, thus its importance and increase in abundance for severe cases
 is not surprising (Schubert et al. 2014; Antharam et al. 2013; Berkell
-et al. 2021; Lesniak et al. 2022). Abundance data are sparse, likely due
+et al. 2021; Lesniak et al. 2022). For many of the top OTUs, there is
+wide variance in importance, perhaps due to the imbalanced nature of the
+severity outcomes. e.g. pseudomonas super high variance for
+attributable, highest point more important than any other OTU, but
+minimum CI crosses zero – some data splits are unlucky? could be more
+important if more data available? Abundance data are sparse, likely due
 to these patients being on antibiotics. Really showcases importance of
 having as many samples as possible when data are sparse and the outcome
 is low prevalence. we do not know which antibiotics were prescribed to
@@ -389,7 +403,11 @@ typically performed for CDI patients, but if there is clinical value to
 be gained by implementing OTU-based models, routinely sequencing and
 profiling the microbial communities of CDI patients could be justified.
 resistance to vancomycin is increasing in staph, cdi, and enterococci –
-even more important to find alternate treatments.
+even more important to find alternate treatments. analysis of clinical
+value could be extended to include costs as well as include other
+treatments if evidence of severity prevention emerges. bezlotoxumab
+shown to prevent systemic organ damage in a mouse study (Mileto et al.
+2022).
 
 Models predicting the pragmatic definition yielded the best NNS. While
 the attributable definition had a worse NNS for our OTU-based models, it
@@ -473,23 +491,23 @@ expert opinions into account where possible.
 
 Random forest models were used to examine whether OTU data collected on
 the day of diagnosis could classify CDI cases as severe according to
-four different definitions of severity. We used the mikropml R package
-v1.5.0 (Topçuoğlu et al. 2021) implemented in a custom version of the
-mikropml Snakemake workflow (Sovacool et al. 2023) for all steps of the
-machine learning analysis. We have full datasets which use all samples
-available for each severity definition, and an intersection dataset
-which consists of only the samples that have all four definitions
-labelled. The intersection dataset is the most fair for comparing model
-performance across definitions, while the full dataset allows us to use
-as much data as possible for model training and evaluation. Datasets
-were pre-processed with the default options in mikropml to remove
-features with near-zero variance and scale continuous features from -1
-to 1. During pre-processing, 9757 to 9760 features were removed due to
-having near-zero variance, resulting in datasets having 179 to 182
-features depending on the severity definition. No features had missing
-values and no features were perfectly correlated. We randomly split the
-data into an 80% training and 20% test set and repeated this 100 times,
-followed by training models with 5-fold cross-validation.
+each severity definition. We used the mikropml R package v1.5.0
+(Topçuoğlu et al. 2021) implemented in a custom version of the mikropml
+Snakemake workflow (Sovacool et al. 2023) for all steps of the machine
+learning analysis. We have full datasets which use all samples available
+for each severity definition, and an intersection dataset which consists
+of only the samples that have all four definitions labelled. The
+intersection dataset is the most fair for comparing model performance
+across definitions, while the full dataset allows us to use as much data
+as possible for model training and evaluation. Datasets were
+pre-processed with the default options in mikropml to remove features
+with near-zero variance and scale continuous features from -1 to 1.
+During pre-processing, 9757 to 9760 features were removed due to having
+near-zero variance, resulting in datasets having 179 to 182 features
+depending on the severity definition. No features had missing values and
+no features were perfectly correlated. We randomly split the data into
+an 80% training and 20% test set and repeated this 100 times, followed
+by training models with 5-fold cross-validation.
 
 ## Model evaluation
 
@@ -510,7 +528,7 @@ calculated with Equations 1 and 7 from Wu et al. (2021).
 
 For the severity prediction models (which excludes the IDSA definition),
 we set out to estimate the potential benefit of deploying models in
-clincal settings. We determined the decision threshold at the 95th
+clinical settings. We determined the decision threshold at the 95th
 percentile of risk for each model, which corresponds to 5% of cases
 being predicted by the model to experience a severe outcome. At this
 threshold we computed the number needed to screen (NNS), which is the
@@ -588,6 +606,15 @@ Kuske, and James M. Tiedje. 2014. “Ribosomal Database Project: Data and
 Tools for High Throughput <span class="nocase">rRNA</span> Analysis.”
 *Nucl. Acids Res.* 42 (D1): D633–42.
 <https://doi.org/10.1093/nar/gkt1244>.
+
+</div>
+
+<div id="ref-feuerstadt_burden_2023" class="csl-entry">
+
+Feuerstadt, Paul, Nicolette Theriault, and Glenn Tillotson. 2023. “The
+Burden of CDI in the United States: A Multifactorial Challenge.” *BMC
+Infectious Diseases* 23 (1): 132.
+<https://doi.org/10.1186/s12879-023-08096-0>.
 
 </div>
 
@@ -677,6 +704,15 @@ Medicine* 29 (12): 1506–7. <https://doi.org/10.1111/acem.14600>.
 
 </div>
 
+<div id="ref-magill_multistate_2014" class="csl-entry">
+
+Magill, Shelley S., Jonathan R. Edwards, Wendy Bamberg, Zintars G.
+Beldavs, Ghinwa Dumyati, Marion A. Kainer, Ruth Lynfield, et al. 2014.
+“Multistate Point-Prevalence Survey of Health Care.” *N Engl J Med* 370
+(13): 1198–208. <https://doi.org/10.1056/NEJMoa1306801>.
+
+</div>
+
 <div id="ref-mcdonald_clinical_2018" class="csl-entry">
 
 McDonald, L Clifford, Dale N Gerding, Stuart Johnson, Johan S Bakken,
@@ -695,6 +731,25 @@ McDonald, L. Clifford, Bruno Coignard, Erik Dubberke, Xiaoyan Song,
 Teresa Horan, and Preeta K. Kutty. 2007. “Recommendations for
 Surveillance of Clostridium Difficile Disease.” *Infection Control &Amp;
 Hospital Epidemiology* 28 (2): 140–45. <https://doi.org/10.1086/511798>.
+
+</div>
+
+<div id="ref-mileto_bezlotoxumab_2022" class="csl-entry">
+
+Mileto, Steven J., Melanie L. Hutton, Sarah L. Walton, Antariksh Das,
+Lisa J. Ioannidis, Don Ketagoda, Kylie M. Quinn, Kate M. Denton, Diana
+S. Hansen, and Dena Lyras. 2022. “Bezlotoxumab Prevents Extraintestinal
+Organ Damage Induced by Clostridioides Difficile Infection.” *Gut
+Microbes* 14 (1): 2117504.
+<https://doi.org/10.1080/19490976.2022.2117504>.
+
+</div>
+
+<div id="ref-napolitano_clostridium_2017" class="csl-entry">
+
+Napolitano, Lena M., and Charles E. Edmiston. 2017. “Clostridium
+Difficile Disease: Diagnosis, Pathogenesis, and Treatment Update.”
+*Surgery* 162 (2): 325–48. <https://doi.org/10.1016/j.surg.2017.01.018>.
 
 </div>
 
@@ -919,7 +974,65 @@ Human Missense Variants.” *The American Journal of Human Genetics* 108
 
 </div>
 
+
+
 # Tables
+
+<div id="tbl-counts-1">
+
+|          |    IDSA | All-cause | Attributable | Pragmatic |
+|:---------|--------:|----------:|-------------:|----------:|
+| n        | 1,072.0 |   1,218.0 |      1,178.0 |   1,218.0 |
+| % Severe |    34.2 |       7.1 |          2.2 |       5.4 |
+
+Table 1: Full datasets
+
+</div>
+
+<div id="tbl-counts-2">
+
+|          |  IDSA | All-cause | Attributable | Pragmatic |
+|:---------|------:|----------:|-------------:|----------:|
+| n        | 993.0 |     993.0 |        993.0 |     993.0 |
+| % Severe |  32.7 |       4.6 |          2.6 |       2.6 |
+
+Table 2: Intersection of samples with all labels available
+
+</div>
+
+**Sample counts and proportion of severe cases.** Each severity
+definition has a different number of patient samples available, as well
+as a different proportion of cases labelled as severe.
+
+<div id="tbl-risk-1">
+
+| Outcome      | Risk threshold |  TP |  FP |  TN |  FN | Precision | NNS | Recall | Specificity |
+|:-------------|---------------:|----:|----:|----:|----:|----------:|----:|-------:|------------:|
+| All-cause    |           0.20 |   3 |   9 | 217 |  14 |      0.25 |   4 |   0.18 |        0.96 |
+| Attributable |           0.10 |   2 |  10 | 220 |   3 |      0.17 |   6 |   0.40 |        0.96 |
+| Pragmatic    |           0.25 |   4 |   8 | 222 |   9 |      0.33 |   3 |   0.31 |        0.97 |
+
+Table 3: Full datasets
+
+</div>
+
+<div id="tbl-risk-2">
+
+| Outcome      | Risk threshold |  TP |  FP |  TN |  FN | Precision | NNS | Recall | Specificity |
+|:-------------|---------------:|----:|----:|----:|----:|----------:|----:|-------:|------------:|
+| All-cause    |            0.2 |   2 |   8 | 181 |   7 |       0.2 |   5 |   0.22 |        0.96 |
+| Attributable |            0.1 |   1 |   9 | 184 |   4 |       0.1 |  10 |   0.20 |        0.95 |
+
+Table 4: Intersection of samples with all labels available
+
+</div>
+
+**Predictive model performance at 95th percentile of risk.** The
+confusion matrix was computed for the decision threshold at the 95th
+percentile of risk for each severity prediction model, which corresponds
+to 5% of cases predicted to have a severe outcome. The number needed to
+screen (NNS) to identify one true positive is the reciprocal of
+precision.
 
 
 
@@ -962,8 +1075,8 @@ with tails as the 95% CI. **B)** Receiver-operator characteristic curves
 for the test sets. Mean specificity is reported at each sensitivity
 value, with ribbons as the 95% CI. **C)** Balanced precision-recall
 curves for the test sets. Mean balanced precision is reported at each
-recall value, with ribbons as the 95% CI. Original unbalanced
-precision-recall curves are shown in Figure S1.
+recall (sensitivity) value, with ribbons as the 95% CI. Original
+unbalanced precision-recall curves are shown in Figure S1.
 
 </div>
 

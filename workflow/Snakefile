@@ -55,7 +55,7 @@ figures_dict = {'1': 'flowchart_sankey',
 
 rule paper_targets:
     input:
-        'paper/paper-gfm.md'#, 'paper/paper.pdf', 'paper/submission.zip'
+        'paper/paper-gfm.md', 'paper/paper.pdf'#, 'paper/submission.zip'
 
 rule targets:
     input:
