@@ -98,7 +98,6 @@ execute:
 ```{r setup}
 #| include: false
 schtools::set_knitr_opts()
-knitr::opts_chunk$set(dpi = 600)
 ```
 ```{r load_data}
 #| output: false
@@ -367,7 +366,6 @@ important in one or two of the models at most.
 There is not always a clear pattern of increased or decreased relative abundance
 for important OTUs in severe CDI cases, but all of the top 5 OTUs had an
 increased mean relative abundance in severe cases relative to not severe cases.
-TODO concluding sentence.
 
 ## Estimating clinical value
 
@@ -461,7 +459,7 @@ given the constraints, while using the intersection dataset allows for comparing
 severity definitions.
 We found that models predicting pragmatic severity with as much data as
 available performed best, and that performance dropped substantially when 
-reducing to the intersection datasets for all definitions likely due to the
+reducing to the intersection datasets for all definitions, likely due to the
 particularly imbalanced nature of the all-cause and attributable definitions.
 These results demonstrate the importance of using as many samples as possible when
 data are sparse and the outcome is low prevalence, as well as the need to
@@ -492,17 +490,16 @@ the initial stool sample collection.
 The full pragmatic severity model performed just as well as a prior
 EHR-based model trained on the day of diagnosis, demonstrating the potential
 utility of OTU-based models.
-However, it is not enough for models to perform well to justify deploying them
-in a clinical setting; benefit over current practices must be shown.
-We calculated the number needed to screen for our OTU-based models and compared
-these to EHR-based and curated models trained two days after the diagnosis, and
-found the OTU-based pragmatic severity model outperformed the curated models but
-not the EHR models.
+In terms of the number needed to screen, the OTU-based pragmatic severity model 
+outperformed a prior model of manually curated clinical variables, but not a
+model trained on EHR data extracted two days after the diagnosis.
 While the attributable definition had a worse NNS for the OTU-based models, it
 did not perform worse than the prior curated model, and it may be the most
 clinically relevant as physician chart review increases confidence that
 positively-labelled severe outcomes are due to the CDI rather than other causes.
 
+However, it is not enough for models to perform well to justify deploying them
+in a clinical setting; benefit over current practices must be shown [@wiens_no_2019].
 Although no known treatment options are proven to reduce the risk of severe CDI
 outcomes, fidaxomicin is promising due to its improved time to resolution and
 reduced recurrence.
@@ -512,40 +509,35 @@ worsen CDI [@poduval_clostridium_2000;@smith_enterococci_2022].
 We extended our analysis of clinical value to incorporate the number needed to
 treat for fidaxomicin alongside the predictive models in order to calculate the
 number needed to benefit.
-The NNB contextualizes model performance within clinical reality.
-
+The NNB contextualizes model performance within clinical reality, as it combines
+both model performance and treatment performance [@liu_number_2019].
 A more robust analysis of clinical value would further consider the cost of
 treatment options versus the savings of averting severe outcomes, as economic
 disparities are a major barrier to treatment in the US.
 Cost-benefit analyses have found that fidaxomicin is more cost-effective than
-vancomycin largely due to the reduced risk of recurrence [@johnson_clinical_2021;@jiang_budget_2022].
+vancomycin, largely due to the reduced risk of recurrence [@johnson_clinical_2021;@jiang_budget_2022].
+While our analysis of clinical value is only a proof-of-concept, if evidence
+emerges that new or existing treatments significantly reduce the risk of severe
+CDI, our results can be incorporated into future considerations of whether to
+build severity prediction models and what features should be incorporated.
+In practice, EHR-based models are less costly to deploy than OTU-based models
+and do not require additional clinical sample collection.
+Amplicon sequencing is not typically performed for CDI patients, however,
+routinely sequencing and profiling the microbial communities of CDI patients
+could be justified if models that incorporate microbial features were shown to
+improve patient outcomes.
 
-As patient age is already the most significant risk factor, the gut microbiome
-may only a minor part in influencing CDI severity.
-However, deploying models incorporating both microbial factors and patient
-factors from the EHR could be worth the time and costs if
-performance improvements were shown translate to clinically significant improvements in
-patient outcomes.
-in practice, EHR-based models are easier and less costly to deploy than an OTU-based model would be -- can be embedded for automated scores.
-further work needed to characterize the costs and benefits.
-
-Amplicon sequencing is not typically performed for CDI patients, but if there is
-clinical value to be gained by implementing OTU-based models, routinely
-sequencing and profiling the microbial communities of CDI patients could be
-justified.
-
-Models predicting the pragmatic definition yielded the best NNS.
-Future work is needed to determine whether incorporating both microbial features
-and EHRs would result in a clinically meaningful improvement in performance over
-deploying EHR models alone.
-
-Two goals: investigate whether we can predict CDI severity based on OTU data to
-inform how the gut microbiome may modulate severity (ML-based science: good
-performance implies something about underlying biology), and determine whether
-there is potential clinical value in OTU-based models.
-new dataset. 
-
-
+In all, we found that our models to predict severity from features of the gut
+microbiome performed moderately well.
+Our approach enabled us to identify bacteria that contributed to model
+performance and evaluate how well the state of the gut microbiome can predict
+several different definitions of CDI severity.
+Further work is needed to determine whether the performance of OTU-based models
+is sufficient to justify their deployment in clinical settings, especially as
+compared to EHR-based models.
+If and when new evidence emerges of improved treatments to prevent severe CDI
+outcomes, deploying performant and robust models for clinicians to tailor
+treatment options promises to reduce morbidity and mortality of CDI.
 <!--
 we do not know which antibiotics were prescribed to treat these CDI cases, nor
 which antibiotics patients may have taken prior to the CDI.
