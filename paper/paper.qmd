@@ -96,10 +96,9 @@ execute:
   warning: false
 ---
 ```{r setup}
-#| output: false
+#| include: false
 schtools::set_knitr_opts()
 knitr::opts_chunk$set(dpi = 600)
-knitr::knit_hooks$set(inline = schtools::inline_hook)
 ```
 ```{r load_data}
 #| output: false
