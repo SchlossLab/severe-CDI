@@ -170,26 +170,27 @@ Aside from patient factors encoded in EHRs, the state of the patient gut
 microbiome is a promising factor to predict severity, as the host
 microbiota can play either a protective or harmful role in *C.
 difficile* colonization, infection, and clearance. Mouse studies have
-found that the initial state of the gut microbiome predicts differences
-in clearance, moribundity, and cecal tissue damage in mice infected with
-CDI (Tomkovich et al. 2020; Lesniak et al. 2022). Identifying features
-of the human gut microbiota that promote or prevent severe infections
-can guide further experiments to elucidate microbial mechanisms of CDI
-severity, and incorporating these features into CDI severity models may
-improve model performance to help guide clinical treatment decisions.
+found that the initial taxonomic composition of the gut microbiome
+predicts differences in clearance, moribundity, and cecal tissue damage
+in mice infected with CDI (Tomkovich et al. 2020; Lesniak et al. 2022).
+Identifying features of the human gut microbiota that promote or prevent
+severe infections can guide further experiments to elucidate microbial
+mechanisms of CDI severity, and incorporating these features into CDI
+severity models may improve model performance to help guide clinical
+treatment decisions.
 
-We set out to investigate whether ML models trained on features of the
-gut microbiota can predict CDI severity in a human cohort, whether the
-severity definition employed affects model performance, and whether
-there is potential clinical value in deploying OTU-based models. Stool
-samples from 1277 CDI patients were collected on the day of diagnosis
-and 16S rRNA gene amplicon sequencing was performed, followed by
-clustering sequences into Operational Taxonomic Units (OTUs). We then
-trained ML models to predict each of four severity definitions from OTU
-relative abundances, identified which microbial features contributed
-most to model performance, and conducted a proof-of-concept analysis of
-the potential clinical value of these OTU-based models and compared
-these to prior EHR-based models.
+We set out to investigate whether ML models trained on the taxonomic
+composition of the gut microbiome can predict CDI severity in a human
+cohort, whether the severity definition employed affects model
+performance, and whether there is potential clinical value in deploying
+OTU-based models. Stool samples from 1277 CDI patients were collected on
+the day of diagnosis and 16S rRNA gene amplicon sequencing was
+performed, followed by clustering sequences into Operational Taxonomic
+Units (OTUs). We then trained ML models to classify or predict each of
+four severity definitions from OTU relative abundances, identified which
+microbial features contributed most to model performance, and conducted
+a proof-of-concept analysis of the potential clinical value of these
+OTU-based models and compared these to prior EHR-based models.
 
 # Results
 
