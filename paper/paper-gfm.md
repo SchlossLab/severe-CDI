@@ -458,7 +458,11 @@ informative in a small number of patient samples, but not in others, and
 these samples were lost in the intersection dataset. Overall the
 abundance data are sparse, as these patients were likely on antibiotics
 prior to CDI onset and may have begun antibiotic treatment prior to the
-initial stool sample collection.
+initial stool sample collection. A limitation of permutation importance
+is that the contribution of each feature is considered in isolation, but
+members of microbial communities interact and compete with each other,
+thus these complicated relationships are not well captured by
+permutation importance.
 
 The full pragmatic severity model performed just as well as a prior
 EHR-based model trained on the day of diagnosis, demonstrating the
@@ -680,10 +684,25 @@ The 16S rRNA sequencing data have been deposited in the National Center
 for Biotechnology Information Sequence Read Archive (BioProject
 Accession no. PRJNA729511).
 
-<!--
 # Acknowledgements
-&#10;TODO funding & author contributions
--->
+
+We thank the patients for donating stool samples and the research team
+members that who collected, stored, and processed the samples.
+
+<!--
+## Author contributions
+&#10;KLS performed data processing, trained machine learning models, wrote the
+analysis code, created the figures and tables, and wrote the original draft of
+the manuscript.
+SET processed samples, performed initial analysis of IDSA severity scores, and
+contributed analysis code.
+MLC contributed analysis code and assisted in training machine learning models.
+JW, VBY, and KR directed the analysis of clinical value.
+PDS conceived of the study and supervised the project.
+All authors reviewed and edited the manuscript.
+&#10;## Funding
+&#10;TODO
+&#10;-->
 
 
 
