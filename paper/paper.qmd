@@ -133,19 +133,32 @@ if ('importance' %in% names(rmarkdown::metadata)) {
 _Clostridoides difficile_ infection (CDI) is the most common nosocomial
 infection in the United States, and community-acquired cases are on the rise
 [@magill_multistate_2014;@feuerstadt_burden_2023].
-prevalence of severe cdi outcomes.
-mortality ~9% [@napolitano_clostridium_2017].
-antibiotics typical risk factor for cdi, but nonantibiotic medications can 
-increase susceptibilty too [@tomkovich_osmotic_2021].
-and non-nosocomial CDI on the rise.
+The classic CDI case typically occurs soon after antibiotic use, which perturbs the
+protective gut microbiota and allows _C. diff_ to proliferate [@kelly_can_2012].
+Non-antibiotic medications including proton-pump inhibitors and osmotic laxatives
+have also been shown to increase CDI susceptibilty and inhibit clearance  
+[@janarthanan_clostridium_2012;@tomkovich_osmotic_2021].
+Diarrhea is the primary symptom, with some patients developing colitis, 
+toxic megacolon, or requiring intensive care with an in-hospital mortality rate
+of approximately 8-9% [@lucado_clostridium_2012;@kassam_clostridium_2016].
+Furthermore, 5-20% of initial cases reoccur within 2-8 weeks, and recurrent
+cases are associated with increased morbidity and mortality risk
+[@napolitano_clostridium_2017;@kelly_can_2012].
+CDI remains a significant burden on the US health care system with approximately
+500,000 cases annually [@guh_trends_2020;@kwon_morbidity_2015].
 
+Many factors influence CDI severity, 
+however, there is not a consensus on how to
+define severity [@ressler_defining_2021]. 
+disease-related complications definition [@mcdonald_recommendations_2007].
+tbh gut microbiome may only play a small role.
 Numerous studies indicate that the gut microbiome may play a role in _C. diff_ 
 colonization, infection, and clearance.
 Contribution of the gut microbiome. 
 
 prediction models based on EHR for whether infection occurs in the first place already in use [@otles_clostridioides_2023].
 so how about predicting severity of infections to guide treatment.
-also models on EHR to predict adverse outcomes (Li, Rao).
+also models on EHR to predict adverse outcomes (Li, Rao ribotype).
 serum-based biomarker model (Dieterle mbio 2020).
 OTUs vs EHRs to predict severity.
 CDI severity prediction models could be deployed to screen patients at risk and
@@ -154,8 +167,7 @@ When paired with treatment options that may reduce risk of severity, deploying
 prediction models can guide clinician decision-making to improve patient outcomes
 while minimizing unnecessary harms.
 
-A few ways to define CDI severity (@fig-flowchart).
-
+We chose to explore several different ways to define CDI severity (@fig-flowchart).
 The IDSA definition is known to be a poor predictor of adverse outcomes [@stevens_validation_2020],
 however, it is easy to collect.
 
@@ -301,9 +313,6 @@ at least 75% of the train/test splits, with greater differences in AUROC meaning
 greater importance.
 We plotted mean decrease in AUROC alongside log~10~-transformed mean
 relative abundances for the top OTUs (@fig-features).
-There is not always a clear pattern of increased or decreased relative abundance
-for important OTUs in severe CDI cases, but all of the top 5 OTUs had an
-increased mean relative abundance in severe cases relative to not severe cases.
 _Enterococcus_ was the most important OTU, being significantly important for 
 all models except for attributable severity on the full dataset.
 _Staphylococcus_ was important for the pragmatic and all-cause definitions on
@@ -312,7 +321,9 @@ _Lactobacillus_ was important only for the all-cause definition on the intersect
 dataset.
 All remaining OTUs had differences in AUROC < 0.02 and were only significantly
 important in one or two of the models at most.
-TODO summarize which OTUs enriched in severe vs not severe.
+There is not always a clear pattern of increased or decreased relative abundance
+for important OTUs in severe CDI cases, but all of the top 5 OTUs had an
+increased mean relative abundance in severe cases relative to not severe cases.
 TODO concluding sentence.
 
 ## Estimating clinical value

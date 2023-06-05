@@ -10,4 +10,6 @@ Composition of the Gut Microbiome
 - [PDF](paper/paper.pdf)
 - [Markdown](paper/paper-gfm.md)
 
+### Word count
+
 abstract: 247

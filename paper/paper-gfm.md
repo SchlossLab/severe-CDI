@@ -133,30 +133,44 @@ to inform clinical decisions and ultimately improve CDI outcomes.
 *Clostridoides difficile* infection (CDI) is the most common nosocomial
 infection in the United States, and community-acquired cases are on the
 rise (Magill et al. 2014; Feuerstadt, Theriault, and Tillotson 2023).
-prevalence of severe cdi outcomes. mortality ~9% (Napolitano and
-Edmiston 2017). antibiotics typical risk factor for cdi, but
-nonantibiotic medications can increase susceptibilty too (Tomkovich et
-al. 2021). and non-nosocomial CDI on the rise.
+The classic CDI case typically occurs soon after antibiotic use, which
+perturbs the protective gut microbiota and allows *C. diff* to
+proliferate (Kelly 2012). Non-antibiotic medications including
+proton-pump inhibitors and osmotic laxatives have also been shown to
+increase CDI susceptibilty and inhibit clearance  
+(Janarthanan et al. 2012; Tomkovich et al. 2021). Diarrhea is the
+primary symptom, with some patients developing colitis, toxic megacolon,
+or requiring intensive care with an in-hospital mortality rate of
+approximately 8-9% (Lucado and Elixhauser 2012; Kassam et al. 2016).
+Furthermore, 5-20% of initial cases reoccur within 2-8 weeks, and
+recurrent cases are associated with increased morbidity and mortality
+risk (Napolitano and Edmiston 2017; Kelly 2012). CDI remains a
+significant burden on the US health care system with approximately
+500,000 cases annually (Guh et al. 2020; Kwon, Olsen, and Dubberke
+2015).
 
-Numerous studies indicate that the gut microbiome may play a role in *C.
-diff* colonization, infection, and clearance. Contribution of the gut
-microbiome.
+Many factors influence CDI severity, however, there is not a consensus
+on how to define severity (Ressler, Wang, and Rao 2021). disease-related
+complications definition (L. Clifford McDonald et al. 2007). tbh gut
+microbiome may only play a small role. Numerous studies indicate that
+the gut microbiome may play a role in *C. diff* colonization, infection,
+and clearance. Contribution of the gut microbiome.
 
 prediction models based on EHR for whether infection occurs in the first
 place already in use (Ötleş et al. 2023). so how about predicting
 severity of infections to guide treatment. also models on EHR to predict
-adverse outcomes (Li, Rao). serum-based biomarker model (Dieterle mbio
-2020). OTUs vs EHRs to predict severity. CDI severity prediction models
-could be deployed to screen patients at risk and guide clinicians to
-consider prescribing a different course of treatment. When paired with
-treatment options that may reduce risk of severity, deploying prediction
-models can guide clinician decision-making to improve patient outcomes
-while minimizing unnecessary harms.
+adverse outcomes (Li, Rao ribotype). serum-based biomarker model
+(Dieterle mbio 2020). OTUs vs EHRs to predict severity. CDI severity
+prediction models could be deployed to screen patients at risk and guide
+clinicians to consider prescribing a different course of treatment. When
+paired with treatment options that may reduce risk of severity,
+deploying prediction models can guide clinician decision-making to
+improve patient outcomes while minimizing unnecessary harms.
 
-A few ways to define CDI severity ([Figure 1](#fig-flowchart)).
-
-The IDSA definition is known to be a poor predictor of adverse outcomes
-(Stevens et al. 2020), however, it is easy to collect.
+We chose to explore several different ways to define CDI severity
+([Figure 1](#fig-flowchart)). The IDSA definition is known to be a poor
+predictor of adverse outcomes (Stevens et al. 2020), however, it is easy
+to collect.
 
 new dataset.
 
@@ -262,19 +276,18 @@ important if performance decreased when it was permuted in at least 75%
 of the train/test splits, with greater differences in AUROC meaning
 greater importance. We plotted mean decrease in AUROC alongside
 log<sub>10</sub>-transformed mean relative abundances for the top OTUs
-([Figure 3](#fig-features)). There is not always a clear pattern of
-increased or decreased relative abundance for important OTUs in severe
-CDI cases, but all of the top 5 OTUs had an increased mean relative
-abundance in severe cases relative to not severe cases. *Enterococcus*
-was the most important OTU, being significantly important for all models
-except for attributable severity on the full dataset. *Staphylococcus*
-was important for the pragmatic and all-cause definitions on the full
-datasets, but not for models trained on the intersection dataset.
-*Lactobacillus* was important only for the all-cause definition on the
-intersection dataset. All remaining OTUs had differences in AUROC \<
-0.02 and were only significantly important in one or two of the models
-at most. TODO summarize which OTUs enriched in severe vs not severe.
-TODO concluding sentence.
+([Figure 3](#fig-features)). *Enterococcus* was the most important OTU,
+being significantly important for all models except for attributable
+severity on the full dataset. *Staphylococcus* was important for the
+pragmatic and all-cause definitions on the full datasets, but not for
+models trained on the intersection dataset. *Lactobacillus* was
+important only for the all-cause definition on the intersection dataset.
+All remaining OTUs had differences in AUROC \< 0.02 and were only
+significantly important in one or two of the models at most. There is
+not always a clear pattern of increased or decreased relative abundance
+for important OTUs in severe CDI cases, but all of the top 5 OTUs had an
+increased mean relative abundance in severe cases relative to not severe
+cases. TODO concluding sentence.
 
 ## Estimating clinical value
 
@@ -618,6 +631,25 @@ Infectious Diseases* 23 (1): 132.
 
 </div>
 
+<div id="ref-guh_trends_2020" class="csl-entry">
+
+Guh, Alice Y., Yi Mu, Lisa G. Winston, Helen Johnston, Danyel Olson,
+Monica M. Farley, Lucy E. Wilson, et al. 2020. “Trends in U.S. Burden of
+Clostridioides Difficile Infection and Outcomes.” *N Engl J Med* 382
+(14): 1320–30. <https://doi.org/10.1056/NEJMoa1910215>.
+
+</div>
+
+<div id="ref-janarthanan_clostridium_2012" class="csl-entry">
+
+Janarthanan, Sailajah, Ivo Ditah, Douglas G. Adler, and Murray N.
+Ehrinpreis. 2012. “Clostridium Difficile-Associated Diarrhea and Proton
+Pump Inhibitor Therapy: A Meta-Analysis.” *Official Journal of the
+American College of Gastroenterology \| ACG* 107 (7): 1001.
+<https://doi.org/10.1038/ajg.2012.179>.
+
+</div>
+
 <div id="ref-jiang_budget_2022" class="csl-entry">
 
 Jiang, Yiling, Eric M. Sarpong, Pamela Sears, and Engels N. Obi. 2022.
@@ -640,6 +672,25 @@ e1029–44. <https://doi.org/10.1093/cid/ciab549>.
 
 </div>
 
+<div id="ref-kassam_clostridium_2016" class="csl-entry">
+
+Kassam, Z., C. Cribb Fabersunne, M. B. Smith, E. J. Alm, G. G. Kaplan,
+G. C. Nguyen, and A. N. Ananthakrishnan. 2016. “Clostridium Difficile
+Associated Risk of Death Score (CARDS): A Novel Severity Score to
+Predict Mortality Among Hospitalised Patients with C. Difficile
+Infection.” *Aliment Pharmacol Ther* 43 (6): 725–33.
+<https://doi.org/10.1111/apt.13546>.
+
+</div>
+
+<div id="ref-kelly_can_2012" class="csl-entry">
+
+Kelly, C. P. 2012. “Can We Identify Patients at High Risk of Recurrent
+Clostridium Difficile Infection?” *Clinical Microbiology and Infection*
+18 (January): 21–27. <https://doi.org/10.1111/1469-0691.12046>.
+
+</div>
+
 <div id="ref-koster_snakemake_2012" class="csl-entry">
 
 Köster, Johannes, and Sven Rahmann. 2012. “Snakemake a Scalable
@@ -656,6 +707,15 @@ Sequencing Strategy and Curation Pipeline for Analyzing Amplicon
 Sequence Data on the MiSeq Illumina Sequencing Platform.” *Appl.
 Environ. Microbiol.* 79 (17): 5112–20.
 <https://doi.org/10.1128/AEM.01043-13>.
+
+</div>
+
+<div id="ref-kwon_morbidity_2015" class="csl-entry">
+
+Kwon, Jennie H., Margaret A. Olsen, and Erik R. Dubberke. 2015. “The
+Morbidity, Mortality, and Costs Associated with Clostridium Difficile
+Infection.” *Infect Dis Clin North Am* 29 (1): 123–34.
+<https://doi.org/10.1016/j.idc.2014.11.003>.
 
 </div>
 
@@ -701,6 +761,14 @@ Association* 26 (12): 1655–59. <https://doi.org/10.1093/jamia/ocz088>.
 Long, Brit, and Michael Gottlieb. 2022. “Oral Fidaxomicin Versus
 Vancomycin for Clostridioides Difficile Infection.” *Academic Emergency
 Medicine* 29 (12): 1506–7. <https://doi.org/10.1111/acem.14600>.
+
+</div>
+
+<div id="ref-lucado_clostridium_2012" class="csl-entry">
+
+Lucado, Jennifer, and Anne Elixhauser. 2012. “Clostridium Difficile
+Infections (CDI) in Hospital Stays, 2009. HCUP Statistical Brief \#124.”
+*AHRQ*.
 
 </div>
 
@@ -816,6 +884,16 @@ or B in Stool With Rapid Testing, Severe Infection, and Mortality.”
 Rembold, Christopher M. 1998. “Number Needed to Screen: Development of a
 Statistic for Disease Screening.” *BMJ* 317 (7154): 307–12.
 <https://doi.org/10.1136/bmj.317.7154.307>.
+
+</div>
+
+<div id="ref-ressler_defining_2021" class="csl-entry">
+
+Ressler, Adam, Joyce Wang, and Krishna Rao. 2021. “Defining the Black
+Box: A Narrative Review of Factors Associated with Adverse Outcomes from
+Severe Clostridioides Difficile Infection.” *Therap Adv Gastroenterol*
+14 (January): 17562848211048127.
+<https://doi.org/10.1177/17562848211048127>.
 
 </div>
 

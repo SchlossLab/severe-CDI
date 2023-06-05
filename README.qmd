@@ -16,6 +16,8 @@ Predicting _C. difficile_ Infection Severity from the Taxonomic Composition of t
 - [PDF](paper/paper.pdf)
 - [Markdown](paper/paper-gfm.md)
 
+### Word count
+
 ```{python}
 #| output: 'asis'
 with open('paper/word_count.txt', 'r') as infile:
