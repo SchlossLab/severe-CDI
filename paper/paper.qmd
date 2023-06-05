@@ -234,6 +234,46 @@ We trained ML models to classify (in the case of the IDSA definition) or predict
 (in the case of the three other definitions) severity and determined how well
 OTU-based models perform for each definition.
 
+::: {#fig-flowchart fig-cap="**CDI severity definitions.**
+**A)** Decision flow chart to define CDI cases as severe according to the
+Infectious Diseases Society of America (IDSA) based on lab values,
+the occurrence of an adverse outcome due to any cause (All-cause),
+and the occurrence of disease-related complications confirmed as attributable to
+CDI with chart review (Attributable).
+**B)** The proportion of severe CDI cases labelled according to each definition.
+An additional 'Pragmatic' severity definition uses the Attributable definition
+when possible, and falls back to the All-cause definition when chart review is
+not available.
+See @tbl-counts for sample counts and proportions of severe cases across
+severity definitions.
+"}
+![](figures/flowchart_sankey.png)
+:::
+
+```{r sample_counts}
+#| message: false
+#| label: tbl-counts
+#| tbl-pos: h
+#| tbl-cap: "**Sample counts and proportion of severe cases.** Each severity 
+#|   definition has a different number of patient samples available, as well as
+#|   a different proportion of cases labelled as severe.
+#| "
+#| tbl-subcap: 
+#|   - "Full datasets"
+#|   - "Intersection of samples with all labels available"
+#| layout-ncol: 2
+format_table <- function(tab) {
+  tab %>%
+    kable(col.names = c(' ', 'IDSA', 'All-cause', 'Attributable', "Pragmatic"),
+          format.args = list(big.mark = ',')) %>% 
+    kable_styling(font_size = table_font_size)
+}
+read_csv(here('results','count_table_full.csv')) %>% 
+  format_table()
+read_csv(here('results','count_table_int.csv')) %>% 
+  format_table()
+```
+
 ## Model performance
 
 We first set out to train the best models possible for each severity definition.
@@ -292,6 +332,30 @@ attributable severity, yielding an AUROC of `r ehr_auroc` [@li_using_2019].
 While our OTU-based attributable severity model did not meet this performance,
 the OTU-based pragmatic severity model performed just as well as the EHR-based
 model in terms of AUROC.
+
+::: {#fig-performance fig-cap="**Performance of ML models.**
+In the left facets, models were trained on the full datasets, with different
+numbers of samples available for each severity definition.
+In the right facets, models were trained on the same dataset consisting of the
+intersection of samples with labels available for all definitions.
+Note that the intersection dataset has exactly the same labels for attributable
+and pragmatic severity, thus these have identical performance.
+**A)** 
+Area under the receiver-operator characteristic curve (AUROC) for the test sets
+and cross-validation folds of the training sets, and the area under the balanced
+precision-recall curve (AUBPRC) for the test sets.
+Each point is annotated with the median performance across 100 train/test splits
+with tails as the 95% CI.
+**B)** Receiver-operator characteristic curves for the test sets.
+Mean specificity is reported at each sensitivity value, 
+with ribbons as the 95% CI.
+**C)** Balanced precision-recall curves for the test sets.
+Mean balanced precision is reported at each recall (sensitivity) value, 
+with ribbons as the 95% CI.
+Original unbalanced precision-recall curves are shown in Figure S1.
+"}
+![](figures/ml-performance.png)
+:::
 
 The test set median AUBPRCs from the full datasets followed a similar pattern as 
 the test set AUROCs with
@@ -379,6 +443,31 @@ There is not always a clear pattern of increased or decreased relative abundance
 for important OTUs in severe CDI cases, but all of the top 5 OTUs had an
 increased mean relative abundance in severe cases relative to not severe cases.
 
+::: {#fig-features fig-cap="**Feature importance.**
+**A)** Feature importance via permutation test.
+For each OTU, the order of samples was randomized in the test set 100 times and
+the performance was re-calculated to estimate the permutation performance.
+An OTU was considered important if the performance decreased when the OTU was
+permuted in at least 75% of the models.
+Mean difference in AUROC and the 75% confidence interval (CI) is reported for
+each OTU, with starred OTUs being significant for the 75% CI.
+OTUs with a greater difference in AUROC (actual performance minus permutation
+performance) are more important.
+Left: models were trained on the full datasets, with different numbers of
+samples available for each severity definition.
+Right: models were trained on the intersection of samples with all labels
+available for each definition. Note that Attributable and Pragmatic severity are
+exactly the same for the intersection dataset.
+*Pseudomonas* (OTU 120) is not shown for IDSA severity in the full datasets nor
+in the intersection dataset because it was removed during pre-processing due to
+having near-zero variance.
+**B)** Log~10~-transformed mean relative abundances of the most important OTUs
+on the full datasets, grouped by severity (shape). 
+The vertical dashed line is the limit of detection.
+"}
+![](figures/feature-importance.png)
+:::
+
 ## Estimating clinical value
 
 Even if a model performs well, it may not be useful in a clinical setting unless
@@ -453,6 +542,33 @@ while OTUs in this study are from stool samples collected on the day of diagnosi
 These estimates represent a proof-of-concept demonstration of the potential
 value and trade-offs of deploying severity prediction models trained on
 microbial factors versus EHRs to guide clinicians' treatment decisions.
+
+```{r risk_95th_pct_decision_thresholds}
+#| message: false
+#| label: tbl-risk
+#| tbl-pos: h
+#| tbl-cap: "**Predictive model performance at 95th percentile of risk.** 
+#|   The confusion matrix was computed for the decision threshold at
+#|   the 95th percentile of risk for each severity prediction model, 
+#|   which corresponds to 5% of cases predicted to have a severe outcome. 
+#|   The number needed to screen (NNS) to identify one true positive
+#|   is the reciprocal of precision.
+#|   "
+#| tbl-subcap: 
+#|   - "Full datasets"
+#|   - "Intersection of samples with all labels available"
+risk_thresh <- read_csv(here('results','decision_thresholds.csv'))
+risk_thresh %>% 
+  filter(Dataset == 'Full') %>% 
+  select(-Dataset) %>% 
+  kable() %>% 
+  kable_styling(font_size = table_font_size)
+risk_thresh %>% 
+  filter(Dataset == 'Intersection') %>% 
+  select(-Dataset) %>% 
+  kable() %>% 
+  kable_styling(font_size = table_font_size)
+```
 
 # Discussion
 
@@ -708,8 +824,8 @@ Biotechnology Information Sequence Read Archive
 
 # Acknowledgements
 
-We thank the patients for donating stool samples and the research
-team members that who collected, stored, and processed the samples.
+We thank the patients for donating stool samples and the research team members
+who collected, stored, and processed the samples.
 
 <!--
 ## Author contributions
@@ -735,130 +851,4 @@ TODO
 # References {.unnumbered}
 
 ::: {#refs}
-:::
-
-{{< pagebreak >}}
-
-# Tables
-
-```{r sample_counts}
-#| message: false
-#| label: tbl-counts
-#| tbl-pos: h
-#| tbl-cap: "**Sample counts and proportion of severe cases.** Each severity 
-#|   definition has a different number of patient samples available, as well as
-#|   a different proportion of cases labelled as severe.
-#| "
-#| tbl-subcap: 
-#|   - "Full datasets"
-#|   - "Intersection of samples with all labels available"
-#| layout-ncol: 2
-format_table <- function(tab) {
-  tab %>%
-    kable(col.names = c(' ', 'IDSA', 'All-cause', 'Attributable', "Pragmatic"),
-          format.args = list(big.mark = ',')) %>% 
-    kable_styling(font_size = table_font_size)
-}
-read_csv(here('results','count_table_full.csv')) %>% 
-  format_table()
-read_csv(here('results','count_table_int.csv')) %>% 
-  format_table()
-```
-
-
-```{r risk_95th_pct_decision_thresholds}
-#| message: false
-#| label: tbl-risk
-#| tbl-pos: h
-#| tbl-cap: "**Predictive model performance at 95th percentile of risk.** 
-#|   The confusion matrix was computed for the decision threshold at
-#|   the 95th percentile of risk for each severity prediction model, 
-#|   which corresponds to 5% of cases predicted to have a severe outcome. 
-#|   The number needed to screen (NNS) to identify one true positive
-#|   is the reciprocal of precision.
-#|   "
-#| tbl-subcap: 
-#|   - "Full datasets"
-#|   - "Intersection of samples with all labels available"
-risk_thresh <- read_csv(here('results','decision_thresholds.csv'))
-risk_thresh %>% 
-  filter(Dataset == 'Full') %>% 
-  select(-Dataset) %>% 
-  kable() %>% 
-  kable_styling(font_size = table_font_size)
-risk_thresh %>% 
-  filter(Dataset == 'Intersection') %>% 
-  select(-Dataset) %>% 
-  kable() %>% 
-  kable_styling(font_size = table_font_size)
-```
-
-
-{{< pagebreak >}}
-
-#  Figures
-
-::: {#fig-flowchart fig-cap="**CDI severity definitions.**
-**A)** Decision flow chart to define CDI cases as severe according to the
-Infectious Diseases Society of America (IDSA) based on lab values,
-the occurrence of an adverse outcome due to any cause (All-cause),
-and the occurrence of disease-related complications confirmed as attributable to
-CDI with chart review (Attributable).
-**B)** The proportion of severe CDI cases labelled according to each definition.
-An additional 'Pragmatic' severity definition uses the Attributable definition
-when possible, and falls back to the All-cause definition when chart review is
-not available.
-See @tbl-counts for sample counts and proportions of severe cases across
-severity definitions.
-"}
-![](figures/flowchart_sankey.png)
-:::
-
-::: {#fig-performance fig-cap="**Performance of ML models.**
-In the left facets, models were trained on the full datasets, with different
-numbers of samples available for each severity definition.
-In the right facets, models were trained on the same dataset consisting of the
-intersection of samples with labels available for all definitions.
-Note that the intersection dataset has exactly the same labels for attributable
-and pragmatic severity, thus these have identical performance.
-**A)** 
-Area under the receiver-operator characteristic curve (AUROC) for the test sets
-and cross-validation folds of the training sets, and the area under the balanced
-precision-recall curve (AUBPRC) for the test sets.
-Each point is annotated with the median performance across 100 train/test splits
-with tails as the 95% CI.
-**B)** Receiver-operator characteristic curves for the test sets.
-Mean specificity is reported at each sensitivity value, 
-with ribbons as the 95% CI.
-**C)** Balanced precision-recall curves for the test sets.
-Mean balanced precision is reported at each recall (sensitivity) value, 
-with ribbons as the 95% CI.
-Original unbalanced precision-recall curves are shown in Figure S1.
-"}
-![](figures/ml-performance.png)
-:::
-
-::: {#fig-features fig-cap="**Feature importance.**
-**A)** Feature importance via permutation test.
-For each OTU, the order of samples was randomized in the test set 100 times and
-the performance was re-calculated to estimate the permutation performance.
-An OTU was considered important if the performance decreased when the OTU was
-permuted in at least 75% of the models.
-Mean difference in AUROC and the 75% confidence interval (CI) is reported for
-each OTU, with starred OTUs being significant for the 75% CI.
-OTUs with a greater difference in AUROC (actual performance minus permutation
-performance) are more important.
-Left: models were trained on the full datasets, with different numbers of
-samples available for each severity definition.
-Right: models were trained on the intersection of samples with all labels
-available for each definition. Note that Attributable and Pragmatic severity are
-exactly the same for the intersection dataset.
-*Pseudomonas* (OTU 120) is not shown for IDSA severity in the full datasets nor
-in the intersection dataset because it was removed during pre-processing due to
-having near-zero variance.
-**B)** Log~10~-transformed mean relative abundances of the most important OTUs
-on the full datasets, grouped by severity (shape). 
-The vertical dashed line is the limit of detection.
-"}
-![](figures/feature-importance.png)
 :::

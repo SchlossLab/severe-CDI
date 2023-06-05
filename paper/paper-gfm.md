@@ -193,8 +193,8 @@ We set out to investigate whether ML models trained on the taxonomic
 composition of the gut microbiome can predict CDI severity in a human
 cohort, whether the severity definition employed affects model
 performance, and whether there is potential clinical value in deploying
-OTU-based models. Stool samples from 1,277 CDI patients were collected
-on the day of diagnosis and 16S rRNA gene amplicon sequencing was
+OTU-based models. Stool samples from 1277 CDI patients were collected on
+the day of diagnosis and 16S rRNA gene amplicon sequencing was
 performed, followed by clustering sequences into Operational Taxonomic
 Units (OTUs). We then trained ML models to classify or predict each of
 four severity definitions from OTU relative abundances, identified which
@@ -238,6 +238,50 @@ definition) or predict (in the case of the three other definitions)
 severity and determined how well OTU-based models perform for each
 definition.
 
+<div id="fig-flowchart">
+
+![](figures/flowchart_sankey.png)
+
+Figure 1: **CDI severity definitions.** **A)** Decision flow chart to
+define CDI cases as severe according to the Infectious Diseases Society
+of America (IDSA) based on lab values, the occurrence of an adverse
+outcome due to any cause (All-cause), and the occurrence of
+disease-related complications confirmed as attributable to CDI with
+chart review (Attributable). **B)** The proportion of severe CDI cases
+labelled according to each definition. An additional ‘Pragmatic’
+severity definition uses the Attributable definition when possible, and
+falls back to the All-cause definition when chart review is not
+available. See **?@tbl-counts** for sample counts and proportions of
+severe cases across severity definitions.
+
+</div>
+
+<div id="tbl-counts-1">
+
+|          |    IDSA | All-cause | Attributable | Pragmatic |
+|:---------|--------:|----------:|-------------:|----------:|
+| n        | 1,072.0 |   1,218.0 |      1,178.0 |   1,218.0 |
+| % Severe |    34.2 |       7.1 |          2.2 |       5.4 |
+
+Table 1: Full datasets
+
+</div>
+
+<div id="tbl-counts-2">
+
+|          |  IDSA | All-cause | Attributable | Pragmatic |
+|:---------|------:|----------:|-------------:|----------:|
+| n        | 993.0 |     993.0 |        993.0 |     993.0 |
+| % Severe |  32.7 |       4.6 |          2.6 |       2.6 |
+
+Table 2: Intersection of samples with all labels available
+
+</div>
+
+**Sample counts and proportion of severe cases.** Each severity
+definition has a different number of patient samples available, as well
+as a different proportion of cases labelled as severe.
+
 ## Model performance
 
 We first set out to train the best models possible for each severity
@@ -261,34 +305,60 @@ AUROCs of the training set cross-validation folds were similar to those
 of the held-out test sets, indicating that the models are neither
 overfit nor underfit ([Figure 2](#fig-performance) A). As measured by
 AUROC on the held-out test sets, models predicting pragmatic severity
-performed best with a median AUROC of 0.69, and this was significantly
-different from that of the other definitions on the full datasets (P \<
-0.05). Models predicting IDSA, all-cause, and attributable severity
-performed similarly with median test set AUROCs of 0.61, 0.63, and 0.61
-respectively. The test set AUROCs were not significantly different (P \>
-0.05) for attributable and IDSA nor for attributable and all-cause, but
-the IDSA and all-cause AUROCs were significantly different from each
-other (P \< 0.05). We plotted the receiver-operator characteristic curve
-and found that the pragmatic severity models outperformed the others at
-all specificity values ([Figure 2](#fig-performance) B). For comparison,
-a prior study trained a logistic regression model on whole Electronic
-Health Record data extracted on the day of CDI diagnosis to predict
-attributable severity, yielding an AUROC of 0.69 (Li et al. 2019). While
-our OTU-based attributable severity model did not meet this performance,
-the OTU-based pragmatic severity model performed just as well as the
-EHR-based model in terms of AUROC.
+performed best with a median AUROC of 0.6864548, and this was
+significantly different from that of the other definitions on the full
+datasets (P \< 0.05). Models predicting IDSA, all-cause, and
+attributable severity performed similarly with median test set AUROCs of
+0.6083018, 0.6320927, and 0.6143478 respectively. The test set AUROCs
+were not significantly different (P \> 0.05) for attributable and IDSA
+nor for attributable and all-cause, but the IDSA and all-cause AUROCs
+were significantly different from each other (P \< 0.05). We plotted the
+receiver-operator characteristic curve and found that the pragmatic
+severity models outperformed the others at all specificity values
+([Figure 2](#fig-performance) B). For comparison, a prior study trained
+a logistic regression model on whole Electronic Health Record data
+extracted on the day of CDI diagnosis to predict attributable severity,
+yielding an AUROC of 0.69 (Li et al. 2019). While our OTU-based
+attributable severity model did not meet this performance, the OTU-based
+pragmatic severity model performed just as well as the EHR-based model
+in terms of AUROC.
+
+<div id="fig-performance">
+
+![](figures/ml-performance.png)
+
+Figure 2: **Performance of ML models.** In the left facets, models were
+trained on the full datasets, with different numbers of samples
+available for each severity definition. In the right facets, models were
+trained on the same dataset consisting of the intersection of samples
+with labels available for all definitions. Note that the intersection
+dataset has exactly the same labels for attributable and pragmatic
+severity, thus these have identical performance. **A)** Area under the
+receiver-operator characteristic curve (AUROC) for the test sets and
+cross-validation folds of the training sets, and the area under the
+balanced precision-recall curve (AUBPRC) for the test sets. Each point
+is annotated with the median performance across 100 train/test splits
+with tails as the 95% CI. **B)** Receiver-operator characteristic curves
+for the test sets. Mean specificity is reported at each sensitivity
+value, with ribbons as the 95% CI. **C)** Balanced precision-recall
+curves for the test sets. Mean balanced precision is reported at each
+recall (sensitivity) value, with ribbons as the 95% CI. Original
+unbalanced precision-recall curves are shown in Figure S1.
+
+</div>
 
 The test set median AUBPRCs from the full datasets followed a similar
-pattern as the test set AUROCs with 0.60 for IDSA severity, 0.67 for
-all-cause severity, 0.66 for attributable severity, and 0.75 for
-pragmatic severity. The AUBPRCs were significantly different from each
-other (P \< 0.05) for each pair of severity definitions except for
-attributable vs all-cause. We plotted the balanced precision-recall
-curve and found that the IDSA definition outperformed all other models
-at very low recall values, but the others outperform IDSA at all other
-points of the curve ([Figure 2](#fig-performance) C). The 95% confidence
-intervals overlapped the baseline AUROC and AUBPRC for the attributable
-severity models, while all others did not overlap the baseline.
+pattern as the test set AUROCs with 0.595164 for IDSA severity,
+0.6687631 for all-cause severity, 0.6584436 for attributable severity,
+and 0.7466801 for pragmatic severity. The AUBPRCs were significantly
+different from each other (P \< 0.05) for each pair of severity
+definitions except for attributable vs all-cause. We plotted the
+balanced precision-recall curve and found that the IDSA definition
+outperformed all other models at very low recall values, but the others
+outperform IDSA at all other points of the curve
+([Figure 2](#fig-performance) C). The 95% confidence intervals
+overlapped the baseline AUROC and AUBPRC for the attributable severity
+models, while all others did not overlap the baseline.
 
 While it is advantageous to use as much data as available to train the
 best models possible, comparing performances of models trained on
@@ -305,22 +375,22 @@ intersection dataset are shown in the right facets of each panel of
 
 As with the full datasets, the AUROCs of the training sets and test sets
 were similar within each severity definition. The median test set AUROCs
-were 0.60 for IDSA severity, 0.55 for all-cause severity, 0.59 and for
-attributable severity. The AUROCs on the intersection dataset were
+were 0.6026316 for IDSA severity, 0.5489418 for all-cause severity,
+0.5865285 and for attributable severity. The AUROCs on the intersection
+dataset were significantly different for all-cause vs attributable and
+all-cause vs IDSA severity (P \< 0.05), but not for IDSA vs attributable
+severity (P \> 0.05). The median test set AUBPRCs were 0.593301 for IDSA
+severity, 0.5523027 for all-cause severity, 0.5820498 and for
+attributable severity. Just as with the AUROCs, the AUBPRCs were
 significantly different for all-cause vs attributable and all-cause vs
 IDSA severity (P \< 0.05), but not for IDSA vs attributable severity (P
-\> 0.05). The median test set AUBPRCs were 0.59 for IDSA severity, 0.55
-for all-cause severity, 0.58 and for attributable severity. Just as with
-the AUROCs, the AUBPRCs were significantly different for all-cause vs
-attributable and all-cause vs IDSA severity (P \< 0.05), but not for
-IDSA vs attributable severity (P \> 0.05). For all severity definitions,
-performance dropped between the full dataset and the intersection
-dataset since fewer samples are available, but this effect is least
-dramatic for IDSA severity as the full and intersection datasets are
-more similar for this definition (**?@tbl-counts** B). The 95%
-confidence interval overlaps with the baseline for both AUROC and AUBPRC
-for all definitions on the intersection dataset except for IDSA
-severity.
+\> 0.05). For all severity definitions, performance dropped between the
+full dataset and the intersection dataset since fewer samples are
+available, but this effect is least dramatic for IDSA severity as the
+full and intersection datasets are more similar for this definition
+(**?@tbl-counts** B). The 95% confidence interval overlaps with the
+baseline for both AUROC and AUBPRC for all definitions on the
+intersection dataset except for IDSA severity.
 
 ## Feature importance
 
@@ -342,6 +412,32 @@ not always a clear pattern of increased or decreased relative abundance
 for important OTUs in severe CDI cases, but all of the top 5 OTUs had an
 increased mean relative abundance in severe cases relative to not severe
 cases.
+
+<div id="fig-features">
+
+![](figures/feature-importance.png)
+
+Figure 3: **Feature importance.** **A)** Feature importance via
+permutation test. For each OTU, the order of samples was randomized in
+the test set 100 times and the performance was re-calculated to estimate
+the permutation performance. An OTU was considered important if the
+performance decreased when the OTU was permuted in at least 75% of the
+models. Mean difference in AUROC and the 75% confidence interval (CI) is
+reported for each OTU, with starred OTUs being significant for the 75%
+CI. OTUs with a greater difference in AUROC (actual performance minus
+permutation performance) are more important. Left: models were trained
+on the full datasets, with different numbers of samples available for
+each severity definition. Right: models were trained on the intersection
+of samples with all labels available for each definition. Note that
+Attributable and Pragmatic severity are exactly the same for the
+intersection dataset. *Pseudomonas* (OTU 120) is not shown for IDSA
+severity in the full datasets nor in the intersection dataset because it
+was removed during pre-processing due to having near-zero variance.
+**B)** Log<sub>10</sub>-transformed mean relative abundances of the most
+important OTUs on the full datasets, grouped by severity (shape). The
+vertical dashed line is the limit of detection.
+
+</div>
 
 ## Estimating clinical value
 
@@ -398,14 +494,14 @@ would need to be predicted to experience a severe outcome and be treated
 with fidaxomicin in order for one patient to benefit. As the NNS values
 were computed at the 95th percentile of risk (where 5% of patients
 screened are predicted to experience severity), these NNB values mean
-that 600 to 1,200 total CDI patients would need to be screened by an
+that 600 to 1200 total CDI patients would need to be screened by an
 OTU-based prediction model in order for one patient to benefit. For
 comparison, prior studies predicted CDI-attributable severity using
 whole Electronic Health Record data extracted two days after diagnosis
 and from a smaller set of manually curated variables, achieving
-precision values of 0.417 (NNS = 2.4) for the EHR model and 0.167 (NNS =
-6.0) for the curated model at the 95th percentile of risk (Li et al.
-2019; Rao et al. 2015).
+precision values of 0.417 (NNS = 2.3980815) for the EHR model and 0.167
+(NNS = 5.988024) for the curated model at the 95th percentile of risk
+(Li et al. 2019; Rao et al. 2015).
 <!-- TODO possible to find NNS on day of diagnosis for EHR model-->
 Pairing the prior EHR-based model with fidaxomicin would yield an NNB of
 24 with 480 total CDI patients screened for one patient to benefit,
@@ -415,6 +511,36 @@ These estimates represent a proof-of-concept demonstration of the
 potential value and trade-offs of deploying severity prediction models
 trained on microbial factors versus EHRs to guide clinicians’ treatment
 decisions.
+
+<div id="tbl-risk-1">
+
+| Outcome      | Risk threshold |  TP |  FP |  TN |  FN | Precision | NNS | Recall | Specificity |
+|:-------------|---------------:|----:|----:|----:|----:|----------:|----:|-------:|------------:|
+| All-cause    |           0.20 |   3 |   9 | 217 |  14 |      0.25 |   4 |   0.18 |        0.96 |
+| Attributable |           0.10 |   2 |  10 | 220 |   3 |      0.17 |   6 |   0.40 |        0.96 |
+| Pragmatic    |           0.25 |   4 |   8 | 222 |   9 |      0.33 |   3 |   0.31 |        0.97 |
+
+Table 3: Full datasets
+
+</div>
+
+<div id="tbl-risk-2">
+
+| Outcome      | Risk threshold |  TP |  FP |  TN |  FN | Precision | NNS | Recall | Specificity |
+|:-------------|---------------:|----:|----:|----:|----:|----------:|----:|-------:|------------:|
+| All-cause    |            0.2 |   2 |   8 | 181 |   7 |       0.2 |   5 |   0.22 |        0.96 |
+| Attributable |            0.1 |   1 |   9 | 184 |   4 |       0.1 |  10 |   0.20 |        0.95 |
+
+Table 4: Intersection of samples with all labels available
+
+</div>
+
+**Predictive model performance at 95th percentile of risk.** The
+confusion matrix was computed for the decision threshold at the 95th
+percentile of risk for each severity prediction model, which corresponds
+to 5% of cases predicted to have a severe outcome. The number needed to
+screen (NNS) to identify one true positive is the reciprocal of
+precision.
 
 # Discussion
 
@@ -550,10 +676,10 @@ reads were combined and aligned with the SILVA (v132) reference database
 (Quast et al. 2013) and taxonomy was assigned with a modified version of
 the Ribosomal Database Project reference sequences (v16) (Cole et al.
 2014). Sequences were clustered into *de novo* OTUs with the OptiClust
-algorithm in mothur (Westcott and Schloss 2017), resulting in 9,939
-OTUs. Only the first CDI sample per patient was used for subsequent ML
+algorithm in mothur (Westcott and Schloss 2017), resulting in 9939 OTUs.
+Only the first CDI sample per patient was used for subsequent ML
 analyses such that no patient is represented more than once, resulting
-in a dataset of 1,277 samples.
+in a dataset of 1277 samples.
 
 ## Defining CDI severity
 
@@ -591,12 +717,12 @@ across definitions, while the full dataset allows us to use as much data
 as possible for model training and evaluation. Datasets were
 pre-processed with the default options in mikropml to remove features
 with near-zero variance and scale continuous features from -1 to 1.
-During pre-processing, 9,757 to 9,760 features were removed due to
-having near-zero variance, resulting in datasets having 179 to 182
-features depending on the severity definition. No features had missing
-values and no features were perfectly correlated. We randomly split the
-data into an 80% training and 20% test set and repeated this 100 times,
-followed by training models with 5-fold cross-validation.
+During pre-processing, 9757 to 9760 features were removed due to having
+near-zero variance, resulting in datasets having 179 to 182 features
+depending on the severity definition. No features had missing values and
+no features were perfectly correlated. We randomly split the data into
+an 80% training and 20% test set and repeated this 100 times, followed
+by training models with 5-fold cross-validation.
 
 ## Model evaluation
 
@@ -659,7 +785,7 @@ Accession no. PRJNA729511).
 # Acknowledgements
 
 We thank the patients for donating stool samples and the research team
-members that who collected, stored, and processed the samples.
+members who collected, stored, and processed the samples.
 
 <!--
 ## Author contributions
@@ -1168,137 +1294,5 @@ Human Missense Variants.” *The American Journal of Human Genetics* 108
 (10): 1891–1906. <https://doi.org/10.1016/j.ajhg.2021.08.012>.
 
 </div>
-
-</div>
-
-
-
-# Tables
-
-<div id="tbl-counts-1">
-
-|          |    IDSA | All-cause | Attributable | Pragmatic |
-|:---------|--------:|----------:|-------------:|----------:|
-| n        | 1,072.0 |   1,218.0 |      1,178.0 |   1,218.0 |
-| % Severe |    34.2 |       7.1 |          2.2 |       5.4 |
-
-Table 1: Full datasets
-
-</div>
-
-<div id="tbl-counts-2">
-
-|          |  IDSA | All-cause | Attributable | Pragmatic |
-|:---------|------:|----------:|-------------:|----------:|
-| n        | 993.0 |     993.0 |        993.0 |     993.0 |
-| % Severe |  32.7 |       4.6 |          2.6 |       2.6 |
-
-Table 2: Intersection of samples with all labels available
-
-</div>
-
-**Sample counts and proportion of severe cases.** Each severity
-definition has a different number of patient samples available, as well
-as a different proportion of cases labelled as severe.
-
-<div id="tbl-risk-1">
-
-| Outcome      | Risk threshold |  TP |  FP |  TN |  FN | Precision | NNS | Recall | Specificity |
-|:-------------|---------------:|----:|----:|----:|----:|----------:|----:|-------:|------------:|
-| All-cause    |           0.20 |   3 |   9 | 217 |  14 |      0.25 |   4 |   0.18 |        0.96 |
-| Attributable |           0.10 |   2 |  10 | 220 |   3 |      0.17 |   6 |   0.40 |        0.96 |
-| Pragmatic    |           0.25 |   4 |   8 | 222 |   9 |      0.33 |   3 |   0.31 |        0.97 |
-
-Table 3: Full datasets
-
-</div>
-
-<div id="tbl-risk-2">
-
-| Outcome      | Risk threshold |  TP |  FP |  TN |  FN | Precision | NNS | Recall | Specificity |
-|:-------------|---------------:|----:|----:|----:|----:|----------:|----:|-------:|------------:|
-| All-cause    |            0.2 |   2 |   8 | 181 |   7 |       0.2 |   5 |   0.22 |        0.96 |
-| Attributable |            0.1 |   1 |   9 | 184 |   4 |       0.1 |  10 |   0.20 |        0.95 |
-
-Table 4: Intersection of samples with all labels available
-
-</div>
-
-**Predictive model performance at 95th percentile of risk.** The
-confusion matrix was computed for the decision threshold at the 95th
-percentile of risk for each severity prediction model, which corresponds
-to 5% of cases predicted to have a severe outcome. The number needed to
-screen (NNS) to identify one true positive is the reciprocal of
-precision.
-
-
-
-# Figures
-
-<div id="fig-flowchart">
-
-![](figures/flowchart_sankey.png)
-
-Figure 1: **CDI severity definitions.** **A)** Decision flow chart to
-define CDI cases as severe according to the Infectious Diseases Society
-of America (IDSA) based on lab values, the occurrence of an adverse
-outcome due to any cause (All-cause), and the occurrence of
-disease-related complications confirmed as attributable to CDI with
-chart review (Attributable). **B)** The proportion of severe CDI cases
-labelled according to each definition. An additional ‘Pragmatic’
-severity definition uses the Attributable definition when possible, and
-falls back to the All-cause definition when chart review is not
-available. See **?@tbl-counts** for sample counts and proportions of
-severe cases across severity definitions.
-
-</div>
-
-<div id="fig-performance">
-
-![](figures/ml-performance.png)
-
-Figure 2: **Performance of ML models.** In the left facets, models were
-trained on the full datasets, with different numbers of samples
-available for each severity definition. In the right facets, models were
-trained on the same dataset consisting of the intersection of samples
-with labels available for all definitions. Note that the intersection
-dataset has exactly the same labels for attributable and pragmatic
-severity, thus these have identical performance. **A)** Area under the
-receiver-operator characteristic curve (AUROC) for the test sets and
-cross-validation folds of the training sets, and the area under the
-balanced precision-recall curve (AUBPRC) for the test sets. Each point
-is annotated with the median performance across 100 train/test splits
-with tails as the 95% CI. **B)** Receiver-operator characteristic curves
-for the test sets. Mean specificity is reported at each sensitivity
-value, with ribbons as the 95% CI. **C)** Balanced precision-recall
-curves for the test sets. Mean balanced precision is reported at each
-recall (sensitivity) value, with ribbons as the 95% CI. Original
-unbalanced precision-recall curves are shown in Figure S1.
-
-</div>
-
-<div id="fig-features">
-
-![](figures/feature-importance.png)
-
-Figure 3: **Feature importance.** **A)** Feature importance via
-permutation test. For each OTU, the order of samples was randomized in
-the test set 100 times and the performance was re-calculated to estimate
-the permutation performance. An OTU was considered important if the
-performance decreased when the OTU was permuted in at least 75% of the
-models. Mean difference in AUROC and the 75% confidence interval (CI) is
-reported for each OTU, with starred OTUs being significant for the 75%
-CI. OTUs with a greater difference in AUROC (actual performance minus
-permutation performance) are more important. Left: models were trained
-on the full datasets, with different numbers of samples available for
-each severity definition. Right: models were trained on the intersection
-of samples with all labels available for each definition. Note that
-Attributable and Pragmatic severity are exactly the same for the
-intersection dataset. *Pseudomonas* (OTU 120) is not shown for IDSA
-severity in the full datasets nor in the intersection dataset because it
-was removed during pre-processing due to having near-zero variance.
-**B)** Log<sub>10</sub>-transformed mean relative abundances of the most
-important OTUs on the full datasets, grouped by severity (shape). The
-vertical dashed line is the limit of detection.
 
 </div>
