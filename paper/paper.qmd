@@ -102,7 +102,6 @@ execute:
 ---
 ```{r setup}
 #| include: false
-schtools::set_knitr_opts()
 knitr::knit_hooks$set(inline = schtools::inline_hook)
 ```
 ```{r load_data}
