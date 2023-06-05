@@ -219,8 +219,8 @@ definition when chart review has not been completed, allowing us to use as many
 samples as we have available while taking physicians' expert opinions into
 account where possible (@fig-flowchart B).
 We trained ML models to classify (in the case of the IDSA definition) or predict
-(in the case of the three other definitions) severity for each definition and
-determined how well OTU-based models perform for each of them.
+(in the case of the three other definitions) severity and determined how well
+OTU-based models perform for each definition.
 
 ## Model performance
 
@@ -406,8 +406,7 @@ we can pair the NNT of fidaxomicin with the NNS of OTU-based prediction models
 to estimate the NNB.
 
 To calculate a clinically-relevant NNS for these models, we computed the
-confusion matrix at the 95th percentile of risk for each prediction model
-(@tbl-risk).
+confusion matrix at the 95th percentile of risk for each prediction model.
 We excluded the IDSA severity models as the IDSA severity scores were calculated
 on the day of diagnosis, thus they are classification rather than prediction
 problems.
@@ -416,7 +415,7 @@ adverse events which are a more salient outcome to prevent.
 Among the models predicting severe outcomes, those trained on the full
 datasets performed best with an NNS of `r allcause_nns` for the all-cause
 definition, `r attrib_nns` for the attributable definition, and 
-`r pragmatic_nns` for the pragmatic definition.
+`r pragmatic_nns` for the pragmatic definition (@tbl-risk).
 Multiplying the NNS of the OTU-based models by the estimated NNT of 
 `r fdx_nnt` for fidaxomicin yields NNB values of `r allcause_fdx_nnb` 
 for all-cause severity, `r attrib_fdx_nnb` for attributable severity,
@@ -454,13 +453,15 @@ how much money saved in averting severe outcomes.
 
 We trained ML models based on gut microbial communities on the day of CDI
 diagnosis to predict CDI severity according to four different severity definitions.
-The purpose of using the full datasets is to train the best models possible
-given the constraints, while using the intersection dataset allows for comparing
-severity definitions.
+The purpose of the full datasets was to train the best models possible given the
+constraints, while using the intersection dataset allows for comparing severity
+definitions.
 We found that models predicting pragmatic severity with as much data as
-available performed best, and that performance dropped substantially when 
-reducing to the intersection datasets for all definitions, likely due to the
-particularly imbalanced nature of the all-cause and attributable definitions.
+available performed best, while models classifying IDSA severity outperformed
+the all-cause and attributable definitions only with the inersection.
+Performance dropped substantially when reducing to the intersection dataset for
+all definitions, likely due to the particularly imbalanced nature of the
+all-cause and attributable definitions.
 These results demonstrate the importance of using as many samples as possible when
 data are sparse and the outcome is low prevalence, as well as the need to
 incorporate physician's expertise when possible.
@@ -503,19 +504,22 @@ in a clinical setting; benefit over current practices must be shown [@wiens_no_2
 Although no known treatment options are proven to reduce the risk of severe CDI
 outcomes, fidaxomicin is promising due to its improved time to resolution and
 reduced recurrence.
-Fidaxomicin is also attractive as a preferential antibiotic option as
-vancomycin-resistant enterococcus is on the rise and enterococci are known to
-worsen CDI [@poduval_clostridium_2000;@smith_enterococci_2022].
+Despite its increased cost, fidaxomicin is also attractive as a preferential
+antibiotic option as vancomycin-resistant enterococcus is on the rise and
+enterococci are known to worsen CDI
+[@poduval_clostridium_2000;@smith_enterococci_2022].
 We extended our analysis of clinical value to incorporate the number needed to
 treat for fidaxomicin alongside the predictive models in order to calculate the
 number needed to benefit.
 The NNB contextualizes model performance within clinical reality, as it combines
-both model performance and treatment performance [@liu_number_2019].
+both model performance and treatment effectiveness [@liu_number_2019].
 A more robust analysis of clinical value would further consider the cost of
 treatment options versus the savings of averting severe outcomes, as economic
-disparities are a major barrier to treatment in the US.
-Cost-benefit analyses have found that fidaxomicin is more cost-effective than
-vancomycin, largely due to the reduced risk of recurrence [@johnson_clinical_2021;@jiang_budget_2022].
+disparities are a major barrier to treatment in the US [@johnson_clinical_2021].
+Cost-benefit analyses based on clinical trial data have reported that
+fidaxomicin may be as cost-effective as vancomycin as a treatment for initial
+CDI cases, largely due to the reduced risk of recurrence
+[@jiang_budget_2022;@reveles_fidaxomicin_2017].
 While our analysis of clinical value is only a proof-of-concept, if evidence
 emerges that new or existing treatments significantly reduce the risk of severe
 CDI, our results can be incorporated into future considerations of whether to
@@ -523,9 +527,9 @@ build severity prediction models and what features should be incorporated.
 In practice, EHR-based models are less costly to deploy than OTU-based models
 and do not require additional clinical sample collection.
 Amplicon sequencing is not typically performed for CDI patients, however,
-routinely sequencing and profiling the microbial communities of CDI patients
-could be justified if models that incorporate microbial features were shown to
-improve patient outcomes.
+routinely profiling the microbial communities of CDI patients could be justified
+if models that incorporate microbial features were shown to improve patient
+outcomes.
 
 In all, we found that our models to predict severity from features of the gut
 microbiome performed moderately well.
@@ -537,7 +541,8 @@ is sufficient to justify their deployment in clinical settings, especially as
 compared to EHR-based models.
 If and when new evidence emerges of improved treatments to prevent severe CDI
 outcomes, deploying performant and robust models for clinicians to tailor
-treatment options promises to reduce morbidity and mortality of CDI.
+treatment options may improve patient outcomes and reduce the burden of severe
+CDI.
 <!--
 we do not know which antibiotics were prescribed to treat these CDI cases, nor
 which antibiotics patients may have taken prior to the CDI.
