@@ -194,24 +194,27 @@ OTU-based models and compared these to prior EHR-based models.
 ## CDI severity
 
 There is not currently a consensus definition of CDI severity.
-Some scoring systems such as the IDSA severity score focus on laboratory data
-available during the course of CDI, while others focus on adverse outcomes of
-CDI at 30 days after diagnosis [@ressler_defining_2021].
+Some scoring systems leverage clinical data available during the course of CDI,
+while others focus on adverse outcomes of CDI at 30 days after diagnosis
+[@ressler_defining_2021].
 We explored four different ways to define CDI cases as severe or not (@fig-flowchart).
-The IDSA definition of severe CDI is based on laboratory values collected on
+The "IDSA" definition of severe CDI is based on laboratory values collected on
 the day of diagnosis, with a case being severe if serum creatinine level is
 greater than or equal to $1.5 mg/dL$ and the white blood cell count is greater
 than or equal to $15 k/\mu L$ [@mcdonald_clinical_2018].
-The remaining definitions focus on the occurrence of adverse outcomes, which
-may be more clinically relevant.
-The all-cause severity definition defines a case as severe if ICU admission,
-colectomy, or death occurs within 30 days of CDI diagnosis, regardless of the
-cause of the adverse event.
-The attributable severity definition is based on disease-related complications
+However, the IDSA score is known to be a poor predictor of adverse outcomes
+[@stevens_validation_2020], although it is straightforward to collect.
+The remaining definitions we employed focus on the occurrence of adverse
+outcomes, which may be more clinically relevant.
+The "attributable" severity definition is based on disease-related complications
 defined by the CDC, where an adverse event of ICU admission, colectomy, or death
 occurs within 30 days of CDI diagnosis, and the adverse event is determined to
 be attributable to the CDI by physician chart review [@mcdonald_recommendations_2007].
-Finally, we defined a pragmatic severity definition that makes use of the
+However, physician chart review is time-consuming and has not been completed for
+all cases, so we defined "all-cause" severity where a case is severe if an
+adverse event occurs within 30 days of the diagnosis regardless of the cause of
+the adverse event.
+Finally, we defined a "pragmatic" severity definition that makes use of the
 attributable definition when available and falls back to the all-cause
 definition when chart review has not been completed, allowing us to use as many
 samples as we have available while taking physicians' expert opinions into
@@ -451,14 +454,21 @@ how much money saved in averting severe outcomes.
 
 # Discussion
 
-Performance.
-full datasets for best models possible for clinical application.
-intersection dataset for comparing severity definitions.
+We trained ML models based on gut microbial communities on the day of CDI
+diagnosis to predict CDI severity according to four different severity definitions.
+The purpose of using the full datasets is to train the best models possible
+given the constraints, while using the intersection dataset allows for comparing
+severity definitions.
+We found that models predicting pragmatic severity with as much data as
+available performed best, and that performance dropped substantially when 
+reducing to the intersection datasets for all definitions likely due to the
+particularly imbalanced nature of the all-cause and attributable definitions.
+These results demonstrate the importance of using as many samples as possible when
+data are sparse and the outcome is low prevalence, as well as the need to
+incorporate physician's expertise when possible.
 
-The IDSA definition is known to be a poor predictor of adverse outcomes [@stevens_validation_2020],
-however, it is easy to collect.
-
-Discuss important OTUs. which ones concord with literature, which ones may be new.
+Permutation feature importance revealed patterns of important bacteria that
+concord with the literature.
 Enrichment of _Enterococcus_ and _Lactobacillus_ in _C. difficile_ infection and
 severity has been well-documented in prior studies, thus its importance and
 increase in abundance for severe cases is not surprising
@@ -466,60 +476,92 @@ increase in abundance for severe cases is not surprising
 @antharam_intestinal_2013;
 @berkell_microbiota-based_2021;
 @lesniak_gut_2022].
-For many of the top OTUs, there is wide variance in importance, perhaps due to
-the imbalanced nature of the severity outcomes.
-e.g. pseudomonas super high variance for attributable, highest point more 
-important than any other OTU, but minimum CI crosses zero -- some data splits
-are unlucky? could be more important if more data available?
-Abundance data are sparse, likely due to these patients being on antibiotics.
-Really showcases importance of having as many samples as possible when data are
-sparse and the outcome is low prevalence.
-we do not know which antibiotics were prescribed to treat these CDI cases, nor
-which antibiotics patients may have taken prior to the CDI.
-differences in microbiota between patients may be due to different abx...
-different antibiotics have been shown to create different forms of dysbiotic
-microbiota [@berkell_microbiota-based_2021] and
-differential cdi clearance [@tomkovich_initial_2020].
-vanc-resistant enterococcus new nosocomial alliance [@poduval_clostridium_2000].
+For many of the top OTUs, there is a wide range in importance.
+Notably, the OTU represented by _Pseudomonas_ had wide variance in importance
+for the full dataset in models predicting attributable severity, with the
+maximum point more important than any other OTU yet a minimum below zero.
+However, for the intersection dataset, this OTU was removed due to having
+near-zero variance.
+The presence of _Pseudomonas_ was thus informative in a small number of 
+patient samples, but not in others, and these samples were lost in the
+intersection dataset.
+Overall the abundance data are sparse, as these patients were likely on
+antibiotics prior to CDI onset and may have begun antibiotic treatment prior to
+the initial stool sample collection.
 
-Compare to EHR-based models.
-tbh gut microbiome may only play a small role.
+The full pragmatic severity model performed just as well as a prior
+EHR-based model trained on the day of diagnosis, demonstrating the potential
+utility of OTU-based models.
+However, it is not enough for models to perform well to justify deploying them
+in a clinical setting; benefit over current practices must be shown.
+We calculated the number needed to screen for our OTU-based models and compared
+these to EHR-based and curated models trained two days after the diagnosis, and
+found the OTU-based pragmatic severity model outperformed the curated models but
+not the EHR models.
+While the attributable definition had a worse NNS for the OTU-based models, it
+did not perform worse than the prior curated model, and it may be the most
+clinically relevant as physician chart review increases confidence that
+positively-labelled severe outcomes are due to the CDI rather than other causes.
+
+Although no known treatment options are proven to reduce the risk of severe CDI
+outcomes, fidaxomicin is promising due to its improved time to resolution and
+reduced recurrence.
+Fidaxomicin is also attractive as a preferential antibiotic option as
+vancomycin-resistant enterococcus is on the rise and enterococci are known to
+worsen CDI [@poduval_clostridium_2000;@smith_enterococci_2022].
+We extended our analysis of clinical value to incorporate the number needed to
+treat for fidaxomicin alongside the predictive models in order to calculate the
+number needed to benefit.
+The NNB contextualizes model performance within clinical reality.
+
+A more robust analysis of clinical value would further consider the cost of
+treatment options versus the savings of averting severe outcomes, as economic
+disparities are a major barrier to treatment in the US.
+Cost-benefit analyses have found that fidaxomicin is more cost-effective than
+vancomycin largely due to the reduced risk of recurrence [@johnson_clinical_2021;@jiang_budget_2022].
+
+As patient age is already the most significant risk factor, the gut microbiome
+may only a minor part in influencing CDI severity.
+However, deploying models incorporating both microbial factors and patient
+factors from the EHR could be worth the time and costs if
+performance improvements were shown translate to clinically significant improvements in
+patient outcomes.
 in practice, EHR-based models are easier and less costly to deploy than an OTU-based model would be -- can be embedded for automated scores.
 further work needed to characterize the costs and benefits.
 
-Models to guide treatment options. In the case of low-risk and non-invasive treatments
-such as choosing between oral antibiotics, a higher number of false positives may
-be tolerable as long as treatment cost is not unbearably high. However, for highly
-invasive and irreversibly treatments such as colectomy, false positives must be minimized.
-Cite studies saying fidaxomicin is cost-effective relative to vancomycin -
-mentioned by @johnson_clinical_2021, e.g. @jiang_budget_2022.
-
-It's not enough for models to perform well to justify deploying them in a
-clinical setting; benefit over current practices must be shown.
-do no harm [@wiens_no_2019].
-Estimating the NNB contextualizes model performance within clinical reality.
 Amplicon sequencing is not typically performed for CDI patients, but if there is
 clinical value to be gained by implementing OTU-based models, routinely
 sequencing and profiling the microbial communities of CDI patients could be
 justified.
-resistance to vancomycin is increasing in staph, cdi, and enterococci -- even
-more important to find alternate treatments.
-analysis of clinical value could be extended to include costs as well as include
-other treatments if evidence of severity prevention emerges.
-bezlotoxumab shown to prevent systemic organ damage in a mouse study [@mileto_bezlotoxumab_2022].
 
 Models predicting the pragmatic definition yielded the best NNS.
-While the attributable definition had a worse NNS for our OTU-based models, it
-did not perform worse than the prior curated model, and it is the most
-clinically relevant as physician chart review increases confidence that
-positively-labelled severe outcomes are due to the CDI rather than other causes.
-
+Future work is needed to determine whether incorporating both microbial features
+and EHRs would result in a clinically meaningful improvement in performance over
+deploying EHR models alone.
 
 Two goals: investigate whether we can predict CDI severity based on OTU data to
 inform how the gut microbiome may modulate severity (ML-based science: good
 performance implies something about underlying biology), and determine whether
 there is potential clinical value in OTU-based models.
 new dataset. 
+
+
+<!--
+we do not know which antibiotics were prescribed to treat these CDI cases, nor
+which antibiotics patients may have taken prior to the CDI.
+differences in microbiota between patients may be due to different abx...
+different antibiotics have been shown to create different forms of dysbiotic
+microbiota [@berkell_microbiota-based_2021] and
+differential cdi clearance [@tomkovich_initial_2020].
+
+
+Models to guide treatment options. In the case of low-risk and non-invasive treatments
+such as choosing between oral antibiotics, a higher number of false positives may
+be tolerable as long as treatment cost is not unbearably high. However, for highly
+invasive and irreversibly treatments such as colectomy, false positives must be minimized.
+
+bezlotoxumab shown to prevent systemic organ damage in a mouse study [@mileto_bezlotoxumab_2022].
+-->
 
 # Materials and Methods
 
