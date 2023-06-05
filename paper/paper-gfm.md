@@ -105,6 +105,11 @@ execute:
 <link href="paper_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
 
+# Predicting *C. difficile* Infection Severity from the Taxonomic Composition of the Gut Microbiome
+
+Kelly L. Sovacool, Sarah E. Tomkovich, Megan L. Coden, Jenna Wiens,
+Vincent B. Young, Krishna Rao, Patrick D. Schloss
+
 # Abstract
 
 *Clostridioides difficile* infection (CDI) can lead to adverse outcomes
@@ -169,7 +174,7 @@ use of thousands of features to classify samples and predict outcomes,
 rather than relying on limited sets of human-curated variables. Indeed,
 ML models trained on entire Electronic Health Record (EHR) data have
 demonstrated improved performance over curated models (Rao et al. 2015;
-Li et al. 2019; Dieterle et al. 2020).
+Li et al. 2019).
 
 Aside from patient factors encoded in EHRs, the state of the patient gut
 microbiome is a promising factor to predict severity, as the host
@@ -204,33 +209,34 @@ OTU-based models and compared these to prior EHR-based models.
 There is not currently a consensus definition of CDI severity. Some
 scoring systems leverage clinical data available during the course of
 CDI, while others focus on adverse outcomes of CDI at 30 days after
-diagnosis (Ressler, Wang, and Rao 2021). We explored four different ways
-to define CDI cases as severe or not ([Figure 1](#fig-flowchart)). The
-“IDSA” definition of severe CDI is based on laboratory values collected
-on the day of diagnosis, with a case being severe if serum creatinine
-level is greater than or equal to $1.5 mg/dL$ and the white blood cell
-count is greater than or equal to $15 k/\mu L$ (L. Clifford McDonald et
-al. 2018). However, the IDSA score is known to be a poor predictor of
-adverse outcomes (Stevens et al. 2020), although it is straightforward
-to collect. The remaining definitions we employed focus on the
-occurrence of adverse outcomes, which may be more clinically relevant.
-The “attributable” severity definition is based on disease-related
-complications defined by the CDC, where an adverse event of ICU
-admission, colectomy, or death occurs within 30 days of CDI diagnosis,
-and the adverse event is determined to be attributable to the CDI by
-physician chart review (L. Clifford McDonald et al. 2007). However,
-physician chart review is time-consuming and has not been completed for
-all cases, so we defined “all-cause” severity where a case is severe if
-an adverse event occurs within 30 days of the diagnosis regardless of
-the cause of the adverse event. Finally, we defined a “pragmatic”
-severity definition that makes use of the attributable definition when
-available and falls back to the all-cause definition when chart review
-has not been completed, allowing us to use as many samples as we have
-available while taking physicians’ expert opinions into account where
-possible ([Figure 1](#fig-flowchart) B). We trained ML models to
-classify (in the case of the IDSA definition) or predict (in the case of
-the three other definitions) severity and determined how well OTU-based
-models perform for each definition.
+diagnosis (Ressler, Wang, and Rao 2021; Dieterle et al. 2020). We
+explored four different ways to define CDI cases as severe or not
+([Figure 1](#fig-flowchart)). The “IDSA” definition of severe CDI is
+based on laboratory values collected on the day of diagnosis, with a
+case being severe if serum creatinine level is greater than or equal to
+$1.5 mg/dL$ and the white blood cell count is greater than or equal to
+$15 k/\mu L$ (L. Clifford McDonald et al. 2018). However, the IDSA score
+is known to be a poor predictor of adverse outcomes (Stevens et al.
+2020), although it is straightforward to collect. The remaining
+definitions we employed focus on the occurrence of adverse outcomes,
+which may be more clinically relevant. The “attributable” severity
+definition is based on disease-related complications defined by the CDC,
+where an adverse event of ICU admission, colectomy, or death occurs
+within 30 days of CDI diagnosis, and the adverse event is determined to
+be attributable to the CDI by physician chart review (L. Clifford
+McDonald et al. 2007). However, physician chart review is time-consuming
+and has not been completed for all cases, so we defined “all-cause”
+severity where a case is severe if an adverse event occurs within 30
+days of the diagnosis regardless of the cause of the adverse event.
+Finally, we defined a “pragmatic” severity definition that makes use of
+the attributable definition when available and falls back to the
+all-cause definition when chart review has not been completed, allowing
+us to use as many samples as we have available while taking physicians’
+expert opinions into account where possible ([Figure 1](#fig-flowchart)
+B). We trained ML models to classify (in the case of the IDSA
+definition) or predict (in the case of the three other definitions)
+severity and determined how well OTU-based models perform for each
+definition.
 
 ## Model performance
 

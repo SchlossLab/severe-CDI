@@ -121,6 +121,13 @@ assert_that(n_cases_first == 1277) # hard-coded in abstract
 
 ```{r abstract}
 #| output: asis
+cat('# ', rmarkdown::metadata$title, '\n')
+cat(paste(sapply(rmarkdown::metadata$author, 
+                 function(x) {x$name}), 
+          collapse = ', '
+          ), 
+    '\n\n'
+)
 if ('abstract' %in% names(rmarkdown::metadata)) {
   cat('# Abstract\n', rmarkdown::metadata$abstract)
 }
@@ -162,11 +169,11 @@ clinical factors have been developed, but none have validated well to external
 datasets nor are any in use in routine clinical practice
 [@chakra_prediction_2012;@perry_external_2022].
 Machine learning (ML) is a promising approach that allows for use of thousands
-of features to  classify samples and predict outcomes, rather than relying on
+of features to classify samples and predict outcomes, rather than relying on
 limited sets of human-curated variables.
 Indeed, ML models trained on entire Electronic Health Record (EHR) data
 have demonstrated improved performance over curated models
-[@rao_clostridium_2015;@li_using_2019;@dieterle_systemic_2020].
+[@rao_clostridium_2015;@li_using_2019].
 
 Aside from patient factors encoded in EHRs,
 the state of the patient gut microbiome is a promising factor to predict
@@ -200,7 +207,7 @@ OTU-based models and compared these to prior EHR-based models.
 There is not currently a consensus definition of CDI severity.
 Some scoring systems leverage clinical data available during the course of CDI,
 while others focus on adverse outcomes of CDI at 30 days after diagnosis
-[@ressler_defining_2021].
+[@ressler_defining_2021;@dieterle_systemic_2020].
 We explored four different ways to define CDI cases as severe or not (@fig-flowchart).
 The "IDSA" definition of severe CDI is based on laboratory values collected on
 the day of diagnosis, with a case being severe if serum creatinine level is
