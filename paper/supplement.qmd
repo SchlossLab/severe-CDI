@@ -35,3 +35,9 @@ significant.
 "}
 ![](figures/cdiff-otu.png)
 :::
+
+<!-- TODO supplementary figure with alpha and beta diversity & significance.
+Samples were rarefied to 5,000 sequences per sample, repeated 1,000
+times for alpha and beta diversity analysis.
+ -->
+ 

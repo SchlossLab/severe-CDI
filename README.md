@@ -1,4 +1,3 @@
-
 # severe-CDI
 
 Predicting *C. difficile* Infection Severity from the Taxonomic
@@ -12,5 +11,4 @@ Composition of the Gut Microbiome
 
 ### Word count
 
-- abstract: 247
-- body: 5115
+- abstract: 247 - body: 4942

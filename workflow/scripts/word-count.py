@@ -18,10 +18,11 @@ with open(snakemake.input[0], "r") as infile:
             yaml_text.append(line)
         elif line.startswith('# Acknowledgements'):
             is_body = False
-            break # end of body
+            break # end of body, stop parsing file
         elif line.startswith('# Abstract'):
             is_body = True
         elif is_body and not exclude_line(line):
+            #print('BODY\t', line)
             body_text += line.split()
 
 yaml_dict = yaml.load(''.join(yaml_text), Loader=yaml.CLoader)
@@ -37,4 +38,3 @@ with open(snakemake.output[0], "w") as outfile:
     outfile.writelines(report)
     for rep in report:
         print(rep)
-

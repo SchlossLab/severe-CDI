@@ -418,13 +418,6 @@ potential value and trade-offs of deploying severity prediction models
 trained on microbial factors versus EHRs to guide clinicians’ treatment
 decisions.
 
-<!--
-rough estimate of treatment costs. exclude other costs like cost of 16S sequencing & deployment.
-current: everyone gets vancomycin.
-potential: patients flagged as severe get fidaxomicin. based on NNB, estimate
-how much money saved in averting severe outcomes.
--->
-
 # Discussion
 
 We trained ML models based on gut microbial communities on the day of
@@ -517,22 +510,7 @@ deployment in clinical settings, especially as compared to EHR-based
 models. If and when new evidence emerges of improved treatments to
 prevent severe CDI outcomes, deploying performant and robust models for
 clinicians to tailor treatment options may improve patient outcomes and
-reduce the burden of severe CDI. <!--
-we do not know which antibiotics were prescribed to treat these CDI cases, nor
-which antibiotics patients may have taken prior to the CDI.
-differences in microbiota between patients may be due to different abx...
-different antibiotics have been shown to create different forms of dysbiotic
-microbiota [@berkell_microbiota-based_2021] and
-differential cdi clearance [@tomkovich_initial_2020].
-
-
-Models to guide treatment options. In the case of low-risk and non-invasive treatments
-such as choosing between oral antibiotics, a higher number of false positives may
-be tolerable as long as treatment cost is not unbearably high. However, for highly
-invasive and irreversibly treatments such as colectomy, false positives must be minimized.
-
-bezlotoxumab shown to prevent systemic organ damage in a mouse study [@mileto_bezlotoxumab_2022].
--->
+reduce the burden of severe CDI.
 
 # Materials and Methods
 
@@ -578,10 +556,6 @@ algorithm in mothur (Westcott and Schloss 2017), resulting in 9939 OTUs.
 Only the first CDI sample per patient was used for subsequent ML
 analyses such that no patient is represented more than once, resulting
 in a dataset of 1277 samples.
-<!-- TODO supplementary figure with alpha and beta diversity & significance.
-Samples were rarefied to 5,000 sequences per sample, repeated 1,000
-times for alpha and beta diversity analysis.
- -->
 
 ## Defining CDI severity
 
