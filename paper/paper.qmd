@@ -31,6 +31,9 @@ author:
   - name: Megan L. Coden
     affiliations:
       - ref: mcdb
+  - name: Jenna Wiens
+    affiliations:
+      - ref: eecs
   - name: Vincent B. Young
     affiliations:
       - ref: micro
@@ -54,6 +57,8 @@ affiliations:
     name: Department of Molecular, Cellular, and Developmental Biology, University of Michigan
   - id: intmed
     name: Division of Infectious Diseases, Department of Internal Medicine, University of Michigan
+  - id: eecs
+    name: Department of Electrical Engineering & Computer Science, University of Michigan
   - id: ccmb
     name: Center for Computational Medicine and Bioinformatics, University of Michigan
 abstract: |
