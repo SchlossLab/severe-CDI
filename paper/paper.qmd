@@ -134,9 +134,9 @@ _Clostridoides difficile_ infection (CDI) is the most common nosocomial
 infection in the United States, and community-acquired cases are on the rise
 [@magill_multistate_2014;@feuerstadt_burden_2023].
 The classic CDI case typically occurs soon after antibiotic use, which perturbs the
-protective gut microbiota and allows _C. diff_ to proliferate [@kelly_can_2012].
+protective gut microbiota and allows _C. difficile_ to proliferate [@kelly_can_2012].
 Non-antibiotic medications including proton-pump inhibitors and osmotic laxatives
-have also been shown to increase CDI susceptibilty and inhibit clearance  
+have also been shown to increase CDI susceptibilty and inhibit clearance
 [@janarthanan_clostridium_2012;@tomkovich_osmotic_2021].
 Diarrhea is the primary symptom, with some patients developing colitis, 
 toxic megacolon, or requiring intensive care with an in-hospital mortality rate
@@ -144,41 +144,82 @@ of approximately 8-9% [@lucado_clostridium_2012;@kassam_clostridium_2016].
 Furthermore, 5-20% of initial cases reoccur within 2-8 weeks, and recurrent
 cases are associated with increased morbidity and mortality risk
 [@napolitano_clostridium_2017;@kelly_can_2012].
+Patient risk factors for CDI-related morbidity and mortality include age > 65,
+history of recurrent CDI, and co-morbid chronic illnesses [@ressler_defining_2021].
 CDI remains a significant burden on the US health care system with approximately
 500,000 cases annually [@guh_trends_2020;@kwon_morbidity_2015].
 
-Many factors influence CDI severity, 
-however, there is not a consensus on how to
-define severity [@ressler_defining_2021]. 
-disease-related complications definition [@mcdonald_recommendations_2007].
-tbh gut microbiome may only play a small role.
-Numerous studies indicate that the gut microbiome may play a role in _C. diff_ 
-colonization, infection, and clearance.
-Contribution of the gut microbiome. 
+There is a need for robust, accurate methods to identify patients at risk of
+severe CDI outcomes.
+When paired with treatment options that may reduce risk of severity, prediction
+models can guide clinician decision-making to improve patient outcomes while
+minimizing harms from unnecessary treatment.
+Numerous scoring systems for predicting severe CDI outcomes based on patient
+clinical factors have been developed, but none have validated well to external
+datasets nor are any in use in routine clinical practice
+[@chakra_prediction_2012;@perry_external_2022].
+Machine learning (ML) is a promising approach that allows for use of thousands
+of features to  classify samples and predict outcomes, rather than relying on
+limited sets of human-curated variables.
+Indeed, ML models trained on entire Electronic Health Record (EHR) data
+have demonstrated improved performance over curated models
+[@rao_clostridium_2015;@li_using_2019;@dieterle_systemic_2020].
 
-prediction models based on EHR for whether infection occurs in the first place already in use [@otles_clostridioides_2023].
-so how about predicting severity of infections to guide treatment.
-also models on EHR to predict adverse outcomes (Li, Rao ribotype).
-serum-based biomarker model (Dieterle mbio 2020).
-OTUs vs EHRs to predict severity.
-CDI severity prediction models could be deployed to screen patients at risk and
-guide clinicians to consider prescribing a different course of treatment.
-When paired with treatment options that may reduce risk of severity, deploying
-prediction models can guide clinician decision-making to improve patient outcomes
-while minimizing unnecessary harms.
+Aside from patient factors encoded in EHRs,
+the state of the patient gut microbiome is a promising factor to predict
+severity, as the host microbiota can play either a protective or harmful
+role in _C. difficile_ colonization, infection, and clearance.
+Mouse studies have found that the initial state of the gut microbiome predicts
+differences in clearance, moribundity, and cecal tissue damage in mice infected
+with CDI [@tomkovich_initial_2020;@lesniak_gut_2022].
+Identifying features of the human gut microbiota that promote or prevent severe
+infections can guide further experiments to elucidate microbial mechanisms of
+CDI severity, and incorporating these features into CDI severity models may
+improve model performance to help guide clinical treatment decisions.
 
-We chose to explore several different ways to define CDI severity (@fig-flowchart).
-The IDSA definition is known to be a poor predictor of adverse outcomes [@stevens_validation_2020],
-however, it is easy to collect.
-
-new dataset. 
-
-Two goals: investigate whether we can predict CDI severity based on OTU data to
-inform how the gut microbiome may modulate severity (ML-based science: good
-performance implies something about underlying biology), and determine whether
-there is potential clinical value in OTU-based models.
+We set out to investigate whether ML models trained on features of the gut
+microbiota can predict CDI severity in a human cohort,
+whether the severity definition employed affects model performance,
+and whether there is potential clinical value in deploying OTU-based models.
+Stool samples from `r n_cases_first` CDI patients were collected on the day of
+diagnosis and 16S rRNA gene amplicon sequencing was performed, followed by
+clustering sequences into Operational Taxonomic Units (OTUs).
+We then trained ML models to predict each of four severity definitions from
+OTU relative abundances,
+identified which microbial features contributed most to model performance, and 
+conducted a proof-of-concept analysis of the potential clinical value of these
+OTU-based models and compared these to prior EHR-based models.
 
 # Results
+
+## CDI severity
+
+There is not currently a consensus definition of CDI severity.
+Some scoring systems such as the IDSA severity score focus on laboratory data
+available during the course of CDI, while others focus on adverse outcomes of
+CDI at 30 days after diagnosis [@ressler_defining_2021].
+We explored four different ways to define CDI cases as severe or not (@fig-flowchart).
+The IDSA definition of severe CDI is based on laboratory values collected on
+the day of diagnosis, with a case being severe if serum creatinine level is
+greater than or equal to $1.5 mg/dL$ and the white blood cell count is greater
+than or equal to $15 k/\mu L$ [@mcdonald_clinical_2018].
+The remaining definitions focus on the occurrence of adverse outcomes, which
+may be more clinically relevant.
+The all-cause severity definition defines a case as severe if ICU admission,
+colectomy, or death occurs within 30 days of CDI diagnosis, regardless of the
+cause of the adverse event.
+The attributable severity definition is based on disease-related complications
+defined by the CDC, where an adverse event of ICU admission, colectomy, or death
+occurs within 30 days of CDI diagnosis, and the adverse event is determined to
+be attributable to the CDI by physician chart review [@mcdonald_recommendations_2007].
+Finally, we defined a pragmatic severity definition that makes use of the
+attributable definition when available and falls back to the all-cause
+definition when chart review has not been completed, allowing us to use as many
+samples as we have available while taking physicians' expert opinions into
+account where possible (@fig-flowchart B).
+We trained ML models to classify (in the case of the IDSA definition) or predict
+(in the case of the three other definitions) severity for each definition and
+determined how well OTU-based models perform for each of them.
 
 ## Model performance
 
@@ -415,6 +456,9 @@ Performance.
 full datasets for best models possible for clinical application.
 intersection dataset for comparing severity definitions.
 
+The IDSA definition is known to be a poor predictor of adverse outcomes [@stevens_validation_2020],
+however, it is easy to collect.
+
 Discuss important OTUs. which ones concord with literature, which ones may be new.
 Enrichment of _Enterococcus_ and _Lactobacillus_ in _C. difficile_ infection and
 severity has been well-documented in prior studies, thus its importance and
@@ -440,7 +484,8 @@ differential cdi clearance [@tomkovich_initial_2020].
 vanc-resistant enterococcus new nosocomial alliance [@poduval_clostridium_2000].
 
 Compare to EHR-based models.
-in practice, EHR-based models are easier and less costly to deploy than an OTU-based model would be.
+tbh gut microbiome may only play a small role.
+in practice, EHR-based models are easier and less costly to deploy than an OTU-based model would be -- can be embedded for automated scores.
 further work needed to characterize the costs and benefits.
 
 Models to guide treatment options. In the case of low-risk and non-invasive treatments
@@ -469,6 +514,13 @@ While the attributable definition had a worse NNS for our OTU-based models, it
 did not perform worse than the prior curated model, and it is the most
 clinically relevant as physician chart review increases confidence that
 positively-labelled severe outcomes are due to the CDI rather than other causes.
+
+
+Two goals: investigate whether we can predict CDI severity based on OTU data to
+inform how the gut microbiome may modulate severity (ML-based science: good
+performance implies something about underlying biology), and determine whether
+there is potential clinical value in OTU-based models.
+new dataset. 
 
 # Materials and Methods
 
@@ -523,25 +575,20 @@ times for alpha and beta diversity analysis.
  
 ## Defining CDI severity
 
-We explore four different ways to define CDI cases as severe or not.
-The IDSA definition of severe CDI is based on lab values collected on
-the day of diagnosis, with a case being severe if serum creatinine level is
-greater than or equal to $1.5 mg/dL$ and the white blood cell count is greater
-than or equal to $15 k/\mu L$ [@mcdonald_clinical_2018].
-The remaining definitions focus on the occurrence of adverse outcomes, which
-may be more clinically relevant.
-The all-cause severity definition defines a case as severe if ICU admission,
-colectomy, or death occurs within 30 days of CDI diagnosis, regardless of the
-cause of the adverse event.
-The attributable severity definition is based on disease-related complications
-defined by the CDC, where an adverse event of ICU admission, colectomy, or death
-occurs within 30 days of CDI diagnosis, and the adverse event is determined to
-be attributable to the CDI by physician chart review [@mcdonald_recommendations_2007].
-Finally, we defined a pragmatic severity definition that makes use of the
-attributable definition when available and falls back to the all-cause definition
-when chart review has not been completed, allowing us to use as many samples as
-we have available while taking physicians' expert opinions into account where
-possible.
+We chose to explore four different ways to define CDI cases as severe or not (@fig-flowchart).
+
+- **IDSA**: A case is severe if serum creatinine level is greater than or equal
+  to $1.5 mg/dL$ and the white blood cell count is greater than or equal to
+  $15 k/\mu L$ on the day of diagnosis [@mcdonald_clinical_2018].
+- **All-cause**: A case is severe if ICU admission, colectomy, or death
+  occurred within 30 days of CDI diagnosis, regardless of the cause of the
+  adverse event.
+- **Attributable**: A case is severe if an adverse event of ICU admission,
+  colectomy, or death occurred within 30 days of CDI diagnosis, and the adverse
+  event was determined to be attributable to the CDI by two physicians who
+  reviewed the medical chart [@mcdonald_recommendations_2007].
+- **Pragmatic**: A case's severity is determined by the attributable definition
+  if it is available, otherwise it is determiend by the all-cause definition.
 
 ## Model training
 

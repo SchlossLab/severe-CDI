@@ -134,53 +134,95 @@ to inform clinical decisions and ultimately improve CDI outcomes.
 infection in the United States, and community-acquired cases are on the
 rise (Magill et al. 2014; Feuerstadt, Theriault, and Tillotson 2023).
 The classic CDI case typically occurs soon after antibiotic use, which
-perturbs the protective gut microbiota and allows *C. diff* to
+perturbs the protective gut microbiota and allows *C. difficile* to
 proliferate (Kelly 2012). Non-antibiotic medications including
 proton-pump inhibitors and osmotic laxatives have also been shown to
-increase CDI susceptibilty and inhibit clearance  
-(Janarthanan et al. 2012; Tomkovich et al. 2021). Diarrhea is the
-primary symptom, with some patients developing colitis, toxic megacolon,
-or requiring intensive care with an in-hospital mortality rate of
-approximately 8-9% (Lucado and Elixhauser 2012; Kassam et al. 2016).
-Furthermore, 5-20% of initial cases reoccur within 2-8 weeks, and
-recurrent cases are associated with increased morbidity and mortality
-risk (Napolitano and Edmiston 2017; Kelly 2012). CDI remains a
+increase CDI susceptibilty and inhibit clearance (Janarthanan et al.
+2012; Tomkovich et al. 2021). Diarrhea is the primary symptom, with some
+patients developing colitis, toxic megacolon, or requiring intensive
+care with an in-hospital mortality rate of approximately 8-9% (Lucado
+and Elixhauser 2012; Kassam et al. 2016). Furthermore, 5-20% of initial
+cases reoccur within 2-8 weeks, and recurrent cases are associated with
+increased morbidity and mortality risk (Napolitano and Edmiston 2017;
+Kelly 2012). Patient risk factors for CDI-related morbidity and
+mortality include age \> 65, history of recurrent CDI, and co-morbid
+chronic illnesses (Ressler, Wang, and Rao 2021). CDI remains a
 significant burden on the US health care system with approximately
 500,000 cases annually (Guh et al. 2020; Kwon, Olsen, and Dubberke
 2015).
 
-Many factors influence CDI severity, however, there is not a consensus
-on how to define severity (Ressler, Wang, and Rao 2021). disease-related
-complications definition (L. Clifford McDonald et al. 2007). tbh gut
-microbiome may only play a small role. Numerous studies indicate that
-the gut microbiome may play a role in *C. diff* colonization, infection,
-and clearance. Contribution of the gut microbiome.
+There is a need for robust, accurate methods to identify patients at
+risk of severe CDI outcomes. When paired with treatment options that may
+reduce risk of severity, prediction models can guide clinician
+decision-making to improve patient outcomes while minimizing harms from
+unnecessary treatment. Numerous scoring systems for predicting severe
+CDI outcomes based on patient clinical factors have been developed, but
+none have validated well to external datasets nor are any in use in
+routine clinical practice (Chakra, Pepin, and Valiquette 2012; Perry et
+al. 2022). Machine learning (ML) is a promising approach that allows for
+use of thousands of features to classify samples and predict outcomes,
+rather than relying on limited sets of human-curated variables. Indeed,
+ML models trained on entire Electronic Health Record (EHR) data have
+demonstrated improved performance over curated models (Rao et al. 2015;
+Li et al. 2019; Dieterle et al. 2020).
 
-prediction models based on EHR for whether infection occurs in the first
-place already in use (Ötleş et al. 2023). so how about predicting
-severity of infections to guide treatment. also models on EHR to predict
-adverse outcomes (Li, Rao ribotype). serum-based biomarker model
-(Dieterle mbio 2020). OTUs vs EHRs to predict severity. CDI severity
-prediction models could be deployed to screen patients at risk and guide
-clinicians to consider prescribing a different course of treatment. When
-paired with treatment options that may reduce risk of severity,
-deploying prediction models can guide clinician decision-making to
-improve patient outcomes while minimizing unnecessary harms.
+Aside from patient factors encoded in EHRs, the state of the patient gut
+microbiome is a promising factor to predict severity, as the host
+microbiota can play either a protective or harmful role in *C.
+difficile* colonization, infection, and clearance. Mouse studies have
+found that the initial state of the gut microbiome predicts differences
+in clearance, moribundity, and cecal tissue damage in mice infected with
+CDI (Tomkovich et al. 2020; Lesniak et al. 2022). Identifying features
+of the human gut microbiota that promote or prevent severe infections
+can guide further experiments to elucidate microbial mechanisms of CDI
+severity, and incorporating these features into CDI severity models may
+improve model performance to help guide clinical treatment decisions.
 
-We chose to explore several different ways to define CDI severity
-([Figure 1](#fig-flowchart)). The IDSA definition is known to be a poor
-predictor of adverse outcomes (Stevens et al. 2020), however, it is easy
-to collect.
-
-new dataset.
-
-Two goals: investigate whether we can predict CDI severity based on OTU
-data to inform how the gut microbiome may modulate severity (ML-based
-science: good performance implies something about underlying biology),
-and determine whether there is potential clinical value in OTU-based
-models.
+We set out to investigate whether ML models trained on features of the
+gut microbiota can predict CDI severity in a human cohort, whether the
+severity definition employed affects model performance, and whether
+there is potential clinical value in deploying OTU-based models. Stool
+samples from 1277 CDI patients were collected on the day of diagnosis
+and 16S rRNA gene amplicon sequencing was performed, followed by
+clustering sequences into Operational Taxonomic Units (OTUs). We then
+trained ML models to predict each of four severity definitions from OTU
+relative abundances, identified which microbial features contributed
+most to model performance, and conducted a proof-of-concept analysis of
+the potential clinical value of these OTU-based models and compared
+these to prior EHR-based models.
 
 # Results
+
+## CDI severity
+
+There is not currently a consensus definition of CDI severity. Some
+scoring systems such as the IDSA severity score focus on laboratory data
+available during the course of CDI, while others focus on adverse
+outcomes of CDI at 30 days after diagnosis (Ressler, Wang, and Rao
+2021). We explored four different ways to define CDI cases as severe or
+not ([Figure 1](#fig-flowchart)). The IDSA definition of severe CDI is
+based on laboratory values collected on the day of diagnosis, with a
+case being severe if serum creatinine level is greater than or equal to
+$1.5 mg/dL$ and the white blood cell count is greater than or equal to
+$15 k/\mu L$ (L. Clifford McDonald et al. 2018). The remaining
+definitions focus on the occurrence of adverse outcomes, which may be
+more clinically relevant. The all-cause severity definition defines a
+case as severe if ICU admission, colectomy, or death occurs within 30
+days of CDI diagnosis, regardless of the cause of the adverse event. The
+attributable severity definition is based on disease-related
+complications defined by the CDC, where an adverse event of ICU
+admission, colectomy, or death occurs within 30 days of CDI diagnosis,
+and the adverse event is determined to be attributable to the CDI by
+physician chart review (L. Clifford McDonald et al. 2007). Finally, we
+defined a pragmatic severity definition that makes use of the
+attributable definition when available and falls back to the all-cause
+definition when chart review has not been completed, allowing us to use
+as many samples as we have available while taking physicians’ expert
+opinions into account where possible ([Figure 1](#fig-flowchart) B). We
+trained ML models to classify (in the case of the IDSA definition) or
+predict (in the case of the three other definitions) severity for each
+definitions and determined how well OTU-based models perform for each of
+them.
 
 ## Model performance
 
@@ -374,6 +416,9 @@ how much money saved in averting severe outcomes.
 Performance. full datasets for best models possible for clinical
 application. intersection dataset for comparing severity definitions.
 
+The IDSA definition is known to be a poor predictor of adverse outcomes
+(Stevens et al. 2020), however, it is easy to collect.
+
 Discuss important OTUs. which ones concord with literature, which ones
 may be new. Enrichment of *Enterococcus* and *Lactobacillus* in *C.
 difficile* infection and severity has been well-documented in prior
@@ -395,9 +440,10 @@ different forms of dysbiotic microbiota (Berkell et al. 2021) and
 differential cdi clearance (Tomkovich et al. 2020). vanc-resistant
 enterococcus new nosocomial alliance (Poduval et al. 2000).
 
-Compare to EHR-based models. in practice, EHR-based models are easier
-and less costly to deploy than an OTU-based model would be. further work
-needed to characterize the costs and benefits.
+Compare to EHR-based models. tbh gut microbiome may only play a small
+role. in practice, EHR-based models are easier and less costly to deploy
+than an OTU-based model would be – can be embedded for automated scores.
+further work needed to characterize the costs and benefits.
 
 Models to guide treatment options. In the case of low-risk and
 non-invasive treatments such as choosing between oral antibiotics, a
@@ -428,6 +474,12 @@ did not perform worse than the prior curated model, and it is the most
 clinically relevant as physician chart review increases confidence that
 positively-labelled severe outcomes are due to the CDI rather than other
 causes.
+
+Two goals: investigate whether we can predict CDI severity based on OTU
+data to inform how the gut microbiome may modulate severity (ML-based
+science: good performance implies something about underlying biology),
+and determine whether there is potential clinical value in OTU-based
+models. new dataset.
 
 # Materials and Methods
 
@@ -480,25 +532,24 @@ times for alpha and beta diversity analysis.
 
 ## Defining CDI severity
 
-We explore four different ways to define CDI cases as severe or not. The
-IDSA definition of severe CDI is based on lab values collected on the
-day of diagnosis, with a case being severe if serum creatinine level is
-greater than or equal to $1.5 mg/dL$ and the white blood cell count is
-greater than or equal to $15 k/\mu L$ (L. Clifford McDonald et al.
-2018). The remaining definitions focus on the occurrence of adverse
-outcomes, which may be more clinically relevant. The all-cause severity
-definition defines a case as severe if ICU admission, colectomy, or
-death occurs within 30 days of CDI diagnosis, regardless of the cause of
-the adverse event. The attributable severity definition is based on
-disease-related complications defined by the CDC, where an adverse event
-of ICU admission, colectomy, or death occurs within 30 days of CDI
-diagnosis, and the adverse event is determined to be attributable to the
-CDI by physician chart review (L. Clifford McDonald et al. 2007).
-Finally, we defined a pragmatic severity definition that makes use of
-the attributable definition when available and falls back to the
-all-cause definition when chart review has not been completed, allowing
-us to use as many samples as we have available while taking physicians’
-expert opinions into account where possible.
+We chose to explore four different ways to define CDI cases as severe or
+not ([Figure 1](#fig-flowchart)).
+
+- **IDSA**: A case is severe if serum creatinine level is greater than
+  or equal to $1.5 mg/dL$ and the white blood cell count is greater than
+  or equal to $15 k/\mu L$ on the day of diagnosis (L. Clifford McDonald
+  et al. 2018).
+- **All-cause**: A case is severe if ICU admission, colectomy, or death
+  occurred within 30 days of CDI diagnosis, regardless of the cause of
+  the adverse event.
+- **Attributable**: A case is severe if an adverse event of ICU
+  admission, colectomy, or death occurred within 30 days of CDI
+  diagnosis, and the adverse event was determined to be attributable to
+  the CDI by two physicians who reviewed the medical chart (L. Clifford
+  McDonald et al. 2007).
+- **Pragmatic**: A case’s severity is determined by the attributable
+  definition if it is available, otherwise it is determiend by the
+  all-cause definition.
 
 ## Model training
 
@@ -611,6 +662,15 @@ Clostridioides Difficile Infection.” *Nat Commun* 12 (1): 2241.
 
 </div>
 
+<div id="ref-chakra_prediction_2012" class="csl-entry">
+
+Chakra, Claire Nour Abou, Jacques Pepin, and Louis Valiquette. 2012.
+“Prediction Tools for Unfavourable Outcomes in Clostridium Difficile
+Infection: A Systematic Review.” *PLOS ONE* 7 (1): e30258.
+<https://doi.org/10.1371/journal.pone.0030258>.
+
+</div>
+
 <div id="ref-cole_ribosomal_2014" class="csl-entry">
 
 Cole, James R., Qiong Wang, Jordan A. Fish, Benli Chai, Donna M.
@@ -619,6 +679,16 @@ Kuske, and James M. Tiedje. 2014. “Ribosomal Database Project: Data and
 Tools for High Throughput <span class="nocase">rRNA</span> Analysis.”
 *Nucl. Acids Res.* 42 (D1): D633–42.
 <https://doi.org/10.1093/nar/gkt1244>.
+
+</div>
+
+<div id="ref-dieterle_systemic_2020" class="csl-entry">
+
+Dieterle, Michael G., Rosemary Putler, D. Alexander Perry, Anitha Menon,
+Lisa Abernathy-Close, Naomi S. Perlman, Aline Penkevich, et al. 2020.
+“Systemic Inflammatory Mediators Are Effective Biomarkers for Predicting
+Adverse Outcomes in Clostridioides Difficile Infection.” *mBio* 11 (3):
+e00180–20. <https://doi.org/10.1128/mBio.00180-20>.
 
 </div>
 
@@ -829,14 +899,13 @@ Community Ecology Package*.
 
 </div>
 
-<div id="ref-otles_clostridioides_2023" class="csl-entry">
+<div id="ref-perry_external_2022" class="csl-entry">
 
-Ötleş, Erkin, Emily A. Balczewski, Micah Keidan, Jeeheh Oh, Alieysa
-Patel, Vincent B. Young, Krishna Rao, and Jenna Wiens. 2023.
-“Clostridioides Difficile Infection Surveillance in Intensive Care Units
-and Oncology Wards Using Machine Learning.” *Infection Control &
-Hospital Epidemiology*, April, 1–6.
-<https://doi.org/10.1017/ice.2023.54>.
+Perry, D Alexander, Daniel Shirley, Dejan Micic, Pratish C Patel,
+Rosemary Putler, Anitha Menon, Vincent B Young, and Krishna Rao. 2022.
+“External Validation and Comparison of Clostridioides Difficile Severity
+Scoring Systems.” *Clinical Infectious Diseases* 74 (11): 2028–35.
+<https://doi.org/10.1093/cid/ciab737>.
 
 </div>
 
