@@ -22,5 +22,6 @@ Predicting _C. difficile_ Infection Severity from the Taxonomic Composition of t
 #| output: 'asis'
 with open('paper/word_count.txt', 'r') as infile:
     for line in infile:
-        print(line)
+      print('-', line.strip())
 ```
+
