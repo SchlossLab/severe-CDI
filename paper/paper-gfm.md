@@ -878,7 +878,7 @@ Medicine* 29 (12): 1506–7. <https://doi.org/10.1111/acem.14600>.
 
 Lucado, Jennifer, and Anne Elixhauser. 2012. “Clostridium Difficile
 Infections (CDI) in Hospital Stays, 2009. HCUP Statistical Brief \#124.”
-*AHRQ*.
+*AHRQ*. <http://www.hcup-us.ahrq.gov/reports/statbriefs/sb124.pdf>.
 
 </div>
 
@@ -924,7 +924,7 @@ Difficile Disease: Diagnosis, Pathogenesis, and Treatment Update.”
 
 Oksanen, Jari, Gavin L. Simpson, F. Guillaume Blanchet, Roeland Kindt,
 Pierre Legendre, Peter R. Minchin, R. B. O’Hara, et al. 2023. *Vegan:
-Community Ecology Package*.
+Community Ecology Package*. <https://github.com/vegandevs/vegan>.
 
 </div>
 
@@ -1114,7 +1114,7 @@ for Supervised Machine Learning Pipelines.” *JOSS* 6 (61): 3073.
 <div id="ref-van_rossum_python_2009" class="csl-entry">
 
 Van Rossum, Guido, and Fred L. Drake. 2009. “Python 3 Reference Manual
-\| Guide Books.”
+\| Guide Books.” <https://dl.acm.org/doi/book/10.5555/1593511>.
 
 </div>
 
@@ -1149,13 +1149,14 @@ Roadmap for Responsible Machine Learning for Health Care.” *Nat Med* 25
 
 Wilke, Claus O. 2020a. *Cowplot: Streamlined Plot Theme and Plot
 Annotations for ’Ggplot2’*.
+<https://CRAN.R-project.org/package=cowplot>.
 
 </div>
 
 <div id="ref-wilke_ggtext_2020" class="csl-entry">
 
 ———. 2020b. *Ggtext: Improved Text Rendering Support for ’Ggplot2’*.
-Manual.
+Manual. <https://CRAN.R-project.org/package=ggtext>.
 
 </div>
 
