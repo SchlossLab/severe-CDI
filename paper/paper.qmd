@@ -96,7 +96,6 @@ keywords: _C. difficile_ infection, supervised machine learning, gut microbiome,
 execute:
   eval: true
   echo: false
-  cache: true
   message: false
   warning: false
 ---
