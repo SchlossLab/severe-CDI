@@ -1,7 +1,7 @@
 import yaml
 
 def exclude_line(line):
-    return line.startswith('<') or line.startswith('<!--') or ('-->' in line)
+    return line.startswith('<') or ('-->' in line)
 
 with open(snakemake.input[0], "r") as infile:
     is_yaml = False
@@ -19,8 +19,10 @@ with open(snakemake.input[0], "r") as infile:
         elif line.startswith('# Acknowledgements'):
             is_body = False
             break # end of body, stop parsing file
-        elif line.startswith('# Abstract'):
-            is_body = True
+        elif line.startswith('<div'):
+            is_body = False # toggle off for divs
+        elif line.startswith('# Abstract') or line.startswith('</div'):
+            is_body = True # toggle on for abstract and end of divs
         elif is_body and not exclude_line(line):
             #print('BODY\t', line)
             body_text += line.split()
