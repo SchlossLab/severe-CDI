@@ -314,12 +314,13 @@ the IDSA and all-cause AUROCs were significantly different from each
 other (P \< 0.05). We plotted the receiver-operator characteristic curve
 and found that the pragmatic severity models outperformed the others at
 all specificity values ([Figure 2](#fig-performance) B). For comparison,
-a prior study trained a logistic regression model on whole Electronic
-Health Record data extracted on the day of CDI diagnosis to predict
-attributable severity, yielding an AUROC of 0.69 (Li et al. 2019). While
-our OTU-based attributable severity model did not meet this performance,
-the OTU-based pragmatic severity model performed just as well as the
-EHR-based model in terms of AUROC.
+a prior study with a different dataset trained a logistic regression
+model on whole Electronic Health Record data extracted on the day of CDI
+diagnosis to predict attributable severity, yielding an AUROC of
+`r ehr_auroc` (Li et al. 2019). While our OTU-based attributable
+severity model did not meet this performance, the OTU-based pragmatic
+severity model performed just as well as the EHR-based model in terms of
+AUROC.
 
 <div id="fig-performance">
 
@@ -588,7 +589,9 @@ definition had a worse NNS for the OTU-based models, it did not perform
 worse than the prior curated model, and it may be the most clinically
 relevant as physician chart review increases confidence that
 positively-labelled severe outcomes are due to the CDI rather than other
-causes.
+causes. Obtaining EHR data for the dataset in this study would allow a
+more direct comparison of the performance of models trained on OTUs,
+EHRs, or both.
 
 However, it is not enough for models to perform well to justify
 deploying them in a clinical setting; benefit over current practices
