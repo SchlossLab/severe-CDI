@@ -333,7 +333,7 @@ prc_plot_grid <- prcurve_dat %>%
              linetype = 'dashed') +
   geom_text(data = priors %>% filter(!(outcome == 'Pragmatic' & dataset == 'Intersection')),
             mapping = aes(x = 0.5, y = 0.78, 
-                          label = glue("% severe = {prior}")
+                          label = glue("baseline = {prior}")
             ),
             show.legend = FALSE,
             size = 3
