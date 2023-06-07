@@ -30,27 +30,37 @@ label_pragmatic_int <- data.frame(outcome = 'Pragmatic\n severity',
                                   data_partition = 'test set AUBPRC',
                                   text = 'Same as\nAttributable')
 
-perf_plot <- dat %>% 
-    pivot_longer(c(`training set AUROC`, `test set AUROC`, `test set AUBPRC`, 
-                   ),
-                 names_to = "data_partition",
-                 values_to = 'performance'
-                 )  %>%
+perf_long <- dat %>% 
+  pivot_longer(c(`training set AUROC`, `test set AUROC`, `test set AUBPRC`, 
+  ),
+  names_to = "data_partition",
+  values_to = 'performance'
+  )
+
+perf_medians <- perf_long %>% group_by(data_partition, dataset, outcome) %>% 
+  summarize(med_perf = median(performance)) %>% 
+  mutate(med_perf = format(round(med_perf, digits = 2), nsmall=2))
+
+perf_plot <- perf_long %>%
     ggplot(aes(x = performance, y = outcome, color = data_partition)) +
     stat_summary(fun = median, 
                  fun.max = function(x) quantile(x, 0.95), 
                  fun.min = function(x) quantile(x, 0.05),
                  position = position_dodge(width = 0.7)
                  ) +
-    stat_summary(fun = median, 
-                 geom = "label", 
-                 show.legend = FALSE,
-                 mapping = aes(label = format(round(after_stat(x),2), nsmall = 2)),
-                 alpha = 0.7,
-                 label.padding = unit(1, 'pt'),
-                 label.size = unit(0,'pt'),
-                 position = position_nudge(x = 0.12, y = c(-0.25, 0, 0.25))
-                 ) +
+     geom_label(
+       data = perf_medians,
+       mapping = aes(label = med_perf,
+                     x = 0.35, 
+                     y = outcome, 
+                     color = data_partition
+       ),
+       show.legend = FALSE,
+       alpha = 0.7,
+       label.padding = unit(1, 'pt'),
+       label.size = unit(0,'pt'),
+       position = position_dodge(width = 0.7)
+     ) +
     geom_hline(yintercept = seq(1.5, length(unique(dat %>% pull(outcome)))-0.5, 1), 
              lwd = 0.5, colour = "grey92") +
     geom_vline(xintercept = 0.5, linetype = "dashed") +
