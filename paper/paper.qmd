@@ -287,11 +287,11 @@ We referred to these as the full datasets.
 Random forest models were trained on 100 splits of the datasets into training
 and test sets, and performance was evaluated on the held-out test set using the
 area under the receiver-operator characteristic curve (AUROC).
-Since the severity classes were highly imbalanced with different proportions of
+Since the severity outcomes were highly imbalanced with different proportions of
 severe samples between definitions, we also calculated the balanced precision
 and the area under the balanced precision-recall curve (AUBPRC) as first
 proposed by @wu_improved_2021 to describe the precision that would be expected
-if the outcome classes were balanced.
+if the outcomes were balanced.
 
 ```{r model_comps_full}
 #| output: false
@@ -360,6 +360,21 @@ Original unbalanced precision-recall curves are shown in Supplementary @fig-prc.
 ![](figures/ml-performance.png)
 :::
 
+Since the data are highly imbalanced with only a small proportion of CDI cases
+having a severe outcome, evaluating the trade-off between precision and recall
+is more informative than the receiver-operator characteristic because precision
+and recall do not consider true negatives, which may overinflate the AUROC.
+However, unlike for AUROC, the baseline for the area under the precision-recall
+curve depends on the proportion of positive outcomes (i.e. severe cases) in the
+data, which vary across these severity definitions.
+To allow comparison of precision across datasets with different proportions of
+positives, @wu_improved_2021 introduced the concept of balanced precision, a
+transformation of precision based on Bayes' theorem that represents the
+precision that would have been expected if the proportion of positives were
+balanced at 0.5.
+Reporting the area under the balanced precision-recall curve (AUBPRC) allows us
+to compare the trade-off between precision and recall for our different severity
+defintions.
 The test set median AUBPRCs from the full datasets followed a similar pattern as 
 the test set AUROCs with
 `r perf_medians$aubprc_full_idsa` for IDSA severity,
@@ -821,7 +836,7 @@ TODO update GitHub URL once accepted to journal
 
 The workflow was defined with Snakemake [@koster_snakemake_2012] and
 dependencies were managed with conda environments.
-Scripts were written in R [@r_core_team_r_2020],
+Scripts were written in R [@r_core_team_r_2023],
 Python [@van_rossum_python_2009],
 and GNU bash.
 Additional software and packages used in the creation of this manuscript include
@@ -874,8 +889,9 @@ TODO
 
 # Supplement
 
-{{< include supplement.qmd >}}
-
 <!--
 TODO move aubprc to supplement?
 -->
+
+{{< include supplement.qmd >}}
+

@@ -290,12 +290,12 @@ samples as possible (**?@tbl-counts** A). We referred to these as the
 full datasets. Random forest models were trained on 100 splits of the
 datasets into training and test sets, and performance was evaluated on
 the held-out test set using the area under the receiver-operator
-characteristic curve (AUROC). Since the severity classes were highly
+characteristic curve (AUROC). Since the severity outcomes were highly
 imbalanced with different proportions of severe samples between
 definitions, we also calculated the balanced precision and the area
 under the balanced precision-recall curve (AUBPRC) as first proposed by
-(22) to describe the precision that would be expected if the outcome
-classes were balanced.
+(22) to describe the precision that would be expected if the outcomes
+were balanced.
 
 After training on the full datasets, the performance as measured by the
 AUROCs of the training set cross-validation folds were similar to those
@@ -344,17 +344,32 @@ unbalanced precision-recall curves are shown in Supplementary
 
 </div>
 
-The test set median AUBPRCs from the full datasets followed a similar
-pattern as the test set AUROCs with 0.60 for IDSA severity, 0.67 for
-all-cause severity, 0.66 for attributable severity, and 0.75 for
-pragmatic severity. The AUBPRCs were significantly different from each
-other (P \< 0.05) for each pair of severity definitions except for
-attributable vs all-cause. We plotted the balanced precision-recall
-curve and found that the IDSA definition outperformed all other models
-at very low recall values, but the others outperform IDSA at all other
-points of the curve ([Figure 2](#fig-performance) C). The 95% confidence
-intervals overlapped the baseline AUROC and AUBPRC for the attributable
-severity models, while all others did not overlap the baseline.
+Since the data are highly imbalanced with only a small proportion of CDI
+cases having a severe outcome, evaluating the trade-off between
+precision and recall is more informative than the receiver-operator
+characteristic because precision and recall do not consider true
+negatives, which may overinflate the AUROC. However, unlike for AUROC,
+the baseline for the area under the precision-recall curve depends on
+the proportion of positive outcomes (i.e. severe cases) in the data,
+which vary across these severity definitions. To allow comparison of
+precision across datasets with different proportions of positives, (22)
+introduced the concept of balanced precision, a transformation of
+precision based on Bayes’ theorem that represents the precision that
+would have been expected if the proportion of positives were balanced at
+0.5. Reporting the area under the balanced precision-recall curve
+(AUBPRC) allows us to compare the trade-off between precision and recall
+for our different severity defintions. The test set median AUBPRCs from
+the full datasets followed a similar pattern as the test set AUROCs with
+0.60 for IDSA severity, 0.67 for all-cause severity, 0.66 for
+attributable severity, and 0.75 for pragmatic severity. The AUBPRCs were
+significantly different from each other (P \< 0.05) for each pair of
+severity definitions except for attributable vs all-cause. We plotted
+the balanced precision-recall curve and found that the IDSA definition
+outperformed all other models at very low recall values, but the others
+outperform IDSA at all other points of the curve
+([Figure 2](#fig-performance) C). The 95% confidence intervals
+overlapped the baseline AUROC and AUBPRC for the attributable severity
+models, while all others did not overlap the baseline.
 
 While it is advantageous to use as much data as available to train the
 best models possible, comparing performances of models trained on
@@ -766,11 +781,11 @@ TODO update GitHub URL once accepted to journal
 -->
 
 The workflow was defined with Snakemake (44) and dependencies were
-managed with conda environments. Scripts were written in R
-(**r_core_team_r_2020?**), Python (45), and GNU bash. Additional
-software and packages used in the creation of this manuscript include
-cowplot (46), ggtext (47), ggsankey (48), schtools (49), the tidyverse
-metapackage (50), Quarto, and vegan (51).
+managed with conda environments. Scripts were written in R (45), Python
+(46), and GNU bash. Additional software and packages used in the
+creation of this manuscript include cowplot (47), ggtext (48), ggsankey
+(49), schtools (50), the tidyverse metapackage (51), Quarto, and vegan
+(52).
 
 ## Data availability.
 
@@ -1333,9 +1348,19 @@ Snakemake a scalable bioinformatics workflow engine. Bioinformatics
 
 </div>
 
-<div id="ref-van_rossum_python_2009" class="csl-entry">
+<div id="ref-r_core_team_r_2023" class="csl-entry">
 
 <span class="csl-left-margin">45.
+</span><span class="csl-right-inline">**R Core Team**. 2023. [R: A
+language and environment for statistical
+computing](https://www.R-project.org/). Manual, R Foundation for
+Statistical Computing, Vienna, Austria.</span>
+
+</div>
+
+<div id="ref-van_rossum_python_2009" class="csl-entry">
+
+<span class="csl-left-margin">46.
 </span><span class="csl-right-inline">**Van Rossum G**, **Drake FL**.
 2009. [Python 3 Reference Manual \| Guide
 books](https://dl.acm.org/doi/book/10.5555/1593511).</span>
@@ -1344,7 +1369,7 @@ books](https://dl.acm.org/doi/book/10.5555/1593511).</span>
 
 <div id="ref-wilke_cowplot_2020" class="csl-entry">
 
-<span class="csl-left-margin">46.
+<span class="csl-left-margin">47.
 </span><span class="csl-right-inline">**Wilke CO**. 2020. [Cowplot:
 Streamlined Plot Theme and Plot Annotations for
 ’Ggplot2’](https://CRAN.R-project.org/package=cowplot).</span>
@@ -1353,7 +1378,7 @@ Streamlined Plot Theme and Plot Annotations for
 
 <div id="ref-wilke_ggtext_2020" class="csl-entry">
 
-<span class="csl-left-margin">47.
+<span class="csl-left-margin">48.
 </span><span class="csl-right-inline">**Wilke CO**. 2020. [Ggtext:
 Improved text rendering support for
 ’Ggplot2’](https://CRAN.R-project.org/package=ggtext).</span>
@@ -1362,7 +1387,7 @@ Improved text rendering support for
 
 <div id="ref-sjoberg_ggsankey_2022" class="csl-entry">
 
-<span class="csl-left-margin">48.
+<span class="csl-left-margin">49.
 </span><span class="csl-right-inline">**Sjoberg D**. 2022. [Ggsankey:
 Sankey, Alluvial and Sankey Bump
 Plots](https://github.com/davidsjoberg/ggsankey).</span>
@@ -1371,7 +1396,7 @@ Plots](https://github.com/davidsjoberg/ggsankey).</span>
 
 <div id="ref-sovacool_schtools_2022" class="csl-entry">
 
-<span class="csl-left-margin">49.
+<span class="csl-left-margin">50.
 </span><span class="csl-right-inline">**Sovacool K**, **Lesniak N**,
 **Lucas S**, **Armour C**, **Schloss P**. 2022. Schtools: Schloss lab
 tools for reproducible microbiome research. doi:
@@ -1381,7 +1406,7 @@ tools for reproducible microbiome research. doi:
 
 <div id="ref-wickham_welcome_2019" class="csl-entry">
 
-<span class="csl-left-margin">50.
+<span class="csl-left-margin">51.
 </span><span class="csl-right-inline">**Wickham H**, **Averick M**,
 **Bryan J**, **Chang W**, **McGowan LD**, **François R**, **Grolemund
 G**, **Hayes A**, **Henry L**, **Hester J**, **Kuhn M**, **Pedersen
@@ -1395,7 +1420,7 @@ Open Source Software **4**:1686. doi:
 
 <div id="ref-oksanen_vegan_2023" class="csl-entry">
 
-<span class="csl-left-margin">51.
+<span class="csl-left-margin">52.
 </span><span class="csl-right-inline">**Oksanen J**, **Simpson GL**,
 **Blanchet FG**, **Kindt R**, **Legendre P**, **Minchin PR**, **O’Hara
 RB**, **Solymos P**, **Stevens MHH**, **Szoecs E**, **Wagner H**,
@@ -1414,6 +1439,9 @@ Community Ecology Package](https://github.com/vegandevs/vegan).</span>
 
 # Supplement
 
+<!--
+TODO move aubprc to supplement?
+-->
 <!-- TODO how get supplement figures labelled with S prefix
 -->
 
@@ -1450,6 +1478,3 @@ meaning the feature is not important.
 Samples were rarefied to 5,000 sequences per sample, repeated 1,000
 times for alpha and beta diversity analysis.
  -->
-<!--
-TODO move aubprc to supplement?
--->
