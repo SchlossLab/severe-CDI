@@ -58,14 +58,12 @@ metadat_cases <- bind_rows(attrib_dat, unattrib_dat) %>%
                                     attrib == 'no'  ~ 'no',
                                     is.na(attrib) ~ unattrib,
                                     TRUE ~ NA_character_)
-         ) %>%
+         ) %>% 
+  filter_first_samples() %>%
   select(sample_id, subject_id, collection_date, cdiff_case,
-         chart_reviewed, idsa, attrib, unattrib, allcause, pragmatic) %>% 
-  filter_first_samples()
-multi_samples <- metadat_cases %>%
-  group_by(subject_id) %>%
-  tally() %>%
-  filter(n > 1)
+         DEATH_30_YN, COLECTOMY_30_YN, ICU_ADMIT_30_YN,
+         chart_reviewed, idsa, attrib, unattrib, allcause, pragmatic)
+
 metadat_cases %>% write_csv(here('data', 'process', 'cases_full_metadata.csv'))
 shared_dat <- left_join(metadat_cases, otu_dat, by = 'sample_id')
 

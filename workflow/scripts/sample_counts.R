@@ -37,6 +37,8 @@ make_table <- function(metadat) {
   )
 }
 read_csv(here('data','process','cases_full_metadata.csv')) %>% 
-  make_table() %>% write_csv(here('results','count_table_full.csv'))
+  make_table() %>% 
+  write_csv(here('results','count_table_full.csv'))
 read_csv(here('data','process','cases_int_metadata.csv')) %>% 
-  make_table() %>% write_csv(here('results','count_table_int.csv'))
+  make_table() %>% 
+  write_csv(here('results','count_table_int.csv'))
