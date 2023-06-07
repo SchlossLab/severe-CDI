@@ -41,7 +41,7 @@ dat_top_otus <- dat %>%
 top_otus_order <- dat_top_otus %>% 
   group_by(label_html) %>% 
   summarize(max_med = max(mean_perf_diff)) %>% 
-  filter(max_med >= 0.005) %>% 
+  filter(max_med >= 0.01) %>% 
   arrange(max_med) %>% 
   pull(label_html)
 dat_top_otus <- dat_top_otus %>% filter(label_html %in% top_otus_order)
@@ -75,14 +75,15 @@ tiny_constant <- relabun_dat %>%
   slice_min(rel_abun) %>%
   pull(rel_abun) %>% .[1]/10 # select tiniest non-zero relabun and divide by 10
 
-top_feats_dat %>% 
+top_feats_means <- top_feats_dat %>% 
   group_by(dataset, outcome, tax_otu_label) %>% 
   summarize(med_auroc_diff = mean(perf_metric_diff),
             ) %>% 
   full_join(relabun_means %>% 
                filter(label_html %in% top_otus_order) %>% 
                select(outcome, tax_otu_label, med_rel_abun),
-            relationship = 'many-to-many') %>% 
+            relationship = 'many-to-many')
+top_feats_means %>% 
   write_csv(here('results', 'top_features.csv'))
 
 # FEATURE IMPORTANCE
@@ -193,5 +194,5 @@ ggsave(
     filename = here('figures', 'feature-importance.tiff'), 
     plot = fig,
     device = "tiff", compression = "lzw", dpi = 600, 
-    units = "in", width = 6.875, height = 7.5 # https://journals.asm.org/figures-tables
+    units = "in", width = 6.875, height = 4.5 # https://journals.asm.org/figures-tables
     )

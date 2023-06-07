@@ -428,27 +428,27 @@ cases.
 
 ![](figures/feature-importance.png)
 
-Figure 3: **Feature importance.** **A)** Feature importance via
-permutation test. For each OTU, the order of samples was randomized in
-the test set 100 times and the performance was re-calculated to estimate
-the permutation performance. An OTU was considered important if the
-performance decreased when the OTU was permuted in at least 75% of the
-models. Mean difference in AUROC and the 75% confidence interval (CI) is
-reported for each OTU, with starred OTUs being significant for the 75%
-CI. OTUs with a greater difference in AUROC (actual performance minus
-permutation performance) are more important. Left: models were trained
-on the full datasets, with different numbers of samples available for
-each severity definition. Right: models were trained on the intersection
-of samples with all labels available for each definition. Note that
-Attributable and Pragmatic severity are exactly the same for the
-intersection dataset. *Pseudomonas* (OTU 120) is not shown for IDSA
-severity in the full datasets nor in the intersection dataset because it
-was removed during pre-processing due to having near-zero variance.
-Notably, the OTU most likely corresponding to *C. difficile* was not
-important ([Figure 5](#fig-cdiff)). **B)** Log<sub>10</sub>-transformed
-mean relative abundances of the most important OTUs on the full
-datasets, grouped by severity (shape). The vertical dashed line is the
-limit of detection.
+Figure 3: **Most important OTUs for model performance.** **A)** Feature
+importance via permutation test. For each OTU, the order of samples was
+randomized in the test set 100 times and the AUROC was re-calculated to
+estimate the permutation performance. OTUs with a greater difference in
+AUROC (actual performance minus permutation performance) are more
+important. Mean difference in AUROC and the 75% confidence interval (CI)
+is reported for each OTU that had a mean difference $\geq$ 0.01 for at
+least one severity definition, with starred OTUs being significant for
+the 75% CI. Notably, the OTU most likely corresponding to *C. difficile*
+was not important (see Supplementary [Figure 5](#fig-cdiff)). Left:
+models were trained on the full datasets, with different numbers of
+samples available for each severity definition. Right: models were
+trained on the intersection of samples with all labels available for
+each definition. Note that Attributable and Pragmatic severity are
+exactly the same for the intersection dataset. *Pseudomonas* (OTU 120)
+is not shown for IDSA severity in the full datasets nor in the
+intersection dataset because it was removed during pre-processing due to
+having near-zero variance. **B)** Log<sub>10</sub>-transformed mean
+relative abundances of the most important OTUs on the full datasets,
+grouped by severity (shape). The vertical dashed line is the limit of
+detection.
 
 </div>
 
