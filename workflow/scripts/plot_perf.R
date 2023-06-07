@@ -6,7 +6,7 @@ library(mikropml)
 library(schtools)
 library(tidyverse)
 
-dat <- read_csv(here("results","performance_results_aggregated.csv")) %>%
+perf_dat <- read_csv(here("results","performance_results_aggregated.csv")) %>%
     filter(!(outcome == 'pragmatic' & dataset == 'int')) %>% 
     rename(`test set AUROC` = AUC,
            `training set AUROC` = cv_metric_AUC,
@@ -31,7 +31,7 @@ label_pragmatic_int <- data.frame(outcome = 'Pragmatic\n severity',
                                   data_partition = 'test set AUBPRC',
                                   text = 'Same as\nAttributable')
 
-perf_long <- dat %>% 
+perf_long <- perf_dat %>% 
   pivot_longer(c(`training set AUROC`, `test set AUROC`, `test set AUBPRC`, 
   ),
   names_to = "data_partition",
@@ -41,6 +41,21 @@ perf_long <- dat %>%
 perf_medians <- perf_long %>% group_by(data_partition, dataset, outcome) %>% 
   summarize(med_perf = median(performance)) %>% 
   mutate(med_perf = format(round(med_perf, digits = 2), nsmall=2))
+
+mcc_plot <- perf_dat %>% 
+  mutate(ppv = prec,
+         tpr = Recall,
+         tnr = Specificity,
+         npv = Neg_Pred_Value,
+         fdr = 1 - ppv,
+         fnr = 1 - tpr,
+         fpr = 1 - tnr,
+         for_ = 1 - npv,
+         mcc = sqrt(ppv * tpr * tnr * npv) - sqrt(fdr * fnr * fpr * for_) # https://en.wikipedia.org/wiki/Phi_coefficient
+  ) %>% 
+  ggplot(aes(x = mcc, y = outcome)) +
+  geom_boxplot() +
+facet_wrap('dataset', ncol = 2) #+ scale_x_continuous(limits = c(-1,1))
 
 perf_plot <- perf_long %>%
     ggplot(aes(x = performance, y = outcome, color = data_partition)) +
@@ -62,7 +77,7 @@ perf_plot <- perf_long %>%
        label.size = unit(0,'pt'),
        position = position_dodge(width = 0.7)
      ) +
-    geom_hline(yintercept = seq(1.5, length(unique(dat %>% pull(outcome)))-0.5, 1), 
+    geom_hline(yintercept = seq(1.5, length(unique(perf_dat %>% pull(outcome)))-0.5, 1), 
              lwd = 0.5, colour = "grey92") +
     geom_vline(xintercept = 0.5, linetype = "dashed") +
     geom_label(data = label_pragmatic_int, 
@@ -288,7 +303,7 @@ priors <- sensspec_dat %>%
          prior = round(prior, 2)
   )
 
-auprc_medians <- dat %>% 
+auprc_medians <- perf_dat %>% 
   group_by(dataset, outcome) %>% 
   summarize(med_auprc = median(pr_auc) %>% round(.,2)) %>% 
   mutate(lower = med_auprc, upper = med_auprc) %>% 
