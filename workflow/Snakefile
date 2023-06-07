@@ -150,7 +150,7 @@ rule convert_figures:
         png="paper/figures/{figname}.png"
     shell:
         """
-        convert {input.tiff} {output.png}
+        convert -density 600 {input.tiff} {output.png}
         """
 
 rule calc_stats:
