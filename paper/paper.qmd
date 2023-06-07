@@ -879,6 +879,10 @@ All authors reviewed and edited the manuscript.
 
 TODO
 
+The funders had no role in study design, data
+collection and interpretation, or the decision to submit the work for
+publication.
+
 -->
 
 {{< pagebreak >}}
