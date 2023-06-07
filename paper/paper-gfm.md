@@ -444,9 +444,11 @@ Attributable and Pragmatic severity are exactly the same for the
 intersection dataset. *Pseudomonas* (OTU 120) is not shown for IDSA
 severity in the full datasets nor in the intersection dataset because it
 was removed during pre-processing due to having near-zero variance.
-**B)** Log<sub>10</sub>-transformed mean relative abundances of the most
-important OTUs on the full datasets, grouped by severity (shape). The
-vertical dashed line is the limit of detection.
+Notably, the OTU most likely corresponding to *C. difficile* was not
+important ([Figure 5](#fig-cdiff)). **B)** Log<sub>10</sub>-transformed
+mean relative abundances of the most important OTUs on the full
+datasets, grouped by severity (shape). The vertical dashed line is the
+limit of detection.
 
 </div>
 

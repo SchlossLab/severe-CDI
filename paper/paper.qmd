@@ -479,6 +479,7 @@ exactly the same for the intersection dataset.
 *Pseudomonas* (OTU 120) is not shown for IDSA severity in the full datasets nor
 in the intersection dataset because it was removed during pre-processing due to
 having near-zero variance.
+Notably, the OTU most likely corresponding to _C. difficile_ was not important (@fig-cdiff).
 **B)** Log~10~-transformed mean relative abundances of the most important OTUs
 on the full datasets, grouped by severity (shape). 
 The vertical dashed line is the limit of detection.
