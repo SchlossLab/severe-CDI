@@ -36,6 +36,12 @@ preproc_ranges <- preproc_info %>%
             max_feats = max(nfeats)) %>% 
   as.list()
 
+# metadata
+
+attrib_counts <- metadat %>% filter(allcause == 'yes') %>% count(attrib)
+attrib_labelled <- attrib_counts %>% filter(!is.na(attrib)) %>% summarise(n = sum(n)) %>% pull(n)
+allcause_yes <- attrib_counts %>% summarize(n = sum(n)) %>% pull(n)
+
 # performance
 perf_dat <- read_csv('results/performance_results_aggregated.csv')
 perf_medians <- perf_dat %>% 
@@ -79,6 +85,6 @@ ehr_fdx_nnb <- round(ehr_nns * fdx_nnt, 0)
 ehr_screen <- round(ehr_fdx_nnb * 100/5, 0)
 
 # clean up objects not used in paper
-remove(otu_dat, metadat, preproc_info, perf_dat, confmat_95th_pct)
+remove(otu_dat, metadat, preproc_info, attrib_counts, perf_dat, confmat_95th_pct)
 
 save.image(file = here("results", "stats.RData"))
