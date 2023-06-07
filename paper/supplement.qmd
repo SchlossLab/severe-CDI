@@ -2,7 +2,7 @@
 <!-- TODO how get supplement figures labelled with S prefix
 -->
 
-::: {#fig-prc fig-cap="**Precision-recall curves.**
+::: {#fig-prc fig-pos='H' fig-cap="**Precision-recall curves.**
 The original precision-recall curves for each model.
 The horizontal line is the baseline precision, i.e. the proportion of severe
 cases in the dataset for each severity definition.
@@ -12,7 +12,7 @@ compared directly without balancing the precision (see Figure 2).
 ![](figures/prc_curves.png)
 :::
 
-::: {#fig-cdiff fig-cap="**_C. difficile_ relative abundance and feature importance.**
+::: {#fig-cdiff  fig-pos='H' fig-cap="**_C. difficile_ relative abundance and feature importance.**
 Of the 45 OTUs belonging to the _Peptostreptococcaceae_ family, only one
 (OTU 25) had abundance values above the limit of detection.
 **Left**: log~10~-transformed relative abundance of OTU 25 in the full datasets.

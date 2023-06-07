@@ -221,7 +221,7 @@ rule render_supplement:
     shell:
         """
         cd paper
-        quarto render supplement.qmd
+        quarto render supplement.qmd --to pdf
         """
 
 rule zip_submission:

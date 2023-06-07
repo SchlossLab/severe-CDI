@@ -813,6 +813,9 @@ PDS conceived of the study and supervised the project.
 All authors reviewed and edited the manuscript.
 &#10;## Funding
 &#10;TODO
+&#10;The funders had no role in study design, data
+collection and interpretation, or the decision to submit the work for
+publication.
 &#10;-->
 
 
@@ -1447,7 +1450,7 @@ TODO move aubprc to supplement?
 <!-- TODO how get supplement figures labelled with S prefix
 -->
 
-<div id="fig-prc">
+<div id="fig-prc" fig-pos="H">
 
 ![](figures/prc_curves.png)
 
@@ -1460,7 +1463,7 @@ the PRCs cannot be compared directly without balancing the precision
 
 </div>
 
-<div id="fig-cdiff">
+<div id="fig-cdiff" fig-pos="H">
 
 ![](figures/cdiff-otu.png)
 
