@@ -1,3 +1,5 @@
-stat,idsa,allcause,attrib,pragmatic
-n,1072,1218,1178,1218
-% Severe,34.2,7.1,2.2,5.4
+Severity,n,% severe
+All-cause,1218,7.1
+Attributable,1178,2.2
+IDSA,1072,34.2
+Pragmatic,1218,5.4
