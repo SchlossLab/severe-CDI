@@ -85,6 +85,7 @@ top_feats_dat %>%
             relationship = 'many-to-many') %>% 
   write_csv(here('results', 'top_features.csv'))
 
+# FEATURE IMPORTANCE
 feat_imp_plot <- top_feats_dat %>% 
   mutate(label_html = factor(label_html, levels = top_otus_order),
          dataset = case_when(dataset == 'full' ~ 'Full datasets',
@@ -137,12 +138,11 @@ feat_imp_plot <- top_feats_dat %>%
         panel.spacing = unit(1, 'pt'),
         legend.position = "top",
         panel.grid.major.y = element_blank(),
-        plot.margin = margin(0,1,0,0, unit = 'pt'),
+        plot.margin = margin(0,3,0,0, unit = 'pt'),
         legend.box.margin = margin(0,0,0,0, unit = 'pt'),
         legend.margin = margin(0,0,0,0, unit = 'pt')) 
 
-
-
+# RELATIVE ABUNDANCE
 relabun_plot <- relabun_means %>% 
   filter(label_html %in% top_otus_order) %>% 
   mutate(label_html = factor(label_html, levels = top_otus_order),
@@ -182,7 +182,8 @@ relabun_plot <- relabun_means %>%
         strip.background = element_blank(),
         legend.position = 'top',
         legend.box.margin = margin(0,0,0,0, unit = 'pt'),
-        legend.margin = margin(0,0,0,0, unit = 'pt'))
+        legend.margin = margin(0,0,0,0, unit = 'pt'),
+        plot.margin = margin(0,8,0,0))
   
 fig <- plot_grid(feat_imp_plot, relabun_plot,
                  ncol = 2, rel_widths = c(1, 0.3), align = 'h', axis = 'tb', 
