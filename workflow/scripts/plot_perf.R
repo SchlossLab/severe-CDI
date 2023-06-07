@@ -1,5 +1,6 @@
 schtools::log_snakemake()
 library(cowplot)
+library(glue)
 library(here)
 library(mikropml)
 library(schtools)
@@ -278,29 +279,67 @@ color_names <- c("IDSA"="#1B9E77", 'All-cause'="#7570B3",
 priors <- sensspec_dat %>% 
   select(outcome, dataset, prior) %>% 
   dplyr::distinct() %>%
-  mutate(outcome = factor(case_when(
-    outcome == 'idsa' ~ 'IDSA',
-    outcome == 'allcause' ~ 'All-cause',
-    outcome == 'attrib' ~ 'Attributable',
-    outcome == 'pragmatic' ~ 'Pragmatic',
-    TRUE ~ NA_character_
-  ), levels = c("IDSA", 'All-cause', 'Attributable', 'Pragmatic')))
+  mutate(outcome = factor(case_when(outcome == 'idsa' ~ 'IDSA',
+                                    outcome == 'allcause' ~ 'All-cause',
+                                    outcome == 'attrib' ~ 'Attributable',
+                                    outcome == 'pragmatic' ~ 'Pragmatic',
+                                    TRUE ~ NA_character_), 
+                          levels = c("IDSA", 'All-cause', 'Attributable', 'Pragmatic')),
+         prior = round(prior, 2)
+  )
+
+auprc_medians <- dat %>% 
+  group_by(dataset, outcome) %>% 
+  summarize(med_auprc = median(pr_auc) %>% round(.,2)) %>% 
+  mutate(lower = med_auprc, upper = med_auprc) %>% 
+  mutate(outcome = factor(str_remove(outcome, "\n severity"),
+                          levels = c("IDSA", 'All-cause', 'Attributable', 'Pragmatic')
+                          ),
+         dataset = case_when(dataset == 'Intersection of samples with all labels available' ~ "Intersection",
+                             TRUE ~ dataset)
+  )
 
 prc_plot_grid <- prcurve_dat %>%
   mutate(outcome = factor(case_when(
-    outcome == 'idsa' ~ 'IDSA',
-    outcome == 'allcause' ~ 'All-cause',
-    outcome == 'attrib' ~ 'Attributable',
-    outcome == 'pragmatic' ~ 'Pragmatic',
-    TRUE ~ NA_character_
-  ), levels = c("IDSA", 'All-cause', 'Attributable', 'Pragmatic'))) %>% 
-  ggplot(aes(x = recall, y = mean_precision, 
-             ymin = lower, ymax = upper)) +
-  geom_ribbon(aes(fill = outcome), alpha = 0.15) +
+         outcome == 'idsa' ~ 'IDSA',
+         outcome == 'allcause' ~ 'All-cause',
+         outcome == 'attrib' ~ 'Attributable',
+         outcome == 'pragmatic' ~ 'Pragmatic',
+         TRUE ~ NA_character_
+         ), 
+         levels = c("IDSA", 'All-cause', 'Attributable', 'Pragmatic'))
+         ) %>% 
+  ggplot(aes(x = recall, y = mean_precision)) +
+  geom_ribbon(aes(fill = outcome, ymin = lower, ymax = upper), 
+              alpha = 0.15) +
   geom_line(aes(color = outcome)) +
   geom_hline(data = priors,
-             aes(yintercept = prior),
+             mapping = aes(yintercept = prior),
              linetype = 'dashed') +
+  geom_text(data = priors %>% filter(!(outcome == 'Pragmatic' & dataset == 'Intersection')),
+            mapping = aes(x = 0.5, y = 0.78, 
+                          label = glue("% severe = {prior}")
+            ),
+            show.legend = FALSE,
+            size = 3
+            ) +
+  geom_text(data = auprc_medians,
+            mapping = aes(x = 0.5, y = 0.9,
+                          label = glue('  AUPRC = {med_auprc}')
+                          ),
+            show.legend = FALSE,
+            size = 3
+            ) +
+  geom_label(data = label_pragmatic_int %>% 
+               mutate(outcome = factor(str_remove(outcome, '\n severity'),
+                                       levels = c("IDSA", 'All-cause', 'Attributable', 'Pragmatic')),
+                      dataset = 'Intersection'), 
+             mapping = aes(x = 0.5, y = 0.8, label = text),
+             color = 'black', fill = 'grey92',
+             size = 3.5,
+             label.size = unit(0, 'pt'),
+             show.legend = FALSE,
+  ) +
   scale_color_manual(values = color_names,
                      guide = guide_legend(label.position = "top")) +
   scale_fill_manual(values = color_names,
@@ -312,15 +351,15 @@ prc_plot_grid <- prcurve_dat %>%
   facet_grid(dataset ~ outcome) +
   theme_sovacool() +
   theme(text = element_text(size = 10, family = 'Helvetica'),
-        legend.position = 'none',
         legend.title = element_blank(),
+        legend.position = 'none',
         strip.background = element_blank(),
         panel.spacing = unit(8, 'pt'),
         axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 
 ggsave('figures/prc_curves.tiff', plot = prc_plot_grid,
        device = 'tiff', compression = 'lzw', dpi = 600,
-       width = 5, height = 3)
+       width = 6.875, height = 3.75)
 
 curve_legend <- get_legend(bprc_plot + theme(legend.position = 'bottom'))
 fig <- plot_grid(perf_plot, 
