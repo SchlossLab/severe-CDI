@@ -363,10 +363,10 @@ the full datasets followed a similar pattern as the test set AUROCs with
 0.60 for IDSA severity, 0.67 for all-cause severity, 0.66 for
 attributable severity, and 0.75 for pragmatic severity. The AUBPRCs were
 significantly different from each other (P \< 0.05) for each pair of
-severity definitions except for attributable vs all-cause. We plotted
-the balanced precision-recall curve and found that the IDSA definition
-outperformed all other models at very low recall values, but the others
-outperform IDSA at all other points of the curve
+severity definitions except for attributable versus all-cause. We
+plotted the balanced precision-recall curve and found that the IDSA
+definition outperformed all other models at very low recall values, but
+the others outperform IDSA at all other points of the curve
 ([Figure 2](#fig-performance) C). The 95% confidence intervals
 overlapped the baseline AUROC and AUBPRC for the attributable severity
 models, while all others did not overlap the baseline.
@@ -380,28 +380,28 @@ had labels for all four severity definitions and repeated the model
 training and evaluation process on this intersection dataset. The
 attributable definition is exactly the same as the pragmatic definition
 for the intersection dataset, as we defined pragmatic severity to use
-the attributable label when available. The performance results on the
-intersection dataset are shown in the right facets of each panel of
+the attributable definition when available. The performance results on
+the intersection dataset are shown in the right facets of each panel of
 [Figure 2](#fig-performance).
 
 As with the full datasets, the AUROCs of the training sets and test sets
 were similar within each severity definition. The median test set AUROCs
 were 0.60 for IDSA severity, 0.55 for all-cause severity, 0.59 and for
 attributable severity. The AUROCs on the intersection dataset were
-significantly different for all-cause vs attributable and all-cause vs
-IDSA severity (P \< 0.05), but not for IDSA vs attributable severity (P
-\> 0.05). The median test set AUBPRCs were 0.59 for IDSA severity, 0.55
-for all-cause severity, 0.58 and for attributable severity. Just as with
-the AUROCs, the AUBPRCs were significantly different for all-cause vs
-attributable and all-cause vs IDSA severity (P \< 0.05), but not for
-IDSA vs attributable severity (P \> 0.05). For all severity definitions,
-performance dropped between the full dataset and the intersection
-dataset since fewer samples are available, but this effect is least
-dramatic for IDSA severity as the full and intersection datasets are
-more similar for this definition (**?@tbl-counts** B). The 95%
-confidence interval overlaps with the baseline for both AUROC and AUBPRC
-for all definitions on the intersection dataset except for IDSA
-severity.
+significantly different for all-cause versus attributable and all-cause
+versus IDSA severity (P \< 0.05), but not for IDSA versus attributable
+severity (P \> 0.05). The median test set AUBPRCs were 0.59 for IDSA
+severity, 0.55 for all-cause severity, 0.58 and for attributable
+severity. Just as with the AUROCs, the AUBPRCs were significantly
+different for all-cause versus attributable and all-cause versus IDSA
+severity (P \< 0.05), but not for IDSA versus attributable severity (P
+\> 0.05). For all severity definitions, performance dropped between the
+full dataset and the intersection dataset since fewer samples are
+available, but this effect is least dramatic for IDSA severity as the
+full and intersection datasets are more similar for this definition
+(**?@tbl-counts** B). The 95% confidence interval overlaps with the
+baseline for both AUROC and AUBPRC for all definitions on the
+intersection dataset except for IDSA severity.
 
 ## Feature importance.
 
@@ -566,7 +566,7 @@ best models possible given the constraints, while using the intersection
 dataset allows for comparing severity definitions. We found that models
 predicting pragmatic severity with as much data as available performed
 best, while models classifying IDSA severity outperformed the all-cause
-and attributable definitions only with the inersection. Performance
+and attributable definitions only with the intersection. Performance
 dropped substantially when reducing to the intersection dataset for all
 definitions, likely due to the particularly imbalanced nature of the
 all-cause and attributable definitions. These results demonstrate the
@@ -576,8 +576,8 @@ physician’s expertise when possible.
 
 Permutation feature importance revealed patterns of important bacteria
 that concord with the literature. Enrichment of *Enterococcus* and
-*Lactobacillus* in *C. difficile* infection and severity has been
-well-documented in prior studies, thus its importance and increase in
+*Lactobacillus* in *C. difficile* infection and severity have been
+well-documented in prior studies, thus their importance and increase in
 abundance for severe cases is not surprising (17, 27–29). For many of
 the top OTUs, there is a wide range in importance. Notably, the OTU
 represented by *Pseudomonas* had wide variance in importance for the
@@ -587,7 +587,7 @@ zero. However, for the intersection dataset, this OTU was removed due to
 having near-zero variance. The presence of *Pseudomonas* was thus
 informative in a small number of patient samples, but not in others, and
 these samples were lost in the intersection dataset. Overall the
-abundance data are patchy, as these patients were likely all on
+abundance data are patchy, as these patients were likely all taking
 antibiotics for unrelated infections prior to CDI onset. A limitation of
 permutation importance is that the contribution of each feature is
 considered in isolation, but members of microbial communities interact
@@ -623,21 +623,21 @@ number needed to benefit. The NNB contextualizes model performance
 within clinical reality, as it combines both model performance and
 treatment effectiveness (23). A more robust analysis of clinical value
 would further consider the cost of treatment options versus the savings
-of averting severe outcomes, as economic disparities are a major barrier
-to treatment in the US (24). Cost-benefit analyses based on clinical
-trial data have reported that fidaxomicin may be as cost-effective as
-vancomycin as a treatment for initial CDI cases, largely due to the
-reduced risk of recurrence (33, 34). While our analysis of clinical
-value is only a proof-of-concept, if evidence emerges that new or
-existing treatments significantly reduce the risk of severe CDI, our
-results can be incorporated into future considerations of whether to
-build severity prediction models and what features should be
-incorporated. In practice, EHR-based models are less costly to deploy
-than OTU-based models and do not require additional clinical sample
-collection. Amplicon sequencing is not typically performed for CDI
-patients, however, routinely profiling the microbial communities of CDI
-patients could be justified if models that incorporate microbial
-features were shown to improve patient outcomes.
+of averting severe outcomes across a range of decision thresholds, as
+economic disparities are a major barrier to treatment in the US (24).
+Cost-benefit analyses based on clinical trial data have reported that
+fidaxomicin may be as cost-effective as vancomycin as a treatment for
+initial CDI cases, largely due to the reduced risk of recurrence (33,
+34). While our analysis of clinical value is only a proof-of-concept, if
+evidence emerges that new or existing treatments significantly reduce
+the risk of severe CDI, our results can be incorporated into future
+considerations of whether to build severity prediction models and what
+features should be incorporated. In practice, EHR-based models are less
+costly to deploy than OTU-based models and do not require additional
+clinical sample collection. Amplicon sequencing is not typically
+performed for CDI patients, however, routinely profiling the microbial
+communities of CDI patients could be justified if models that
+incorporate microbial features were shown to improve patient outcomes.
 
 In all, we found that our models to predict severity from features of
 the gut microbiome performed moderately well. Our approach enabled us to

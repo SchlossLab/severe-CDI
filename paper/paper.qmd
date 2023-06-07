@@ -382,7 +382,7 @@ the test set AUROCs with
 `r perf_medians$aubprc_full_attrib` for attributable severity, and
 `r perf_medians$aubprc_full_pragmatic` for pragmatic severity.
 The AUBPRCs were significantly different from each other (P < 0.05) for
-each pair of severity definitions except for attributable vs all-cause.
+each pair of severity definitions except for attributable versus all-cause.
 We plotted the balanced precision-recall curve and found that the IDSA definition
 outperformed all other models at very low recall values, but the others outperform
 IDSA at all other points of the curve (@fig-performance C).
@@ -398,7 +398,7 @@ that had labels for all four severity definitions and repeated the model
 training and evaluation process on this intersection dataset.
 The attributable definition is exactly the same as the pragmatic definition for
 the intersection dataset, as we defined pragmatic severity to use the
-attributable label when available.
+attributable definition when available.
 The performance results on the intersection dataset are shown in the right
 facets of each panel of @fig-performance.
 
@@ -424,15 +424,15 @@ The median test set AUROCs were
 `r perf_medians$auroc_int_allcause` for all-cause severity,
 `r perf_medians$auroc_int_attrib` and for attributable severity.
 The AUROCs on the intersection dataset were significantly different for
-all-cause vs attributable and all-cause vs IDSA severity (P < 0.05), but not for
-IDSA vs attributable severity (P > 0.05).
+all-cause versus attributable and all-cause versus IDSA severity (P < 0.05), but not for
+IDSA versus attributable severity (P > 0.05).
 The median test set AUBPRCs were
 `r perf_medians$aubprc_int_idsa` for IDSA severity,
 `r perf_medians$aubprc_int_allcause` for all-cause severity,
 `r perf_medians$aubprc_int_attrib` and for attributable severity.
 Just as with the AUROCs, the AUBPRCs were significantly different for
-all-cause vs attributable and all-cause vs IDSA severity (P < 0.05), but not for
-IDSA vs attributable severity (P > 0.05).
+all-cause versus attributable and all-cause versus IDSA severity (P < 0.05), but not for
+IDSA versus attributable severity (P > 0.05).
 For all severity definitions, performance dropped between the full dataset and
 the intersection dataset since fewer samples are available, but this effect is
 least dramatic for IDSA severity as the full and intersection datasets are more
@@ -606,7 +606,7 @@ constraints, while using the intersection dataset allows for comparing severity
 definitions.
 We found that models predicting pragmatic severity with as much data as
 available performed best, while models classifying IDSA severity outperformed
-the all-cause and attributable definitions only with the inersection.
+the all-cause and attributable definitions only with the intersection.
 Performance dropped substantially when reducing to the intersection dataset for
 all definitions, likely due to the particularly imbalanced nature of the
 all-cause and attributable definitions.
@@ -617,7 +617,7 @@ incorporate physician's expertise when possible.
 Permutation feature importance revealed patterns of important bacteria that
 concord with the literature.
 Enrichment of _Enterococcus_ and _Lactobacillus_ in _C. difficile_ infection and
-severity has been well-documented in prior studies, thus its importance and
+severity have been well-documented in prior studies, thus their importance and
 increase in abundance for severe cases is not surprising
 [@schubert_microbiome_2014;
 @antharam_intestinal_2013;
@@ -632,7 +632,7 @@ near-zero variance.
 The presence of _Pseudomonas_ was thus informative in a small number of 
 patient samples, but not in others, and these samples were lost in the
 intersection dataset.
-Overall the abundance data are patchy, as these patients were likely all on
+Overall the abundance data are patchy, as these patients were likely all taking
 antibiotics for unrelated infections prior to CDI onset.
 A limitation of permutation importance is that the contribution of each feature
 is considered in isolation, but members of microbial communities interact and
@@ -668,8 +668,9 @@ number needed to benefit.
 The NNB contextualizes model performance within clinical reality, as it combines
 both model performance and treatment effectiveness [@liu_number_2019].
 A more robust analysis of clinical value would further consider the cost of
-treatment options versus the savings of averting severe outcomes, as economic
-disparities are a major barrier to treatment in the US [@johnson_clinical_2021].
+treatment options versus the savings of averting severe outcomes across a range
+of decision thresholds, as economic disparities are a major barrier to treatment
+in the US [@johnson_clinical_2021].
 Cost-benefit analyses based on clinical trial data have reported that
 fidaxomicin may be as cost-effective as vancomycin as a treatment for initial
 CDI cases, largely due to the reduced risk of recurrence
