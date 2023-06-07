@@ -874,39 +874,7 @@ TODO
 
 # Supplement
 
-<!-- TODO how get supplement figures labelled with S prefix
--->
-
-::: {#fig-prc fig-cap="**Precision-recall curves.**
-The original precision-recall curves for each model.
-The horizontal line is the baseline precision, i.e. the proportion of severe
-cases in the dataset for each severity definition.
-Since each definition has a different baseline precision, the PRCs cannot be
-compared directly without balancing the precision (see Figure 2).
-"}
-![](figures/prc_curves.png)
-:::
-
-::: {#fig-cdiff fig-cap="**_C. difficile_ relative abundance and feature importance.**
-Of the 45 OTUs belonging to the _Peptostreptococcaceae_ family, only one
-(OTU 25) had abundance values above the limit of detection.
-**Left**: log~10~-transformed relative abundance of OTU 25 in the full datasets.
-The dashed line is the limit of detection.
-**Right**: Permutation feature importance as measured by AUROC for OTU 25.
-The point is the mean difference in AUROC and the tails are the 75% confidence
-interval.
-The dotted line is a feature importance of zero, meaning the feature is not
-important.
-"}
-![](figures/cdiff-otu.png)
-:::
-
-<!-- TODO supplementary figure with alpha and beta diversity & significance.
-Samples were rarefied to 5,000 sequences per sample, repeated 1,000
-times for alpha and beta diversity analysis.
- -->
- 
-
+{{< include supplement.qmd >}}
 
 <!--
 TODO move aubprc to supplement?
