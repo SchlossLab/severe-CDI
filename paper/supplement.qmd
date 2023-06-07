@@ -1,16 +1,6 @@
----
-title: 'Supplement'
-fontsize: 11pt
-format:
-  pdf:
-    keep-tex: false
-    linenumbers: true
-    doublespacing: true
-    lof: false
-crossref:
-  fig-title: FIG S
----
 
+<!-- TODO how get supplement figures labelled with S prefix
+-->
 
 ::: {#fig-prc fig-cap="**Precision-recall curves.**
 The original precision-recall curves for each model.
@@ -31,7 +21,7 @@ The dashed line is the limit of detection.
 The point is the mean difference in AUROC and the tails are the 75% confidence
 interval.
 The dotted line is a feature importance of zero, meaning the feature is not
-significant.
+important.
 "}
 ![](figures/cdiff-otu.png)
 :::

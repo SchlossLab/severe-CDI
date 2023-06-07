@@ -55,7 +55,7 @@ figures_dict = {'1': 'flowchart_sankey',
 
 rule paper_targets:
     input:
-        'paper/paper-gfm.md', 'paper/paper.pdf'#, 'paper/submission.zip'
+        'paper/paper-gfm.md', 'paper/paper.pdf'#, 'paper/submission.zip', 'README.md',
 
 rule targets:
     input:
@@ -184,8 +184,7 @@ rule render_paper_pdf:
         tab=[rules.sample_count_tables.output],
     output:
         pdf='paper/paper.pdf',
-    conda:
-        'envs/notebooks.yml'
+    #conda: 'envs/notebooks.yml'
     shell:
         """
         cd paper
@@ -202,8 +201,7 @@ rule render_paper_markdown:
         tab=[rules.sample_count_tables.output],
     output:
         md='paper/paper-gfm.md',
-    conda:
-        'envs/notebooks.yml'
+    #conda: 'envs/notebooks.yml'
     shell:
         """
         cd paper
@@ -219,8 +217,7 @@ rule render_supplement:
         figs=expand("paper/figures/{figname}.png", figname = {figures_dict[k] for k in figures_dict.keys() if k.startswith('S')})
     output:
         'paper/supplement.pdf'
-    conda:
-        'envs/notebooks.yml'
+    #conda: 'envs/notebooks.yml'
     shell:
         """
         cd paper
@@ -289,13 +286,14 @@ rule render_notebooks:
 
 rule abstract_word_count:
     input:
-        rules.render_paper_markdown.output.md
+        md=rules.render_paper_markdown.output.md,
     output:
-        'paper/word_count.txt'
+        txt='paper/word_count.txt',
     conda:
         'envs/notebooks.yml'
+    log: 'log/word_count.log'
     script:
-        'scripts/word-count.py'
+        "scripts/word-count.py"
 
 rule render_readme:
     input:

@@ -12,5 +12,5 @@ Composition of the Gut Microbiome
 
 ### Word count
 
-- abstract: 247
-- body: 5058
+- abstract: 242
+- body: 4925

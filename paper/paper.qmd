@@ -1,9 +1,10 @@
 ---
-title: "Predicting _C. difficile_ Infection Severity from the Taxonomic Composition of the Gut Microbiome"
+title: "Predicting Severity of _C. difficile_ Infections from the Taxonomic Composition of the Gut Microbiome"
 date: last-modified
 date-format: medium
 prefer-html: true
 bibliography: references.bib
+csl: asm.csl
 fontsize: 11pt
 format:
   manuscript-pdf:
@@ -66,25 +67,25 @@ abstract: |
   adverse outcomes including ICU admission, colectomy, and death.
   The composition of the gut microbiome plays an important role in determining
   colonization resistance and clearance upon exposure to _C. difficile_.
-  We investigated whether machine learning (ML) models trained on gut microbiota
-  isolated from stool samples on the day of CDI diagnosis could predict which
-  CDI cases led to severe outcomes.
-  We collected 1,277 stool samples from CDI patients and clustered 16S rRNA gene
-  amplicon sequences into _de novo_ Operational Taxonomic Units (OTUs).
+  We investigated whether machine learning (ML) models trained on 
+  16S rRNA gene amplicon sequences from gut microbiota extracted
+  from 1,277 patient stool samples on the day of CDI diagnosis could predict 
+  which CDI cases led to severe outcomes.
   We then trained ML models to predict CDI severity on OTU relative abundances
   according to four different severity definitions: 
   the IDSA severity score on the day of diagnosis,
   all-cause adverse outcomes within 30 days,
   adverse outcomes confirmed as attributable to CDI via chart review, 
   and a pragmatic definition that uses the attributable definition when available
-  and falls back to the all-cause definition otherwise.
+  and otherwise uses the all-cause definition.
   The models predicting pragmatic severity performed best, 
   suggesting that while chart review is valuable to verify the cause of
   complications,
   including as many samples as possible is indispensable for training performant
   models on imbalanced datasets.
   Permutation importance identified _Enterococcus_ as the most important OTU for
-  model performance. 
+  model performance, and increased relative abundance of _Enterococcus_ was
+  associated with severe outcomes.
   Finally, we evaluated the potential clinical value of the OTU-based models
   and found similar performance compared to prior models based on Electronic
   Health Records.
@@ -145,7 +146,7 @@ infection in the United States, and community-acquired cases are on the rise
 The classic CDI case typically occurs soon after antibiotic use, which perturbs the
 protective gut microbiota and allows _C. difficile_ to proliferate [@kelly_can_2012].
 Non-antibiotic medications including proton-pump inhibitors and osmotic laxatives
-have also been shown to increase CDI susceptibilty and inhibit clearance
+have also been associated with increased CDI susceptibilty and inhibited clearance
 [@janarthanan_clostridium_2012;@tomkovich_osmotic_2021].
 Diarrhea is the primary symptom, with some patients developing colitis, 
 toxic megacolon, or requiring intensive care with an in-hospital mortality rate
@@ -153,8 +154,8 @@ of approximately 8-9% [@lucado_clostridium_2012;@kassam_clostridium_2016].
 Furthermore, 5-20% of initial cases reoccur within 2-8 weeks, and recurrent
 cases are associated with increased morbidity and mortality risk
 [@napolitano_clostridium_2017;@kelly_can_2012].
-Patient risk factors for CDI-related morbidity and mortality include age > 65,
-history of recurrent CDI, and co-morbid chronic illnesses [@ressler_defining_2021].
+Patient risk factors for CDI-related morbidity and mortality include age greater
+than 65 years, history of recurrent CDI, and co-morbid chronic illnesses [@ressler_defining_2021].
 CDI remains a significant burden on the US health care system with approximately
 500,000 cases annually [@guh_trends_2020;@kwon_morbidity_2015].
 
@@ -167,9 +168,9 @@ Numerous scoring systems for predicting severe CDI outcomes based on patient
 clinical factors have been developed, but none have validated well to external
 datasets nor are any in use in routine clinical practice
 [@chakra_prediction_2012;@perry_external_2022].
-Machine learning (ML) is a promising approach that allows for use of thousands
-of features to classify samples and predict outcomes, rather than relying on
-limited sets of human-curated variables.
+Rather than relying on limited sets of human-curated variables,
+machine learning (ML) is a promising approach that allows for use of thousands
+of features to classify samples and predict outcomes.
 Indeed, ML models trained on entire Electronic Health Record (EHR) data
 have demonstrated improved performance over curated models
 [@rao_clostridium_2015;@li_using_2019].
@@ -201,34 +202,37 @@ OTU-based models and compared these to prior EHR-based models.
 
 # Results
 
-## CDI severity
+## CDI severity.
 
 There is not currently a consensus definition of CDI severity.
 Some scoring systems leverage clinical data available during the course of CDI,
 while others focus on adverse outcomes of CDI at 30 days after diagnosis
 [@ressler_defining_2021;@dieterle_systemic_2020].
 We explored four different ways to define CDI cases as severe or not (@fig-flowchart).
-The "IDSA" definition of severe CDI is based on laboratory values collected on
-the day of diagnosis, with a case being severe if serum creatinine level is
-greater than or equal to $1.5 mg/dL$ and the white blood cell count is greater
-than or equal to $15 k/\mu L$ [@mcdonald_clinical_2018].
-However, the IDSA score is known to be a poor predictor of adverse outcomes
-[@stevens_validation_2020], although it is straightforward to collect.
+The Infectious Diseases Society of America (IDSA) definition of severe CDI is
+based on laboratory values collected on the day of diagnosis, with a case being
+severe if serum creatinine level is greater than or equal to $1.5 mg/dL$ and the
+white blood cell count is greater than or equal to $15 k/\mu L$
+[@mcdonald_clinical_2018].
+Although data for the IDSA score is straightforward to collect, it is known to
+be a poor predictor of adverse outcomes [@stevens_validation_2020].
 The remaining definitions we employed focus on the occurrence of adverse
 outcomes, which may be more clinically relevant.
 The "attributable" severity definition is based on disease-related complications
-defined by the CDC, where an adverse event of ICU admission, colectomy, or death
-occurs within 30 days of CDI diagnosis, and the adverse event is determined to
-be attributable to the CDI by physician chart review [@mcdonald_recommendations_2007].
+defined by the Centers for Disease Control and Prevention, where an adverse
+event of ICU admission, colectomy, or death occurs within 30 days of CDI
+diagnosis, and the adverse event is determined to be attributable to the CDI by
+physician chart review [@mcdonald_recommendations_2007].
 However, physician chart review is time-consuming and has not been completed for
-all cases, so we defined "all-cause" severity where a case is severe if an
+all cases (n=`r attrib_labelled` out of `r allcause_yes` cases with an adverse
+outcome), so we defined "all-cause" severity where a case is severe if an
 adverse event occurs within 30 days of the diagnosis regardless of the cause of
 the adverse event.
 Finally, we defined a "pragmatic" severity definition that makes use of the
-attributable definition when available and falls back to the all-cause
-definition when chart review has not been completed, allowing us to use as many
-samples as we have available while taking physicians' expert opinions into
-account where possible (@fig-flowchart B).
+attributable definition when available and uses the all-cause definition when
+chart review has not been completed, allowing us to use as many samples as we
+have available while taking physicians' expert opinions into account where
+possible (@fig-flowchart B).
 We trained ML models to classify (in the case of the IDSA definition) or predict
 (in the case of the three other definitions) severity and determined how well
 OTU-based models perform for each definition.
@@ -263,8 +267,7 @@ severity definitions.
 #| layout-ncol: 2
 format_table <- function(tab) {
   tab %>%
-    kable(col.names = c(' ', 'IDSA', 'All-cause', 'Attributable', "Pragmatic"),
-          format.args = list(big.mark = ',')) %>% 
+    kable(format.args = list(big.mark = ',')) %>% 
     kable_styling(font_size = table_font_size)
 }
 read_csv(here('results','count_table_full.csv')) %>% 
@@ -273,18 +276,18 @@ read_csv(here('results','count_table_int.csv')) %>%
   format_table()
 ```
 
-## Model performance
+## Model performance.
 
 We first set out to train the best models possible for each severity definition.
-Not all samples have labels available for all four severity definitions due to
+Not all samples have outcomes available for all four severity definitions due to
 missing data for some patient lab values and incomplete chart review
-(@fig-flowchart B), thus each severity definition has a different number of
+(@fig-flowchart B), thus each severity definition had a different number of
 samples when using as many samples as possible (@tbl-counts A).
-We refer to these as the full datasets.
+We referred to these as the full datasets.
 Random forest models were trained on 100 splits of the datasets into training
 and test sets, and performance was evaluated on the held-out test set using the
 area under the receiver-operator characteristic curve (AUROC).
-Since the severity classes are highly imbalanced with different proportions of
+Since the severity classes were highly imbalanced with different proportions of
 severe samples between definitions, we also calculated the balanced precision
 and the area under the balanced precision-recall curve (AUBPRC) as first
 proposed by @wu_improved_2021 to describe the precision that would be expected
@@ -327,11 +330,11 @@ pragmatic severity models outperformed the others at all specificity values
 (@fig-performance B).
 For comparison, a prior study with a different dataset trained a logistic
 regression model on whole Electronic Health Record data extracted on the day of
-CDI diagnosis to predict attributable severity, yielding an AUROC of `r
-ehr_auroc` [@li_using_2019].
-While our OTU-based attributable severity model did not meet this performance,
-the OTU-based pragmatic severity model performed just as well as the EHR-based
-model in terms of AUROC.
+CDI diagnosis to predict attributable severity, yielding an AUROC of 
+`r ehr_auroc` [@li_using_2019].
+While our attributable severity model did not meet this performance, the
+pragmatic severity model performed just as well as the EHR-based model in terms
+of AUROC.
 
 ::: {#fig-performance fig-cap="**Performance of ML models.**
 In the left facets, models were trained on the full datasets, with different
@@ -352,7 +355,7 @@ with ribbons as the 95% CI.
 **C)** Balanced precision-recall curves for the test sets.
 Mean balanced precision is reported at each recall (sensitivity) value, 
 with ribbons as the 95% CI.
-Original unbalanced precision-recall curves are shown in Figure S1.
+Original unbalanced precision-recall curves are shown in Supplementary @fig-prc.
 "}
 ![](figures/ml-performance.png)
 :::
@@ -422,7 +425,7 @@ similar for this definition (@tbl-counts B).
 The 95% confidence interval overlaps with the baseline for both AUROC and AUBPRC
 for all definitions on the intersection dataset except for IDSA severity.
 
-## Feature importance
+## Feature importance.
 
 We performed permutation feature importance to determine which OTUs contributed
 the most to model performance.
@@ -468,7 +471,7 @@ The vertical dashed line is the limit of detection.
 ![](figures/feature-importance.png)
 :::
 
-## Estimating clinical value
+## Estimating clinical value.
 
 Even if a model performs well, it may not be useful in a clinical setting unless
 it can guide clinicians to choose between treatment options.
@@ -490,6 +493,8 @@ treatment [@liu_number_2019].
 Thus the NNB pairs model performance with treatment effectiveness to estimate
 the benefit of using predictive models in clinical practice, and are useful for
 comparing models and performing cost-benefit analyses.
+Lower values of NNS, NNT, and NNB are better, with the minimum value being 1,
+as fewer patients must be screened and treated in order to benefit a single patient.
 
 Current clinical guidelines specify vancomycin and fidaxomicin as the standard
 antibiotics to treat CDI, with a preference for fidaxomicin due to its higher
@@ -524,24 +529,31 @@ and `r pragmatic_fdx_nnb` for pragmatic severity.
 Thus, in a hypothetical scenario where these assumptions about fidaxomicin hold
 true, between `r min_fdx_nnb` and `r max_fdx_nnb` patients would need to be
 predicted to experience a severe outcome and be treated with fidaxomicin in
-order for one patient to benefit.
+order for one patient to benefit, with the pragmatic severity models having
+the best NNB when paired with fidaxomicin.
 As the NNS values were computed at the 95th percentile of risk (where 5% of
 patients screened are predicted to experience severity), these NNB values mean
 that `r min_screen` to `r max_screen` total CDI patients would need to be
-screened by an OTU-based prediction model in order for one patient to benefit.
+screened by an OTU-based prediction model and treated with fidaxomicin in order
+for one patient to benefit.
 For comparison, prior studies predicted CDI-attributable severity using whole
 Electronic Health Record data extracted two days after diagnosis and from a
 smaller set of manually curated variables, achieving precision values of 0.417
 (NNS = `r ehr_nns`) for the EHR model and 0.167 (NNS = `r curated_nns`) for the
 curated model at the 95th percentile of risk
-[@li_using_2019;@rao_clostridium_2015]. <!-- TODO possible to find NNS on day of diagnosis for EHR model-->
+[@li_using_2019;@rao_clostridium_2015]. 
 Pairing the prior EHR-based model with fidaxomicin would yield
-an NNB of `r ehr_fdx_nnb` with `r ehr_screen` total CDI patients screened for
-one patient to benefit, although the EHR was extracted two days after diagnosis
-while OTUs in this study are from stool samples collected on the day of diagnosis.
+an NNB of `r ehr_fdx_nnb` with `r ehr_screen` total CDI patients screened and
+treated for one patient to benefit.
+Thus the pragmatic severity model did not outperform the EHR-based model,
+although the EHR data were extracted two days after diagnosis while OTUs in this
+study are from stool samples collected on the day of diagnosis.
 These estimates represent a proof-of-concept demonstration of the potential
 value and trade-offs of deploying severity prediction models trained on
 microbial factors versus EHRs to guide clinicians' treatment decisions.
+<!-- 
+TODO possible to find NNS on day of diagnosis for EHR model?
+-->
 
 ```{r risk_95th_pct_decision_thresholds}
 #| message: false
@@ -605,9 +617,8 @@ near-zero variance.
 The presence of _Pseudomonas_ was thus informative in a small number of 
 patient samples, but not in others, and these samples were lost in the
 intersection dataset.
-Overall the abundance data are sparse, as these patients were likely on
-antibiotics prior to CDI onset and may have begun antibiotic treatment prior to
-the initial stool sample collection.
+Overall the abundance data are patchy, as these patients were likely all on
+antibiotics for unrelated infections prior to CDI onset.
 A limitation of permutation importance is that the contribution of each feature
 is considered in isolation, but members of microbial communities interact and
 compete with each other, thus these complicated relationships are not well 
@@ -618,21 +629,22 @@ EHR-based model trained on the day of diagnosis, demonstrating the potential
 utility of OTU-based models.
 In terms of the number needed to screen, the OTU-based pragmatic severity model 
 outperformed a prior model of manually curated clinical variables, but not a
-model trained on EHR data extracted two days after the diagnosis.
+model trained on EHR data extracted two days after diagnosis.
 While the attributable definition had a worse NNS for the OTU-based models, it
 did not perform worse than the prior curated model, and it may be the most
 clinically relevant as physician chart review increases confidence that
 positively-labelled severe outcomes are due to the CDI rather than other causes.
 Obtaining EHR data for the dataset in this study would allow a more direct
-comparison of the performance of models trained on OTUs, EHRs, or both.
+comparison of the performance of models trained on OTUs, EHRs, or both, as well
+as extracting EHR data on the day of diagnosis rather than two days after.
 
 However, it is not enough for models to perform well to justify deploying them
 in a clinical setting; benefit over current practices must be shown [@wiens_no_2019].
-Although no known treatment options are proven to reduce the risk of severe CDI
-outcomes, fidaxomicin is promising due to its improved time to resolution and
-reduced recurrence.
+Although no known treatment options have been shown to reduce the risk of severe
+CDI outcomes, fidaxomicin is promising due to its improved time to resolution
+and reduced recurrence.
 Despite its increased cost, fidaxomicin is also attractive as a preferential
-antibiotic option as vancomycin-resistant enterococcus is on the rise and
+antibiotic option as vancomycin-resistant _Enterococcus_ is on the rise and
 enterococci are known to worsen CDI
 [@poduval_clostridium_2000;@smith_enterococci_2022].
 We extended our analysis of clinical value to incorporate the number needed to
@@ -673,7 +685,7 @@ CDI.
 
 # Materials and Methods
 
-## Sample collection
+## Sample collection.
 
 This study was approved by the University of Michigan Institutional Review
 Board. All patient samples were collected by the University of Michigan Health
@@ -688,7 +700,7 @@ collected and split into different aliquots.
 For 16S sequencing, the aliquot of stool was re-suspended in
 DNA genotek stabilization buffer and then stored in the -80&deg;C freezer.
 
-## 16S rRNA gene amplicon sequencing
+## 16S rRNA gene amplicon sequencing.
 
 Samples stored in DNA genotek buffer were thawed from the -80&deg;C, vortexed,
 and then transferred to a 96-well bead beating plate for DNA extractions.
@@ -714,11 +726,12 @@ version of the Ribosomal Database Project reference sequences (v16)
 [@cole_ribosomal_2014].
 Sequences were clustered into _de novo_ OTUs with the OptiClust algorithm in
 mothur [@westcott_opticlust_2017], resulting in `r num_otus` OTUs.
+Samples were then subsampled to 5,000 sequences per sample.
 Only the first CDI sample per patient was used for subsequent ML analyses such
 that no patient is represented more than once, resulting in a dataset of
 `r n_cases_first` samples.
  
-## Defining CDI severity
+## Defining CDI severity.
 
 We chose to explore four different ways to define CDI cases as severe or not (@fig-flowchart).
 
@@ -735,7 +748,7 @@ We chose to explore four different ways to define CDI cases as severe or not (@f
 - **Pragmatic**: A case's severity is determined by the attributable definition
   if it is available, otherwise it is determiend by the all-cause definition.
 
-## Model training
+## Model training.
 
 Random forest models were used to examine whether OTU data collected on the day
 of diagnosis could classify CDI cases as severe according to each severity
@@ -760,7 +773,7 @@ No features had missing values and no features were perfectly correlated.
 We randomly split the data into an 80% training and 20% test set and repeated
 this 100 times, followed by training models with 5-fold cross-validation.
 
-## Model evaluation
+## Model evaluation.
 
 Model performance was calculated on the held-out test sets using the area under
 the receiver-operator characteristic curve (AUROC) and the area under the
@@ -776,7 +789,7 @@ the labels were balanced.
 The balanced precision and the area under the balanced precision-recall curve
 (AUBPRC) were calculated with Equations 1 and 7 from @wu_improved_2021.
 
-## Number needed to benefit
+## Number needed to benefit.
 
 For the severity prediction models (which excludes the IDSA definition),
 we set out to estimate the potential benefit of deploying models in clinical
@@ -797,12 +810,14 @@ a severe outcome and undergo a treatment to benefit from it [@liu_number_2019].
 NNB encapsulates the benefit of pairing a predictive model with a treatment in
 a clinical setting, with lower NNB numbers being better.
 
-## Code availability
+## Code availability.
 
 The complete workflow, code, and supporting files required to reproduce this
 manuscript with accompanying figures is available at
 <https://github.com/SchlossLab/severe-CDI>.
-<!-- TODO update GitHub URL once accepted to journal -->
+<!-- 
+TODO update GitHub URL once accepted to journal
+-->
 
 The workflow was defined with Snakemake [@koster_snakemake_2012] and
 dependencies were managed with conda environments.
@@ -818,7 +833,7 @@ the tidyverse metapackage [@wickham_welcome_2019],
 Quarto, and
 vegan [@oksanen_vegan_2023].
 
-## Data availability
+## Data availability.
 
 The 16S rRNA sequencing data have been deposited in the National Center for
 Biotechnology Information Sequence Read Archive
@@ -854,3 +869,13 @@ TODO
 
 ::: {#refs}
 :::
+
+{{< pagebreak >}}
+
+# Supplement
+
+{{< include supplement.qmd >}}
+
+<!--
+TODO move aubprc to supplement?
+-->
