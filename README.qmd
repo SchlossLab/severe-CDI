@@ -9,7 +9,7 @@ engine: knitr
 # severe-CDI
 
 ```{python paper_meta}
-#| output: 'asis'
+#| output: asis
 import yaml
 is_yaml = False
 yaml_lines = list()
@@ -25,6 +25,13 @@ print('\n')
 print(', '.join(auth['name'] for auth in yaml_dict['author']))
 ```
 
+## Abstract
+
+```{python abstract}
+#| output: asis
+print(yaml_dict['abstract'])
+```
+
 ## Manuscript
 
 - [Quarto](paper/paper.qmd)
@@ -34,7 +41,7 @@ print(', '.join(auth['name'] for auth in yaml_dict['author']))
 ### Word count
 
 ```{python word_count}
-#| output: 'asis'
+#| output: asis
 with open('paper/word_count.txt', 'r') as infile:
     for line in infile:
       print('-', line.strip(), end = '\n')
