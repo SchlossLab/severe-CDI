@@ -18,13 +18,13 @@ with open(snakemake.input[0], "r") as infile:
                 yaml_block_count += 1
         elif is_yaml:
             yaml_text.append(line)
-        elif line.startswith('# Acknowledgements'):
+        elif line.startswith('# References'):
             is_body = False
             break # end of body, stop parsing file
         elif line.startswith('<div') or (line.startswith('<!--') and not ('-->' in line)):
             is_body = False # toggle off for divs and block comments
-        elif line.startswith('# Abstract') or line.startswith('</div') or ('-->' in line):
-            is_body = True # toggle on for abstract and ends of divs and comments
+        elif line.startswith('# Introduction') or line.startswith('</div') or ('-->' in line):
+            is_body = True # toggle on for introduction and ends of divs and comments
         elif is_body and not exclude_line(line):
             log_txt.append(f'{line}')
             body_text += line.split()
