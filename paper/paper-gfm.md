@@ -71,7 +71,7 @@ abstract: |
   16S rRNA gene amplicon sequences from gut microbiota extracted
   from 1,277 patient stool samples on the day of CDI diagnosis could predict
   which CDI cases led to severe outcomes.
-  We then trained ML models to predict CDI severity on OTU relative abundances
+  We trained ML models to predict CDI severity on OTU relative abundances
   according to four different severity definitions:
   the IDSA severity score on the day of diagnosis,
   all-cause adverse outcomes within 30 days,
@@ -119,8 +119,8 @@ resistance and clearance upon exposure to *C. difficile*. We
 investigated whether machine learning (ML) models trained on 16S rRNA
 gene amplicon sequences from gut microbiota extracted from 1,277 patient
 stool samples on the day of CDI diagnosis could predict which CDI cases
-led to severe outcomes. We then trained ML models to predict CDI
-severity on OTU relative abundances according to four different severity
+led to severe outcomes. We trained ML models to predict CDI severity on
+OTU relative abundances according to four different severity
 definitions: the IDSA severity score on the day of diagnosis, all-cause
 adverse outcomes within 30 days, adverse outcomes confirmed as
 attributable to CDI via chart review, and a pragmatic definition that
