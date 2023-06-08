@@ -1,8 +1,7 @@
 
 # severe-CDI
 
-Predicting Severity of *C. difficile* Infections from the Taxonomic
-Composition of the Gut Microbiome
+#### Predicting Severity of *C. difficile* Infections from the Taxonomic Composition of the Gut Microbiome
 
 Kelly L. Sovacool, Sarah E. Tomkovich, Megan L. Coden, Jenna Wiens,
 Vincent B. Young, Krishna Rao, Patrick D. Schloss

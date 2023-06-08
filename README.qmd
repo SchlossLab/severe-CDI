@@ -8,7 +8,7 @@ engine: knitr
 
 # severe-CDI
 
-```{python}
+```{python paper_meta}
 #| output: 'asis'
 import yaml
 is_yaml = False
@@ -20,7 +20,7 @@ with open('paper/paper.qmd', 'r') as infile:
         elif is_yaml:
             yaml_lines.append(line)
 yaml_dict = yaml.load(''.join(yaml_lines), Loader = yaml.CLoader)
-print(yaml_dict['title'])
+print('####', ''.join(yaml_dict['title']))
 print('\n')
 print(', '.join(auth['name'] for auth in yaml_dict['author']))
 ```
@@ -33,7 +33,7 @@ print(', '.join(auth['name'] for auth in yaml_dict['author']))
 
 ### Word count
 
-```{python}
+```{python word_count}
 #| output: 'asis'
 with open('paper/word_count.txt', 'r') as infile:
     for line in infile:
