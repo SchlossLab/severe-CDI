@@ -63,22 +63,22 @@ affiliations:
   - id: ccmb
     name: Center for Computational Medicine and Bioinformatics, University of Michigan
 abstract: |
-  _Clostridioides difficile_ infection (CDI) can lead to 
+  _Clostridioides difficile_ infection (CDI) can lead to
   adverse outcomes including ICU admission, colectomy, and death.
   The composition of the gut microbiome plays an important role in determining
   colonization resistance and clearance upon exposure to _C. difficile_.
-  We investigated whether machine learning (ML) models trained on 
+  We investigated whether machine learning (ML) models trained on
   16S rRNA gene amplicon sequences from gut microbiota extracted
-  from 1,277 patient stool samples on the day of CDI diagnosis could predict 
+  from 1,277 patient stool samples on the day of CDI diagnosis could predict
   which CDI cases led to severe outcomes.
   We then trained ML models to predict CDI severity on OTU relative abundances
-  according to four different severity definitions: 
+  according to four different severity definitions:
   the IDSA severity score on the day of diagnosis,
   all-cause adverse outcomes within 30 days,
-  adverse outcomes confirmed as attributable to CDI via chart review, 
+  adverse outcomes confirmed as attributable to CDI via chart review,
   and a pragmatic definition that uses the attributable definition when available
   and otherwise uses the all-cause definition.
-  The models predicting pragmatic severity performed best, 
+  The models predicting pragmatic severity performed best,
   suggesting that while chart review is valuable to verify the cause of
   complications,
   including as many samples as possible is indispensable for training performant
@@ -123,10 +123,10 @@ assert_that(n_cases_first == 1277) # hard-coded in abstract
 ```{r abstract}
 #| output: asis
 cat('# ', rmarkdown::metadata$title, '\n')
-cat(paste(sapply(rmarkdown::metadata$author, 
-                 function(x) {x$name}), 
+cat(paste(sapply(rmarkdown::metadata$author,
+                 function(x) {x$name}),
           collapse = ', '
-          ), 
+          ),
     '\n\n'
 )
 if ('abstract' %in% names(rmarkdown::metadata)) {
@@ -149,7 +149,7 @@ protective gut microbiota and allows _C. difficile_ to proliferate [@kelly_can_2
 Non-antibiotic medications including proton-pump inhibitors and osmotic laxatives
 have also been associated with increased CDI susceptibilty and inhibited clearance
 [@janarthanan_clostridium_2012;@tomkovich_osmotic_2021].
-Diarrhea is the primary symptom, with some patients developing colitis, 
+Diarrhea is the primary symptom, with some patients developing colitis,
 toxic megacolon, or requiring intensive care with an in-hospital mortality rate
 of approximately 8-9% [@lucado_clostridium_2012;@kassam_clostridium_2016].
 Furthermore, 5-20% of initial cases reoccur within 2-8 weeks, and recurrent
@@ -197,7 +197,7 @@ diagnosis and 16S rRNA gene amplicon sequencing was performed, followed by
 clustering sequences into Operational Taxonomic Units (OTUs).
 We then trained ML models to classify or predict each of four severity
 definitions from OTU relative abundances,
-identified which microbial features contributed most to model performance, and 
+identified which microbial features contributed most to model performance, and
 conducted a proof-of-concept analysis of the potential clinical value of these
 OTU-based models and compared these to prior EHR-based models.
 
@@ -258,22 +258,22 @@ severity definitions.
 #| message: false
 #| label: tbl-counts
 #| tbl-pos: h
-#| tbl-cap: "**Sample counts and proportion of severe cases.** Each severity 
+#| tbl-cap: "**Sample counts and proportion of severe cases.** Each severity
 #|   definition has a different number of patient samples available, as well as
 #|   a different proportion of cases labelled as severe.
 #| "
-#| tbl-subcap: 
+#| tbl-subcap:
 #|   - "Full datasets"
 #|   - "Intersection of samples with all labels available"
 #| layout-ncol: 2
 format_table <- function(tab) {
   tab %>%
-    kable(format.args = list(big.mark = ',')) %>% 
+    kable(format.args = list(big.mark = ',')) %>%
     kable_styling(font_size = table_font_size)
 }
-read_csv(here('results','count_table_full.csv')) %>% 
+read_csv(here('results','count_table_full.csv')) %>%
   format_table()
-read_csv(here('results','count_table_int.csv')) %>% 
+read_csv(here('results','count_table_int.csv')) %>%
   format_table()
 ```
 
@@ -297,7 +297,7 @@ if the outcomes were balanced.
 ```{r model_comps_full}
 #| output: false
 model_comps <- read_csv(here('results','model_comparisons.csv'))
-comps_full_auroc <- model_comps %>% 
+comps_full_auroc <- model_comps %>%
   filter(dataset == 'full', metric == 'AUROC', p_value < 0.05)
 assert_that(all((comps_full_auroc %>% pull(group1)) == c("allcause", "attrib", "idsa", "idsa")))
 assert_that(all((comps_full_auroc %>% pull(group2)) == c("pragmatic", "pragmatic", "allcause", "pragmatic")))
@@ -305,7 +305,7 @@ assert_that(all(
   model_comps %>%
     filter(dataset == 'full', metric == 'AUBPRC', p_value > 0.05) %>%
     select(group1, group2) %>%
-    as.vector() %>% 
+    as.vector() %>%
     unlist() == c('attrib', 'allcause')
 ))
 ```
@@ -316,7 +316,7 @@ test sets, indicating that the models are neither overfit nor underfit
 (@fig-performance A).
 As measured by AUROC on the held-out test sets, models predicting pragmatic
 severity performed best with a median AUROC of `r perf_medians$auroc_full_pragmatic`,
-and this was significantly different from that of the other definitions 
+and this was significantly different from that of the other definitions
 on the full datasets (P < 0.05).
 Models predicting IDSA, all-cause, and attributable severity performed similarly
 with median test set AUROCs of
@@ -331,7 +331,7 @@ pragmatic severity models outperformed the others at all specificity values
 (@fig-performance B).
 For comparison, a prior study with a different dataset trained a logistic
 regression model on whole Electronic Health Record data extracted on the day of
-CDI diagnosis to predict attributable severity, yielding an AUROC of 
+CDI diagnosis to predict attributable severity, yielding an AUROC of
 `r ehr_auroc` [@li_using_2019].
 While our attributable severity model did not meet this performance, the
 pragmatic severity model performed just as well as the EHR-based model in terms
@@ -344,17 +344,17 @@ In the right facets, models were trained on the same dataset consisting of the
 intersection of samples with labels available for all definitions.
 Note that the intersection dataset has exactly the same labels for attributable
 and pragmatic severity, thus these have identical performance.
-**A)** 
+**A)**
 Area under the receiver-operator characteristic curve (AUROC) for the test sets
 and cross-validation folds of the training sets, and the area under the balanced
 precision-recall curve (AUBPRC) for the test sets.
 Each point is annotated with the median performance across 100 train/test splits
 with tails as the 95% CI.
 **B)** Receiver-operator characteristic curves for the test sets.
-Mean specificity is reported at each sensitivity value, 
+Mean specificity is reported at each sensitivity value,
 with ribbons as the 95% CI.
 **C)** Balanced precision-recall curves for the test sets.
-Mean balanced precision is reported at each recall (sensitivity) value, 
+Mean balanced precision is reported at each recall (sensitivity) value,
 with ribbons as the 95% CI.
 Original unbalanced precision-recall curves are shown in Supplementary @fig-prc.
 "}
@@ -376,7 +376,7 @@ balanced at 0.5.
 Reporting the area under the balanced precision-recall curve (AUBPRC) allows us
 to compare the trade-off between precision and recall for our different severity
 defintions.
-The test set median AUBPRCs from the full datasets followed a similar pattern as 
+The test set median AUBPRCs from the full datasets followed a similar pattern as
 the test set AUROCs with
 `r perf_medians$aubprc_full_idsa` for IDSA severity,
 `r perf_medians$aubprc_full_allcause` for all-cause severity,
@@ -420,7 +420,7 @@ assert_that(all(comps_int_aubprc %>% pull(group2) == 'allcause'))
 
 As with the full datasets, the AUROCs of the training sets and test sets were
 similar within each severity definition.
-The median test set AUROCs were 
+The median test set AUROCs were
 `r perf_medians$auroc_int_idsa` for IDSA severity,
 `r perf_medians$auroc_int_allcause` for all-cause severity,
 `r perf_medians$auroc_int_attrib` and for attributable severity.
@@ -450,7 +450,7 @@ at least 75% of the train/test splits, with greater differences in AUROC meaning
 greater importance.
 We plotted mean decrease in AUROC alongside log~10~-transformed mean
 relative abundances for the top OTUs (@fig-features).
-_Enterococcus_ was the most important OTU, being significantly important for 
+_Enterococcus_ was the most important OTU, being significantly important for
 all models except for attributable severity on the full dataset.
 _Staphylococcus_ was important for the pragmatic and all-cause definitions on
 the full datasets, but not for models trained on the intersection dataset.
@@ -482,7 +482,7 @@ exactly the same for the intersection dataset.
 in the intersection dataset because it was removed during pre-processing due to
 having near-zero variance.
 **B)** Log~10~-transformed mean relative abundances of the most important OTUs
-on the full datasets, grouped by severity (shape). 
+on the full datasets, grouped by severity (shape).
 The vertical dashed line is the limit of detection.
 "}
 ![](figures/feature-importance.png)
@@ -537,10 +537,10 @@ Furthermore, IDSA severity scores do not correlate well with disease-related
 adverse events which are a more salient outcome to prevent.
 Among the models predicting severe outcomes, those trained on the full
 datasets performed best with an NNS of `r allcause_nns` for the all-cause
-definition, `r attrib_nns` for the attributable definition, and 
+definition, `r attrib_nns` for the attributable definition, and
 `r pragmatic_nns` for the pragmatic definition (@tbl-risk).
-Multiplying the NNS of the OTU-based models by the estimated NNT of 
-`r fdx_nnt` for fidaxomicin yields NNB values of `r allcause_fdx_nnb` 
+Multiplying the NNS of the OTU-based models by the estimated NNT of
+`r fdx_nnt` for fidaxomicin yields NNB values of `r allcause_fdx_nnb`
 for all-cause severity, `r attrib_fdx_nnb` for attributable severity,
 and `r pragmatic_fdx_nnb` for pragmatic severity.
 Thus, in a hypothetical scenario where these assumptions about fidaxomicin hold
@@ -558,7 +558,7 @@ Electronic Health Record data extracted two days after diagnosis and from a
 smaller set of manually curated variables, achieving precision values of 0.417
 (NNS = `r ehr_nns`) for the EHR model and 0.167 (NNS = `r curated_nns`) for the
 curated model at the 95th percentile of risk
-[@li_using_2019;@rao_clostridium_2015]. 
+[@li_using_2019;@rao_clostridium_2015].
 Pairing the prior EHR-based model with fidaxomicin would yield
 an NNB of `r ehr_fdx_nnb` with `r ehr_screen` total CDI patients screened and
 treated for one patient to benefit.
@@ -568,7 +568,7 @@ study are from stool samples collected on the day of diagnosis.
 These estimates represent a proof-of-concept demonstration of the potential
 value and trade-offs of deploying severity prediction models trained on
 microbial factors versus EHRs to guide clinicians' treatment decisions.
-<!-- 
+<!--
 TODO possible to find NNS on day of diagnosis for EHR model?
 -->
 
@@ -576,26 +576,26 @@ TODO possible to find NNS on day of diagnosis for EHR model?
 #| message: false
 #| label: tbl-risk
 #| tbl-pos: h
-#| tbl-cap: "**Predictive model performance at 95th percentile of risk.** 
+#| tbl-cap: "**Predictive model performance at 95th percentile of risk.**
 #|   The confusion matrix was computed for the decision threshold at
-#|   the 95th percentile of risk for each severity prediction model, 
-#|   which corresponds to 5% of cases predicted to have a severe outcome. 
+#|   the 95th percentile of risk for each severity prediction model,
+#|   which corresponds to 5% of cases predicted to have a severe outcome.
 #|   The number needed to screen (NNS) to identify one true positive
 #|   is the reciprocal of precision.
 #|   "
-#| tbl-subcap: 
+#| tbl-subcap:
 #|   - "Full datasets"
 #|   - "Intersection of samples with all labels available"
 risk_thresh <- read_csv(here('results','decision_thresholds.csv'))
-risk_thresh %>% 
-  filter(Dataset == 'Full') %>% 
-  select(-Dataset) %>% 
-  kable() %>% 
+risk_thresh %>%
+  filter(Dataset == 'Full') %>%
+  select(-Dataset) %>%
+  kable() %>%
   kable_styling(font_size = table_font_size)
-risk_thresh %>% 
-  filter(Dataset == 'Intersection') %>% 
-  select(-Dataset) %>% 
-  kable() %>% 
+risk_thresh %>%
+  filter(Dataset == 'Intersection') %>%
+  select(-Dataset) %>%
+  kable() %>%
   kable_styling(font_size = table_font_size)
 ```
 
@@ -631,20 +631,20 @@ for the full dataset in models predicting attributable severity, with the
 maximum point more important than any other OTU yet a minimum below zero.
 However, for the intersection dataset, this OTU was removed due to having
 near-zero variance.
-The presence of _Pseudomonas_ was thus informative in a small number of 
+The presence of _Pseudomonas_ was thus informative in a small number of
 patient samples, but not in others, and these samples were lost in the
 intersection dataset.
 Overall the abundance data are patchy, as these patients were likely all taking
 antibiotics for unrelated infections prior to CDI onset.
 A limitation of permutation importance is that the contribution of each feature
 is considered in isolation, but members of microbial communities interact and
-compete with each other, thus these complicated relationships are not well 
+compete with each other, thus these complicated relationships are not well
 captured by permutation importance.
 
 The full pragmatic severity model performed just as well as a prior
 EHR-based model trained on the day of diagnosis, demonstrating the potential
 utility of OTU-based models.
-In terms of the number needed to screen, the OTU-based pragmatic severity model 
+In terms of the number needed to screen, the OTU-based pragmatic severity model
 outperformed a prior model of manually curated clinical variables, but not a
 model trained on EHR data extracted two days after diagnosis.
 While the attributable definition had a worse NNS for the OTU-based models, it
@@ -748,7 +748,7 @@ Samples were then subsampled to 5,000 sequences per sample.
 Only the first CDI sample per patient was used for subsequent ML analyses such
 that no patient is represented more than once, resulting in a dataset of
 `r n_cases_first` samples.
- 
+
 ## Defining CDI severity.
 
 We chose to explore four different ways to define CDI cases as severe or not (@fig-flowchart).
@@ -781,8 +781,8 @@ The intersection dataset is the most fair for comparing model performance across
 definitions, while the full dataset allows us to use as much data as possible
 for model training and evaluation.
 Datasets were pre-processed with the default options in mikropml to remove
-features with near-zero variance and scale continuous features from -1 to 1. 
-During pre-processing, 
+features with near-zero variance and scale continuous features from -1 to 1.
+During pre-processing,
 `r preproc_ranges$min_removed` to `r preproc_ranges$max_removed`
 features were removed due to having near-zero variance, resulting in datasets
 having `r preproc_ranges$min_feats` to `r preproc_ranges$max_feats` features
@@ -833,7 +833,7 @@ a clinical setting, with lower NNB numbers being better.
 The complete workflow, code, and supporting files required to reproduce this
 manuscript with accompanying figures is available at
 <https://github.com/SchlossLab/severe-CDI>.
-<!-- 
+<!--
 TODO update GitHub URL once accepted to journal
 -->
 

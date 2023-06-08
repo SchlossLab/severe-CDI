@@ -63,22 +63,22 @@ affiliations:
   - id: ccmb
     name: Center for Computational Medicine and Bioinformatics, University of Michigan
 abstract: |
-  _Clostridioides difficile_ infection (CDI) can lead to 
+  _Clostridioides difficile_ infection (CDI) can lead to
   adverse outcomes including ICU admission, colectomy, and death.
   The composition of the gut microbiome plays an important role in determining
   colonization resistance and clearance upon exposure to _C. difficile_.
-  We investigated whether machine learning (ML) models trained on 
+  We investigated whether machine learning (ML) models trained on
   16S rRNA gene amplicon sequences from gut microbiota extracted
-  from 1,277 patient stool samples on the day of CDI diagnosis could predict 
+  from 1,277 patient stool samples on the day of CDI diagnosis could predict
   which CDI cases led to severe outcomes.
   We then trained ML models to predict CDI severity on OTU relative abundances
-  according to four different severity definitions: 
+  according to four different severity definitions:
   the IDSA severity score on the day of diagnosis,
   all-cause adverse outcomes within 30 days,
-  adverse outcomes confirmed as attributable to CDI via chart review, 
+  adverse outcomes confirmed as attributable to CDI via chart review,
   and a pragmatic definition that uses the attributable definition when available
   and otherwise uses the all-cause definition.
-  The models predicting pragmatic severity performed best, 
+  The models predicting pragmatic severity performed best,
   suggesting that while chart review is valuable to verify the cause of
   complications,
   including as many samples as possible is indispensable for training performant
@@ -525,7 +525,7 @@ are from stool samples collected on the day of diagnosis. These
 estimates represent a proof-of-concept demonstration of the potential
 value and trade-offs of deploying severity prediction models trained on
 microbial factors versus EHRs to guide clinicians’ treatment decisions.
-<!-- 
+<!--
 TODO possible to find NNS on day of diagnosis for EHR model?
 -->
 
@@ -778,7 +778,7 @@ lower NNB numbers being better.
 
 The complete workflow, code, and supporting files required to reproduce
 this manuscript with accompanying figures is available at
-<https://github.com/SchlossLab/severe-CDI>. <!-- 
+<https://github.com/SchlossLab/severe-CDI>. <!--
 TODO update GitHub URL once accepted to journal
 -->
 
