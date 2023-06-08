@@ -102,8 +102,7 @@ execute:
 ---
 ```{r setup}
 #| include: false
-knitr::opts_chunk$set(dpi = 600)
-knitr::knit_hooks$set(inline = schtools::inline_hook)
+schtools::set_knitr_opts()
 ```
 ```{r load_data}
 #| output: false
