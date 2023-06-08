@@ -3,12 +3,27 @@ format:
   gfm: default
 execute:
   echo: false
-jupyter: python3
+engine: knitr
 ---
 
 # severe-CDI
 
-Predicting _C. difficile_ Infection Severity from the Taxonomic Composition of the Gut Microbiome
+```{python}
+#| output: 'asis'
+import yaml
+is_yaml = False
+yaml_lines = list()
+with open('paper/paper.qmd', 'r') as infile:
+    for line in infile:
+        if line.startswith('---'):
+            is_yaml = not is_yaml
+        elif is_yaml:
+            yaml_lines.append(line)
+yaml_dict = yaml.load(''.join(yaml_lines), Loader = yaml.CLoader)
+print(yaml_dict['title'])
+print('\n')
+print(', '.join(auth['name'] for auth in yaml_dict['author']))
+```
 
 ## Manuscript
 
