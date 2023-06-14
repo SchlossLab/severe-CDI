@@ -41,6 +41,16 @@ rule convert_svg:
         convert {input.svg} -density 1200 -trim {output.img}
         """
 
+rule convert_tiff:
+    input:
+        tiff="figures/{figname}.tiff"
+    output:
+        png="figures/{figname}.png"
+    shell:
+        """
+        convert -density 600 {input.tiff} {output.png}
+        """
+
 rule plot_flowchart_sankey:
     input:
         flowchart='figures/severity_flowchart.tiff',
