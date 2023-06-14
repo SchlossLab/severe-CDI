@@ -33,7 +33,7 @@ feat_dat <- read_csv("results/feature-importance_results_aggregated.csv") %>%
 tax_dat <- schtools::read_tax("data/mothur/alpha/cdi.taxonomy")
 alpha_level <- 0.05
 
-dat <- left_join(feat_dat, tax_dat, by = 'otu')
+dat <- left_join(feat_dat, tax_dat, by = 'otu') %>% filter(dataset == 'full')
 dat_top_otus <- dat %>% 
   filter_top_feats(frac_important_threshold = percent_ci/100) %>% 
   mutate(is_signif = TRUE)
@@ -78,16 +78,17 @@ tiny_constant <- relabun_dat %>%
 top_feats_means <- top_feats_dat %>% 
   group_by(dataset, outcome, tax_otu_label) %>% 
   summarize(med_auroc_diff = mean(perf_metric_diff),
-            ) %>% 
+  ) %>% 
   full_join(relabun_means %>% 
-               filter(label_html %in% top_otus_order) %>% 
-               select(outcome, tax_otu_label, med_rel_abun),
+              filter(label_html %in% top_otus_order) %>% 
+              select(outcome, tax_otu_label, med_rel_abun),
             relationship = 'many-to-many')
 top_feats_means %>% 
   write_csv(here('results', 'top_features.csv'))
 
 # FEATURE IMPORTANCE
 feat_imp_plot <- top_feats_dat %>% 
+  filter(dataset == 'full') %>% 
   mutate(label_html = factor(label_html, levels = top_otus_order),
          dataset = case_when(dataset == 'full' ~ 'Full datasets',
                              TRUE ~ 'Intersection'),
@@ -110,7 +111,6 @@ feat_imp_plot <- top_feats_dat %>%
   geom_hline(yintercept = seq(1.5, length(unique(top_otus_order))-0.5, 1), 
              lwd = 0.5, colour = "grey92") +
   geom_vline(xintercept = 0, linetype = 'dotted') +
-  facet_wrap('dataset') +
   scale_color_manual(values = model_colors,
                      labels = c(idsa='IDSA', attrib='Attributable', allcause='All-cause', pragmatic='Pragmatic'),
                      guide = guide_legend(label.position = "bottom",
@@ -127,19 +127,19 @@ feat_imp_plot <- top_feats_dat %>%
                                          title = glue('Significant\n({percent_ci}% CI)'),
                                          title.position = 'top',
                                          order = 1)
-                    ) +
+  ) +
   labs(title=NULL, 
        y=NULL,
        x="Difference in AUROC") +
   theme_sovacool() +
-  theme(text = element_text(size = 10, family = 'Helvetica'),
+  theme(text = element_text(size = 14, family = 'Helvetica'),
         axis.text.y = element_markdown(size = 10),
         axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
         strip.background = element_blank(),
         panel.spacing = unit(1, 'pt'),
         legend.position = "top",
         panel.grid.major.y = element_blank(),
-        plot.margin = margin(0,3,0,0, unit = 'pt'),
+        plot.margin = margin(0,5,0,0, unit = 'pt'),
         legend.box.margin = margin(0,0,0,0, unit = 'pt'),
         legend.margin = margin(0,0,0,0, unit = 'pt')) 
 
@@ -152,7 +152,7 @@ relabun_plot <- relabun_means %>%
          is_severe = factor(str_to_sentence(is_severe),
                             levels = c('Yes', 'No')),
          dataset = 'Full datasets'
-         ) %>% 
+  ) %>% 
   ggplot(aes(x = med_rel_abun, y = label_html,
              color = outcome, shape = is_severe, group = outcome)) +
   geom_point(position = position_dodge(width = 0.9),
@@ -160,11 +160,10 @@ relabun_plot <- relabun_means %>%
   geom_hline(yintercept = seq(1.5, length(unique(top_otus_order))-0.5, 1), 
              lwd = 0.5, colour = "grey92") +
   geom_vline(xintercept = tiny_constant, linetype = 'dashed') +
-  facet_wrap('dataset') +
   scale_color_manual(values = model_colors,
                      labels = c(idsa='IDSA', attrib='Attributable', 
                                 allcause='All-cause', pragmatic='Pragmatic')
-                     ) +
+  ) +
   scale_shape_manual(values = c(Yes=3, No=1),
                      guide = guide_legend(label.position = 'bottom',
                                           title = 'Is Severe',
@@ -174,7 +173,7 @@ relabun_plot <- relabun_means %>%
                 labels = scales::trans_format('log10', scales::math_format(10^.x))) +
   labs(x = expression(''*log[10]*' Rel. Abundance')) +
   theme_sovacool() +
-  theme(text = element_text(size = 10, family = 'Helvetica'),
+  theme(text = element_text(size = 14, family = 'Helvetica'),
         axis.text.y = element_blank(),
         axis.title.y = element_blank(),
         axis.ticks.y = element_blank(),
@@ -185,14 +184,13 @@ relabun_plot <- relabun_means %>%
         legend.box.margin = margin(0,0,0,0, unit = 'pt'),
         legend.margin = margin(0,0,0,0, unit = 'pt'),
         plot.margin = margin(0,8,0,0))
-  
+
 fig <- plot_grid(feat_imp_plot, relabun_plot,
-                 ncol = 2, rel_widths = c(1, 0.3), align = 'h', axis = 'tb', 
-                 labels = 'AUTO', label_size = 10, label_fontfamily = 'Helvetica')
+                 ncol = 2, rel_widths = c(1, 0.4), align = 'h', axis = 'tb')
 
 ggsave(
-    filename = here('figures', 'feature-importance.tiff'), 
-    plot = fig,
-    device = "tiff", compression = "lzw", dpi = 600, 
-    units = "in", width = 6.875, height = 4.5 # https://journals.asm.org/figures-tables
-    )
+  filename = here('figures', 'feature-importance_full.png'), 
+  plot = fig,
+  device = "png", dpi = 600, 
+  units = "in", width = 8.5, height = 4.5 # https://journals.asm.org/figures-tables
+)

@@ -195,6 +195,8 @@ roc_plot <- roc_dat %>%
         axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
         plot.margin = margin(0,2,0,0))
 
+ggsave(here('figures', 'roc_plot.png'), plot = roc_plot, device = 'png', dpi=600)
+
 bprc_dat <- read_csv(here('results', 'prcurve_results_aggregated.csv')) %>%
   mutate(outcome = factor(outcome, levels = c('idsa', 'allcause', 'attrib', 'pragmatic')),
          dataset = case_when(dataset == 'full' ~ 'Full datasets',
@@ -264,6 +266,8 @@ bprc_plot <- bprc_dat %>%
         axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
         plot.margin = margin(5,2,0,2))
 
+
+ggsave(here('figures', 'bpr_plot.png'), plot = bprc_plot, device = 'png', dpi=600)
 
 prcurve_dat <- read_csv(here('results', 'prcurve_results_aggregated.csv')) %>%
   mutate(outcome = factor(outcome, levels = c('idsa', 'allcause', 'attrib', 'pragmatic'))) %>% 
