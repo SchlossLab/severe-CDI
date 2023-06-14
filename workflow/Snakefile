@@ -82,7 +82,7 @@ rule prep_severity_data_for_ml:
     input:
         fcn='workflow/scripts/filter_first_samples.R',
         sra='data/SraRunTable.csv',
-        otu='data/mothur/alpha/cdi.opti_mcc.shared',
+        otu="data/mothur/alpha/cdi.opti_mcc.0.03.subsample.shared",
         meta='data/process/final_CDI_16S_metadata.tsv',
         idsa='data/process/case_idsa_severity.csv',
         attrib='data/raw/mishare/clinical_outcomes.csv',
