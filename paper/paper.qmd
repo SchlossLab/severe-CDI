@@ -88,7 +88,8 @@ abstract: |
   associated with severe outcomes.
   Finally, we evaluated the potential clinical value of the OTU-based models
   and found similar performance compared to prior models based on Electronic
-  Health Records.
+  Health Records, although further work is needed to determine the feasibility
+  of deploying such models in clinical practice.
   The modest performance of the OTU-based models represents a step toward the
   goal of deploying models to inform clinical decisions and ultimately improve
   CDI outcomes.
