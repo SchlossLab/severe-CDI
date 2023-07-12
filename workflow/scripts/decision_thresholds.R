@@ -7,7 +7,10 @@ library(tidyverse)
 
 thresh_dat <- read_csv(here('results','thresholds_results_aggregated.csv')) %>% 
   mutate(predicted_pos_frac = (tp + fp) / (tp + fp + tn + fn),
-         diff_95th_pct = abs(predicted_pos_frac - 0.05))
+         predicted_pos_frac = round(predicted_pos_frac,2),
+         risk_pct = 1 - predicted_pos_frac,
+         diff_95th_pct = abs(predicted_pos_frac - 0.05),
+         nns2 = 1/Precision)
 # treat_all <- thresh_dat %>% 
 #   filter(strategy == 'all') %>% 
 #   select(strategy, decision_threshold, net_benefit, dataset, outcome) %>% 
@@ -23,6 +26,68 @@ thresh_dat <- read_csv(here('results','thresholds_results_aggregated.csv')) %>%
 #   filter(strategy == 'model') %>% 
 #   left_join(treat_all, by = join_by(decision_threshold, dataset, outcome)) %>% 
 #   left_join(treat_none, by = join_by(decision_threshold, dataset, outcome))
+
+thresh_dat %>% 
+  filter(strategy == 'model', outcome != 'idsa', dataset=='full') %>% 
+  group_by(decision_threshold, outcome, dataset) %>% 
+  summarise(
+    median_nns = median(nns),
+    mean_nns = mean(nns),
+    #upper = quantile(nns, 0.95),
+    #lower = quantile(nns, 0.05)
+  ) %>%
+  ggplot() +
+  # geom_ribbon(aes(x = decision_threshold, y = median_nns, 
+  #            ymin = lower, ymax = upper, fill = outcome), 
+  #            alpha = 0.08) +
+  geom_line(aes(x = decision_threshold, y = median_nns, color = outcome),
+            alpha = 0.6) +
+  geom_point(data = nns_95th_pct,
+             aes(x = decision_threshold, nns, color = outcome)) +
+  scale_color_manual(values = c(idsa = "#1B9E77", 
+                                attrib = "#D95F02", 
+                                allcause = "#7570B3", 
+                                pragmatic = "#E7298A")) +
+  scale_fill_manual(values = c(idsa = "#1B9E77", 
+                               attrib = "#D95F02", 
+                               allcause = "#7570B3", 
+                               pragmatic = "#E7298A"),
+                    labels = c(idsa='IDSA', attrib='Attributable', 
+                               allcause='All-cause', pragmatic='Pragmatic')
+  ) +
+  guides(fill = 'none') +
+  labs(y = "Median NNS", x = 'Decision Threshold') +
+  theme_sovacool() +
+  theme(legend.title = element_blank(),
+        legend.position = 'top')
+thresh_dat %>% 
+  filter(strategy == 'model', outcome != 'idsa', dataset=='full') %>% 
+  ggplot() +
+  stat_summary(aes(x = risk_pct, y = nns, color = outcome),
+               alpha = 0.6, geom = 'line', fun='median') +
+  geom_vline(xintercept = 0.95, linetype = 'dashed') +
+  scale_color_manual(values = c(idsa = "#1B9E77", 
+                                attrib = "#D95F02", 
+                                allcause = "#7570B3", 
+                                pragmatic = "#E7298A")) +
+  labs(x = 'Risk Percentile', y = 'Median NNS') +
+  theme_sovacool() +
+  theme(legend.title = element_blank(),
+        legend.position = 'top')
+thresh_dat %>% 
+  filter(strategy == 'model', outcome != 'idsa', dataset=='full') %>% 
+  #mutate(predicted_pos_frac = round(predicted_pos_frac,2)) %>% 
+  ggplot(aes(x = decision_threshold, y = predicted_pos_frac, color = outcome)) +
+  stat_summary(geom = 'line', fun = 'median', mapping = aes(shape = outcome),
+               alpha = 0.6) +
+  geom_hline(yintercept = 0.05, linetype = 'dashed') +
+  scale_color_manual(values = c(idsa = "#1B9E77", 
+                                attrib = "#D95F02", 
+                                allcause = "#7570B3", 
+                                pragmatic = "#E7298A")) +
+  theme_sovacool() +
+  theme(legend.position = 'none')
+
 
 priors <- read_csv(here("results","sensspec_results_aggregated.csv")) %>% 
   select(outcome, dataset, prior) %>% 
@@ -73,13 +138,26 @@ confmat_95th_pct_tbl <- thresh_dat %>%
   ) %>%
   mutate(across(where(is.numeric), ~ round(.x, digits = 2)))
 
+
 med_nns <- thresh_dat %>% 
   filter(strategy == 'model', outcome != 'idsa', dataset != 'int') %>%
   mutate(nns2 = nns,
          nns = 1/Precision) %>% # use version of precision where it's NA when tp=0 so NNS isn't overoptimistic
   group_by(outcome, dataset, decision_threshold) %>% 
   summarize(median_nns = median(nns),
-            median_nns2 = median(nns2))
+            mean_nns = mean(nns),
+            median_nns2 = median(nns2),
+            mean_nns2 = mean(nns2))
+
+thresh_dat %>% 
+  filter(strategy == 'model', outcome != 'idsa', dataset=='full') %>% 
+  group_by(dataset, outcome, decision_threshold) %>% 
+  summarize(med_pred_pos_frac = median(predicted_pos_frac),
+            mean_pred_pos_frac = mean(predicted_pos_frac)) %>% 
+  mutate(diff_95th_pct = abs(med_pred_pos_frac - 0.05)) %>% 
+  slice_min(diff_95th_pct) %>% 
+  left_join(med_nns)
+
 nns_95th_pct <- thresh_dat %>% 
   filter(strategy == 'model', outcome != 'idsa', dataset != 'int') %>%
   group_by(outcome, dataset) %>% 
