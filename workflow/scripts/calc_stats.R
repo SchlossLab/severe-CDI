@@ -61,12 +61,14 @@ top_feats <- read_csv(here('results', 'top_features.csv'))
 
 # 95th percentile of risk / decision thresholds
 confmat_95th_pct <- read_csv('results/decision_thresholds.csv')
-attrib_nns <- confmat_95th_pct %>% filter(dataset == 'Full', outcome == 'attrib') %>% pull(nns)
-allcause_nns <- confmat_95th_pct %>% filter(dataset == 'Full', outcome == 'allcause') %>% pull(nns)
-pragmatic_nns <- confmat_95th_pct %>% filter(dataset == 'Full', outcome == 'pragmatic') %>% pull(nns)
+attrib_nns <- confmat_95th_pct %>% filter(dataset == 'full', outcome == 'attrib') %>% pull(nns)
+allcause_nns <- confmat_95th_pct %>% filter(dataset == 'full', outcome == 'allcause') %>% pull(nns)
+pragmatic_nns <- confmat_95th_pct %>% filter(dataset == 'full', outcome == 'pragmatic') %>% pull(nns)
 
-ehr_nns <- 1/0.417
-curated_nns <- 1/0.167
+ehr_prec <- 0.417
+curated_prec <- 0.167
+ehr_nns <- 1/ehr_prec
+curated_nns <- 1/curated_prec
 
 # NNT
 fdx_nnt <- 10 # [@long_oral_2022;@tashiro_oral_2022]
