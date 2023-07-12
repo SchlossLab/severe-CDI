@@ -1,6 +1,4 @@
-Outcome,Dataset,Risk threshold,TP,FP,TN,FN,Precision,NNS,Recall,Specificity
-All-cause,Full,0.2,3,9,217,14,0.25,4,0.18,0.96
-All-cause,Intersection,0.2,2,8,181,7,0.2,5,0.22,0.96
-Attributable,Full,0.1,2,10,220,3,0.17,6,0.4,0.96
-Attributable,Intersection,0.1,1,9,184,4,0.1,10,0.2,0.95
-Pragmatic,Full,0.25,4,8,222,9,0.33,3,0.31,0.97
+outcome,nns,decision_threshold,dataset
+allcause,5,0.2,full
+attrib,12,0.142,full
+pragmatic,5.5,0.15,full

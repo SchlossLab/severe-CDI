@@ -61,9 +61,9 @@ top_feats <- read_csv(here('results', 'top_features.csv'))
 
 # 95th percentile of risk / decision thresholds
 confmat_95th_pct <- read_csv('results/decision_thresholds.csv')
-attrib_nns <- confmat_95th_pct %>% filter(Dataset == 'Full', Outcome == 'Attributable') %>% pull(NNS)
-allcause_nns <- confmat_95th_pct %>% filter(Dataset == 'Full', Outcome == 'All-cause') %>% pull(NNS)
-pragmatic_nns <- confmat_95th_pct %>% filter(Dataset == 'Full', Outcome == 'Pragmatic') %>% pull(NNS)
+attrib_nns <- confmat_95th_pct %>% filter(dataset == 'Full', outcome == 'attrib') %>% pull(nns)
+allcause_nns <- confmat_95th_pct %>% filter(dataset == 'Full', outcome == 'allcause') %>% pull(nns)
+pragmatic_nns <- confmat_95th_pct %>% filter(dataset == 'Full', outcome == 'pragmatic') %>% pull(nns)
 
 ehr_nns <- 1/0.417
 curated_nns <- 1/0.167
